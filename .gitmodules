@@ -1,0 +1,3 @@
+[submodule "src/datafair-dataprovider"]
+	path = src/datafair-dataprovider
+	url = git@github.com:jbdesbas/datafair-dataprovider.git
