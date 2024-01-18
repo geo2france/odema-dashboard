@@ -13,6 +13,7 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
     const mapCategorieProps = (item:string) => {
         switch(item){
             case "Stockage":
+            case "Stockage pour inertes":
             case "Incinération sans récupération d'énergie":
                 return {color:"#ED1C24", sort:1}
             case "Incinération avec récupération d'énergie":
@@ -21,18 +22,21 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
             case "Valorisation organique":
                 return {color:'#ABCB54', sort:3}
             case "Biodéchets":
+            case "Déchets verts et biodéchets":
                 return {color:'#7A4443', sort:4}
             case "Verre":
                 return {color:'#008F29', sort:3}
             case "Ordures ménagères résiduelles":
                 return {color:'#919191',sort:1}
             case "Emballages et papier":
+            case "Matériaux recyclables":
                 return {color:'#FEFA54',sort:2}
             case "Encombrants":
             case "Déchets dangereux (y.c. DEEE)":
             case "Collectes séparées hors gravats":
                 return {color:'#FF8001',sort:5}
             case "Non précisé":
+            case "Autres":
                 return {color:'#5D5D5D', sort:5}
             default :
                 return {color:'#0f0', sort:99}
@@ -45,6 +49,8 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
         ...data.map((d) => (d.target) ) 
     ] ) ].map((e) => ({name:e,  itemStyle: {
         color: mapCategorieProps(e).color,}})).sort((a,b) => mapCategorieProps(a.name).sort - mapCategorieProps(b.name).sort   )
+
+    console.log(links)
 
     const option = {
         tooltip: {

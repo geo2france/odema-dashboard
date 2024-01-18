@@ -24,18 +24,23 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
                     field:"ANNEE",
                     operator:"eq",
                     value:2021
+                },
+                {
+                    field:"L_TYP_REG_DECHET",
+                    operator:"ne",
+                    value:'Déblais et gravats'
                 }
             ]
     })
    
-    const mydata2 = data?.data ? dataGroupBy(data.data, ['L_TYP_REG_DECHET','L_TYP_REG_SERVICE'], 'TONNAGE_T', 'sum') : undefined;
+    const mydata2 = data?.data ? dataGroupBy(data.data, ['L_TYP_REG_DECHET','L_TYP_REG_SERVICE'], 'TONNAGE_DMA', 'sum') : undefined;
 
     return (
         <>
         <Row>
             <Col xxl={24/2} md={24}>
                 <Card title="Destination des DMA">
-                    {mydata2 ? (<ChartSankeyDestinationDMA data={mydata2.map((i) => ({value:Math.max(i.TONNAGE_T_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> ) 
+                    {mydata2 ? (<ChartSankeyDestinationDMA data={mydata2.map((i) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> ) 
                     : <span>Chargement..</span>}   
                 </Card>
             </Col>

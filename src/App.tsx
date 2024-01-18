@@ -26,7 +26,7 @@ const App: React.FC = () => {
             {
               meta: { label: "oma", dataProviderName:"datafair"},
               identifier : "destination-oma",
-              name: "sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement/lines",
+              name: "sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement/lines",
               list: "/oma",
             }
           ]}
