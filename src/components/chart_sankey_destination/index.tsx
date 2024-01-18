@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { BaseRecord } from "@refinedev/core";
+import { wrappe } from "../../utils";
 
 interface ChartSankeyDestinationDMAProps {
     data: any[] | BaseRecord[]; 
@@ -44,11 +45,17 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
     }
 
     
+    
     const data_echart = [... new Set([
         ...data.map((d) => (d.source) ), 
         ...data.map((d) => (d.target) ) 
-    ] ) ].map((e) => ({name:e,  itemStyle: {
-        color: mapCategorieProps(e).color,}})).sort((a,b) => mapCategorieProps(a.name).sort - mapCategorieProps(b.name).sort   )
+    ] ) ].map((e) => ({
+        name:e,
+        itemStyle: {
+            color: mapCategorieProps(e).color,},
+        label:{formatter:(x:any) => wrappe(x.name,20)}
+        }
+        )).sort((a,b) => mapCategorieProps(a.name).sort - mapCategorieProps(b.name).sort   )
 
     const option = {
         tooltip: {

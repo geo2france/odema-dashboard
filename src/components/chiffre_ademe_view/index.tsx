@@ -26,6 +26,16 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
                     field:"L_TYP_REG_DECHET",
                     operator:"ne",
                     value:'Déblais et gravats'
+                },
+                {
+                    field:"L_TYP_REG_SERVICE",
+                    operator:"ne",
+                    value:"Incinération sans récupération d'énergie"
+                },
+                {
+                    field:"L_TYP_REG_SERVICE",
+                    operator:"ne",
+                    value:'Stockage pour inertes'
                 }
             ]
     })
