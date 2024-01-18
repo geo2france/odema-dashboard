@@ -1,10 +1,7 @@
 import React from "react";
-import { IResourceComponentsProps, BaseRecord, useList, useMany, useOne } from "@refinedev/core";
-import { List, TagField, useTable } from "@refinedev/antd";
+import { IResourceComponentsProps, useList } from "@refinedev/core";
 import { Card, Col, Row } from 'antd';
-import { Table } from "antd";
-import _ from "lodash";
-import { ChartSankeyDestinationDMA } from "../pie_test";
+import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { dataGroupBy } from "../../utils";
 
 export const AdemeView: React.FC<IResourceComponentsProps> = () => {

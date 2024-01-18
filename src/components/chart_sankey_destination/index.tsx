@@ -50,8 +50,6 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
     ] ) ].map((e) => ({name:e,  itemStyle: {
         color: mapCategorieProps(e).color,}})).sort((a,b) => mapCategorieProps(a.name).sort - mapCategorieProps(b.name).sort   )
 
-    console.log(links)
-
     const option = {
         tooltip: {
             trigger: 'item',
