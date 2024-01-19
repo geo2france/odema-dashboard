@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { IResourceComponentsProps, useList } from "@refinedev/core";
-import { Card, Col, Row } from 'antd';
+import { Card, Col, DatePicker, InputNumber, Row } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { dataGroupBy } from "../../utils";
+import dayjs from "dayjs";
 
 export const AdemeView: React.FC<IResourceComponentsProps> = () => {
-
+    const [year, setYear] = useState<number>(2021);
     const {data} = useList({
             resource:"destination-oma",
             pagination: {
@@ -20,7 +21,7 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
                 {
                     field:"ANNEE",
                     operator:"eq",
-                    value:2021
+                    value:year
                 },
                 {
                     field:"L_TYP_REG_DECHET",
@@ -44,6 +45,8 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
 
     return (
         <>
+        <DatePicker onChange={(e) => e ? setYear(e.year()) : undefined } defaultValue={ dayjs(year.toString(),'YYYY')} 
+            format={'YYYY'} picker={'year'} allowClear={false} disabledDate={(c) => (c.year() % 2 === 0) || c.year() > 2021  } />
         <Row>
             <Col xxl={24/2} md={24}>
                 <Card title="Destination des DMA">
