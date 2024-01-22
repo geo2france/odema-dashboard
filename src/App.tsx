@@ -10,6 +10,7 @@ import "@refinedev/antd/dist/reset.css";
 
 import { TodosView } from "./components/todo_view"
 import { AdemeView } from "./components/chiffre_ademe_view";
+import { ressources } from "./ressources"
 
 const App: React.FC = () => {
   return (
@@ -22,14 +23,7 @@ const App: React.FC = () => {
               datafair:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets")
             }}
           notificationProvider={notificationProvider}
-          resources={[
-            {
-              meta: { label: "oma", dataProviderName:"datafair"},
-              identifier : "destination-oma",
-              name: "sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement/lines",
-              list: "/oma",
-            }
-          ]}
+          resources={ressources}
           options={{
             syncWithLocation: true,
             warnWhenUnsavedChanges: true,
