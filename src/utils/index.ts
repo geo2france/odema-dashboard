@@ -1,9 +1,13 @@
 import { BaseRecord } from "@refinedev/core";
 import _ from "lodash";
 
-export const dataGroupBy = (data:BaseRecord[], group_fields:string[], metric_field:string, method:string) => {
+export const dataGroupBy = (data:BaseRecord[], group_fields:string[], metric_field:[string], methods:[string]) => {
 
-    const agg_function:(arr:[] | BaseRecord[], field:string) => number | undefined  = ((arr, field) => {
+    if (metric_field.length !== methods.length) {
+        throw new Error('<metric_field> and <methods> must to be same length arrays');
+    }
+
+    const agg_function:(arr:[] | BaseRecord[], field:string, method:string) => number | undefined  = ((arr, field, method) => {
         switch(method){
         case 'sum':
             return _.sumBy(arr, field)
@@ -22,8 +26,10 @@ export const dataGroupBy = (data:BaseRecord[], group_fields:string[], metric_fie
 
     return _.chain(data).groupBy((i)=>group_fields.map(f=>i[f]).join('|')).map((v)=>({
         ...Object.fromEntries(group_fields.map(field => [field, v[0][field]])),
-        [`${metric_field}_${method}`]:agg_function(v, metric_field)})
-        ).value()
+        ...Object.fromEntries(
+            metric_field.map((e, idx) => ([`${e}_${methods[idx]}`, agg_function(v, e, methods[idx]) ]
+            )))
+        })).value()
 };
 
 // IA Generated function
