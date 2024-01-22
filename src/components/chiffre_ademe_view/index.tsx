@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { IResourceComponentsProps, useList } from "@refinedev/core";
+import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
 import { Card, Col, DatePicker, InputNumber, Row } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { dataGroupBy } from "../../utils";
 import dayjs from "dayjs";
+import { ChartCollectePerformance } from "../chart_collecte_performance";
 
 export const AdemeView: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useState<number>(2021);
@@ -41,7 +42,30 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
             ]
     })
    
-    const mydata2 = data?.data ? dataGroupBy(data.data, ['L_TYP_REG_DECHET','L_TYP_REG_SERVICE'], 'TONNAGE_DMA', 'sum') : undefined;
+    const datasankey = data?.data ? dataGroupBy(data.data, ['L_TYP_REG_DECHET','L_TYP_REG_SERVICE'], ['TONNAGE_DMA'], ['sum']) : undefined;
+
+    console.log(datasankey)
+
+    const {data:data_performance} = useList({
+        resource:"performance-oma",
+        pagination: {
+            pageSize: 150,
+        },
+        filters:[
+            {
+                field:"C_REGION",
+                operator:"eq",
+                value:84
+            },
+            {
+                field:"ANNEE",
+                operator:"eq",
+                value:year
+            },
+        ]
+    });
+
+    const data_performance_reg = data_performance?.data ? dataGroupBy(data_performance.data, ['L_TYP_REG_DECHET'], ['TONNAGE_T', 'VA_POPANNEE'], ['sum','sum']) : undefined;
 
     return (
         <>
@@ -50,7 +74,13 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
         <Row>
             <Col xxl={24/2} md={24}>
                 <Card title="Destination des DMA">
-                    {mydata2 ? (<ChartSankeyDestinationDMA data={mydata2.map((i) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> ) 
+                    {datasankey ? (<ChartSankeyDestinationDMA data={datasankey.map((i) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> ) 
+                    : <span>Chargement..</span>}   
+                </Card>
+            </Col>
+            <Col xxl={24/2} md={24}>
+                <Card title="Performances de collecte (hors déchetteries)">
+                    {data_performance_reg ? (<ChartCollectePerformance data={data_performance_reg}/> ) 
                     : <span>Chargement..</span>}   
                 </Card>
             </Col>
