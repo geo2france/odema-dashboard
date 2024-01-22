@@ -8,6 +8,9 @@ import { ChartCollectePerformance } from "../chart_collecte_performance";
 
 export const AdemeView: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useState<number>(2021);
+
+    const cregion = 32
+
     const {data} = useList({
             resource:"destination-oma",
             pagination: {
@@ -17,7 +20,7 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
                 {
                     field:"C_REGION",
                     operator:"eq",
-                    value:32
+                    value:cregion
                 },
                 {
                     field:"ANNEE",
@@ -44,8 +47,6 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
    
     const datasankey = data?.data ? dataGroupBy(data.data, ['L_TYP_REG_DECHET','L_TYP_REG_SERVICE'], ['TONNAGE_DMA'], ['sum']) : undefined;
 
-    console.log(datasankey)
-
     const {data:data_performance} = useList({
         resource:"performance-oma",
         pagination: {
@@ -55,7 +56,7 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
             {
                 field:"C_REGION",
                 operator:"eq",
-                value:84
+                value:cregion
             },
             {
                 field:"ANNEE",
