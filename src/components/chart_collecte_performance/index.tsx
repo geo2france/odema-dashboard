@@ -2,12 +2,21 @@ import React, { useContext } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { BaseRecord } from "@refinedev/core";
 import type {EChartsOption, BarSeriesOption} from "echarts"
+import { dataGroupBy } from "../../utils";
 
 interface ChartCollectePerformanceProps {
     data: any[] | BaseRecord[]; 
   }
 
 export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> = ( {data} ) => {
+
+    const data_dep = dataGroupBy(data, ['N_DEPT', 'L_TYP_REG_DECHET'], ['TONNAGE_T', 'VA_POPANNEE', 'RATIO_KG_HAB'], ['sum','sum', 'sum']);
+
+    const dechets_types = [... new Set(data_dep.map((e) => e.L_TYP_REG_DECHET ))]
+    const deps = [... new Set(data_dep.map((e) => e.N_DEPT ))]
+
+    const data_reg:any[] = dataGroupBy(data, ['L_REGION','L_TYP_REG_DECHET'], ['TONNAGE_T', 'VA_POPANNEE'], ['sum','sum']).map((e) => ({...e, RATIO_KG_HAB:(e.TONNAGE_T_sum*1000) / e.VA_POPANNEE_sum } ) );
+    const regs = [... new Set(data_reg.map((e) => e.L_REGION ))]
 
     const mapCategorieProps = (item:string) => {
         switch(item){
@@ -44,20 +53,24 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
         }
     }
 
-    const total = data.reduce((acc, cur) => acc + cur.TONNAGE_T_sum/cur.VA_POPANNEE_sum, 0)
-
-    const myseries:BarSeriesOption[] = data.map((e:BaseRecord) => ( {
+    const myseries:BarSeriesOption[] = dechets_types.map((e:string) => ( {
         type: 'bar', 
         stack:'total', 
-        name:e.L_TYP_REG_DECHET, 
+        name:e, 
         itemStyle : {
-            color:mapCategorieProps(e.L_TYP_REG_DECHET).color
+            color:mapCategorieProps(e).color,
         },
         tooltip: {
-            valueFormatter : (value) => ` ${(((Number(value) * total)/100)*1000).toFixed(1)} kg/hab`
+            valueFormatter : (value) => ` ${(Number(value)).toFixed(1)} kg/hab`
         },
-        data:[((e.TONNAGE_T_sum/e.VA_POPANNEE_sum)/total)*100]
-    } ))
+        data:
+            [
+             ...[data_reg.find((dr) => dr.L_TYP_REG_DECHET === e)?.RATIO_KG_HAB], //Push region
+             ...[null],
+             ...deps.map( (d) => data_dep.find( (dd) => dd.L_TYP_REG_DECHET === e && dd.N_DEPT === d )?.RATIO_KG_HAB_sum ), //DEP Data
+            ]
+        }
+    ))
 
     const option:EChartsOption = {
         series:myseries,
@@ -72,8 +85,9 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
             }
         },
         yAxis: {
-        type: 'category',
-        data: ['REG']
+            type: 'category',
+            data: [...regs, '', ...deps],
+            axisLabel:{rotate:45}
         },
     }
 

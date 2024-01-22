@@ -66,8 +66,6 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
         ]
     });
 
-    const data_performance_reg = data_performance?.data ? dataGroupBy(data_performance.data, ['L_TYP_REG_DECHET'], ['TONNAGE_T', 'VA_POPANNEE'], ['sum','sum']) : undefined;
-
     return (
         <>
         <DatePicker onChange={(e) => e ? setYear(e.year()) : undefined } defaultValue={ dayjs(year.toString(),'YYYY')} 
@@ -81,7 +79,7 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
             </Col>
             <Col xxl={24/2} md={24}>
                 <Card title="Performances de collecte (hors déchetteries)">
-                    {data_performance_reg ? (<ChartCollectePerformance data={data_performance_reg}/> ) 
+                    {data_performance ? (<ChartCollectePerformance data={data_performance.data}/> ) 
                     : <span>Chargement..</span>}   
                 </Card>
             </Col>
