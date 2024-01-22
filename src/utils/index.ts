@@ -1,7 +1,7 @@
 import { BaseRecord } from "@refinedev/core";
 import _ from "lodash";
 
-export const dataGroupBy = (data:BaseRecord[], group_fields:string[], metric_field:[string], methods:[string]) => {
+export const dataGroupBy = (data:BaseRecord[], group_fields:string[], metric_field:string[], methods:string[]) => {
 
     if (metric_field.length !== methods.length) {
         throw new Error('<metric_field> and <methods> must to be same length arrays');

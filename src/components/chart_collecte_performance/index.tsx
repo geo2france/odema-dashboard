@@ -43,10 +43,8 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
                 return {color:'#0f0', sort:99}
         }
     }
-    console.log(data)
-    const total = data.reduce((acc, cur) => acc + cur.TONNAGE_T_sum/cur.VA_POPANNEE_sum, 0)
 
-    //console.log(total);
+    const total = data.reduce((acc, cur) => acc + cur.TONNAGE_T_sum/cur.VA_POPANNEE_sum, 0)
 
     const myseries:BarSeriesOption[] = data.map((e:BaseRecord) => ( {
         type: 'bar', 
@@ -56,7 +54,7 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
             color:mapCategorieProps(e.L_TYP_REG_DECHET).color
         },
         tooltip: {
-            valueFormatter : (value:number) => ` ${(((value * total)/100)*1000).toFixed(1)} kg/hab`
+            valueFormatter : (value) => ` ${(((Number(value) * total)/100)*1000).toFixed(1)} kg/hab`
         },
         data:[((e.TONNAGE_T_sum/e.VA_POPANNEE_sum)/total)*100]
     } ))
