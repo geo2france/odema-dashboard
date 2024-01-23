@@ -1,5 +1,5 @@
 import { Refine } from "@refinedev/core";
-import { ThemedLayoutV2, notificationProvider, ErrorComponent, RefineThemes } from "@refinedev/antd";
+import { ThemedLayoutV2, notificationProvider, ErrorComponent, RefineThemes, ThemedSiderV2, ThemedTitleV2 } from "@refinedev/antd";
 import routerBindings, { NavigateToResource, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
 import {dataProvider as dfDataProvider} from "./datafair-dataprovider";
 import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
@@ -10,6 +10,7 @@ import "@refinedev/antd/dist/reset.css";
 
 import { AdemeView } from "./components/chiffre_ademe_view";
 import { ressources } from "./ressources"
+import { AppTitle } from "./layout";
 
 const myTheme = {...RefineThemes.Orange, 
   token: {
@@ -40,7 +41,9 @@ const App: React.FC = () => {
           <Routes>
             <Route
               element={
-                <ThemedLayoutV2>
+                <ThemedLayoutV2
+                  Sider={() => <ThemedSiderV2 Title={() => <AppTitle/> } />}
+                >
                   <Outlet />
                 </ThemedLayoutV2>
               }
