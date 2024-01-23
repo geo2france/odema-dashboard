@@ -5,6 +5,7 @@ const { Text, Link } = Typography;
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { dataGroupBy } from "../../utils";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
+import { ChartRaceBareDMA } from "../chart_racebar_dma";
 
 export const AdemeView: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useState<number>(2021);
@@ -66,6 +67,20 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
         ]
     });
 
+    const {data:data_chiffre_cle} = useList({
+        resource:"chiffres-cles-dma",
+        pagination: {
+            pageSize: 250,
+        },
+        filters:[
+            {
+                field:"ANNEE",
+                operator:"eq",
+                value:year
+            },
+        ]
+    })
+
     return (
         <>
         <Row gutter={[16,16]}>
@@ -85,10 +100,16 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
                 </Card>
             </Col>
             <Col xxl={24/2} md={24}>
-                <Card title="Performances de collecte (hors déchetteries)">
+                <Card title="Performances de collecte OMA (hors déchetteries)">
                     {data_performance ? (<ChartCollectePerformance data={data_performance.data}/> ) 
                     : <span>Chargement..</span>}
                     <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/performances-collecte-oma-par-type-dechet-par-dept">Ademe</Link></Text> 
+                </Card>
+            </Col>
+            <Col xxl={24/2} md={24}>
+                <Card title="Chiffres-clés DMA">
+                    {data_chiffre_cle? <ChartRaceBareDMA data={data_chiffre_cle.data} highlight_region={cregion}/> : <span>Chargement</span>}
+                    <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-avec-gravats-2009-2017">Ademe</Link></Text> 
                 </Card>
             </Col>
         </Row>

@@ -10,4 +10,9 @@ export const ressources:any[] = [
         identifier : "performance-oma",
         name: "performances-collecte-oma-par-type-dechet-par-dept/lines",
       },
+      {
+        meta: { label: "Chiffres clés DMA", dataProviderName:"datafair"},
+        identifier : "chiffres-cles-dma",
+        name: "sinoe-indicateurs-chiffres-cles-dma-avec-gravats-2009-2017/lines",
+      },
 ]
