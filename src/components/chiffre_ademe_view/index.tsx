@@ -71,7 +71,7 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
         <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} 
             options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
         />
-        <Row>
+        <Row gutter={16}>
             <Col xxl={24/2} md={24}>
                 <Card title="Destination des DMA">
                     {datasankey ? (<ChartSankeyDestinationDMA data={datasankey.map((i) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> ) 
