@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { IResourceComponentsProps, useList } from "@refinedev/core";
-import { Card, Col, DatePicker, Select, Row } from 'antd';
+import { Card, Col, Typography, Select, Row } from 'antd';
+const { Text, Link } = Typography;
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { dataGroupBy } from "../../utils";
-import dayjs from "dayjs";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 
 export const AdemeView: React.FC<IResourceComponentsProps> = () => {
@@ -68,20 +68,27 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
 
     return (
         <>
-        <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} 
-            options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
-        />
-        <Row gutter={16}>
+        <Row gutter={[16,16]}>
+            <Col span={24}>
+            <Card>
+                Année : <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} 
+                    options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
+                />
+                </Card>
+            </Col>
+
             <Col xxl={24/2} md={24}>
                 <Card title="Destination des DMA">
                     {datasankey ? (<ChartSankeyDestinationDMA data={datasankey.map((i) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> ) 
-                    : <span>Chargement..</span>}   
+                    : <span>Chargement..</span>}
+                    <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement">Ademe</Link></Text> 
                 </Card>
             </Col>
             <Col xxl={24/2} md={24}>
                 <Card title="Performances de collecte (hors déchetteries)">
                     {data_performance ? (<ChartCollectePerformance data={data_performance.data}/> ) 
-                    : <span>Chargement..</span>}   
+                    : <span>Chargement..</span>}
+                    <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/performances-collecte-oma-par-type-dechet-par-dept">Ademe</Link></Text> 
                 </Card>
             </Col>
         </Row>

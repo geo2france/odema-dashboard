@@ -2,20 +2,28 @@ import { Refine } from "@refinedev/core";
 import { ThemedLayoutV2, notificationProvider, ErrorComponent, RefineThemes } from "@refinedev/antd";
 import routerBindings, { NavigateToResource, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
 import {dataProvider as dfDataProvider} from "./datafair-dataprovider";
-import { BrowserRouter, HashRouter, Routes, Route, Outlet } from "react-router-dom";
+import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
 import { AntdInferencer } from "@refinedev/inferencer/antd";
 
 import { ConfigProvider } from "antd";
 import "@refinedev/antd/dist/reset.css";
 
-import { TodosView } from "./components/todo_view"
 import { AdemeView } from "./components/chiffre_ademe_view";
 import { ressources } from "./ressources"
+
+const myTheme = {...RefineThemes.Orange, 
+  token: {
+    colorPrimary: "#DEAD8F",
+    linkHoverDecoration:'underline',
+    colorLink:'#DEAD8F',
+    colorLinkHover:'#9D7156'
+    },
+}
 
 const App: React.FC = () => {
   return (
     <HashRouter>
-      <ConfigProvider theme={RefineThemes.Blue}>
+      <ConfigProvider theme={myTheme}>
         <Refine
           routerProvider={routerBindings}
           dataProvider={{
