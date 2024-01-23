@@ -1,6 +1,8 @@
-import ReactECharts, { EChartsOption } from 'echarts-for-react';
+import React from "react";
+import ReactECharts from 'echarts-for-react';
 import { dataGroupBy } from '../../utils';
 import { BaseRecord } from '@refinedev/core';
+import { EChartsOption } from "echarts";
 
 interface ChartRaceBareDMAProps {
     data: any[] | BaseRecord[]; 
@@ -27,10 +29,17 @@ export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, highli
             left:'180px',
             top:'20px'
         },
-        series :[
+        tooltip:{
+            show:true,
+            valueFormatter : (value) => ` ${(Number(value)).toFixed(1)} kg/hab`
+        },
+        series: [
             {
                 type:'bar',
                 showBackground: true,
+                emphasis:{
+                    focus:'self'
+                },
                 data:chart_data.map((e) => ({
                   value : (e['TONNAGE_DMA_sum']/e['VA_POPANNEE_sum'])*1e3,
                   itemStyle: {
