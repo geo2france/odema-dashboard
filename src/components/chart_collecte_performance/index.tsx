@@ -60,14 +60,17 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
         itemStyle : {
             color:mapCategorieProps(e).color,
         },
+        emphasis: {
+            focus: 'series'
+        },
         tooltip: {
             valueFormatter : (value) => ` ${(Number(value)).toFixed(1)} kg/hab`
         },
         data:
             [
              ...[data_reg.find((dr) => dr.L_TYP_REG_DECHET === e)?.RATIO_KG_HAB], //Push region
-             ...[null],
-             ...deps.map( (d) => data_dep.find( (dd) => dd.L_TYP_REG_DECHET === e && dd.N_DEPT === d )?.RATIO_KG_HAB_sum ), //DEP Data
+             ...[null], //Empty series between deps and reg
+             ...deps.map((d) => (data_dep.find((dd) => dd.L_TYP_REG_DECHET === e && dd.N_DEPT === d) ?? { RATIO_KG_HAB_sum: 0 }).RATIO_KG_HAB_sum), //DEP Data, 0 if undefined
             ]
         }
     ))
@@ -75,8 +78,12 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
     const option:EChartsOption = {
         series:myseries,
         xAxis: {
-            type: 'value'
+            type: 'value',
+            axisLabel:{
+                formatter:(l) => `${l} kg/hab`
+            }
         },
+        legend: {},
         tooltip: {
             trigger: 'axis',
             axisPointer: {
