@@ -84,7 +84,7 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
         xAxis: {
             type: 'value',
             axisLabel:{
-                formatter:(l) => `${l} kg/hab`
+                formatter:'{value} kg/hab'
             }
         },
         grid:{
