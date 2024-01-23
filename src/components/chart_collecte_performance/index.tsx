@@ -66,6 +66,10 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
         tooltip: {
             valueFormatter : (value) => ` ${(Number(value)).toFixed(1)} kg/hab`
         },
+        label: {
+            show: true,
+            formatter : (p:any) => (p.value >= 10 ? `${p.value.toFixed(1).toString()}` : ''),
+        },
         data:
             [
              ...[data_reg.find((dr) => dr.L_TYP_REG_DECHET === e)?.RATIO_KG_HAB], //Push region
@@ -83,7 +87,10 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
                 formatter:(l) => `${l} kg/hab`
             }
         },
-        legend: {},
+        grid:{
+            left:'95px',
+        },
+        legend: {top:'top', show:true},
         tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -100,6 +107,6 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
 
     return(
         <ReactECharts
-        option={option} style={{ height: "450px", marginTop:"0px"}}/>
+        option={option} style={{ height: "450px"}}/>
     )
 }
