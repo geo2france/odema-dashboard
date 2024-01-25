@@ -1,6 +1,0 @@
-[submodule "src/datafair-dataprovider"]
-	path = src/refine-datafair
-	url = git@github.com:jbdesbas/refine-datafair.git
-[submodule "src/refine-datafair"]
-	path = src/refine-datafair
-	url = git@github.com:jbdesbas/refine-datafair.git
