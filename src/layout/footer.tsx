@@ -16,7 +16,7 @@ export const AppFooter: React.FC = () => {
     height:'70px',
     marginRight: '20px'
   }
-  console.log(grey)
+
   const logos = [
     {src : Ademe, name: "Ademe", url: "https://www.ademe.fr/"},
     {src : Prefet, name: "Préfecture Hauts-de-France", url: "https://www.hauts-de-france.developpement-durable.gouv.fr/"},
