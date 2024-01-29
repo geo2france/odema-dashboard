@@ -1,6 +1,6 @@
 import { Refine } from "@refinedev/core";
 import { ThemedLayoutV2, notificationProvider, ErrorComponent, RefineThemes, ThemedSiderV2, ThemedTitleV2 } from "@refinedev/antd";
-import routerBindings, { NavigateToResource, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
+import routerBindings, { DocumentTitleHandler, NavigateToResource, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
 import {dataProvider as dfDataProvider} from "./refine-datafair";
 import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
 import { AntdInferencer } from "@refinedev/inferencer/antd";
@@ -10,7 +10,7 @@ import "@refinedev/antd/dist/reset.css";
 
 import { AdemeView } from "./components/chiffre_ademe_view";
 import { ressources } from "./ressources"
-import { AppTitle } from "./layout";
+import { AppFooter, AppTitle } from "./layout";
 
 const myTheme = {...RefineThemes.Orange, 
   token: {
@@ -43,6 +43,7 @@ const App: React.FC = () => {
               element={
                 <ThemedLayoutV2
                   Sider={() => <ThemedSiderV2 Title={() => <AppTitle/> } />}
+                  Footer={() => <AppFooter />}
                 >
                   <Outlet />
                 </ThemedLayoutV2>
@@ -59,6 +60,7 @@ const App: React.FC = () => {
             </Route>
           </Routes>
           <UnsavedChangesNotifier />
+          <DocumentTitleHandler handler={() => 'Odema tableau de bord'} />
         </Refine>
       </ConfigProvider>
     </HashRouter>

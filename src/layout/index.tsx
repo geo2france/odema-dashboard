@@ -9,3 +9,4 @@ export const AppTitle: React.FC = () => {
     )
 }
 
+export { AppFooter } from "./footer";
