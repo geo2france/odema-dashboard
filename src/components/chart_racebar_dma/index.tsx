@@ -1,8 +1,8 @@
 import React from "react";
 import ReactECharts from 'echarts-for-react';
-import { dataGroupBy } from '../../utils';
 import { BaseRecord } from '@refinedev/core';
 import { EChartsOption } from "echarts";
+import alasql from "alasql";
 
 interface ChartRaceBareDMAProps {
     data: any[] | BaseRecord[]; 
@@ -11,12 +11,15 @@ interface ChartRaceBareDMAProps {
 
 export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, highlight_region} ) => {
 
-    const chart_data = dataGroupBy(data,['L_REGION','C_REGION'], ['TONNAGE_DMA','VA_POPANNEE'], ['sum','sum']).sort((a,b) => a.TONNAGE_DMA_sum/a.VA_POPANNEE_sum - b.TONNAGE_DMA_sum/b.VA_POPANNEE_sum)
+    const chart_data = alasql(`SELECT L_REGION, C_REGION, sum(TONNAGE_DMA) as TONNAGE_DMA_sum, SUM(VA_POPANNEE) as VA_POPANNEE_sum
+                        FROM ?
+                        GROUP BY L_REGION, C_REGION
+                        ORDER BY sum(TONNAGE_DMA)/SUM(VA_POPANNEE)`, [data])
 
     const option:EChartsOption = {
         yAxis: {
             type: 'category',
-            data: chart_data.map((e) => e['L_REGION'])
+            data: chart_data.map((e:BaseRecord) => e['L_REGION'])
         },
         xAxis: {
             type: 'value',
@@ -40,7 +43,7 @@ export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, highli
                 emphasis:{
                     focus:'self'
                 },
-                data:chart_data.map((e) => ({
+                data:chart_data.map((e:BaseRecord) => ({
                   value : (e['TONNAGE_DMA_sum']/e['VA_POPANNEE_sum'])*1e3,
                   itemStyle: {
                     color: e['C_REGION'] == highlight_region ? '#a90000' : undefined

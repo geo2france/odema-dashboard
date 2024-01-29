@@ -15,4 +15,9 @@ export const ressources:any[] = [
         identifier : "chiffres-cles-dma",
         name: "sinoe-indicateurs-chiffres-cles-dma-avec-gravats-2009-2017/lines",
       },
+      {
+        meta: { label: "DMA Collectés par type de collecte", dataProviderName:"datafair"},
+        identifier : "collecte-dma",
+        name: "sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte/lines",
+      },
 ]

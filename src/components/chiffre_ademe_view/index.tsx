@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { IResourceComponentsProps, useList } from "@refinedev/core";
+import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
 import { Card, Col, Typography, Select, Row } from 'antd';
 const { Text, Link } = Typography;
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
-import { dataGroupBy } from "../../utils";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
+import alasql from "alasql";
 
 export const AdemeView: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useState<number>(2021);
@@ -46,10 +46,14 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
             ]
     })
    
-    const datasankey = data?.data ? dataGroupBy(data.data, ['L_TYP_REG_DECHET','L_TYP_REG_SERVICE'], ['TONNAGE_DMA'], ['sum']) : undefined;
+    const datasankey = data?.data ? alasql(`
+        SELECT L_TYP_REG_DECHET, L_TYP_REG_SERVICE, sum(TONNAGE_DMA) as TONNAGE_DMA_sum
+        FROM ?
+        GROUP BY L_TYP_REG_DECHET, L_TYP_REG_SERVICE
+    `, [data.data]) : undefined
 
     const {data:data_performance} = useList({
-        resource:"performance-oma",
+        resource:"collecte-dma",
         pagination: {
             pageSize: 150,
         },
@@ -94,14 +98,14 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
 
             <Col xxl={24/2} md={24}>
                 <Card title="Destination des DMA">
-                    {datasankey ? (<ChartSankeyDestinationDMA data={datasankey.map((i) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> ) 
+                    {datasankey ? (<ChartSankeyDestinationDMA data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
                     : <span>Chargement..</span>}
                     <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement">Ademe</Link></Text> 
                 </Card>
             </Col>
             <Col xxl={24/2} md={24}>
                 <Card title="Performances de collecte OMA (hors déchetteries)">
-                    {data_performance ? (<ChartCollectePerformance data={data_performance.data}/> ) 
+                    {data_performance && data_chiffre_cle ? (<ChartCollectePerformance data={data_performance.data} data_territoire={data_chiffre_cle.data}/> )
                     : <span>Chargement..</span>}
                     <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/performances-collecte-oma-par-type-dechet-par-dept">Ademe</Link></Text> 
                 </Card>

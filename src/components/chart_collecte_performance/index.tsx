@@ -2,21 +2,30 @@ import React, { useContext } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { BaseRecord } from "@refinedev/core";
 import type {EChartsOption, BarSeriesOption} from "echarts"
-import { dataGroupBy } from "../../utils";
+import alasql from "alasql";
 
 interface ChartCollectePerformanceProps {
-    data: any[] | BaseRecord[]; 
+    data: any[] | BaseRecord[]; // Spécifier les champs au niveau de la ressource
+    data_territoire: any[] | BaseRecord[];
   }
 
-export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> = ( {data} ) => {
+export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> = ( {data, data_territoire} ) => {
 
-    const data_dep = dataGroupBy(data, ['N_DEPT', 'L_TYP_REG_DECHET'], ['TONNAGE_T', 'VA_POPANNEE', 'RATIO_KG_HAB'], ['sum','sum', 'sum']);
+    const data_dep = alasql(`
+            SELECT data.*, data_territoire.VA_POPANNEE, (data.TONNAGE_T_HG/data_territoire.VA_POPANNEE)*1000 as RATIO_KG_HAB
+            FROM ? as data
+            JOIN ? as data_territoire ON data_territoire.N_DEPT = data.N_DEPT`, [data, data_territoire]);
 
-    const dechets_types = [... new Set(data_dep.map((e) => e.L_TYP_REG_DECHET ))]
-    const deps = [... new Set(data_dep.map((e) => e.N_DEPT ))]
+    const dechets_types = alasql(`SELECT DISTINCT TYP_COLLECTE FROM ?`, [data]);
 
-    const data_reg:any[] = dataGroupBy(data, ['L_REGION','L_TYP_REG_DECHET'], ['TONNAGE_T', 'VA_POPANNEE'], ['sum','sum']).map((e) => ({...e, RATIO_KG_HAB:(e.TONNAGE_T_sum*1000) / e.VA_POPANNEE_sum } ) );
-    const regs = [... new Set(data_reg.map((e) => e.L_REGION ))]
+    const deps = alasql(`SELECT DISTINCT N_DEPT FROM ?`, [data]);
+
+    const data_reg = alasql(`
+        SELECT L_REGION, TYP_COLLECTE, (sum(TONNAGE_T_HG) / sum(VA_POPANNEE))*1000 as RATIO_KG_HAB
+        FROM ? data
+        GROUP BY L_REGION, TYP_COLLECTE`,[data_dep]);
+
+    const regs = alasql(`SELECT DISTINCT L_REGION FROM ? `,[data]);
 
     const mapCategorieProps = (item:string) => {
         switch(item){
@@ -36,12 +45,15 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
             case "Verre":
                 return {color:'#008F29', sort:3}
             case "Ordures ménagères résiduelles":
+            case "Collecte OMR":
                 return {color:'#919191',sort:1}
             case "Emballages et papier":
             case "Emballages, journaux-magazines":
             case "Matériaux recyclables":
+            case "Collecte séparées":
                 return {color:'#FEFA54',sort:2}
             case "Encombrants":
+            case "Déchèterie":
             case "Déchets dangereux (y.c. DEEE)":
             case "Collectes séparées hors gravats":
                 return {color:'#FF8001',sort:5}
@@ -53,18 +65,18 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
         }
     }
 
-    const myseries:BarSeriesOption[] = dechets_types.map((e:string) => ( {
+    const myseries:BarSeriesOption[] = dechets_types.map((e:BaseRecord) => ( {
         type: 'bar', 
         stack:'total', 
-        name:e, 
+        name:e.TYP_COLLECTE,
         itemStyle : {
-            color:mapCategorieProps(e).color,
+            color:mapCategorieProps(e.TYP_COLLECTE).color,
         },
         emphasis: {
             focus: 'series'
         },
         tooltip: {
-            valueFormatter : (value) => ` ${(Number(value)).toFixed(1)} kg/hab`
+            valueFormatter : (value:string) => `${(Number(value)).toFixed(1)} kg/hab`
         },
         label: {
             show: true,
@@ -72,9 +84,9 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
         },
         data:
             [
-             ...[data_reg.find((dr) => dr.L_TYP_REG_DECHET === e)?.RATIO_KG_HAB], //Push region
+             ...[data_reg.find((dr:BaseRecord) => dr.TYP_COLLECTE === e.TYP_COLLECTE)?.RATIO_KG_HAB], //Push region
              ...[null], //Empty series between deps and reg
-             ...deps.map((d) => (data_dep.find((dd) => dd.L_TYP_REG_DECHET === e && dd.N_DEPT === d) ?? { RATIO_KG_HAB_sum: 0 }).RATIO_KG_HAB_sum), //DEP Data, 0 if undefined
+             ...deps.map((d:BaseRecord) => (data_dep.find((dd:BaseRecord) => dd.TYP_COLLECTE === e.TYP_COLLECTE && dd.N_DEPT === d.N_DEPT) ?? { RATIO_KG_HAB: 0 }).RATIO_KG_HAB), //DEP Data, 0 if undefined
             ]
         }
     ))
@@ -100,7 +112,7 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
         },
         yAxis: {
             type: 'category',
-            data: [...regs, '', ...deps],
+            data: [...regs.map((e:BaseRecord) => e.L_REGION), '', ...deps.map((e:BaseRecord) => e.N_DEPT)],
             axisLabel:{rotate:45}
         },
     }
