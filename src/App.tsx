@@ -1,9 +1,8 @@
 import { Refine } from "@refinedev/core";
-import { ThemedLayoutV2, notificationProvider, ErrorComponent, RefineThemes, ThemedSiderV2, ThemedTitleV2 } from "@refinedev/antd";
+import { ThemedLayoutV2, notificationProvider, RefineThemes } from "@refinedev/antd";
 import routerBindings, { DocumentTitleHandler, NavigateToResource, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
 import {dataProvider as dfDataProvider} from "./refine-datafair";
 import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
-import { AntdInferencer } from "@refinedev/inferencer/antd";
 
 import { ConfigProvider } from "antd";
 import "@refinedev/antd/dist/reset.css";
@@ -11,6 +10,7 @@ import "@refinedev/antd/dist/reset.css";
 import { AdemeView } from "./components/chiffre_ademe_view";
 import { ressources } from "./ressources"
 import { AppFooter, AppSider } from "./layout";
+import { ErrorComponent } from "./components/pages/error";
 
 const myTheme = {...RefineThemes.Orange, 
   token: {
