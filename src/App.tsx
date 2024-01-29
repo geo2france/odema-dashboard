@@ -10,7 +10,7 @@ import "@refinedev/antd/dist/reset.css";
 
 import { AdemeView } from "./components/chiffre_ademe_view";
 import { ressources } from "./ressources"
-import { AppFooter, AppTitle } from "./layout";
+import { AppFooter, AppSider } from "./layout";
 
 const myTheme = {...RefineThemes.Orange, 
   token: {
@@ -29,7 +29,7 @@ const App: React.FC = () => {
           routerProvider={routerBindings}
           dataProvider={{
               default:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets"),
-              datafair:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets")
+              ademe_opendata:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets")
             }}
           notificationProvider={notificationProvider}
           resources={ressources}
@@ -42,7 +42,7 @@ const App: React.FC = () => {
             <Route
               element={
                 <ThemedLayoutV2
-                  Sider={() => <ThemedSiderV2 Title={() => <AppTitle/> } />}
+                  Sider={() => <AppSider /> }
                   Footer={() => <AppFooter />}
                 >
                   <Outlet />
@@ -50,11 +50,8 @@ const App: React.FC = () => {
               }
             >
               <Route index element={<NavigateToResource resource="todos" />} />
-              <Route path="oma">
+              <Route path="DMA">
                 <Route index element={<AdemeView />} />
-                <Route path="show/:id" element={<AntdInferencer />} />
-                <Route path="edit/:id" element={<AntdInferencer />} />
-                <Route path="create" element={<AntdInferencer />} />
               </Route>
               <Route path="*" element={<ErrorComponent />} />
             </Route>

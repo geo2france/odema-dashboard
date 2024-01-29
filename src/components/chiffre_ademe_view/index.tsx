@@ -13,7 +13,8 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
     const cregion = 32
 
     const {data} = useList({
-            resource:"destination-oma",
+            resource:"sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement/lines",
+            dataProviderName:"ademe_opendata",
             pagination: {
                 pageSize: 150,
             },
@@ -53,7 +54,8 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
     `, [data.data]) : undefined
 
     const {data:data_performance} = useList({
-        resource:"collecte-dma",
+        resource:"sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte/lines",
+        dataProviderName:"ademe_opendata",
         pagination: {
             pageSize: 150,
         },
@@ -72,7 +74,8 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
     });
 
     const {data:data_chiffre_cle} = useList({
-        resource:"chiffres-cles-dma",
+        resource:"sinoe-indicateurs-chiffres-cles-dma-avec-gravats-2009-2017/lines",
+        dataProviderName:"ademe_opendata",
         pagination: {
             pageSize: 250,
         },
