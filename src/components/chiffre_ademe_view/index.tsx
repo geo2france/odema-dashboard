@@ -97,21 +97,21 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
             </Col>
 
             <Col xxl={24/2} md={24}>
-                <Card title="Destination des DMA">
+                <Card title="Destination des déchets">
                     {datasankey ? (<ChartSankeyDestinationDMA data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
                     : <span>Chargement..</span>}
                     <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement">Ademe</Link></Text> 
                 </Card>
             </Col>
             <Col xxl={24/2} md={24}>
-                <Card title="Performances de collecte OMA (hors déchetteries)">
+                <Card title="Performances de collecte">
                     {data_performance && data_chiffre_cle ? (<ChartCollectePerformance data={data_performance.data} data_territoire={data_chiffre_cle.data}/> )
                     : <span>Chargement..</span>}
                     <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/performances-collecte-oma-par-type-dechet-par-dept">Ademe</Link></Text> 
                 </Card>
             </Col>
             <Col xxl={24/2} md={24}>
-                <Card title="Chiffres-clés DMA">
+                <Card title="Ratio régionaux">
                     {data_chiffre_cle? <ChartRaceBareDMA data={data_chiffre_cle.data} highlight_region={cregion}/> : <span>Chargement</span>}
                     <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-avec-gravats-2009-2017">Ademe</Link></Text> 
                 </Card>
