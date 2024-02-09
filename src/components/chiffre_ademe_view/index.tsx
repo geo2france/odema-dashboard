@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
 import { Card, Col, Typography, Select, Row } from 'antd';
-const { Text, Link } = Typography;
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
+import { LoadingComponent } from "../loading_container";
+
 import alasql from "alasql";
+
+const { Text, Link } = Typography;
+
 
 export const AdemeView: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useState<number>(2021);
 
     const cregion = 32
 
-    const {data} = useList({
+    const {data, isFetching} = useList({
             resource:"sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement/lines",
             dataProviderName:"ademe_opendata",
             pagination: {
@@ -53,7 +57,7 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
         GROUP BY L_TYP_REG_DECHET, L_TYP_REG_SERVICE
     `, [data.data]) : undefined
 
-    const {data:data_performance} = useList({
+    const {data:data_performance, isFetching: isFetching_performance} = useList({
         resource:"sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte/lines",
         dataProviderName:"ademe_opendata",
         pagination: {
@@ -73,7 +77,7 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
         ]
     });
 
-    const {data:data_chiffre_cle} = useList({
+    const {data:data_chiffre_cle, isFetching:isFetching_chiffre_cle} = useList({
         resource:"sinoe-indicateurs-chiffres-cles-dma-avec-gravats-2009-2017/lines",
         dataProviderName:"ademe_opendata",
         pagination: {
@@ -101,22 +105,28 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
 
             <Col xxl={24/2} md={24}>
                 <Card title="Destination des déchets">
-                    {datasankey ? (<ChartSankeyDestinationDMA data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
-                    : <span>Chargement..</span>}
-                    <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement">Ademe</Link></Text> 
+                    <LoadingComponent isLoading={isFetching}>
+                        {datasankey ? (<ChartSankeyDestinationDMA data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
+                        : <span>Chargement..</span>}
+                        <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement">Ademe</Link></Text>
+                    </LoadingComponent>
                 </Card>
             </Col>
             <Col xxl={24/2} md={24}>
-                <Card title="Performances de collecte">
-                    {data_performance && data_chiffre_cle ? (<ChartCollectePerformance data={data_performance.data} data_territoire={data_chiffre_cle.data}/> )
-                    : <span>Chargement..</span>}
-                    <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/performances-collecte-oma-par-type-dechet-par-dept">Ademe</Link></Text> 
+                <Card title="Performances de collecte" >
+                    <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching_performance}>
+                        {data_performance && data_chiffre_cle ? (<ChartCollectePerformance data={data_performance.data} data_territoire={data_chiffre_cle.data}/> )
+                        : <span>Chargement..</span>}
+                        <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/performances-collecte-oma-par-type-dechet-par-dept">Ademe</Link></Text>
+                    </LoadingComponent>
                 </Card>
             </Col>
             <Col xxl={24/2} md={24}>
                 <Card title="Ratio régionaux">
-                    {data_chiffre_cle? <ChartRaceBareDMA data={data_chiffre_cle.data} highlight_region={cregion}/> : <span>Chargement</span>}
-                    <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-avec-gravats-2009-2017">Ademe</Link></Text> 
+                     <LoadingComponent isLoading={isFetching_chiffre_cle}>
+                        {data_chiffre_cle ? <ChartRaceBareDMA data={data_chiffre_cle.data} highlight_region={cregion}/> : <span>Chargement</span>}
+                        <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-avec-gravats-2009-2017">Ademe</Link></Text>
+                    </LoadingComponent>
                 </Card>
             </Col>
         </Row>
