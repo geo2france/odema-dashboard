@@ -5,17 +5,25 @@ import { EChartsOption } from "echarts";
 import alasql from "alasql";
 
 interface ChartRaceBareDMAProps {
-    data: any[] | BaseRecord[]; 
+    data: any[] | BaseRecord[];
+    data_territoire: any[] | BaseRecord[];
     highlight_region : number;
   }
 
-export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, highlight_region} ) => {
-
-    const chart_data = alasql(`SELECT L_REGION, C_REGION, sum(TONNAGE_DMA) as TONNAGE_DMA_sum, SUM(VA_POPANNEE) as VA_POPANNEE_sum
-                        FROM ?
-                        GROUP BY L_REGION, C_REGION
-                        ORDER BY sum(TONNAGE_DMA)/SUM(VA_POPANNEE)`, [data])
-
+export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_territoire, highlight_region} ) => {
+    console.log(data)
+   
+    const chart_data = alasql(`
+                        SELECT a.L_REGION, a.C_REGION,  sum(a.TONNAGE_DMA) as TONNAGE_DMA, sum(a.VA_POPANNEE) AS VA_POPANNEE
+                        FROM (
+                            SELECT L_REGION, C_REGION, N_DEPT, sum(TONNAGE_T_HG) as TONNAGE_DMA, max(data_territoire.VA_POPANNEE) as VA_POPANNEE
+                            FROM ? data
+                            JOIN ? as data_territoire ON data_territoire.N_DEPT = data.N_DEPT AND data_territoire.ANNEE = data.ANNEE
+                            GROUP BY L_REGION, C_REGION, N_DEPT) as a
+                        GROUP BY a.L_REGION, a.C_REGION
+                        ORDER BY sum(a.TONNAGE_DMA) / sum(a.VA_POPANNEE)
+                        `, [data, data_territoire])
+           
     const option:EChartsOption = {
         yAxis: {
             type: 'category',
@@ -44,7 +52,7 @@ export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, highli
                     focus:'self'
                 },
                 data:chart_data.map((e:BaseRecord) => ({
-                  value : (e['TONNAGE_DMA_sum']/e['VA_POPANNEE_sum'])*1e3,
+                  value : (e['TONNAGE_DMA']/e['VA_POPANNEE'])*1e3,
                   itemStyle: {
                     color: e['C_REGION'] == highlight_region ? '#a90000' : undefined
                   }

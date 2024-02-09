@@ -7,13 +7,15 @@ import alasql from "alasql";
 interface ChartCollectePerformanceProps {
     data: any[] | BaseRecord[]; // Spécifier les champs au niveau de la ressource
     data_territoire: any[] | BaseRecord[]; // Le endpoint précédent ne fournie pas la POPANNEE
+    c_region?:string
   }
 
-export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> = ( {data, data_territoire} ) => {
+export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> = ( {data, data_territoire, c_region='32'} ) => {
 
     const data_pie = alasql(`SELECT TYP_COLLECTE, (sum(TONNAGE_T_HG) / sum(data_territoire.VA_POPANNEE))*1000 AS RATIO_KG_HAB 
                         FROM ? data 
                         JOIN ? as data_territoire ON data_territoire.N_DEPT = data.N_DEPT AND data_territoire.ANNEE = data.ANNEE
+                        WHERE C_REGION='${c_region}'
                         GROUP BY TYP_COLLECTE`, [data, data_territoire])
 
     const mapCategorieProps = (item:string) => {

@@ -61,14 +61,9 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
         resource:"sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte/lines",
         dataProviderName:"ademe_opendata",
         pagination: {
-            pageSize: 150,
+            pageSize: 600,
         },
         filters:[
-            {
-                field:"C_REGION",
-                operator:"eq",
-                value:cregion
-            },
             {
                 field:"ANNEE",
                 operator:"eq",
@@ -123,9 +118,9 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
             </Col>
             <Col xxl={24/2} md={24}>
                 <Card title="Ratio régionaux">
-                     <LoadingComponent isLoading={isFetching_chiffre_cle}>
-                        {data_chiffre_cle ? <ChartRaceBareDMA data={data_chiffre_cle.data} highlight_region={cregion}/> : <span>Chargement</span>}
-                        <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-avec-gravats-2009-2017">Ademe</Link></Text>
+                     <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching_performance}>
+                        {data_performance && data_chiffre_cle ? <ChartRaceBareDMA data={data_performance.data} data_territoire={data_chiffre_cle.data} highlight_region={cregion}/> : <span>Chargement</span>}
+                        <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017">Ademe</Link></Text>
                     </LoadingComponent>
                 </Card>
             </Col>
