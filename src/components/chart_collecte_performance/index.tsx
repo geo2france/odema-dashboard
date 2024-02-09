@@ -1,31 +1,20 @@
 import React, { useContext } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { BaseRecord } from "@refinedev/core";
-import type {EChartsOption, BarSeriesOption} from "echarts"
+import type {EChartsOption, BarSeriesOption, PieSeriesOption} from "echarts"
 import alasql from "alasql";
 
 interface ChartCollectePerformanceProps {
     data: any[] | BaseRecord[]; // Spécifier les champs au niveau de la ressource
-    data_territoire: any[] | BaseRecord[];
+    data_territoire: any[] | BaseRecord[]; // Le endpoint précédent ne fournie pas la POPANNEE
   }
 
 export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> = ( {data, data_territoire} ) => {
 
-    const data_dep = alasql(`
-            SELECT data.*, data_territoire.VA_POPANNEE, (data.TONNAGE_T_HG/data_territoire.VA_POPANNEE)*1000 as RATIO_KG_HAB
-            FROM ? as data
-            JOIN ? as data_territoire ON data_territoire.N_DEPT = data.N_DEPT`, [data, data_territoire]);
-
-    const dechets_types = alasql(`SELECT DISTINCT TYP_COLLECTE FROM ?`, [data]);
-
-    const deps = alasql(`SELECT DISTINCT N_DEPT FROM ?`, [data]);
-
-    const data_reg = alasql(`
-        SELECT L_REGION, TYP_COLLECTE, (sum(TONNAGE_T_HG) / sum(VA_POPANNEE))*1000 as RATIO_KG_HAB
-        FROM ? data
-        GROUP BY L_REGION, TYP_COLLECTE`,[data_dep]);
-
-    const regs = alasql(`SELECT DISTINCT L_REGION FROM ? `,[data]);
+    const data_pie = alasql(`SELECT TYP_COLLECTE, (sum(TONNAGE_T_HG) / sum(data_territoire.VA_POPANNEE))*1000 AS RATIO_KG_HAB 
+                        FROM ? data 
+                        JOIN ? as data_territoire ON data_territoire.N_DEPT = data.N_DEPT AND data_territoire.ANNEE = data.ANNEE
+                        GROUP BY TYP_COLLECTE`, [data, data_territoire])
 
     const mapCategorieProps = (item:string) => {
         switch(item){
@@ -65,56 +54,47 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
         }
     }
 
-    const myseries:BarSeriesOption[] = dechets_types.map((e:BaseRecord) => ( {
-        type: 'bar', 
-        stack:'total', 
-        name:e.TYP_COLLECTE,
-        itemStyle : {
-            color:mapCategorieProps(e.TYP_COLLECTE).color,
-        },
-        emphasis: {
-            focus: 'series'
-        },
-        tooltip: {
-            valueFormatter : (value:string) => `${(Number(value)).toFixed(1)} kg/hab`
+    const myserie:PieSeriesOption = {
+        type : 'pie',
+        data : data_pie.map((e:BaseRecord) => ({name: e.TYP_COLLECTE, value: e.RATIO_KG_HAB, itemStyle:{color:mapCategorieProps(e.TYP_COLLECTE).color}})),
+        radius: ['40%', '70%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+          borderRadius: 10,
+          borderColor: '#fff',
+          borderWidth: 2
         },
         label: {
             show: true,
-            formatter : (p:any) => (p.value >= 10 ? `${p.value.toFixed(1).toString()}` : ''),
+            formatter: (params) => (`${Math.round(Number(params.percent))}%`)        
         },
-        data:
-            [
-             ...[data_reg.find((dr:BaseRecord) => dr.TYP_COLLECTE === e.TYP_COLLECTE)?.RATIO_KG_HAB], //Push region
-             ...[null], //Empty series between deps and reg
-             ...deps.map((d:BaseRecord) => (data_dep.find((dd:BaseRecord) => dd.TYP_COLLECTE === e.TYP_COLLECTE && dd.N_DEPT === d.N_DEPT) ?? { RATIO_KG_HAB: 0 }).RATIO_KG_HAB), //DEP Data, 0 if undefined
-            ]
+        tooltip:{
+            show:true,
+            valueFormatter: (value) => (`${Math.round(Number(value))} kg/hab` )
         }
-    ))
+    }
+
 
     const option:EChartsOption = {
-        series:myseries,
-        xAxis: {
-            type: 'value',
-            axisLabel:{
-                formatter:'{value} kg/hab'
-            }
-        },
+        series:[myserie],
         grid:{
             left:'95px',
         },
         legend: {top:'top', show:true},
         tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              // Use axis to trigger tooltip
-              type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+            trigger: 'item'
+        },
+        graphic: [{
+            type: 'text',
+            left: 'center',
+            top: 'center',
+            style: {
+                text: `${Math.round(data_pie.reduce((acc:number, obj:BaseRecord) => acc + obj.RATIO_KG_HAB, 0))} kg/hab`,
+                fill: '#666',
+                fontSize: 16,
+                fontWeight: 'bold'
             }
-        },
-        yAxis: {
-            type: 'category',
-            data: [...regs.map((e:BaseRecord) => e.L_REGION), '', ...deps.map((e:BaseRecord) => e.N_DEPT)],
-            axisLabel:{rotate:45}
-        },
+        }]
     }
 
     return(
