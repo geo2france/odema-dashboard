@@ -98,7 +98,7 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
                 </Card>
             </Col>
 
-            <Col xxl={24/2} md={24}>
+            <Col xl={24/2} xs={24}>
                 <Card title="Destination des déchets">
                     <LoadingComponent isLoading={isFetching}>
                         {datasankey ? (<ChartSankeyDestinationDMA data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
@@ -107,7 +107,7 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
                     </LoadingComponent>
                 </Card>
             </Col>
-            <Col xxl={24/2} md={24}>
+            <Col xl={24/2} xs={24}>
                 <Card title="Performances de collecte" >
                     <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching_performance}>
                         {data_performance && data_chiffre_cle ? (<ChartCollectePerformance data={data_performance.data} data_territoire={data_chiffre_cle.data}/> )
@@ -116,7 +116,7 @@ export const AdemeView: React.FC<IResourceComponentsProps> = () => {
                     </LoadingComponent>
                 </Card>
             </Col>
-            <Col xxl={24/2} md={24}>
+            <Col xl={24/2} xs={24}>
                 <Card title="Ratio régionaux">
                      <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching_performance}>
                         {data_performance && data_chiffre_cle ? <ChartRaceBareDMA data={data_performance.data} data_territoire={data_chiffre_cle.data} highlight_region={cregion}/> : <span>Chargement</span>}
