@@ -11,7 +11,7 @@ import alasql from "alasql";
 const { Text, Link } = Typography;
 
 
-export const AdemeView: React.FC<IResourceComponentsProps> = () => {
+export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useState<number>(2021);
 
     const cregion = 32

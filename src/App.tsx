@@ -7,7 +7,7 @@ import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import "@refinedev/antd/dist/reset.css";
 
-import { AdemeView } from "./components/chiffre_ademe_view";
+import { DmaComponent } from "./components/pages/dma";
 import { ressources } from "./ressources"
 import { AppFooter, AppSider } from "./layout";
 import { ErrorComponent } from "./components/pages/error";
@@ -51,7 +51,7 @@ const App: React.FC = () => {
             >
               <Route index element={<NavigateToResource resource="todos" />} />
               <Route path="DMA">
-                <Route index element={<AdemeView />} />
+                <Route index element={<DmaComponent />} />
               </Route>
               <Route path="*" element={<ErrorComponent />} />
             </Route>
