@@ -40,10 +40,16 @@ export const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ( {
     }
 
     const data_sunburst = alasql(`
-        SELECT d.categorie as name, d.categorie as label, ARRAY(@{"name":d.L_TYP_REG_SERVICE,"value":d.TONNAGE_DMA, "label":''}) as children
+        SELECT 
+            d.categorie as name, 
+            d.categorie as label, 
+            SUM(d.TONNAGE_DMA) as val,
+            ARRAY(@{"name":d.L_TYP_REG_SERVICE,"value":d.TONNAGE_DMA, "label":''}) as children
         FROM ? d
-        GROUP BY d.categorie, d.categorie
-    `, [data_pie.map((e:BaseRecord) => ({categorie:traitement_cat(e.L_TYP_REG_SERVICE)?.categorie, ...e}))] )
+        GROUP BY d.categorie, d.categorie, d.categorie
+    `, [data_pie.map((e:BaseRecord) => ({categorie:traitement_cat(e.L_TYP_REG_SERVICE)?.categorie, ...e}))] ).map((e) => ({...e, value: e.val, children: e.name === 'Recyclage' ? e.children : []}))
+
+    console.log(data_sunburst)
 
     const myserie:SunburstSeriesOption = {
         type : 'sunburst',
