@@ -24,52 +24,61 @@ export const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ( {
     GROUP BY t.C_REGION, t.ANNEE, t.L_TYP_REG_SERVICE, a.pop_region
     `, [data_territoire, data]).map((e:BaseRecord) => ({ratio_kg_hab:(e.TONNAGE_DMA*1000) / e.pop_region, ...e}))
     
-    const traitement_cat = (item:string) => {
+    const mapCategorieProps = (item:string) => {
         switch(item){
-            case "Incinération avec récupération d'énergie":
-                return {categorie : "Valorisation énergétique"}
             case "Stockage":
+            case "Stockage pour inertes":
             case "Incinération sans récupération d'énergie":
-                return {categorie : "Elimination"}
+                return {color:"#ED1C24", sort:1}
+            case "Incinération avec récupération d'énergie":
+                return {color:'#FFB800', sort:2}
             case "Valorisation matière":
             case "Valorisation organique":
-                return {categorie : "Recyclage"}
+                return {color:'#ABCB54', sort:3}
+            case "Biodéchets":
+            case "Déchets verts et biodéchets":
+            case "Déchets de produits alimentaires":
+                return {color:'#7A4443', sort:4}
+            case "Verre":
+                return {color:'#008F29', sort:3}
+            case "Ordures ménagères résiduelles":
+            case "Collecte OMR":
+                return {color:'#919191',sort:1}
+            case "Emballages et papier":
+            case "Emballages, journaux-magazines":
+            case "Matériaux recyclables":
+            case "Collecte séparées":
+                return {color:'#FEFA54',sort:2}
+            case "Encombrants":
+            case "Déchèterie":
+            case "Déchets dangereux (y.c. DEEE)":
+            case "Collectes séparées hors gravats":
+                return {color:'#FF8001',sort:5}
             case "Non précisé":
-                return {categorie : "Inconnu"}
+            case "Autres":
+                return {color:'#5D5D5D', sort:5}
+            default :
+                return {color:'#0f0', sort:99}
         }
     }
+   
 
-    const data_sunburst = alasql(`
-        SELECT 
-            d.categorie as name, 
-            d.categorie as label, 
-            SUM(d.TONNAGE_DMA) as val,
-            ARRAY(@{"name":d.L_TYP_REG_SERVICE,"value":d.TONNAGE_DMA, "label":''}) as children
-        FROM ? d
-        GROUP BY d.categorie, d.categorie, d.categorie
-    `, [data_pie.map((e:BaseRecord) => ({categorie:traitement_cat(e.L_TYP_REG_SERVICE)?.categorie, ...e}))] ).map((e) => ({...e, value: e.val, children: e.name === 'Recyclage' ? e.children : []}))
-
-    console.log(data_sunburst)
-
-    const myserie:SunburstSeriesOption = {
-        type : 'sunburst',
-        data : data_sunburst,
-        radius: ['50%', '100%'],
+    const myserie:PieSeriesOption = {
+        type : 'pie',
+        data : data_pie.map((e:BaseRecord) => ({name:e.L_TYP_REG_SERVICE, value:(e.TONNAGE_DMA*1000) / e.pop_region, itemStyle:{color:mapCategorieProps(e.L_TYP_REG_SERVICE).color}  })),
+        radius: ['40%', '70%'],
         itemStyle: {
           borderRadius: 10,
           borderColor: '#fff',
           borderWidth: 2
         },
         label: {
-            show: true, rotate: 'tangential',
-           formatter: (params) => {
-                const ancestor = params.treePathInfo[0]
-                return    `${params.name} - ${Math.round((Number(params.value) / Number(ancestor.value))*100)} %`
-           }      
+            show: true,
+            formatter: (params) => (`${Math.round(Number(params.value))} kg/hab`)        
         },
         tooltip:{
             show:true,
-            valueFormatter: (value) => (`${Math.round(Number(value))} T` )
+            valueFormatter: (value) => (`${Number(value).toFixed(2)} kg/hab` )
         }
     }
 
