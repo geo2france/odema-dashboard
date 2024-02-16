@@ -10,9 +10,7 @@ interface ChartRaceBareDMAProps {
     highlight_region : number;
   }
 
-export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_territoire, highlight_region} ) => {
-    console.log(data)
-   
+export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_territoire, highlight_region} ) => {  
     const chart_data = alasql(`
                         SELECT a.L_REGION, a.C_REGION,  sum(a.TONNAGE_DMA) as TONNAGE_DMA, sum(a.VA_POPANNEE) AS VA_POPANNEE
                         FROM (
