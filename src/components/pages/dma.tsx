@@ -7,6 +7,7 @@ import { ChartRaceBareDMA } from "../chart_racebar_dma";
 import { LoadingComponent } from "../loading_container";
 
 import alasql from "alasql";
+import { ChartPieTypeTraitement } from "../chart_pie_type_traitement";
 
 const { Text, Link } = Typography;
 
@@ -102,6 +103,15 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
                 <Card title="Destination des déchets">
                     <LoadingComponent isLoading={isFetching}>
                         {datasankey ? (<ChartSankeyDestinationDMA data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
+                        : <span>Chargement..</span>}
+                        <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement">Ademe</Link></Text>
+                    </LoadingComponent>
+                </Card>
+            </Col>
+            <Col xl={24/2} xs={24}>
+                <Card title="Types de traitement" >
+                    <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching}>
+                        {data && data_chiffre_cle ? (<ChartPieTypeTraitement data={data.data} data_territoire={data_chiffre_cle.data}/> )
                         : <span>Chargement..</span>}
                         <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement">Ademe</Link></Text>
                     </LoadingComponent>
