@@ -11,7 +11,7 @@ interface ChartPieTypeTraitementProps {
   }
 
 export const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ( {data, data_territoire, c_region='32'} ) => {
-
+    //TODO : Ajouter un onglet avec l'évolution des type de traitement par an (avec surbrillance de l'année en cours)
     const data_pie = alasql(`SELECT 
     t.C_REGION, t.ANNEE, t.L_TYP_REG_SERVICE, sum(t.TONNAGE_DMA) as TONNAGE_DMA, a.pop_region
     FROM (
@@ -24,7 +24,7 @@ export const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ( {
     GROUP BY t.C_REGION, t.ANNEE, t.L_TYP_REG_SERVICE, a.pop_region
     `, [data_territoire, data]).map((e:BaseRecord) => ({ratio_kg_hab:(e.TONNAGE_DMA*1000) / e.pop_region, ...e}))
     
-    const mapCategorieProps = (item:string) => {
+    const mapCategorieProps = (item:string) => { // TODO : A factoriser avec les autres charts
         switch(item){
             case "Stockage":
             case "Stockage pour inertes":
