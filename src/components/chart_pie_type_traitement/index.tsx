@@ -41,7 +41,7 @@ export const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ( {
         },
         label: {
             show: true,
-            formatter: (params) => (`${Math.round(Number(params.value))} kg/hab`)        
+            formatter: (params) => (`${Number(params.percent).toFixed(0)} %`)        
         },
         tooltip:{
             show:true,
