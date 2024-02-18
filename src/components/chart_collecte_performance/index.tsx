@@ -3,6 +3,7 @@ import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require(
 import { BaseRecord } from "@refinedev/core";
 import type {EChartsOption, BarSeriesOption, PieSeriesOption} from "echarts"
 import alasql from "alasql";
+import { DMAmapCategorieProps } from "../../utils";
 
 interface ChartCollectePerformanceProps {
     data: any[] | BaseRecord[]; // Spécifier les champs au niveau de la ressource
@@ -18,47 +19,11 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
                         WHERE C_REGION='${c_region}'
                         GROUP BY TYP_COLLECTE`, [data, data_territoire])
 
-    const mapCategorieProps = (item:string) => {
-        switch(item){
-            case "Stockage":
-            case "Stockage pour inertes":
-            case "Incinération sans récupération d'énergie":
-                return {color:"#ED1C24", sort:1}
-            case "Incinération avec récupération d'énergie":
-                return {color:'#FFB800', sort:2}
-            case "Valorisation matière":
-            case "Valorisation organique":
-                return {color:'#ABCB54', sort:3}
-            case "Biodéchets":
-            case "Déchets verts et biodéchets":
-            case "Déchets de produits alimentaires":
-                return {color:'#7A4443', sort:4}
-            case "Verre":
-                return {color:'#008F29', sort:3}
-            case "Ordures ménagères résiduelles":
-            case "Collecte OMR":
-                return {color:'#919191',sort:1}
-            case "Emballages et papier":
-            case "Emballages, journaux-magazines":
-            case "Matériaux recyclables":
-            case "Collecte séparées":
-                return {color:'#FEFA54',sort:2}
-            case "Encombrants":
-            case "Déchèterie":
-            case "Déchets dangereux (y.c. DEEE)":
-            case "Collectes séparées hors gravats":
-                return {color:'#FF8001',sort:5}
-            case "Non précisé":
-            case "Autres":
-                return {color:'#5D5D5D', sort:5}
-            default :
-                return {color:'#0f0', sort:99}
-        }
-    }
+
 
     const myserie:PieSeriesOption = {
         type : 'pie',
-        data : data_pie.map((e:BaseRecord) => ({name: e.TYP_COLLECTE, value: e.RATIO_KG_HAB, itemStyle:{color:mapCategorieProps(e.TYP_COLLECTE).color}})),
+        data : data_pie.map((e:BaseRecord) => ({name: e.TYP_COLLECTE, value: e.RATIO_KG_HAB, itemStyle:{color:DMAmapCategorieProps(e.TYP_COLLECTE).color}})),
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,
         itemStyle: {
