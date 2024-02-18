@@ -21,8 +21,9 @@ export const DMAmapCategorieProps = (item:string) => {
         case "Incinération avec récupération d'énergie":
             return {color:'#FFB800', sort:2}
         case "Valorisation matière":
-        case "Valorisation organique":
             return {color:'#ABCB54', sort:3}
+        case "Valorisation organique":
+            return {color:'#6C8033', sort:4}
         case "Biodéchets":
         case "Déchets verts et biodéchets":
         case "Déchets de produits alimentaires":
