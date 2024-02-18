@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
 import { Card, Col, Typography, Select, Row } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
@@ -8,14 +8,17 @@ import { LoadingComponent } from "../loading_container";
 
 import alasql from "alasql";
 import { ChartPieTypeTraitement } from "../chart_pie_type_traitement";
+import { useSearchParamsState } from "../../utils";
 
 const { Text, Link } = Typography;
 
 
 export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
-    const [year, setYear] = useState<number>(2021);
+    const [year, setYear] = useSearchParamsState('year','2021')
 
-    const cregion = 32
+    const [cregion, _setcregion] = useSearchParamsState('region','32')
+
+    //const cregion = 32
 
     const {data, isFetching} = useList({
             resource:"sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement/lines",
@@ -93,7 +96,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
         <Row gutter={[16,16]}>
             <Col span={24}>
             <Card>
-                Année : <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} 
+                Année : <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} value={year}
                     options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
                 />
                 </Card>
@@ -111,7 +114,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             <Col xl={24/2} xs={24}>
                 <Card title="Types de traitement" >
                     <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching}>
-                        {data && data_chiffre_cle ? (<ChartPieTypeTraitement data={data.data} data_territoire={data_chiffre_cle.data}/> )
+                        {data && data_chiffre_cle ? (<ChartPieTypeTraitement data={data.data} c_region={cregion} data_territoire={data_chiffre_cle.data}/> )
                         : <span>Chargement..</span>}
                         <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement">Ademe</Link></Text>
                     </LoadingComponent>

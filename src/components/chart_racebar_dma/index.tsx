@@ -7,7 +7,7 @@ import alasql from "alasql";
 interface ChartRaceBareDMAProps {
     data: any[] | BaseRecord[];
     data_territoire: any[] | BaseRecord[];
-    highlight_region : number;
+    highlight_region : string;
   }
 
 export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_territoire, highlight_region} ) => {  

@@ -1,3 +1,6 @@
+import { useSearchParams } from "react-router-dom";
+
+
 // IA Generated function
 export const wrappe = (chaine: string, maxLength: number): string => {
     return chaine.split(' ').reduce((result: string[], word: string) => {
@@ -49,4 +52,31 @@ export const DMAmapCategorieProps = (item:string) => {
         default :
             return {color:'#0f0', sort:99}
     }
+}
+
+/* From https://blog.logrocket.com/use-state-url-persist-state-usesearchparams/ */
+export function useSearchParamsState(
+    searchParamName: string,
+    defaultValue: string
+): readonly [
+    searchParamsState: string,
+    setSearchParamsState: (newState: string) => void
+] {
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const acquiredSearchParam = searchParams.get(searchParamName);
+    const searchParamsState = acquiredSearchParam ?? defaultValue;
+
+    const setSearchParamsState = (newState: string) => {
+        const next = Object.assign(
+            {},
+            [...searchParams.entries()].reduce(
+                (o, [key, value]) => ({ ...o, [key]: value }),
+                {}
+            ),
+            { [searchParamName]: newState }
+        );
+        setSearchParams(next);
+    };
+    return [searchParamsState, setSearchParamsState];
 }
