@@ -40,7 +40,7 @@ export const AppFooter: React.FC = () => {
             </a>
             <Divider type="vertical" style={{ height: "70px", backgroundColor: grey[2] }} />
             { logos.map((l) => 
-              <a href={l.url}> 
+              <a href={l.url} key={l.name}> 
                 <img style={style_img}
                   src={l.src} alt={l.name}/>
                 </a>
