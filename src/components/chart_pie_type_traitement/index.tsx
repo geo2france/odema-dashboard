@@ -65,7 +65,7 @@ export const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ( {
 
     const myserie:PieSeriesOption = {
         type : 'pie',
-        data : data_pie.map((e:BaseRecord) => ({name:e.L_TYP_REG_SERVICE, value:(e.TONNAGE_DMA*1000) / e.pop_region, itemStyle:{color:mapCategorieProps(e.L_TYP_REG_SERVICE).color}  })).sort((a,b) => mapCategorieProps(a.name).sort - mapCategorieProps(b.name).sort ),
+        data : data_pie.map((e:BaseRecord) => ({name:e.L_TYP_REG_SERVICE, value:(e.TONNAGE_DMA*1000) / e.pop_region, itemStyle:{color:mapCategorieProps(e.L_TYP_REG_SERVICE).color}  })).sort((a:BaseRecord,b:BaseRecord) => mapCategorieProps(a.name).sort - mapCategorieProps(b.name).sort ),
         radius: ['40%', '70%'],
         startAngle:-90,
         clockwise:true,
