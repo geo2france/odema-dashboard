@@ -3,16 +3,36 @@ import alasql from "alasql";
 import { EChartsOption, PieSeriesOption, SunburstSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { DMAmapCategorieProps } from "../../utils";
+import { useEffect, useRef } from "react";
 
 
 interface ChartPieTypeTraitementProps {
     data: any[] | BaseRecord[]; // Spécifier les champs au niveau de la ressource
     data_territoire: any[] | BaseRecord[]; // Le endpoint précédent ne fournie pas la POPANNEE
-    c_region?:string
+    c_region?:string;
+    onFocus?:any;
+    focus_item?:string;
   }
 
-export const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ( {data, data_territoire, c_region='32'} ) => {
+const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ({data, data_territoire, onFocus, focus_item, c_region='32'} )  => {
+    const chartRef = useRef<any>()
+    
+    useEffect(() => {
+        const mychart = chartRef.current.getEchartsInstance()
+        mychart.on('mouseover', (e:any) => onFocus(e.name));
+        mychart.on('mouseout', (e:any) => onFocus(null));
+    },[])
+
+    if(chartRef.current) {
+        const mychart = chartRef.current.getEchartsInstance()
+        mychart.dispatchAction({type: 'downplay'})
+        if (focus_item) {
+            mychart.dispatchAction({type: 'highlight', name:focus_item})
+        }
+    }
+
     //TODO : Ajouter un onglet avec l'évolution des type de traitement par an (avec surbrillance de l'année en cours)
+    //TODO : Ajouter des chiffres clé (Taux de recylage : valo matière + valo organique)
     const data_pie = alasql(`SELECT 
     t.C_REGION, t.ANNEE, t.L_TYP_REG_SERVICE, sum(t.TONNAGE_DMA) as TONNAGE_DMA, a.pop_region
     FROM (
@@ -39,6 +59,9 @@ export const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ( {
           borderColor: '#fff',
           borderWidth: 2
         },
+        emphasis:{
+            focus:'series'
+        },
         label: {
             show: true,
             formatter: (params) => (`${Number(params.percent).toFixed(0)} %`)        
@@ -61,8 +84,10 @@ export const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ( {
         }
     }
 
+
     return (
-        <ReactECharts
-        option={option} style={{ height: "450px"}}/>
+        <ReactECharts option={option} ref={chartRef} style={{ height: "450px"}} />
     )
 }
+
+export default ChartPieTypeTraitement

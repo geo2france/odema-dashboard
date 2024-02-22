@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
 import { Card, Col, Typography, Select, Row } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
@@ -7,7 +7,7 @@ import { ChartRaceBareDMA } from "../chart_racebar_dma";
 import { LoadingComponent } from "../loading_container";
 
 import alasql from "alasql";
-import { ChartPieTypeTraitement } from "../chart_pie_type_traitement";
+import ChartPieTypeTraitement from "../chart_pie_type_traitement";
 import { useSearchParamsState } from "../../utils";
 
 const { Text, Link } = Typography;
@@ -17,6 +17,8 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
 
     const [cregion, _setcregion] = useSearchParamsState('region','32')
+
+    const [focus, setFocus] = useState<string | undefined>(undefined) 
 
     //const cregion = 32
 
@@ -91,6 +93,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
         ]
     })
 
+
     return (
         <>
         <Row gutter={[16,16]}>
@@ -98,14 +101,14 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             <Card>
                 Année : <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} value={year}
                     options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
-                />
+                />     
                 </Card>
             </Col>
 
             <Col xl={24/2} xs={24}>
                 <Card title="Destination des déchets">
                     <LoadingComponent isLoading={isFetching}>
-                        {datasankey ? (<ChartSankeyDestinationDMA data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
+                        {datasankey ? (<ChartSankeyDestinationDMA onFocus={setFocus} focus_item={focus} data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
                         : <span>Chargement..</span>}
                         <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement">Ademe</Link></Text>
                     </LoadingComponent>
@@ -114,7 +117,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             <Col xl={24/2} xs={24}>
                 <Card title="Types de traitement" >
                     <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching}>
-                        {data && data_chiffre_cle ? (<ChartPieTypeTraitement data={data.data} c_region={cregion} data_territoire={data_chiffre_cle.data}/> )
+                        {data && data_chiffre_cle ? (<ChartPieTypeTraitement onFocus={setFocus} focus_item={focus} data={data.data} c_region={cregion} data_territoire={data_chiffre_cle.data}/> )
                         : <span>Chargement..</span>}
                         <Text type="secondary">Source : <Link href="https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement">Ademe</Link></Text>
                     </LoadingComponent>
