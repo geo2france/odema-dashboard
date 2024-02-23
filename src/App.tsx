@@ -11,6 +11,7 @@ import { DmaComponent } from "./components/pages/dma";
 import { ressources } from "./ressources"
 import { AppFooter, AppSider } from "./layout";
 import { ErrorComponent } from "./components/pages/error";
+import { RepPage } from "./components/pages/rep";
 
 const myTheme = {...RefineThemes.Orange, 
   token: {
@@ -52,6 +53,9 @@ const App: React.FC = () => {
               <Route index element={<NavigateToResource resource="todos" />} />
               <Route path="DMA">
                 <Route index element={<DmaComponent />} />
+              </Route>
+              <Route path="REP">
+                <Route index element={<RepPage />} />
               </Route>
               <Route path="*" element={<ErrorComponent />} />
             </Route>
