@@ -3,6 +3,7 @@ import { Row, Col, Card, Alert, List } from "antd";
 import { useSearchParamsState } from "../../utils";
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte";
 import { LoadingComponent } from "../loading_container";
+import { Attribution } from "../attributions";
 
 export const RepPage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
@@ -212,6 +213,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                         d3e
                         <LoadingComponent isLoading={collecte_d3e.isFetching}>
                             {collecte_d3e.data ? <ChartPieRepCollecte filiere='d3e' data={collecte_d3e.data.data} /> : <b>...</b>}
+                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
                 </Col>
@@ -220,6 +222,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                         pa
                         <LoadingComponent isLoading={collecte_pa.isFetching}>
                             {collecte_pa.data ? <ChartPieRepCollecte filiere='pa' data={collecte_pa.data.data} /> : <b>...</b>}
+                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pa-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
                 </Col>
@@ -228,6 +231,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                         pchim
                         <LoadingComponent isLoading={collecte_pchim.isFetching}>
                             {collecte_pchim.data ? <ChartPieRepCollecte filiere='pchim' data={collecte_pchim.data.data} /> : <b>...</b>}
+                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pchim-tonnages-collectes-2021' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
                 </Col>
@@ -236,6 +240,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                         tlc
                         <LoadingComponent isLoading={collecte_tlc.isFetching}>
                             {collecte_tlc.data ? <ChartPieRepCollecte filiere='tlc' data={collecte_tlc.data.data} /> : <b>...</b>}
+                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-tlc-tonnages-collectes-en-2021' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
                 </Col>
@@ -244,6 +249,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                         mnu
                         <LoadingComponent isLoading={collecte_mnu.isFetching}>
                             {collecte_mnu.data ? <ChartPieRepCollecte filiere='mnu' data={collecte_mnu.data.data} /> : <b>...</b>}
+                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-mnu-tonnages-collectes-en-2021' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
                 </Col>
@@ -252,6 +258,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                         disp med
                         <LoadingComponent isLoading={collecte_disp_med.isFetching}>
                             {collecte_disp_med.data ? <ChartPieRepCollecte filiere='disp_med' data={collecte_disp_med.data.data} /> : <b>...</b>}
+                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-disp-med-tonnages-collectes-en-2021' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
                 </Col>
@@ -260,6 +267,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                         pu
                         <LoadingComponent isLoading={collecte_pu.isFetching}>
                             {collecte_pu.data ? <ChartPieRepCollecte filiere='pu' data={collecte_pu.data.data} /> : <b>...</b>}
+                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pu-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
                 </Col>
@@ -268,6 +276,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                         vhu
                         <LoadingComponent isLoading={collecte_vhu.isFetching}>
                             {collecte_vhu.data ? <ChartPieRepCollecte filiere='vhu' data={collecte_vhu.data.data} /> : <b>...</b>}
+                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-vhu-tonnages-collectes-cvhu-en-2018' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
                 </Col>
