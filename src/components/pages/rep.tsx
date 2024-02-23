@@ -147,6 +147,52 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
         }
     )
 
+    const collecte_pu = useList(
+        {
+            resource: "rep-pu-tonnages-collectes-en-2018/lines",
+            dataProviderName: "ademe_opendata",
+            pagination: {
+                pageSize: 150,
+            },
+            filters: [
+                {
+                    field: "Code_Région",
+                    operator: "eq",
+                    value: cregion
+                },
+                {
+                    field: "Année_des_données",
+                    operator: "eq",
+                    value: year
+                },
+
+            ]
+        }
+    )
+
+    const collecte_vhu = useList(
+        {
+            resource: "rep-vhu-tonnages-collectes-cvhu-en-2018/lines",
+            dataProviderName: "ademe_opendata",
+            pagination: {
+                pageSize: 150,
+            },
+            filters: [
+                {
+                    field: "Code_Région",
+                    operator: "eq",
+                    value: cregion
+                },
+                {
+                    field: "Années",
+                    operator: "eq",
+                    value: year
+                },
+
+            ]
+        }
+    )
+
 
 
     return(
@@ -195,7 +241,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                 </Col>
                 <Col xl={24/2} xs={24}>
                     <Card>
-                        tlc
+                        mnu
                         <LoadingComponent isLoading={collecte_mnu.isFetching}>
                             {collecte_mnu.data ? <ChartPieRepCollecte filiere='mnu' data={collecte_mnu.data.data} /> : <b>...</b>}
                         </LoadingComponent>
@@ -203,9 +249,25 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                 </Col>
                 <Col xl={24/2} xs={24}>
                     <Card>
-                        tlc
+                        disp med
                         <LoadingComponent isLoading={collecte_disp_med.isFetching}>
                             {collecte_disp_med.data ? <ChartPieRepCollecte filiere='disp_med' data={collecte_disp_med.data.data} /> : <b>...</b>}
+                        </LoadingComponent>
+                    </Card>
+                </Col>
+                <Col xl={24/2} xs={24}>
+                    <Card>
+                        disp med
+                        <LoadingComponent isLoading={collecte_pu.isFetching}>
+                            {collecte_pu.data ? <ChartPieRepCollecte filiere='pu' data={collecte_pu.data.data} /> : <b>...</b>}
+                        </LoadingComponent>
+                    </Card>
+                </Col>
+                <Col xl={24/2} xs={24}>
+                    <Card>
+                        vhu
+                        <LoadingComponent isLoading={collecte_vhu.isFetching}>
+                            {collecte_vhu.data ? <ChartPieRepCollecte filiere='vhu' data={collecte_vhu.data.data} /> : <b>...</b>}
                         </LoadingComponent>
                     </Card>
                 </Col>
