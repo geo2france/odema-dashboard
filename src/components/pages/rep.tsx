@@ -257,7 +257,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                 </Col>
                 <Col xl={24/2} xs={24}>
                     <Card>
-                        disp med
+                        pu
                         <LoadingComponent isLoading={collecte_pu.isFetching}>
                             {collecte_pu.data ? <ChartPieRepCollecte filiere='pu' data={collecte_pu.data.data} /> : <b>...</b>}
                         </LoadingComponent>
