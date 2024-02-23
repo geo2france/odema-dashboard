@@ -77,10 +77,33 @@ export const RepDefinition = (item: string) => {
             return { label: "Extincteurs et autres appareils à fonction extinctrice" }
         case "CAT3_10":
             return { label: "Produits chimiques usuels et ménagers" }
+        case "BORNES_PUBLIQUES":
+            return { label: "Borne située sur voie publique" }
+        case "BORNES_PRIVEES":
+            return { label: "Borne située sur voie privée" }
+        case "ANTENNES_ASSO":
+            return { label: "Antennes d'associations" }
+        case "DECHETTERIES":
+        case "DECHETERIE":
+            return { label: "Déchetterie" }
+        case "POINTS_PONCTUELS":
+            return { label: "Opérations ponctuelles de collecte" }
+        case "BOUTIQUES":
+            return { label: "Collecte en magasin" }
+        case "PHARMACIE":
+            return { label: "Pharmacie" }
+        case "LAB":
+            return { label: "Laboratoire de biologie médicale" }
+        case "PUI":
+            return { label: "Pharmacie à usage intérieur" }
+        case "AUTRES":
+        case "AUTRE":
+            return { label: "Autre" }
         default:
             return { label: item }
     }
 }
+
 
 /* From https://blog.logrocket.com/use-state-url-persist-state-usesearchparams/ */
 export function useSearchParamsState(
