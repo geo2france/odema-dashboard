@@ -1,5 +1,5 @@
 import { IResourceComponentsProps, useList } from "@refinedev/core";
-import { Row, Col, Card } from "antd";
+import { Row, Col, Card, Alert } from "antd";
 import { useSearchParamsState } from "../../utils";
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte";
 import { LoadingComponent } from "../loading_container";
@@ -81,7 +81,16 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
 
     return(
         <>
+
             <Row gutter={[16, 16]}>
+                <Col span={24}>
+                    <Alert
+                        message="En cours de construction"
+                        description="Document de travail en cours d'élaboration"
+                        type="warning"
+                        showIcon
+                    />
+                </Col>
                 <Col xl={24/2} xs={24}>
                     <Card>
                         d3e
