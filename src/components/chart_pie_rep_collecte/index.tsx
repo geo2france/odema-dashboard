@@ -102,6 +102,11 @@ export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, f
         `, [data2,data2,data2,data2,data2,data2]).map((e:BaseRecord) => ({name: e.type, value: e.tonnage} ))
     }
 
+    const total = data_pie.reduce(
+        (accum:number, current:BaseRecord) => accum + current.value,
+        0
+      );
+
     const myserie:PieSeriesOption = {
         type : 'pie',
         data : data_pie,
@@ -114,11 +119,11 @@ export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, f
         },
         label: {
             show: true,
-            formatter: (params) => (`${Math.round(Number(params.value))} t`)        
+            formatter: (params) => (`${Math.round(Number(params.percent))} %`)        
         },
         tooltip:{
             show:true,
-            valueFormatter: (value) => (`${Math.round(Number(value))} kg/hab` )
+            valueFormatter: (value) => (`${Math.round(Number(value))} t` )
         }
     }
 
@@ -130,7 +135,18 @@ export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, f
         legend: {top:'top', show:true},
         tooltip: {
             trigger: 'item'
-        }
+        },
+        graphic: [{
+            type: 'text',
+            left: 'center',
+            top: 'center',
+            style: {
+                text: `${total.toLocaleString(undefined, {maximumFractionDigits: 1})} t`,
+                fill: '#666',
+                fontSize: 16,
+                fontWeight: 'bold'
+            }
+        }]
     }
 
 
