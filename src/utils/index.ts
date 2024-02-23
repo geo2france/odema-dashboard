@@ -54,6 +54,34 @@ export const DMAmapCategorieProps = (item:string) => {
     }
 }
 
+
+export const RepDefinition = (item: string) => {
+    switch (item) {
+        case "GEMF":
+            return { label: "GEM froid" }
+        case "GEMHF":
+            return { label: "GEM hors froid" }
+        case "PAM":
+            return { label: "Petits Appareils en Mélange" }
+        case "ECRAN":
+            return { label: "Ecrans" }
+        case "LAMPE":
+            return { label: "Lampes" }
+        case "PV":
+            return { label: "Panneaux photovoltaïques" }
+        case "CAT_1":
+        case "PYRO":
+            return { label: "Produits pyrotechniques" }
+        case "CAT_2":
+        case "PAE":
+            return { label: "Extincteurs et autres appareils à fonction extinctrice" }
+        case "CAT3_10":
+            return { label: "Produits chimiques usuels et ménagers" }
+        default:
+            return { label: item }
+    }
+}
+
 /* From https://blog.logrocket.com/use-state-url-persist-state-usesearchparams/ */
 export function useSearchParamsState(
     searchParamName: string,

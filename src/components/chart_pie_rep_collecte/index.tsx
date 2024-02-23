@@ -2,6 +2,7 @@ import { BaseRecord } from "@refinedev/core";
 import alasql from "alasql";
 import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
+import { RepDefinition } from "../../utils";
 
 interface ChartPieRepCollecteProps {
     data: any[] | BaseRecord[];
@@ -109,7 +110,7 @@ export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, f
 
     const myserie:PieSeriesOption = {
         type : 'pie',
-        data : data_pie,
+        data : data_pie.map((e:BaseRecord) => ({...e, name:RepDefinition(e.name).label})),
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,
         itemStyle: {
