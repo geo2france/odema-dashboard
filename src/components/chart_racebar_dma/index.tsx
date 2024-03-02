@@ -16,7 +16,7 @@ export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_t
                         FROM (
                             SELECT L_REGION, C_REGION, N_DEPT, sum(TONNAGE_T_HG) as TONNAGE_DMA, max(data_territoire.VA_POPANNEE) as VA_POPANNEE
                             FROM ? data
-                            JOIN ? as data_territoire ON data_territoire.N_DEPT = data.N_DEPT AND data_territoire.ANNEE = data.ANNEE
+                            JOIN ? as data_territoire ON data_territoire.N_DEPT = data.N_DEPT AND data_territoire.Annee = data.ANNEE
                             GROUP BY L_REGION, C_REGION, N_DEPT) as a
                         GROUP BY a.L_REGION, a.C_REGION
                         ORDER BY sum(a.TONNAGE_DMA) / sum(a.VA_POPANNEE)

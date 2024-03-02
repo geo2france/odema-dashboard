@@ -36,9 +36,9 @@ const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ({data, da
     const data_pie = alasql(`SELECT 
     t.C_REGION, t.ANNEE, t.L_TYP_REG_SERVICE, sum(t.TONNAGE_DMA) as TONNAGE_DMA, a.pop_region
     FROM (
-        SELECT c.ANNEE, c.C_REGION, sum(c.VA_POPANNEE) as pop_region 
+        SELECT c.Annee AS ANNEE, c.C_REGION, sum(c.VA_POPANNEE) as pop_region 
         FROM ? c 
-        GROUP BY c.ANNEE, c.C_REGION
+        GROUP BY c.Annee, c.C_REGION
     ) as a
     JOIN ? t ON a.ANNEE = t.ANNEE AND t.C_REGION = a.C_REGION
     WHERE t.C_REGION = '${c_region}'

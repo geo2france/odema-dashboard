@@ -87,7 +87,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
         },
         filters:[
             {
-                field:"ANNEE",
+                field:"Annee",
                 operator:"eq",
                 value:year
             },

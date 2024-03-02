@@ -15,7 +15,7 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
 
     const data_pie = alasql(`SELECT TYP_COLLECTE, (sum(TONNAGE_T_HG) / sum(data_territoire.VA_POPANNEE))*1000 AS RATIO_KG_HAB 
                         FROM ? data 
-                        JOIN ? as data_territoire ON data_territoire.N_DEPT = data.N_DEPT AND data_territoire.ANNEE = data.ANNEE
+                        JOIN ? as data_territoire ON data_territoire.N_DEPT = data.N_DEPT AND data_territoire.Annee = data.ANNEE
                         WHERE C_REGION='${c_region}'
                         GROUP BY TYP_COLLECTE`, [data, data_territoire])
 
