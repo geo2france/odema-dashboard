@@ -6,7 +6,7 @@ import { DMAmapCategorieProps } from "../../utils";
 import { useEffect, useRef } from "react";
 
 
-interface ChartPieTypeTraitementProps {
+export interface ChartPieTypeTraitementProps {
     data: any[] | BaseRecord[]; // Spécifier les champs au niveau de la ressource
     data_territoire: any[] | BaseRecord[]; // Le endpoint précédent ne fournie pas la POPANNEE
     c_region?:string;

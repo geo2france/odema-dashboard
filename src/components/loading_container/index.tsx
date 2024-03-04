@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Spin } from 'antd';
 
-interface LoadingComponentProps {
+export interface LoadingComponentProps {
     isLoading: boolean;
     children: React.ReactNode;
     blurRadius?: string;

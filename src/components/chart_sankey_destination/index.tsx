@@ -3,7 +3,7 @@ import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require(
 import { BaseRecord } from "@refinedev/core";
 import { DMAmapCategorieProps, wrappe } from "../../utils";
 
-interface ChartSankeyDestinationDMAProps {
+export interface ChartSankeyDestinationDMAProps {
     data: any[] | BaseRecord[]; 
     onFocus?:any;
     focus_item?:string;

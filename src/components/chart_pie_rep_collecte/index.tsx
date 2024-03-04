@@ -4,7 +4,7 @@ import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { RepDefinition } from "../../utils";
 
-interface ChartPieRepCollecteProps {
+export interface ChartPieRepCollecteProps {
     data: any[] | BaseRecord[];
     filiere:string;
     c_region?:string;

@@ -4,7 +4,7 @@ import { BaseRecord } from '@refinedev/core';
 import { EChartsOption } from "echarts";
 import alasql from "alasql";
 
-interface ChartRaceBareDMAProps {
+export interface ChartRaceBareDMAProps {
     data: any[] | BaseRecord[];
     data_territoire: any[] | BaseRecord[];
     highlight_region : string;

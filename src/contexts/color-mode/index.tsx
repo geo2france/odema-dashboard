@@ -2,7 +2,7 @@ import { RefineThemes } from "@refinedev/antd";
 import { ConfigProvider, theme } from "antd";
 import { PropsWithChildren, createContext, useEffect, useState } from "react";
 
-type ColorModeContextType = {
+export type ColorModeContextType = {
   mode: string;
   setMode: (mode: string) => void;
 };

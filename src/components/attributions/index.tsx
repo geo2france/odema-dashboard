@@ -3,12 +3,12 @@ import React from 'react';
 
 const { Text, Link } = Typography;
 
-interface SourceProps {
+export interface SourceProps {
     name:string,
     url?:string,
 }
 
-interface AttributionProps {
+export interface AttributionProps {
     data:SourceProps[]
 }
 

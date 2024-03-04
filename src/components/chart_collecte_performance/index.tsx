@@ -5,7 +5,7 @@ import type {EChartsOption, BarSeriesOption, PieSeriesOption} from "echarts"
 import alasql from "alasql";
 import { DMAmapCategorieProps } from "../../utils";
 
-interface ChartCollectePerformanceProps {
+export interface ChartCollectePerformanceProps {
     data: any[] | BaseRecord[]; // Spécifier les champs au niveau de la ressource
     data_territoire: any[] | BaseRecord[]; // Le endpoint précédent ne fournie pas la POPANNEE
     c_region?:string

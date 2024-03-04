@@ -12,10 +12,13 @@ npm install
 npm run dev
 ```
 
-Compilation : 
+Compilation et génération de la doc : 
 ```bash
 npm run build
+npm run generate-docs
 ```
+
+
 
 Le contenu généré dans le dossier `dist` peut être coller sur un serveur http sans configuration particulière.
 
