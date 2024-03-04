@@ -8,36 +8,32 @@ export interface ChartEvolutionRepCollecteProps{
     data:BaseRecord[],
     filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' | 'mnu' | 'disp_med' | 'pu' | 'vhu';
 }
-export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps> = ({data, filiere} )  => {
+export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps> = ({ data, filiere }) => {
+    const data_chart = RepDataCollecteProcess(filiere, data)
+        .map((e) => ({ serie_name: e.categorie, value: e.tonnage, category: e.annee }))
+        .sort((a, b) => a.category - b.category)
+    const axie_category = [...new Set(data_chart.map(item => item.category))];
 
-    const data_chart = RepDataCollecteProcess(filiere, data).map((e) => ({serie_name:e.categorie, value:e.tonnage, category:e.annee })).sort((a,b) => a.category - b.category)
+    const myseries: BarSeriesOption[] = alasql(`
+        SELECT d.[serie_name] AS name, ARRAY(d.[value]) AS data
+        FROM ? d
+        GROUP BY d.[serie_name]
+    `, [data_chart]).map((e: BaseRecord) => ({ ...e, type: 'bar', stack: 'stack1' }))
 
-    const axie_category = [...new Set(data_chart.map(item => item.category))]; 
-    console.log(data_chart);
-    //console.log(axie_category)
-
-    const myseries:BarSeriesOption[] = alasql(`
-    SELECT d.[serie_name] AS name, ARRAY(d.[value]) AS data
-    FROM ? d
-    GROUP BY d.[serie_name]
-    `, [data_chart]).map((e) => ({...e, type:'bar', stack:'stack1'}))
-
-    console.log(myseries)
-
-    const option:EChartsOption = {
-        series:myseries,
+    const option: EChartsOption = {
+        series: myseries,
         xAxis: [
             {
-              type: 'category',
-              data: axie_category
+                type: 'category',
+                data: axie_category
             }
-          ],
+        ],
         yAxis: [
             {
-              type: 'value'
+                type: 'value'
             }
-          ],
+        ],
     }
-    return(<ReactECharts
-        option={option} style={{ height: "450px"}}/>)   
+    return (<ReactECharts
+        option={option} style={{ height: "450px" }} />)
 }
