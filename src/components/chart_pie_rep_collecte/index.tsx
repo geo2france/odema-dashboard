@@ -13,7 +13,7 @@ export interface ChartPieRepCollecteProps {
 
 
 export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, filiere, annee, c_region='32'} )  => {
-    const data_pie = RepDataCollecteProcess(filiere, data);
+    const data_pie = RepDataCollecteProcess(filiere, data).filter((e) => e.annee == annee).map((e) => ({name:e.categorie, value:e.tonnage}));
 
     const total = data_pie.reduce(
         (accum:number, current:BaseRecord) => accum + current.value,

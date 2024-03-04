@@ -180,14 +180,14 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
         <>
             <Row gutter={[16, 16]}>
                 <Col span={24}>
-                    <RepTopbar/>
+                    <RepTopbar year={Number(year)} onChangeYear={setYear}/>
                 </Col>
 
                 <Col xl={24/2} xs={24}>
                     <Card>
                         pchim
                         <LoadingComponent isLoading={collecte_pchim.isFetching}>
-                            {collecte_pchim.data ? <ChartPieRepCollecte filiere='pchim' data={collecte_pchim.data.data} /> : <b>...</b>}
+                            {collecte_pchim.data ? <ChartPieRepCollecte filiere='pchim' data={collecte_pchim.data.data} annee={Number(year)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pchim-tonnages-collectes-2021' }]}></Attribution>
                         </LoadingComponent>
                     </Card>

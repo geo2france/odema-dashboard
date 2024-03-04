@@ -36,7 +36,7 @@ export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
     return (<>
 
                 <Row gutter={[16, 16]}>
-                <Col span={24}><RepTopbar/></Col>
+                <Col span={24}><RepTopbar year={Number(year)} onChangeYear={setYear}/></Col>
 
                 <Col xl={24/2} xs={24}>
                     <Card>

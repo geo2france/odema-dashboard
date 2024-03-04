@@ -137,9 +137,10 @@ export function useSearchParamsState(
 /**
  * Type destiné à être utilisé comme data dans les graphiques eCharts.
  */
-export interface BaseRecordSerie {
-    name:string, 
-    value:any
+export interface BaseRecordRepCollecte {
+    categorie:string, 
+    tonnage:any,
+    annee:number
 }
 /**
  * Fonction permettant d'uniformiser les données REP fournis par l'Ademe, les formats de données de différentes filières étant hétérogènes.
@@ -148,46 +149,47 @@ export interface BaseRecordSerie {
  * @returns 
  */
 export const RepDataCollecteProcess = (filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' | 'mnu' | 'disp_med' | 'pu' | 'vhu', data:BaseRecord[]) => {
-    let data_pie:BaseRecordSerie[] = []
+    //TODO : Reste a ajouter la gestion des années pour toutes les filières
+    let data_pie:BaseRecordRepCollecte[] = []
     if (filiere == 'd3e'){ //Les données des différentes fillière REP ne sont pas diffusée de manière homogène
-        data_pie = alasql(`SELECT [Code_région], d.Flux, sum([Total]) AS tonnage
+        data_pie = alasql(`SELECT [Code_région], [Année_des_données] AS annee, d.Flux, sum([Total]) AS tonnage
         FROM ? d
-        GROUP BY [Code_région], d.Flux
-        `, [data]).map((e:BaseRecord) => ({name: e.Flux, value: e.tonnage} ))
+        GROUP BY [Code_région], [Année_des_données], d.Flux
+        `, [data]).map((e:BaseRecord) => ({annee:e.annee, categorie: e.Flux, tonnage: e.tonnage} ))
     }else if (filiere == 'pa'){
         data_pie = alasql(`
-        SELECT d.[Code_Région], 'Collectivités' AS type, sum(d.[Collectivités]) AS tonnage
+        SELECT d.[Code_Région], d.[Année_des_données] AS annee, 'Collectivités' AS type, sum(d.[Collectivités]) AS tonnage
         FROM ? d
-        GROUP BY d.[Code_Région]
+        GROUP BY d.[Code_Région], d.[Année_des_données]
         UNION ALL CORRESPONDING
-        SELECT d2.[Code_Région], 'Distribution' AS type, sum(d2.[Distribution]) AS tonnage
+        SELECT d2.[Code_Région], d2.[Année_des_données] AS annee, 'Distribution' AS type, sum(d2.[Distribution]) AS tonnage
         FROM ? d2
-        GROUP BY d2.[Code_Région]
+        GROUP BY d2.[Code_Région], d2.[Année_des_données]
         UNION ALL CORRESPONDING
-        SELECT d3.[Code_Région], 'Autre' AS type, sum(d3.[Autre]) AS tonnage
+        SELECT d3.[Code_Région], d3.[Année_des_données] AS annee,  'Autre' AS type, sum(d3.[Autre]) AS tonnage
         FROM ? d3
-        GROUP BY d3.[Code_Région]
-        `, [data,data,data]).map((e:BaseRecord) => ({name: e.type, value: e.tonnage} ))
+        GROUP BY d3.[Code_Région], d3.[Année_des_données]
+        `, [data,data,data]).map((e:BaseRecord) => ({annee:e.annee, categorie: e.type, tonnage: e.tonnage} ))
     }else if (filiere == 'pchim'){
-        data_pie = alasql(`SELECT [equip_declare], sum([Somme_de_masse]) AS tonnage
+        data_pie = alasql(`SELECT [Année_des_données] AS annee, [equip_declare], sum([Somme_de_masse]) AS tonnage
         FROM ? d
-        GROUP BY [equip_declare]
-        `, [data]).map((e:BaseRecord) => ({name: e.equip_declare, value: e.tonnage} ))
+        GROUP BY [Année_des_données], [equip_declare]
+        `, [data]).map((e:BaseRecord) => ({annee:e.annee, categorie: e.equip_declare, tonnage: e.tonnage} ))
     }else if (filiere == 'tlc'){
         data_pie = alasql(`SELECT [origine], sum([tonnage]) AS tonnage
         FROM ? d
         GROUP BY [origine]
-        `, [data]).map((e:BaseRecord) => ({name: e.origine, value: e.tonnage} ))
+        `, [data]).map((e:BaseRecord) => ({categorie: e.origine, tonnage: e.tonnage} ))
     }else if (filiere == 'mnu'){
         data_pie = alasql(`SELECT [Code_Région], sum([tonnage]) AS tonnage
         FROM ? d
         GROUP BY [Code_Région]
-        `, [data]).map((e:BaseRecord) => ({name: 'MNU', value: e.tonnage} ))
+        `, [data]).map((e:BaseRecord) => ({categorie: 'MNU', tonnage: e.tonnage} ))
     }else if (filiere == 'disp_med'){
         data_pie = alasql(`SELECT [origine], sum([tonnage]) AS tonnage
         FROM ? d
         GROUP BY [origine]
-        `, [data]).map((e:BaseRecord) => ({name: e.origine, value: e.tonnage} ))
+        `, [data]).map((e:BaseRecord) => ({categorie: e.origine, tonnage: e.tonnage} ))
     }else if (filiere == 'pu'){
         data_pie = alasql(`
         SELECT d.[Code_Région], 'Cyclomoteurs_et_véhicules_légers' AS type, sum(d.[Cyclomoteurs_et_véhicules_légers]) AS tonnage
@@ -205,7 +207,7 @@ export const RepDataCollecteProcess = (filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' |
         SELECT d4.[Code_Région], 'Agraire_-_Génie_civil_1_et_agraire_-_Génie_civil_2' AS type, sum(d4.[Agraire_-_Génie_civil_1_et_agraire_-_Génie_civil_2]) AS tonnage
         FROM ? d4
         GROUP BY d4.[Code_Région]
-        `, [data,data,data,data]).map((e:BaseRecord) => ({name: e.type, value: e.tonnage} ))
+        `, [data,data,data,data]).map((e:BaseRecord) => ({categorie: e.type, tonnage: e.tonnage} ))
     }else if (filiere == 'vhu'){
         const data2 = data.map((e) => ({...e,
             'Compagnies_et_mutuelles_d_assurances':e["Compagnies_et_mutuelles_d'assurances"],
@@ -235,7 +237,7 @@ export const RepDataCollecteProcess = (filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' |
         SELECT d6.[Code_Région], "Garages_indépendants_et_autres_professionnels_de_l'entretien" AS type, sum(d6.[Garages_indépendants_et_autres_professionnels_de_l_entretien]::NUMBER) AS tonnage
         FROM ? d6
         GROUP BY d6.[Code_Région]
-        `, [data2,data2,data2,data2,data2,data2]).map((e:BaseRecord) => ({name: e.type, value: e.tonnage} ))
+        `, [data2,data2,data2,data2,data2,data2]).map((e:BaseRecord) => ({categorie: e.type, tonnage: e.tonnage} ))
     }
 
     return data_pie
