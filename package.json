@@ -1,8 +1,10 @@
 {
-  "name": "tutorial",
-  "version": "0.1.0",
+  "name": "odema_dashboard",
+  "version": "0.0.0",
+  "homepage": "https://github.com/geo2france/odema-dashboard",
+  "repository": { "type": "git", "url": "git@github.com:geo2france/odema-dashboard.git"},
+  "license":"MIT",
   "private": true,
-  "type": "module",
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
     "@refinedev/antd": "^5.37.4",
