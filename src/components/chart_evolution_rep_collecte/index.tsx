@@ -7,12 +7,20 @@ import alasql from "alasql";
 export interface ChartEvolutionRepCollecteProps{
     data:BaseRecord[],
     filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' | 'mnu' | 'disp_med' | 'pu' | 'vhu';
+    year?:number
 }
-export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps> = ({ data, filiere }) => {
+
+
+//TODO ajouter un "Segmented Controls" pour switcher vers des bares normalized ?
+export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps> = ({ data, filiere, year }) => {
     const data_chart = RepDataCollecteProcess(filiere, data)
         .map((e) => ({ serie_name: e.categorie, value: e.tonnage, category: e.annee }))
         .sort((a, b) => a.category - b.category)
-    const axie_category = [...new Set(data_chart.map(item => item.category))];
+    const axie_category = [...new Set(data_chart.map(item => item.category))]
+        .map((e) => ({value:e,  
+        textStyle: {
+            fontWeight : e==year ? 700 : 400
+        }}));
 
     const myseries: BarSeriesOption[] = alasql(`
         SELECT d.[serie_name] AS name, ARRAY(d.[value]) AS data
