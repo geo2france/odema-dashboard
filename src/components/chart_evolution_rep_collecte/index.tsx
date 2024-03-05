@@ -16,11 +16,14 @@ export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps>
     const data_chart = RepDataCollecteProcess(filiere, data)
         .map((e) => ({ serie_name: e.categorie, value: e.tonnage, category: e.annee }))
         .sort((a, b) => a.category - b.category)
+
     const axie_category = [...new Set(data_chart.map(item => item.category))]
-        .map((e) => ({value:e,  
-        textStyle: {
-            fontWeight : e==year ? 700 : 400
-        }}));
+        .map((e) => ({
+            value: e,
+            textStyle: {
+                fontWeight: e == year ? 700 : 400
+            }
+        }));
 
     const myseries: BarSeriesOption[] = alasql(`
         SELECT d.[serie_name] AS name, ARRAY(d.[value]) AS data
