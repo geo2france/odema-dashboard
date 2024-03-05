@@ -14,29 +14,6 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
 
     const [cregion, _setcregion] = useSearchParamsState('region','32')
     
-    const collecte_d3e = useList(
-        {
-            resource: "rep-deee-tonnages-collectes-en-2018/lines",
-            dataProviderName: "ademe_opendata",
-            pagination: {
-                pageSize: 150,
-            },
-            filters: [
-                {
-                    field: "Code_région",
-                    operator: "eq",
-                    value: cregion
-                },
-                {
-                    field: "Année_des_données",
-                    operator: "eq",
-                    value: year
-                },
-
-            ]
-        }
-    )
-
     const collecte_pchim = useList(
         {
             resource: "rep-pchim-tonnages-collectes-2021/lines",
