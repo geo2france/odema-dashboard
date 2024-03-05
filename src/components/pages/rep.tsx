@@ -164,7 +164,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                     <Card>
                         pchim
                         <LoadingComponent isLoading={collecte_pchim.isFetching}>
-                            {collecte_pchim.data ? <ChartPieRepCollecte filiere='pchim' data={collecte_pchim.data.data} annee={Number(year)}/> : <b>...</b>}
+                            {collecte_pchim.data ? <ChartPieRepCollecte filiere='pchim' data={collecte_pchim.data.data} year={Number(year)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pchim-tonnages-collectes-2021' }]}></Attribution>
                         </LoadingComponent>
                     </Card>

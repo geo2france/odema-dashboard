@@ -1,5 +1,4 @@
 import { BaseRecord } from "@refinedev/core";
-import alasql from "alasql";
 import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { RepDataCollecteProcess, RepDefinition } from "../../utils";
@@ -8,12 +7,12 @@ export interface ChartPieRepCollecteProps {
     data: any[] | BaseRecord[];
     filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' | 'mnu' | 'disp_med' | 'pu' | 'vhu';
     c_region?: string;
-    annee?: number
+    year?: number
 }
 
 
-export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, filiere, annee, c_region='32'} )  => {
-    const data_pie = RepDataCollecteProcess(filiere, data).filter((e) => e.annee == annee).map((e) => ({name:e.categorie, value:e.tonnage}));
+export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, filiere, year, c_region='32'} )  => {
+    const data_pie = RepDataCollecteProcess(filiere, data).filter((e) => e.annee == year).map((e) => ({name:e.categorie, value:e.tonnage}));
 
     const total = data_pie.reduce(
         (accum:number, current:BaseRecord) => accum + current.value,
