@@ -1,18 +1,24 @@
 import { BaseRecord } from "@refinedev/core";
 import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
-import { RepDataCollecteProcess, RepDefinition } from "../../utils";
+import { RepDataCollecteProcess, RepDefinition, useChartHighlight } from "../../utils";
+import { useRef } from "react";
 
 export interface ChartPieRepCollecteProps {
     data: any[] | BaseRecord[];
     filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' | 'mnu' | 'disp_med' | 'pu' | 'vhu';
     c_region?: string;
-    year?: number
+    year?: number;
+    onFocus?:any;
+    focus_item?:string;
 }
 
 
-export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, filiere, year, c_region='32'} )  => {
+export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, filiere, year, onFocus, focus_item, c_region='32'} )  => {
     const data_pie = RepDataCollecteProcess(filiere, data).filter((e) => e.annee == year).map((e) => ({name:e.categorie, value:e.tonnage}));
+    
+    const chartRef = useRef<any>()
+    useChartHighlight(chartRef, onFocus, focus_item);
 
     const total = data_pie.reduce(
         (accum:number, current:BaseRecord) => accum + current.value,
@@ -64,6 +70,6 @@ export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, f
 
     return(
         <ReactECharts
-        option={option} style={{ height: "450px"}}/>
+        option={option} ref={chartRef} style={{ height: "450px"}}/>
     )
 }

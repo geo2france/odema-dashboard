@@ -1,20 +1,27 @@
 import { BaseRecord } from "@refinedev/core"
-import { RepDataCollecteProcess } from "../../utils"
+import { RepDataCollecteProcess, RepDefinition, useChartHighlight } from "../../utils"
 import { BarSeriesOption, EChartsOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import alasql from "alasql";
+import { useRef } from "react";
 
 export interface ChartEvolutionRepCollecteProps{
     data:BaseRecord[],
     filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' | 'mnu' | 'disp_med' | 'pu' | 'vhu';
     year?:number
+    onFocus?:any;
+    focus_item?:string;
 }
 
 
 //TODO ajouter un "Segmented Controls" pour switcher vers des bares normalized ?
-export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps> = ({ data, filiere, year }) => {
+export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps> = ({ data, filiere, onFocus, focus_item, year }) => {
+
+    const chartRef = useRef<any>()
+    useChartHighlight(chartRef, onFocus, focus_item, 'seriesName');
+
     const data_chart = RepDataCollecteProcess(filiere, data)
-        .map((e) => ({ serie_name: e.categorie, value: e.tonnage, category: e.annee }))
+        .map((e) => ({ serie_name: RepDefinition(e.categorie).label, value: e.tonnage, category: e.annee }))
         .sort((a, b) => a.category - b.category)
 
     const axie_category = [...new Set(data_chart.map(item => item.category))]
@@ -46,5 +53,5 @@ export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps>
         ],
     }
     return (<ReactECharts
-        option={option} style={{ height: "450px" }} />)
+        option={option} ref={chartRef} style={{ height: "450px" }} />)
 }
