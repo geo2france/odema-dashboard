@@ -23,13 +23,7 @@ export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
                     field: "Code_région",
                     operator: "eq",
                     value: cregion
-                },
-                /*{
-                    field: "Année_des_données",
-                    operator: "eq",
-                    value: year
-                },*/
-
+                }
             ]
         }
     )
@@ -40,8 +34,7 @@ export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
                 <Col span={24}><RepTopbar year={Number(year)} onChangeYear={setYear} /></Col>
 
                 <Col xl={24/2} xs={24}>
-                    <Card>
-                        Tonnages collectés
+                    <Card title={`Tonnages collectés en ${year}`}>
                         <LoadingComponent isLoading={collecte_d3e.isFetching}>
                             {collecte_d3e.data ? <ChartPieRepCollecte filiere='d3e' data={collecte_d3e.data.data} annee={Number(year)} /> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
@@ -50,8 +43,7 @@ export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
                 </Col>
 
                 <Col xl={24/2} xs={24}>
-                    <Card>
-                        Evolution
+                    <Card title="Evolution des tonnages collectés">
                         <LoadingComponent isLoading={collecte_d3e.isFetching}>
                             {collecte_d3e.data ? <ChartEvolutionRepCollecte filiere='d3e' data={collecte_d3e.data.data} year={Number(year)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
