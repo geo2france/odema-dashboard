@@ -14,31 +14,6 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
 
     const [cregion, _setcregion] = useSearchParamsState('region','32')
     
-
-
-    const collecte_tlc = useList(
-        {
-            resource: "rep-tlc-tonnages-collectes-en-2021/lines",
-            dataProviderName: "ademe_opendata",
-            pagination: {
-                pageSize: 150,
-            },
-            filters: [
-                {
-                    field: "Code_Dept",
-                    operator: "in",
-                    value: ['59','62','80','02','60']
-                },
-                {
-                    field: "Année_des_données",
-                    operator: "eq",
-                    value: year
-                },
-
-            ]
-        }
-    )
-
     const collecte_mnu = useList(
         {
             resource: "rep-mnu-tonnages-collectes-en-2021/lines",
@@ -139,17 +114,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                     <RepTopbar year={Number(year)} onChangeYear={setYear}/>
                 </Col>
 
-               
-                <Col xl={24/2} xs={24}>
-                    <Card>
-                        tlc
-                        <LoadingComponent isLoading={collecte_tlc.isFetching}>
-                            {collecte_tlc.data ? <ChartPieRepCollecte filiere='tlc' data={collecte_tlc.data.data} /> : <b>...</b>}
-                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-tlc-tonnages-collectes-en-2021' }]}></Attribution>
-                        </LoadingComponent>
-                    </Card>
-                </Col>
-                <Col xl={24/2} xs={24}>
+                 <Col xl={24/2} xs={24}>
                     <Card>
                         mnu
                         <LoadingComponent isLoading={collecte_mnu.isFetching}>
