@@ -91,15 +91,6 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                     <RepTopbar year={Number(year)} onChangeYear={setYear}/>
                 </Col>
 
-                 <Col xl={24/2} xs={24}>
-                    <Card>
-                        mnu
-                        <LoadingComponent isLoading={collecte_mnu.isFetching}>
-                            {collecte_mnu.data ? <ChartPieRepCollecte filiere='mnu' data={collecte_mnu.data.data} /> : <b>...</b>}
-                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-mnu-tonnages-collectes-en-2021' }]}></Attribution>
-                        </LoadingComponent>
-                    </Card>
-                </Col>
                 <Col xl={24/2} xs={24}>
                     <Card>
                         disp med
