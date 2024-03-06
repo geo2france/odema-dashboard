@@ -5,9 +5,12 @@ import { Attribution } from "../attributions"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { LoadingComponent } from "../loading_container"
 import { RepTopbar } from "../rep_topbar"
+import { useState } from "react"
+import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 
 export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
+    const [focus, setFocus] = useState<string | undefined>(undefined)
 
     const [cregion, _setcregion] = useSearchParamsState('region','32')
     const collecte_pa = useList(
@@ -15,7 +18,7 @@ export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
             resource: "rep-pa-tonnages-collectes-en-2018/lines",
             dataProviderName: "ademe_opendata",
             pagination: {
-                pageSize: 150,
+                pageSize: 500,
             },
             filters: [
                 {
@@ -23,11 +26,11 @@ export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
                     operator: "eq",
                     value: cregion
                 },
-                {
+                /*{
                     field: "Année_des_données",
                     operator: "eq",
                     value: year
-                },
+                },*/
 
             ]
         }
@@ -39,14 +42,23 @@ export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
                 <Col span={24}><RepTopbar year={Number(year)} onChangeYear={setYear}/></Col>
 
                 <Col xl={24/2} xs={24}>
-                    <Card>
-                        pa
+                    <Card title={`Tonnages collectés en ${year}`}>
                         <LoadingComponent isLoading={collecte_pa.isFetching}>
-                            {collecte_pa.data ? <ChartPieRepCollecte filiere='pa' data={collecte_pa.data.data} /> : <b>...</b>}
+                            {collecte_pa.data ? <ChartPieRepCollecte filiere='pa' data={collecte_pa.data.data} year={Number(year)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pa-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
                 </Col>
+
+                <Col xl={24/2} xs={24}>
+                    <Card title="Evolution des tonnages collectés">
+                        <LoadingComponent isLoading={collecte_pa.isFetching}>
+                            {collecte_pa.data ? <ChartEvolutionRepCollecte filiere='pa' data={collecte_pa.data.data} year={Number(year)} focus_item={focus} onFocus={setFocus}/> : <b>...</b>}
+                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
+                        </LoadingComponent>
+                    </Card>
+                </Col>
+
                 </Row>
     </>)
 }
