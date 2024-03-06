@@ -16,13 +16,14 @@ export interface ChartEvolutionRepCollecteProps{
 
 //TODO ajouter un "Segmented Controls" pour switcher vers des bares normalized ?
 export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps> = ({ data, filiere, onFocus, focus_item, year }) => {
-
     const chartRef = useRef<any>()
     useChartHighlight(chartRef, onFocus, focus_item, 'seriesName');
 
-    const data_chart = RepDataCollecteProcess(filiere, data)
-        .map((e) => ({ serie_name: chartBusinessProps(e.categorie).label, value: e.tonnage, category: e.annee }))
+    const data_chart = data
+        .map((e) => ({ serie_name: chartBusinessProps(e.name).label, value: e.value, category: e.annee }))
         .sort((a, b) => a.category - b.category)
+
+    console.log(data)
 
     const axie_category = [...new Set(data_chart.map(item => item.category))]
         .map((e) => ({

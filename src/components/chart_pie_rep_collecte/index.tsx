@@ -13,9 +13,9 @@ export interface ChartPieRepCollecteProps {
     focus_item?:string;
 }
 
-
+//Attend data de type {annee, name, value}
 export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, filiere, year, onFocus=(() => (undefined)), focus_item, c_region='32'} )  => {
-    const data_pie = RepDataCollecteProcess(filiere, data).filter((e) => e.annee == year).map((e) => ({name:e.categorie, value:e.tonnage}));
+    const data_pie = data.filter((e) => e.annee == year).map((e) => ({name:e.name, value:e.value}));
     const chartRef = useRef<any>()
     useChartHighlight(chartRef, onFocus, focus_item);
 

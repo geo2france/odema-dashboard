@@ -1,5 +1,5 @@
-import { IResourceComponentsProps, useList } from "@refinedev/core"
-import { RepDataCollecteProcess, useSearchParamsState } from "../../utils"
+import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
+import { useSearchParamsState } from "../../utils"
 import { Row, Col, Card, Space, Flex } from "antd"
 import { Attribution } from "../attributions"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
@@ -7,7 +7,8 @@ import { LoadingComponent } from "../loading_container"
 import { RepTopbar } from "../rep_topbar"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { useState } from "react"
-import { GrosElectromenagers, Medicaments, PilesEtBatteries } from "../../utils/picto"
+import { Medicaments } from "../../utils/picto"
+import alasql from "alasql"
 
 export const RepMnuPage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
@@ -33,6 +34,12 @@ export const RepMnuPage: React.FC<IResourceComponentsProps> = () => {
         }
     )
 
+    const data_standardized = collecte?.data ? alasql(`SELECT [Code_Région], [Année_des_données] AS annee, sum([tonnage]) AS tonnage
+    FROM ? d
+    GROUP BY [Code_Région], [Année_des_données]
+    `, [collecte.data.data]).map((e:BaseRecord) => ({annee:e.annee, name: 'MNU', value: e.tonnage} )) 
+    :undefined
+
     return (<>
 
         <Row gutter={[16, 16]}>
@@ -49,7 +56,7 @@ export const RepMnuPage: React.FC<IResourceComponentsProps> = () => {
                 <Card title={`Tonnages collectés en ${year}`}>
 
                     <LoadingComponent isLoading={collecte.isFetching}>
-                        {collecte.data ? <b>{RepDataCollecteProcess(filiere, collecte.data.data).filter((e) => (e.annee == Number(year)))[0]?.tonnage}</b> : <b>...</b>}
+                        {collecte.data ? <b>{data_standardized.filter((e:BaseRecord) => (e.annee == Number(year)))[0]?.value}</b> : <b>...</b>}
                         <br /><small> Seul le tonnage 2021 est disponible. Type de déchet unique.</small><br />
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-mnu-tonnages-collectes-en-2021' }]}></Attribution>
                     </LoadingComponent>
@@ -59,7 +66,8 @@ export const RepMnuPage: React.FC<IResourceComponentsProps> = () => {
             <Col xl={24 / 2} xs={24}>
                 <Card title="Evolution des tonnages collectés">
                     <LoadingComponent isLoading={collecte.isFetching}>
-                        {collecte.data ? <ChartEvolutionRepCollecte filiere={filiere} data={collecte.data.data} year={Number(year)} focus_item={focus} onFocus={setFocus} /> : <b>...</b>}
+                        <small>Pas de données disponibles avant 2021</small> <br/>
+                        {collecte.data ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={setFocus} /> : <b>...</b>}
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                     </LoadingComponent>
                 </Card>

@@ -1,4 +1,4 @@
-import { IResourceComponentsProps, useList } from "@refinedev/core"
+import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
 import { useSearchParamsState } from "../../utils"
 import { Row, Col, Card } from "antd"
 import { Attribution } from "../attributions"
@@ -8,6 +8,7 @@ import { RepTopbar } from "../rep_topbar"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { useState } from "react"
 import { DechetsDiffusSpecifiques, EnginsPyrotechniques, Extincteurs } from "../../utils/picto"
+import alasql from "alasql"
 
 export const RepPchimPage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
@@ -32,6 +33,12 @@ export const RepPchimPage: React.FC<IResourceComponentsProps> = () => {
         }
     )
 
+    const data_standardized = collecte_pchim?.data ? alasql(`SELECT [Année_des_données] AS annee, [equip_declare], sum([Somme_de_masse]) AS tonnage
+    FROM ? d
+    GROUP BY [Année_des_données], [equip_declare]
+    `, [collecte_pchim.data.data]).map((e:BaseRecord) => ({annee:e.annee, name: e.equip_declare, value: e.tonnage} )) 
+    :undefined
+
     return (<>
 
               <Row gutter={[16, 16]}>
@@ -48,7 +55,7 @@ export const RepPchimPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
                         <LoadingComponent isLoading={collecte_pchim.isFetching}>
-                            {collecte_pchim.data ? <ChartPieRepCollecte filiere='pchim' data={collecte_pchim.data.data} year={Number(year)} focus_item={focus} onFocus={setFocus}/> : <b>...</b>}
+                            {collecte_pchim.data ? <ChartPieRepCollecte filiere='pchim' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={setFocus}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pchim-tonnages-collectes-2021' }]}></Attribution>
                         </LoadingComponent>
                     </Card>

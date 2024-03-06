@@ -1,4 +1,4 @@
-import { IResourceComponentsProps, useList } from "@refinedev/core"
+import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
 import { useSearchParamsState } from "../../utils"
 import { Row, Col, Alert, Card } from "antd"
 import { Attribution } from "../attributions"
@@ -8,6 +8,7 @@ import { RepTopbar } from "../rep_topbar"
 import { useState } from "react"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { PilesEtBatteries } from "../../utils/picto"
+import alasql from "alasql"
 
 export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
@@ -33,6 +34,20 @@ export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
         }
     )
 
+    const data_standardized = collecte_pa?.data ? alasql(`
+    SELECT d.[Code_Région], d.[Année_des_données] AS annee, 'Collectivités' AS type, sum(d.[Collectivités]) AS tonnage
+    FROM ? d
+    GROUP BY d.[Code_Région], d.[Année_des_données]
+    UNION ALL CORRESPONDING
+    SELECT d2.[Code_Région], d2.[Année_des_données] AS annee, 'Distribution' AS type, sum(d2.[Distribution]) AS tonnage
+    FROM ? d2
+    GROUP BY d2.[Code_Région], d2.[Année_des_données]
+    UNION ALL CORRESPONDING
+    SELECT d3.[Code_Région], d3.[Année_des_données] AS annee,  'Autre' AS type, sum(d3.[Autre]) AS tonnage
+    FROM ? d3
+    GROUP BY d3.[Code_Région], d3.[Année_des_données]
+    `, [collecte_pa.data.data,collecte_pa.data.data,collecte_pa.data.data]).map((e:BaseRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) : undefined
+
     return (<>
 
             <Row gutter={[16, 16]}>
@@ -48,7 +63,7 @@ export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
                         <LoadingComponent isLoading={collecte_pa.isFetching}>
-                            {collecte_pa.data ? <ChartPieRepCollecte filiere={filiere} data={collecte_pa.data.data} year={Number(year)} focus_item={focus} onFocus={setFocus}/> : <b>...</b>}
+                            {collecte_pa.data ? <ChartPieRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={setFocus}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pa-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
@@ -57,7 +72,7 @@ export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title="Evolution des tonnages collectés">
                         <LoadingComponent isLoading={collecte_pa.isFetching}>
-                            {collecte_pa.data ? <ChartEvolutionRepCollecte filiere={filiere} data={collecte_pa.data.data} year={Number(year)} focus_item={focus} onFocus={setFocus}/> : <b>...</b>}
+                            {collecte_pa.data ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={setFocus}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
