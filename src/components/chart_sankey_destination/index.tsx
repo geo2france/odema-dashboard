@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { BaseRecord } from "@refinedev/core";
-import { DMAmapCategorieProps, wrappe } from "../../utils";
+import { chartBusinessProps, wrappe } from "../../utils";
 
 export interface ChartSankeyDestinationDMAProps {
     data: any[] | BaseRecord[]; 
@@ -20,10 +20,10 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
     ] ) ].map((e) => ({
         name:e,
         itemStyle: {
-            color: DMAmapCategorieProps(e).color,},
+            color: chartBusinessProps(e).color,},
         label:{formatter:(x:any) => wrappe(x.name,20)}
         }
-        )).sort((a,b) => DMAmapCategorieProps(a.name).sort - DMAmapCategorieProps(b.name).sort   )
+        )).sort((a,b) => (chartBusinessProps(a.name).sort || 0) - (chartBusinessProps(b.name).sort || 0)   )
 
     const option = {
         tooltip: {

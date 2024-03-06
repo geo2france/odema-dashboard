@@ -1,7 +1,7 @@
 import { BaseRecord } from "@refinedev/core";
 import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
-import { RepDataCollecteProcess, RepDefinition, useChartHighlight } from "../../utils";
+import { RepDataCollecteProcess, chartBusinessProps, useChartHighlight } from "../../utils";
 import { useRef } from "react";
 
 export interface ChartPieRepCollecteProps {
@@ -27,7 +27,7 @@ export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, f
 
     const myserie:PieSeriesOption = {
         type : 'pie',
-        data : data_pie.map((e:BaseRecord) => ({...e, name:RepDefinition(e.name).label})),
+        data : data_pie.map((e:BaseRecord) => ({...e, name:chartBusinessProps(e.name).label})),
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,
         itemStyle: {

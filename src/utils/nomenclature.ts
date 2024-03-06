@@ -111,9 +111,51 @@ export const RepDataCollecteProcess = (filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' |
 
 
 
-export const RepDefinition = (item: string) => {
-    switch (item) {
-        case "GEMF":
+
+
+/**
+ * Propriétés viseuelles pour les types de déchets ou de traitement
+ * @param item 
+ * @returns Object with props label, color and sort
+ */
+export const chartBusinessProps = (item:string) : {label:string, color?:string, sort?:number} => {
+    switch(item){
+        case "Stockage":
+        case "Stockage pour inertes":
+        case "Incinération sans récupération d'énergie":
+            return {color:"#ED1C24", sort:1, label:item}
+        case "Incinération avec récupération d'énergie":
+            return {color:'#FFB800', sort:2, label:item}
+        case "Valorisation matière":
+            return {color:'#ABCB54', sort:3, label:item}
+        case "Valorisation organique":
+            return {color:'#6C8033', sort:4, label:item}
+        case "Biodéchets":
+        case "Déchets verts et biodéchets":
+        case "Déchets de produits alimentaires":
+            return {color:'#7A4443', sort:4, label:item}
+        case "Verre":
+            return {color:'#008F29', sort:3, label:item}
+        case "Ordures ménagères résiduelles":
+        case "Collecte OMR":
+            return {color:'#919191', sort:1, label:item}
+        case "Emballages et papier":
+        case "Emballages, journaux-magazines":
+        case "Matériaux recyclables":
+        case "Collecte séparées":
+            return {color:'#FEFA54',sort:2, label:item}
+        case "Encombrants":
+        case "Déchèterie":
+        case "Déchets dangereux (y.c. DEEE)":
+        case "Collectes séparées hors gravats":
+            return {color:'#FF8001',sort:5, label:item}
+        case "Non précisé":
+            return {color:'#5D5D5D', sort:5, label:item}
+        case "Autres":
+        case "AUTRES":
+        case "AUTRE": 
+            return {color:'#5D5D5D', sort:5, label:'Autres'}
+        case "GEMF": //REP
             return { label: "GEM froid" }
         case "GEMHF":
             return { label: "GEM hors froid" }
@@ -152,55 +194,8 @@ export const RepDefinition = (item: string) => {
             return { label: "Laboratoire de biologie médicale" }
         case "PUI":
             return { label: "Pharmacie à usage intérieur" }
-        case "AUTRES":
-        case "AUTRE":
-            return { label: "Autre" }
-        default:
-            return { label: item }
-    }
-}
-
-/**
- * Vizualisation props for DMA
- * @param item 
- * @returns Object with props
- */
-export const DMAmapCategorieProps = (item:string) : {color:string, sort:number} => {
-    switch(item){
-        case "Stockage":
-        case "Stockage pour inertes":
-        case "Incinération sans récupération d'énergie":
-            return {color:"#ED1C24", sort:1}
-        case "Incinération avec récupération d'énergie":
-            return {color:'#FFB800', sort:2}
-        case "Valorisation matière":
-            return {color:'#ABCB54', sort:3}
-        case "Valorisation organique":
-            return {color:'#6C8033', sort:4}
-        case "Biodéchets":
-        case "Déchets verts et biodéchets":
-        case "Déchets de produits alimentaires":
-            return {color:'#7A4443', sort:4}
-        case "Verre":
-            return {color:'#008F29', sort:3}
-        case "Ordures ménagères résiduelles":
-        case "Collecte OMR":
-            return {color:'#919191',sort:1}
-        case "Emballages et papier":
-        case "Emballages, journaux-magazines":
-        case "Matériaux recyclables":
-        case "Collecte séparées":
-            return {color:'#FEFA54',sort:2}
-        case "Encombrants":
-        case "Déchèterie":
-        case "Déchets dangereux (y.c. DEEE)":
-        case "Collectes séparées hors gravats":
-            return {color:'#FF8001',sort:5}
-        case "Non précisé":
-        case "Autres":
-            return {color:'#5D5D5D', sort:5}
         default :
-            return {color:'#0f0', sort:99}
+            return {color:'#0f0', sort:99, label:item}
     }
 }
 

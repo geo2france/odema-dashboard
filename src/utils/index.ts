@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 
-export { RepDataCollecteProcess, RepDefinition, DMAmapCategorieProps } from "./nomenclature";
+export { RepDataCollecteProcess, chartBusinessProps} from "./nomenclature";
 export { useChartHighlight } from "./usecharthighlight";
 
 

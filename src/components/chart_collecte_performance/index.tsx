@@ -3,7 +3,7 @@ import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require(
 import { BaseRecord } from "@refinedev/core";
 import type {EChartsOption, BarSeriesOption, PieSeriesOption} from "echarts"
 import alasql from "alasql";
-import { DMAmapCategorieProps } from "../../utils";
+import { chartBusinessProps } from "../../utils";
 
 export interface ChartCollectePerformanceProps {
     data: any[] | BaseRecord[]; // Spécifier les champs au niveau de la ressource
@@ -23,7 +23,7 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
 
     const myserie:PieSeriesOption = {
         type : 'pie',
-        data : data_pie.map((e:BaseRecord) => ({name: e.TYP_COLLECTE, value: e.RATIO_KG_HAB, itemStyle:{color:DMAmapCategorieProps(e.TYP_COLLECTE).color}})),
+        data : data_pie.map((e:BaseRecord) => ({name: e.TYP_COLLECTE, value: e.RATIO_KG_HAB, itemStyle:{color:chartBusinessProps(e.TYP_COLLECTE).color}})),
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,
         itemStyle: {

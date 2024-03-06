@@ -2,7 +2,7 @@ import { BaseRecord } from "@refinedev/core";
 import alasql from "alasql";
 import { EChartsOption, PieSeriesOption, SunburstSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
-import { DMAmapCategorieProps, useChartHighlight } from "../../utils";
+import { chartBusinessProps, useChartHighlight } from "../../utils";
 import { useEffect, useRef } from "react";
 
 
@@ -38,7 +38,7 @@ const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ({data, da
 
     const myserie:PieSeriesOption = {
         type : 'pie',
-        data : data_pie.map((e:BaseRecord) => ({name:e.L_TYP_REG_SERVICE, value:(e.TONNAGE_DMA*1000) / e.pop_region, itemStyle:{color:DMAmapCategorieProps(e.L_TYP_REG_SERVICE).color}  })).sort((a:BaseRecord,b:BaseRecord) => DMAmapCategorieProps(a.name).sort - DMAmapCategorieProps(b.name).sort ),
+        data : data_pie.map((e:BaseRecord) => ({name:e.L_TYP_REG_SERVICE, value:(e.TONNAGE_DMA*1000) / e.pop_region, itemStyle:{color:chartBusinessProps(e.L_TYP_REG_SERVICE).color}  })).sort((a:BaseRecord,b:BaseRecord) => (chartBusinessProps(a.name).sort || 0) - (chartBusinessProps(b.name).sort ||0 ) ),
         radius: ['40%', '70%'],
         startAngle:-90,
         clockwise:true,

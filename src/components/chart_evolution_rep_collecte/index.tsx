@@ -1,5 +1,5 @@
 import { BaseRecord } from "@refinedev/core"
-import { RepDataCollecteProcess, RepDefinition, useChartHighlight } from "../../utils"
+import { RepDataCollecteProcess, chartBusinessProps, useChartHighlight } from "../../utils"
 import { BarSeriesOption, EChartsOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import alasql from "alasql";
@@ -21,7 +21,7 @@ export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps>
     useChartHighlight(chartRef, onFocus, focus_item, 'seriesName');
 
     const data_chart = RepDataCollecteProcess(filiere, data)
-        .map((e) => ({ serie_name: RepDefinition(e.categorie).label, value: e.tonnage, category: e.annee }))
+        .map((e) => ({ serie_name: chartBusinessProps(e.categorie).label, value: e.tonnage, category: e.annee }))
         .sort((a, b) => a.category - b.category)
 
     const axie_category = [...new Set(data_chart.map(item => item.category))]
