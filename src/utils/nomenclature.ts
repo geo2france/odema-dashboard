@@ -54,10 +54,10 @@ export const RepDataCollecteProcess = (filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' |
         GROUP BY [Code_Région], [Année_des_données]
         `, [data]).map((e:BaseRecord) => ({annee:e.annee, categorie: 'MNU', tonnage: e.tonnage} ))
     }else if (filiere == 'disp_med'){
-        data_pie = alasql(`SELECT [origine], sum([tonnage]) AS tonnage
+        data_pie = alasql(`SELECT [Année_des_données] AS annee, [origine], sum([tonnage]) AS tonnage
         FROM ? d
-        GROUP BY [origine]
-        `, [data]).map((e:BaseRecord) => ({categorie: e.origine, tonnage: e.tonnage} ))
+        GROUP BY [origine], [Année_des_données] 
+        `, [data]).map((e:BaseRecord) => ({annee:e.annee, categorie: e.origine, tonnage: e.tonnage} ))
     }else if (filiere == 'pu'){
         data_pie = alasql(`
         SELECT d.[Code_Région], 'Cyclomoteurs_et_véhicules_légers' AS type, sum(d.[Cyclomoteurs_et_véhicules_légers]) AS tonnage

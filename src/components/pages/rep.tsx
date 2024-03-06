@@ -14,29 +14,6 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
 
     const [cregion, _setcregion] = useSearchParamsState('region','32')
     
-    const collecte_disp_med = useList(
-        {
-            resource: "rep-disp-med-tonnages-collectes-en-2021/lines",
-            dataProviderName: "ademe_opendata",
-            pagination: {
-                pageSize: 150,
-            },
-            filters: [
-                {
-                    field: "Code_Dept",
-                    operator: "in",
-                    value: ['59','62','80','02','60']
-                },
-                {
-                    field: "Année_des_données",
-                    operator: "eq",
-                    value: year
-                },
-
-            ]
-        }
-    )
-
     const collecte_pu = useList(
         {
             resource: "rep-pu-tonnages-collectes-en-2018/lines",
@@ -91,15 +68,6 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                     <RepTopbar year={Number(year)} onChangeYear={setYear}/>
                 </Col>
 
-                <Col xl={24/2} xs={24}>
-                    <Card>
-                        disp med
-                        <LoadingComponent isLoading={collecte_disp_med.isFetching}>
-                            {collecte_disp_med.data ? <ChartPieRepCollecte filiere='disp_med' data={collecte_disp_med.data.data} /> : <b>...</b>}
-                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-disp-med-tonnages-collectes-en-2021' }]}></Attribution>
-                        </LoadingComponent>
-                    </Card>
-                </Col>
                 <Col xl={24/2} xs={24}>
                     <Card>
                         pu
