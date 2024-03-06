@@ -12,6 +12,7 @@ export const RepTopbar: React.FC<RepTopbarProps> = ({onChangeYear, year}) => {
     const items = [
         {path:'/rep/deee', label:"D3E"},
         {path:'/rep/pa', label:"Piles & Accu"},
+        {path:'/rep/pchim', label:"Produits chimiques"},
         {path:'/rep', label:"Vrac"},
     ]
     

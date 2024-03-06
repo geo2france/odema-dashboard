@@ -14,28 +14,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
 
     const [cregion, _setcregion] = useSearchParamsState('region','32')
     
-    const collecte_pchim = useList(
-        {
-            resource: "rep-pchim-tonnages-collectes-2021/lines",
-            dataProviderName: "ademe_opendata",
-            pagination: {
-                pageSize: 150,
-            },
-            filters: [
-                {
-                    field: "Code_Dept",
-                    operator: "in",
-                    value: ['59','62','80','02','60']
-                },
-                {
-                    field: "Année_des_données",
-                    operator: "eq",
-                    value: year
-                },
 
-            ]
-        }
-    )
 
     const collecte_tlc = useList(
         {
@@ -160,15 +139,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                     <RepTopbar year={Number(year)} onChangeYear={setYear}/>
                 </Col>
 
-                <Col xl={24/2} xs={24}>
-                    <Card>
-                        pchim
-                        <LoadingComponent isLoading={collecte_pchim.isFetching}>
-                            {collecte_pchim.data ? <ChartPieRepCollecte filiere='pchim' data={collecte_pchim.data.data} year={Number(year)}/> : <b>...</b>}
-                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pchim-tonnages-collectes-2021' }]}></Attribution>
-                        </LoadingComponent>
-                    </Card>
-                </Col>
+               
                 <Col xl={24/2} xs={24}>
                     <Card>
                         tlc

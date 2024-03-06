@@ -16,6 +16,7 @@ import { EnfouissementPage } from "./components/pages/enfouissement";
 import { IncinerationtPage } from "./components/pages/incineration";
 import { RepDeeePage } from "./components/pages/rep_deee";
 import { RepPaPage } from "./components/pages/rep_pa";
+import { RepPchimPage } from "./components/pages/rep_pchim";
 
 const myTheme = {...RefineThemes.Orange, 
   token: {
@@ -62,6 +63,7 @@ const App: React.FC = () => {
                 <Route index element={<RepPage />} />
                 <Route path="deee" element={<RepDeeePage />} />
                 <Route path="pa" element={<RepPaPage />} />
+                <Route path="pchim" element={<RepPchimPage />} />
               </Route>
               <Route path="isdnd">
                 <Route index element={<EnfouissementPage />} />

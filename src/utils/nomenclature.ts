@@ -41,6 +41,7 @@ export const RepDataCollecteProcess = (filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' |
         FROM ? d
         GROUP BY [Année_des_données], [equip_declare]
         `, [data]).map((e:BaseRecord) => ({annee:e.annee, categorie: e.equip_declare, tonnage: e.tonnage} ))
+        console.log(data_pie)
     }else if (filiere == 'tlc'){
         data_pie = alasql(`SELECT [origine], sum([tonnage]) AS tonnage
         FROM ? d
