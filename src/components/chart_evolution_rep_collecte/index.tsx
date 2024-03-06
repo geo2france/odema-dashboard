@@ -43,6 +43,7 @@ export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps>
                 data:e.data,
                 type: 'bar',
                 stack: 'stack1',
+                itemStyle:{color:chartBusinessProps(e.name).color},
                 tooltip:{
                     show:true,
                     valueFormatter: (value:number) => (`${Math.round(Number(value)).toLocaleString()} t` )

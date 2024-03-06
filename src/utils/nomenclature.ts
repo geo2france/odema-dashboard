@@ -85,10 +85,12 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
         case "COL":
         case "COLL":
         case "Collectivités":
+        case "Collectivité":
             return { label: "Collectivité", color:"#60c0dd" }
         case "DIS":
         case "DIST":
-        case "Distribution":   
+        case "Distribution":
+        case "Distributeur":     
             return { label: "Distributeur", color:"#d7504b" }
         case "ESS":
             return { label: "Acteur de l'éco. sociale et solidaire", color:"#9bca63"}
