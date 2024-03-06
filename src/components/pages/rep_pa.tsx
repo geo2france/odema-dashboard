@@ -44,7 +44,7 @@ export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
                         <LoadingComponent isLoading={collecte_pa.isFetching}>
-                            {collecte_pa.data ? <ChartPieRepCollecte filiere='pa' data={collecte_pa.data.data} year={Number(year)}/> : <b>...</b>}
+                            {collecte_pa.data ? <ChartPieRepCollecte filiere='pa' data={collecte_pa.data.data} year={Number(year)} focus_item={focus} onFocus={setFocus}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pa-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
