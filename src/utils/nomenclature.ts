@@ -49,10 +49,10 @@ export const RepDataCollecteProcess = (filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' |
         `, [data]).map((e:BaseRecord) => ({annee: e.annee, categorie: e.origine, tonnage: e.tonnage} ))
         console.log(data_pie)
     }else if (filiere == 'mnu'){
-        data_pie = alasql(`SELECT [Code_Région], sum([tonnage]) AS tonnage
+        data_pie = alasql(`SELECT [Code_Région], [Année_des_données] AS annee, sum([tonnage]) AS tonnage
         FROM ? d
-        GROUP BY [Code_Région]
-        `, [data]).map((e:BaseRecord) => ({categorie: 'MNU', tonnage: e.tonnage} ))
+        GROUP BY [Code_Région], [Année_des_données]
+        `, [data]).map((e:BaseRecord) => ({annee:e.annee, categorie: 'MNU', tonnage: e.tonnage} ))
     }else if (filiere == 'disp_med'){
         data_pie = alasql(`SELECT [origine], sum([tonnage]) AS tonnage
         FROM ? d
