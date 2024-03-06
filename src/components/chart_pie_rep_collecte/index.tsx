@@ -26,7 +26,11 @@ export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, f
 
     const myserie:PieSeriesOption = {
         type : 'pie',
-        data : data_pie.map((e:BaseRecord) => ({...e, name:chartBusinessProps(e.name).label})),
+        data : data_pie.map((e:BaseRecord) => (
+            {...e, 
+                name:chartBusinessProps(e.name).label, 
+                itemStyle:{color:chartBusinessProps(e.name).color}}
+        )),
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,
         itemStyle: {

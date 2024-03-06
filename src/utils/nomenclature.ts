@@ -39,6 +39,9 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
         case "Autres":
         case "AUTRES":
         case "AUTRE": 
+        case "Autre":
+        case "AUTR":
+        case "AUT":
             return {color:'#5D5D5D', sort:5, label:'Autres'}
         case "GEMF": //REP
             return { label: "GEM froid" }
@@ -79,8 +82,18 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
             return { label: "Laboratoire de biologie médicale" }
         case "PUI":
             return { label: "Pharmacie à usage intérieur" }
+        case "COL":
+        case "COLL":
+        case "Collectivités":
+            return { label: "Collectivité", color:"#60c0dd" }
+        case "DIS":
+        case "DIST":
+        case "Distribution":   
+            return { label: "Distributeur", color:"#d7504b" }
+        case "ESS":
+            return { label: "Acteur de l'éco. sociale et solidaire", color:"#9bca63"}
         default :
-            return {color:'#0f0', sort:99, label:item}
+            return {color:undefined, sort:undefined, label:item}
     }
 }
 
