@@ -41,7 +41,7 @@ export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, f
         },
         tooltip:{
             show:true,
-            valueFormatter: (value) => (`${Math.round(Number(value))} t` )
+            valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         }
     }
 

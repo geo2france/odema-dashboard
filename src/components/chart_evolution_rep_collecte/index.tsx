@@ -36,10 +36,25 @@ export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps>
         SELECT d.[serie_name] AS name, ARRAY(d.[value]) AS data
         FROM ? d
         GROUP BY d.[serie_name]
-    `, [data_chart]).map((e: BaseRecord) => ({ ...e, type: 'bar', stack: 'stack1' }))
+    `, [data_chart]).map((e: BaseRecord) => (
+            {
+                name:e.name,
+                data:e.data,
+                type: 'bar',
+                stack: 'stack1',
+                tooltip:{
+                    show:true,
+                    valueFormatter: (value:number) => (`${Math.round(Number(value)).toLocaleString()} t` )
+                }
+            }
+        ))
 
     const option: EChartsOption = {
         series: myseries,
+        legend: {top:'top', show:true},
+        tooltip: {
+            trigger: 'item'
+        },
         xAxis: [
             {
                 type: 'category',
