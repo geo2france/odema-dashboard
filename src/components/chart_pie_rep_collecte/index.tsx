@@ -1,7 +1,7 @@
 import { BaseRecord } from "@refinedev/core";
 import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
-import { RepDataCollecteProcess, chartBusinessProps, useChartHighlight } from "../../utils";
+import { chartBusinessProps, useChartHighlight } from "../../utils";
 import { useRef } from "react";
 
 export interface ChartPieRepCollecteProps {

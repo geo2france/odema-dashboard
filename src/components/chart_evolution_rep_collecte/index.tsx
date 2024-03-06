@@ -1,5 +1,5 @@
 import { BaseRecord } from "@refinedev/core"
-import { RepDataCollecteProcess, chartBusinessProps, useChartHighlight } from "../../utils"
+import { chartBusinessProps, useChartHighlight } from "../../utils"
 import { BarSeriesOption, EChartsOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import alasql from "alasql";
