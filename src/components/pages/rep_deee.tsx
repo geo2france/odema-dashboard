@@ -7,6 +7,7 @@ import { LoadingComponent } from "../loading_container"
 import { RepTopbar } from "../rep_topbar"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { useState } from "react"
+import { AppareilsElectriques, GrosElectromenagers, PetitsAppareilsElectriques } from "../../utils/picto"
 
 export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
@@ -33,8 +34,16 @@ export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
     return (<>
 
                 <Row gutter={[16, 16]}>
-                <Col span={24}><RepTopbar year={Number(year)} onChangeYear={setYear} /></Col>
-
+                    <Col span={20}>
+                        <RepTopbar year={Number(year)} onChangeYear={setYear} />
+                    </Col>
+                    <Col span={4}>
+                        <Card style={{ height: '100%',   textAlign: 'center' }}>
+                            <AppareilsElectriques style={{ maxHeight: '100px' }} />
+                            <GrosElectromenagers style={{ maxHeight: '100px' }} />
+                            <PetitsAppareilsElectriques style={{ maxHeight: '100px' }} />
+                        </Card>
+                    </Col>
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
                         <LoadingComponent isLoading={collecte_d3e.isFetching}>

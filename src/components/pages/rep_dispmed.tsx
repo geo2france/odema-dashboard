@@ -7,6 +7,7 @@ import { LoadingComponent } from "../loading_container"
 import { RepTopbar } from "../rep_topbar"
 import { useState } from "react"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
+import { Dasri } from "../../utils/picto"
 
 export const RepDispmedPage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
@@ -35,7 +36,14 @@ export const RepDispmedPage: React.FC<IResourceComponentsProps> = () => {
     return (<>
 
                 <Row gutter={[16, 16]}>
-                <Col span={24}><RepTopbar year={Number(year)} onChangeYear={setYear}/></Col>
+                <Col span={20}>
+                     <RepTopbar year={Number(year)} onChangeYear={setYear} />
+                </Col>
+                <Col span={4}>
+                    <Card style={{ height: '100%',   textAlign: 'center' }}>
+                        <Dasri style={{maxHeight: '100px'}} />
+                    </Card>            
+                </Col>
 
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
