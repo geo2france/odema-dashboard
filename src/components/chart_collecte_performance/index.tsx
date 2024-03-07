@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { BaseRecord } from "@refinedev/core";
-import type {EChartsOption, BarSeriesOption, PieSeriesOption} from "echarts"
+import type {EChartsOption, PieSeriesOption} from "echarts"
 import alasql from "alasql";
 import { chartBusinessProps } from "../../utils";
 

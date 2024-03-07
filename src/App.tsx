@@ -1,6 +1,6 @@
 import { Refine } from "@refinedev/core";
 import { ThemedLayoutV2, notificationProvider, RefineThemes } from "@refinedev/antd";
-import routerBindings, { DocumentTitleHandler, NavigateToResource, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
+import routerBindings, { DocumentTitleHandler, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
 import {dataProvider as dfDataProvider} from "./refine-datafair";
 import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
 

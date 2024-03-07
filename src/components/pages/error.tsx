@@ -3,7 +3,7 @@ import { useGo, useResource, useRouterType } from "@refinedev/core";
 import { RefineErrorPageProps } from "@refinedev/ui-types";
 import { Button, Result, Typography, Space, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { useNavigation, useTranslate } from "@refinedev/core";
+import { useNavigation } from "@refinedev/core";
 
 const { Text } = Typography;
 
@@ -15,7 +15,6 @@ const { Text } = Typography;
  */
 export const ErrorComponent: React.FC<RefineErrorPageProps> = () => {
     const [errorMessage, setErrorMessage] = useState<string>();
-    const translate = useTranslate();
     const { push } = useNavigation();
     const go = useGo();
     const routerType = useRouterType();

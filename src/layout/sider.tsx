@@ -1,5 +1,5 @@
 import { ApiOutlined, CloseSquareOutlined, FireOutlined, HomeOutlined, RollbackOutlined } from "@ant-design/icons";
-import { Sider, ThemedSiderV2, ThemedTitleV2 } from "@refinedev/antd";
+import { ThemedTitleV2 } from "@refinedev/antd";
 import Odema from "/img/logo_odema.png";
 
 export const AppTitle: React.FC = () => {
@@ -20,42 +20,18 @@ export const AppSider: React.FC = () => {
 /*** WIP ***/
 
 import React, { CSSProperties } from "react";
-import {
-  useTranslate,
-  useLogout,
-  useTitle,
-  CanAccess,
-  ITreeMenu,
-  useIsExistAuthentication,
-  useRouterContext,
-  useMenu,
-  useRefineContext,
-  useLink,
-  useRouterType,
-  useActiveAuthProvider,
-  pickNotDeprecated,
-  useWarnAboutChange,
-} from "@refinedev/core";
-import { useThemedLayoutContext } from "@refinedev/antd";
-import {
-  DashboardOutlined,
-  LogoutOutlined,
-  UnorderedListOutlined,
-  BarsOutlined,
-  LeftOutlined,
-  RightOutlined,
-} from "@ant-design/icons";
-import { Layout, Menu, Grid, Drawer, Button, theme } from "antd";
+import {  useMenu,} from "@refinedev/core";
+import { Layout, Menu, theme } from "antd";
 import type { RefineThemedLayoutV2SiderProps } from "@refinedev/antd";
 import { NavLink } from "react-router-dom";
 
-const drawerButtonStyles: CSSProperties = {
+/*const drawerButtonStyles: CSSProperties = {
   borderTopLeftRadius: 0,
   borderBottomLeftRadius: 0,
   position: "fixed",
   top: 64,
   zIndex: 999,
-};
+};*/
 
 const style_img:CSSProperties = {
    width:'100%',

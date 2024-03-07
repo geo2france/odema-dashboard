@@ -1,10 +1,9 @@
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
-import { Row, Col, Card, Alert, List, Tabs, TabsProps } from "antd";
+import { Row, Col, Card, List } from "antd";
 import { useSearchParamsState } from "../../utils";
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte";
 import { LoadingComponent } from "../loading_container";
 import { Attribution } from "../attributions";
-import { RepDeeePage } from "./rep_deee";
 import { RepTopbar } from "../rep_topbar";
 import alasql from "alasql";
 

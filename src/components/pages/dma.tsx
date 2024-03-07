@@ -1,6 +1,6 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useState } from "react";
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
-import { Card, Col, Typography, Select, Row } from 'antd';
+import { Card, Col, Select, Row } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
@@ -10,8 +10,6 @@ import alasql from "alasql";
 import ChartPieTypeTraitement from "../chart_pie_type_traitement";
 import { useSearchParamsState } from "../../utils";
 import { Attribution } from "../attributions";
-
-const { Text, Link } = Typography;
 
 
 export const DmaComponent: React.FC<IResourceComponentsProps> = () => {

@@ -5,7 +5,6 @@ import { Attribution } from "../attributions"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { LoadingComponent } from "../loading_container"
 import { RepTopbar } from "../rep_topbar"
-import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { useState } from "react"
 import { Textiles } from "../../utils/picto"
 import alasql from "alasql"
@@ -13,7 +12,7 @@ import alasql from "alasql"
 export const RepTlcPage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
-    const [cregion, _setcregion] = useSearchParamsState('region','32')
+    //const [cregion, _setcregion] = useSearchParamsState('region','32')
 
     const collecte = useList(
         {

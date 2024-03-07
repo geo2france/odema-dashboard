@@ -1,9 +1,9 @@
 import { BaseRecord } from "@refinedev/core";
 import alasql from "alasql";
-import { EChartsOption, PieSeriesOption, SunburstSeriesOption } from "echarts";
+import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { chartBusinessProps, useChartHighlight } from "../../utils";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 
 export interface ChartPieTypeTraitementProps {

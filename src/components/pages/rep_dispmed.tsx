@@ -1,6 +1,6 @@
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
 import { useSearchParamsState } from "../../utils"
-import { Row, Col, Alert, Card } from "antd"
+import { Row, Col, Card } from "antd"
 import { Attribution } from "../attributions"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { LoadingComponent } from "../loading_container"
@@ -13,7 +13,7 @@ import alasql from "alasql"
 export const RepDispmedPage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
-    const [cregion, _setcregion] = useSearchParamsState('region','32')
+    const [_cregion, _setcregion] = useSearchParamsState('region','32')
 
     const filiere = 'disp_med'
 
