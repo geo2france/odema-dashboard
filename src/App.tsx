@@ -58,7 +58,7 @@ const App: React.FC = () => {
                 </ThemedLayoutV2>
               }
             >
-              <Route index element={<NavigateToResource resource="todos" />} />
+              <Route index element={<DmaComponent />} />
               <Route path="DMA">
                 <Route index element={<DmaComponent />} />
               </Route>
