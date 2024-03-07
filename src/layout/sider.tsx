@@ -1,5 +1,6 @@
 import { ApiOutlined, CloseSquareOutlined, FireOutlined, HomeOutlined, RollbackOutlined } from "@ant-design/icons";
 import { Sider, ThemedSiderV2, ThemedTitleV2 } from "@refinedev/antd";
+import Odema from "/img/logo_odema.png";
 
 export const AppTitle: React.FC = () => {
 
@@ -56,9 +57,12 @@ const drawerButtonStyles: CSSProperties = {
   zIndex: 999,
 };
 
+const style_img:CSSProperties = {
+   width:'100%',
+}
+
 export const CustomSider: React.FC<RefineThemedLayoutV2SiderProps> = ({}) => {
     const { token } = theme.useToken();
-
     const { selectedKey } = useMenu();
 
     const items =[
@@ -82,8 +86,20 @@ export const CustomSider: React.FC<RefineThemedLayoutV2SiderProps> = ({}) => {
             backgroundColor: token.colorBgContainer,
             borderRight: `1px solid ${token.colorBgElevated}`,
         }}>
-            <ThemedTitleV2 collapsed={false} icon={<ApiOutlined/>} text="Odema"/>
-            <Menu items={items} selectedKeys={[selectedKey]} mode="inline">
+            <div
+                style={{
+                  width: "200px",
+                  padding: "0 16px",
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  height: "64px",
+                  backgroundColor: token.colorBgElevated,
+                }}
+              >
+                  <NavLink to={""}><img style={style_img} src={Odema} alt="Logo Odema"/></NavLink>
+            </div>
+            <Menu items={items} selectedKeys={[selectedKey]} mode="inline" style={{marginTop:"20px"}}>
                 
             </Menu>
         </Layout.Sider>
