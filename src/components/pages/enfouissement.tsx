@@ -1,4 +1,4 @@
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
+import { BaseRecord, IResourceComponentsProps } from "@refinedev/core"
 import { Row, Col, Alert, Select, Card } from "antd"
 import {
     useQuery,
@@ -10,6 +10,8 @@ import alasql from "alasql";
 import { useState } from "react";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
 
+import DataJson from "/data/isdnd_tonnage_annee.json?url";
+
 
 
 export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
@@ -20,7 +22,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
         queryKey: ['repoData'],
         queryFn: () =>
           axios
-            .get('/data/isdnd_tonnage_annee.json')
+            .get(DataJson)
             .then((res) => res.data),
     })
 
