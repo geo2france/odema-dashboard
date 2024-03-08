@@ -31,7 +31,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, year=202
     const myserie:BarSeriesOption={
         type:'bar',
         name:'ISDND',
-        data:data_chart.map((e) => ({
+        data:data_chart.map((e:BaseRecord) => ({
             value:e.value, name:e.name,
             itemStyle:{color:dptement_props.find(i => i.code==e.departement)?.color}
         }
