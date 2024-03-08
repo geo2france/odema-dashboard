@@ -8,6 +8,7 @@ import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { BaseOptionType } from "antd/es/select";
 import alasql from "alasql";
 import { useState } from "react";
+import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
 
 
 
@@ -30,7 +31,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
         FROM ?
     `, [data_isdnd]).map((e:BaseRecord) => ({value:e.value, label:`${e.label} (${e.value})`})) : undefined
 
-    console.log(select_options)
+    //console.log(select_options)
 
     return (<>
       <Row gutter={[16, 16]}>
@@ -42,10 +43,10 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         showIcon
                     />
                 </Col>
-                <Col span={12}>
+                <Col span={10}>
 
                { data_isdnd ? 
-                     <Card>
+                     <Card title="Tonnage enfouis : détail par installation">
                      <Select showSearch
                      optionFilterProp="label" 
                          defaultValue={aiot}
@@ -58,6 +59,15 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 : <small>Chargement</small> }
 
                </Col>
+
+               <Col span={14}>
+                <Card title="Tonnage enfouis par installation en 2022">
+                    <small>Ajouter légende (département)</small><br/>
+                    <small>Le même graphique par département ?</small>
+                 { data_isdnd ? <ChartRaceBarISDND data={data_isdnd} year={2022} /> : <small>Chargement</small> }
+                </Card>
+               </Col>
+
         </Row>
     </>)
 }
