@@ -52,7 +52,7 @@ export const CustomSider: React.FC<RefineThemedLayoutV2SiderProps> = ({}) => {
             {key:'/rep/disp_med', label:<NavLink to='/rep/disp_med'>DASRI</NavLink>},
             {key:'/rep', label:<NavLink to='/rep/'>Vrac</NavLink>},
         ]},
-        {key:'/isdnd', disabled:true, label:<NavLink to='#'><CloseSquareOutlined /> Enfouissement</NavLink>},
+        {key:'/isdnd', label:<NavLink to='/isdnd'><CloseSquareOutlined /> Enfouissement</NavLink>},
         {key:'/cve', disabled:true, label:<NavLink to='#'><FireOutlined /> Incinération</NavLink>},
     ]
 
