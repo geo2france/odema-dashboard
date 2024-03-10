@@ -2,7 +2,6 @@ import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
-import { useChartHighlight } from "../../utils";
 import { useRef } from "react";
 import { useChartEvents } from "../../utils/usecharthighlight";
 

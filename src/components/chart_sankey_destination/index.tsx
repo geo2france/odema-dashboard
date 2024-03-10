@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { BaseRecord } from "@refinedev/core";
 import { chartBusinessProps, wrappe } from "../../utils";
+import { useChartAction, useChartEvents } from "../../utils/usecharthighlight";
 
 export interface ChartSankeyDestinationDMAProps {
     data: any[] | BaseRecord[]; 
@@ -11,6 +12,9 @@ export interface ChartSankeyDestinationDMAProps {
 
 export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps> = ( {data, onFocus, focus_item} ) => {
     const chartRef = useRef<any>()
+
+    useChartEvents({chartRef:chartRef, onFocus:onFocus})
+    useChartAction({chartRef:chartRef, highlight_key:'name', item:focus_item})
 
     const links = data;
    
@@ -49,20 +53,6 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
             links,
         },
     };
-
-
-    useEffect(() => {
-        const mychart = chartRef.current.getEchartsInstance()
-        mychart.on('mouseover', (e:any) => onFocus(e.name));
-        mychart.on('mouseout', (e:any) => onFocus(null));
-    },[])
-
-    if(focus_item && chartRef.current) {
-        const mychart = chartRef.current.getEchartsInstance()
-        mychart.dispatchAction({type: 'downplay'})
-        mychart.dispatchAction({type: 'highlight', name:focus_item})
-    }
-
 
     return(
         <ReactECharts

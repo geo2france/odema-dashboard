@@ -26,8 +26,6 @@ export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps>
         .map((e) => ({ serie_name: chartBusinessProps(e.name).label, value: e.value, category: e.annee }))
         .sort((a, b) => a.category - b.category)
 
-    console.log(data)
-
     const axie_category = [...new Set(data_chart.map(item => item.category))]
         .map((e) => ({
             value: e,

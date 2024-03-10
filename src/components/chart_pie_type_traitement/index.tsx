@@ -2,8 +2,9 @@ import { BaseRecord } from "@refinedev/core";
 import alasql from "alasql";
 import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
-import { chartBusinessProps, useChartHighlight } from "../../utils";
+import { chartBusinessProps } from "../../utils";
 import { useRef } from "react";
+import { useChartAction, useChartEvents } from "../../utils/usecharthighlight";
 
 
 export interface ChartPieTypeTraitementProps {
@@ -17,8 +18,8 @@ export interface ChartPieTypeTraitementProps {
 const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ({data, data_territoire, onFocus, focus_item, c_region='32'} )  => {
     const chartRef = useRef<any>()
     
-    useChartHighlight(chartRef, onFocus, focus_item);
-
+    useChartEvents({chartRef:chartRef, onFocus:onFocus})
+    useChartAction({chartRef:chartRef, highlight_key:'name', item:focus_item})
     //TODO : Ajouter un onglet avec l'évolution des type de traitement par an (avec surbrillance de l'année en cours)
     //TODO : Ajouter des chiffres clé (Taux de recylage : valo matière + valo organique)
     const data_pie = alasql(`SELECT 

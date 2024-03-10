@@ -107,7 +107,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             <Col xl={24/2} xs={24}>
                 <Card title="Destination des déchets">
                     <LoadingComponent isLoading={isFetching}>
-                        {datasankey ? (<ChartSankeyDestinationDMA onFocus={setFocus} focus_item={focus} data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
+                        {datasankey ? (<ChartSankeyDestinationDMA onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
                         : <span>Chargement..</span>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement' }]}></Attribution>
                     </LoadingComponent>
@@ -116,7 +116,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             <Col xl={24/2} xs={24}>
                 <Card title="Types de traitement" >
                     <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching}>
-                        {data && data_chiffre_cle ? (<ChartPieTypeTraitement onFocus={setFocus} focus_item={focus} data={data.data} c_region={cregion} data_territoire={data_chiffre_cle.data}/> )
+                        {data && data_chiffre_cle ? (<ChartPieTypeTraitement onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={data.data} c_region={cregion} data_territoire={data_chiffre_cle.data}/> )
                         : <span>Chargement..</span>}
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement' }]}></Attribution>
                     </LoadingComponent>
