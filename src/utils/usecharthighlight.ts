@@ -2,9 +2,10 @@ import { MutableRefObject, useEffect } from "react";
 
 /**
  * Hook permettant de réagir au survol d'un graphique (hilight)
- * TODO : Trouver un moyen pour utiliser plusieurs key
+ * TODO : Trouver un moyen pour utiliser plusieurs key ?
  * TODO : remplacer les paramètres par un object {}
  * TODO : Ne pas utiliser highlight_key dans handleMouseOver, retourner directement le event object (comme pour onclick)
+ * TODO : séparer en 2 hooks ? (action et event)
  * @param chartRef - La référence du graphique
  * @param onFocus - Callback appelé lors du survol (en général setState()). Contient 
  * @param onClick - Callback appelé lors du click (en général setState())
