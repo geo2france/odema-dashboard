@@ -2,13 +2,19 @@ import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
+import { useRef } from "react";
+import { useChartHighlight } from "../../utils";
 
 export interface IChartRaceBarISDND {
     data : BaseRecord[],
-    year : number
+    year : number,
+    onClick : any
 }
 
-export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, year=2021 }) => {
+export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick, year=2021 }) => {
+    const chartRef = useRef<any>();
+
+    useChartHighlight(chartRef, undefined, undefined, undefined, onClick)
 
     const dptement_props = [
         {code:'02', color:'#038B4F'},
@@ -22,7 +28,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, year=202
     `, [data]).map((e:BaseRecord) => e.name)
 
     const data_chart = alasql(`
-        SELECT [departement], [name], tonnage as [value]
+        SELECT [departement], [name], [aiot] as key, tonnage as [value]
         FROM ?
         WHERE annee=${year} AND tonnage > 0
         ORDER BY tonnage ASC
@@ -32,7 +38,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, year=202
         type:'bar',
         name:'ISDND',
         data:data_chart.map((e:BaseRecord) => ({
-            value:e.value, name:e.name,
+            value:e.value, name:e.name, key:e.key,
             itemStyle:{color:dptement_props.find(i => i.code==e.departement)?.color}
         }
         ))
@@ -67,6 +73,6 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, year=202
 
     return (
             <ReactECharts
-            option={option} style={{ height: "450px" }} />
+            option={option} ref={chartRef} style={{ height: "450px" }} />
     )
 }

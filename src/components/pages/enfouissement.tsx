@@ -17,6 +17,7 @@ import DataJson from "/data/isdnd_tonnage_annee.json?url";
 export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
     const [aiot, setAiot] = useState('0007003529')
+    const [year, setYear] = useState(2022)
 
     const {data:data_isdnd} = useQuery({ // A remplacer par appel API WFS
         queryKey: ['repoData'],
@@ -33,7 +34,6 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
         FROM ?
     `, [data_isdnd]).map((e:BaseRecord) => ({value:e.value, label:`${e.label} (${e.value})`})) : undefined
 
-    //console.log(select_options)
 
     return (<>
       <Row gutter={[16, 16]}>
@@ -51,22 +51,22 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                      <Card title="Tonnage enfouis : détail par installation">
                      <Select showSearch
                      optionFilterProp="label" 
-                         defaultValue={aiot}
+                         defaultValue={aiot} value={aiot}
                          onSelect={(e) => setAiot(e)}
                         options={select_options} 
                         style={{width:'100%'}}/>
                         
-                    <ChartEvolutionISDND data={data_isdnd} aiot={aiot}></ChartEvolutionISDND> 
+                    <ChartEvolutionISDND data={data_isdnd} aiot={aiot} onClick={(e:any) => setYear(e.name)}></ChartEvolutionISDND> 
                     </Card>
                 : <small>Chargement</small> }
 
                </Col>
 
                <Col span={14}>
-                <Card title="Tonnage enfouis par installation en 2022">
+                <Card title={`Tonnage enfouis par installation en ${year}`}>
                     <small>Ajouter légende (département)</small><br/>
                     <small>Le même graphique par département ?</small>
-                 { data_isdnd ? <ChartRaceBarISDND data={data_isdnd} year={2022} /> : <small>Chargement</small> }
+                 { data_isdnd ? <ChartRaceBarISDND data={data_isdnd} year={year} onClick={(e:any) => setAiot(e.data.key)} /> : <small>Chargement</small> }
                 </Card>
                </Col>
 
