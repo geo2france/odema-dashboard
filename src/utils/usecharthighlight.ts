@@ -41,7 +41,7 @@ export const useChartEvents = ({chartRef, onClick, onFocus}:useChartEventsProps)
 
       };
     }
-  }, [chartRef]);
+  }, [chartRef, onClick, onFocus]);
 
 }
 
