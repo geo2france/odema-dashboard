@@ -4,6 +4,7 @@ import { BarSeriesOption, EChartsOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import alasql from "alasql";
 import { useRef } from "react";
+import { useChartAction, useChartEvents } from "../../utils/usecharthighlight";
 
 export interface ChartEvolutionRepCollecteProps{
     data:BaseRecord[],
@@ -17,7 +18,9 @@ export interface ChartEvolutionRepCollecteProps{
 //TODO ajouter un "Segmented Controls" pour switcher vers des bares normalized ?
 export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps> = ({ data, filiere, onFocus, focus_item, year }) => {
     const chartRef = useRef<any>()
-    useChartHighlight(chartRef, onFocus, focus_item, 'seriesName');
+
+    useChartEvents({chartRef:chartRef, onFocus:onFocus})
+    useChartAction({chartRef:chartRef, item:focus_item, highlight_key:'seriesName'})
 
     const data_chart = data
         .map((e) => ({ serie_name: chartBusinessProps(e.name).label, value: e.value, category: e.annee }))

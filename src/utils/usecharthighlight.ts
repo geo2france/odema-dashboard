@@ -54,3 +54,60 @@ export const useChartHighlight = (chartRef:MutableRefObject<any>, onFocus?:Funct
       }
     }, [chartRef, focus_item]);
   };
+
+export interface useChartEventsPros{
+  chartRef:MutableRefObject<any>,
+  onClick?: Function,
+  onFocus?: Function
+}
+export const useChartEvents = ({chartRef, onClick, onFocus}:useChartEventsPros) => {
+  useEffect(() => {
+    if (chartRef.current) { //Factoriser pour les différents type d'évenment ?
+      const mychart = chartRef.current.getEchartsInstance();
+
+      const handleMouseOver = onFocus ? (e:any) => onFocus(e) : undefined; 
+      const handleMouseOut = onFocus ?  () => onFocus(null) : undefined; //Retourner plutôt un '' ?
+      const handleClick = onClick ? (e:any) => onClick(e) : undefined;
+
+      if (handleMouseOver) {
+        mychart.on('mouseover', handleMouseOver);
+        mychart.on('mouseout', handleMouseOut);
+      }
+
+      if (handleClick) {
+        mychart.on('click', handleClick);
+      }
+
+      return () => {
+        if (onFocus) {
+          mychart.off('mouseover', handleMouseOver);
+          mychart.off('mouseout', handleMouseOut);
+        }
+
+        if (onClick) {
+          mychart.off('mouseover', handleClick);
+        }
+
+      };
+    }
+  }, [chartRef]);
+
+}
+
+export interface useChartActionPros{
+  chartRef:MutableRefObject<any>,
+  highlight_key:'seriesIndex' | 'seriesId' | 'seriesName' | 'name',
+  item? : string //?
+}
+export const useChartAction = ({chartRef, highlight_key, item}:useChartActionPros) => {
+
+  useEffect(() => {
+    if (chartRef.current) {
+      const mychart = chartRef.current.getEchartsInstance();
+      mychart.dispatchAction({ type: 'downplay' });
+      if (item) {
+          mychart.dispatchAction({ type: 'highlight', [highlight_key]: item });
+      }
+    }
+  }, [chartRef, item]);
+}

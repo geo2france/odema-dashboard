@@ -3,6 +3,7 @@ import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { chartBusinessProps, useChartHighlight } from "../../utils";
 import { useRef } from "react";
+import { useChartAction, useChartEvents } from "../../utils/usecharthighlight";
 
 export interface ChartPieRepCollecteProps {
     data: any[] | BaseRecord[];
@@ -17,7 +18,9 @@ export interface ChartPieRepCollecteProps {
 export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, filiere, year, onFocus=(() => (undefined)), focus_item, c_region='32'} )  => {
     const data_pie = data.filter((e) => e.annee == year).map((e) => ({name:e.name, value:e.value}));
     const chartRef = useRef<any>()
-    useChartHighlight(chartRef, onFocus, focus_item);
+
+    useChartEvents({chartRef:chartRef, onFocus:onFocus})
+    useChartAction({chartRef:chartRef, item:focus_item, highlight_key:'name'})
 
     const total = data_pie.reduce(
         (accum:number, current:BaseRecord) => accum + current.value,

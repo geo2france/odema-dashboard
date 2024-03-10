@@ -3,7 +3,7 @@ import alasql from "alasql";
 import { BarSeriesOption, EChartsOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { useRef } from "react";
-import { useChartHighlight } from "../../utils";
+import { useChartEvents } from "../../utils/usecharthighlight";
 
 export interface IChartRaceBarISDND {
     data : BaseRecord[],
@@ -14,7 +14,7 @@ export interface IChartRaceBarISDND {
 export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick, year=2021 }) => {
     const chartRef = useRef<any>();
 
-    useChartHighlight(chartRef, undefined, undefined, undefined, onClick)
+    useChartEvents({chartRef:chartRef, onClick:onClick})
 
     const dptement_props = [
         {code:'02', color:'#038B4F'},

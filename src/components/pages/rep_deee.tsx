@@ -64,7 +64,7 @@ export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés par flux en ${year}`}>
                         <LoadingComponent isLoading={collecte_d3e.isFetching}>
-                            {collecte_d3e.data ? <ChartPieRepCollecte filiere='d3e' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={setFocus}/> : <b>...</b>}
+                            {collecte_d3e.data ? <ChartPieRepCollecte filiere='d3e' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
@@ -73,7 +73,7 @@ export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title="Evolution des tonnages collectés">
                         <LoadingComponent isLoading={collecte_d3e.isFetching}>
-                            {collecte_d3e.data ? <ChartEvolutionRepCollecte filiere='d3e' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={setFocus}/> : <b>...</b>}
+                            {collecte_d3e.data ? <ChartEvolutionRepCollecte filiere='d3e' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>
                     </Card>
@@ -82,7 +82,7 @@ export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés par origine en ${year}`}>
                         <LoadingComponent isLoading={collecte_d3e.isFetching}>
-                            {collecte_d3e.data ? <ChartPieRepCollecte filiere='d3e' data={data_standardized_origine} year={Number(year)} focus_item={focus} onFocus={setFocus}/> : <b>...</b>}
+                            {collecte_d3e.data ? <ChartPieRepCollecte filiere='d3e' data={data_standardized_origine} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>
                     </Card>

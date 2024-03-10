@@ -4,6 +4,7 @@ import { BarSeriesOption, EChartsOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { useChartHighlight } from "../../utils";
 import { useRef } from "react";
+import { useChartEvents } from "../../utils/usecharthighlight";
 
 export interface IChartEvolutionISDND {
     data : BaseRecord[]
@@ -13,8 +14,7 @@ export interface IChartEvolutionISDND {
 export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot, onClick }) => {
     const chartRef = useRef<any>();
 
-    useChartHighlight(chartRef, undefined, undefined, undefined, onClick)
-
+    useChartEvents({chartRef:chartRef, onClick:onClick})
 
     const data_chart = data
     .filter((e) => e.aiot == aiot)
