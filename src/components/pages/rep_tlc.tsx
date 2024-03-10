@@ -53,7 +53,7 @@ export const RepTlcPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
                         <LoadingComponent isLoading={collecte.isFetching}>
-                            {collecte.data ? <ChartPieRepCollecte filiere='tlc' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={setFocus}/> : <b>...</b>}
+                            {collecte.data ? <ChartPieRepCollecte filiere='tlc' data={data_standardized} year={Number(year)} focus_item={focus}  onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-tlc-tonnages-collectes-en-2021' }]}></Attribution>
                         </LoadingComponent>
                     </Card>

@@ -66,7 +66,7 @@ export const RepMnuPage: React.FC<IResourceComponentsProps> = () => {
                 <Card title="Evolution des tonnages collectés">
                     <LoadingComponent isLoading={collecte.isFetching}>
                         <small>Pas de données disponibles avant 2021</small> <br/>
-                        {collecte.data ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={setFocus} /> : <b>...</b>}
+                        {collecte.data ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                     </LoadingComponent>
                 </Card>
