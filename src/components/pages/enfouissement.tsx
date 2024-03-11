@@ -12,7 +12,7 @@ import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
 
 import DataJson from "/data/isdnd_tonnage_annee.json?url";
 import { Attribution } from "../attributions";
-import { Map } from "../../utils/map";
+import { MapIsdnd } from "../../utils/map";
 
 
 
@@ -88,7 +88,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
                <Col span={14}>
                     <Card>
-                    { data_isdnd ? <Map data={data_isdnd} aiot={aiot} /> : <small>Chargement</small>}
+                    { data_isdnd ? <MapIsdnd data={data_isdnd} aiot={aiot} /> : <small>Chargement</small>}
                     </Card>
                 </Col>
 
