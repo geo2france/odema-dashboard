@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { LngLatLike, MapLibreEvent } from 'maplibre-gl';
+import React, { useRef, useEffect, useMemo } from 'react';
+import maplibregl, { LngLatLike, MapLibreEvent } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { BaseRecord } from '@refinedev/core';
 import Map, {Marker} from 'react-map-gl/maplibre';
@@ -10,11 +10,11 @@ export interface IMapProps{
     aiot:string
 }
 
-//TODO : composant carto générique ? Ou voir https://github.com/visgl/react-map-gl
-// TODO : UseEffect[] pour initaliser carte ?
+
 export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot }) => {
   const mapRef = useRef<any>(null);
   const zoom = 16;
+  const year = 2022
   //const style = 'https://demotiles.maplibre.org/style.json';
 
   const aiot_center = data.find((e) => e.aiot == aiot)
@@ -46,6 +46,11 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot }) => {
 
   }
 
+  const popup = (e:string) =>  useMemo(() => {
+    console.log(e)
+    return new maplibregl.Popup({ closeOnClick: false, closeButton: false }).setText(e);
+  }, [])
+
   return (
     <Map
     ref={mapRef}
@@ -59,8 +64,8 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot }) => {
     onLoad={onLoad}
     attributionControl={false}
   >
-    {data.filter((e) => (e.annee == 2021)).map((item) =>
-        <Marker key={`${item.aiot} ${item.annee}`} longitude={item.lng} latitude={item.lat} color="red" />
+    {data.filter((e) => (e.annee == year)).map((item) =>
+        <Marker key={`${item.aiot} ${item.annee}`} longitude={item.lng} latitude={item.lat} popup={popup(item.name)} color="red" />
      ) }
   </Map>
   );
