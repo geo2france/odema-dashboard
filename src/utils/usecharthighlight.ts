@@ -48,7 +48,7 @@ export const useChartEvents = ({chartRef, onClick, onFocus}:useChartEventsProps)
 export interface useChartActionProps{ //TODO : remplacer highlight_key et item par un seul paramètre : {highlight_key: item} ?
   /** La référence du graphique */
   chartRef:MutableRefObject<any>,
-  /** La cible à focus (cf. https://echarts.apache.org/en/api.html#action.highlight). En general {name:value} pour les donut, {seriesName} */
+  /** La cible à focus (cf. https://echarts.apache.org/en/api.html#action.highlight). En general {name:value} pour les donut et sankey, {seriesName} pour les bar et line */
   target: Partial<{
     [key in 'seriesIndex' | 'seriesId' | 'seriesName' | 'name' | 'dataIndex']: any;
     }>;
