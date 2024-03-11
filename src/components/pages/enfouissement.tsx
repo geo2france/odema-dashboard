@@ -12,7 +12,7 @@ import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
 
 import DataJson from "/data/isdnd_tonnage_annee.json?url";
 import { Attribution } from "../attributions";
-import { MapIsdnd } from "../../utils/map";
+import { MapIsdnd } from "../map_isdnd";
 
 
 
@@ -36,9 +36,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
     useEffect(() => {
         const a = data_isdnd?.data ? data_isdnd.find((e:any) => e.aiot == aiot) : center;
-        //console.warn(a)
         setCenter([a.lng, a.lat])
-        //setCenter([2.4125069,50.67431])
     },[data_isdnd, aiot])
 
 
