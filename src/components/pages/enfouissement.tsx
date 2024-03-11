@@ -11,13 +11,18 @@ import { useState } from "react";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
 
 import DataJson from "/data/isdnd_tonnage_annee.json?url";
+import { Attribution } from "../attributions";
 
 
 
 export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
+
     const [aiot, setAiot] = useState('0007003529')
     const [year, setYear] = useState(2022)
+
+    const IREP_attribution = {name: "Registre Francais des émissions polluantes", 
+    url:'https://www.data.gouv.fr/fr/datasets/registre-francais-des-emissions-polluantes/'}
 
     const {data:data_isdnd} = useQuery({ // A remplacer par appel API WFS
         queryKey: ['repoData'],
@@ -57,6 +62,8 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         style={{width:'100%'}}/>
                         
                     <ChartEvolutionISDND data={data_isdnd} aiot={aiot} onClick={(e:any) => setYear(e.name)}></ChartEvolutionISDND> 
+                    <Attribution data={[IREP_attribution,
+                        {name: 'Odema'}]} />
                     </Card>
                 : <small>Chargement</small> }
 
@@ -67,6 +74,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                     <small>Ajouter légende (département)</small><br/>
                     <small>Le même graphique par département ?</small>
                  { data_isdnd ? <ChartRaceBarISDND data={data_isdnd} year={year} onClick={(e:any) => setAiot(e.data.key)} /> : <small>Chargement</small> }
+                 <Attribution data={[IREP_attribution]}/>
                 </Card>
                </Col>
 
