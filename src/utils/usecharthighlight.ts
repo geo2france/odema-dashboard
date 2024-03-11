@@ -48,24 +48,24 @@ export const useChartEvents = ({chartRef, onClick, onFocus}:useChartEventsProps)
 export interface useChartActionProps{ //TODO : remplacer highlight_key et item par un seul paramètre : {highlight_key: item} ?
   /** La référence du graphique */
   chartRef:MutableRefObject<any>,
-  /** La champs à utiliser pour sélectionner l'objet à focus (cf. https://echarts.apache.org/en/api.html#action.highlight) */
-  highlight_key:'seriesIndex' | 'seriesId' | 'seriesName' | 'name',
-  /** La valeur à focus */
-  item? : string
-}
+  /** La cible à focus (cf. https://echarts.apache.org/en/api.html#action.highlight). En general {name:value} pour les donut, {seriesName} */
+  target: Partial<{
+    [key in 'seriesIndex' | 'seriesId' | 'seriesName' | 'name' | 'dataIndex']: any;
+    }>;
+  }
 
 /** Hook permettant de highlight un élément d'un graphique ECharts 
  * @category Hook
 */
-export const useChartAction = ({chartRef, highlight_key, item}:useChartActionProps) => {
-
+export const useChartActionHightlight = ({chartRef, target}:useChartActionProps) => {
+ 
   useEffect(() => {
     if (chartRef.current) {
       const mychart = chartRef.current.getEchartsInstance();
       mychart.dispatchAction({ type: 'downplay' });
-      if (item) {
-          mychart.dispatchAction({ type: 'highlight', [highlight_key]: item });
+      if (target.seriesIndex  || target.seriesId || target.seriesName || target.name || target.dataIndex) {
+          mychart.dispatchAction({ type: 'highlight', ...target });
       }
     }
-  }, [chartRef, item]);
+  }, [chartRef, target]);
 }

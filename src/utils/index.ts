@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 
 export { chartBusinessProps} from "./nomenclature";
-export { useChartEvents, useChartAction } from "./usecharthighlight";
+export { useChartEvents, useChartActionHightlight as useChartAction } from "./usecharthighlight";
 
 
 

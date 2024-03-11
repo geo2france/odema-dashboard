@@ -4,7 +4,7 @@ import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { chartBusinessProps } from "../../utils";
 import { useRef } from "react";
-import { useChartAction, useChartEvents } from "../../utils/usecharthighlight";
+import { useChartActionHightlight, useChartEvents } from "../../utils/usecharthighlight";
 
 
 export interface ChartPieTypeTraitementProps {
@@ -19,7 +19,7 @@ const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ({data, da
     const chartRef = useRef<any>()
     
     useChartEvents({chartRef:chartRef, onFocus:onFocus})
-    useChartAction({chartRef:chartRef, highlight_key:'name', item:focus_item})
+    useChartActionHightlight({chartRef:chartRef, target:{name:focus_item}})
     //TODO : Ajouter un onglet avec l'évolution des type de traitement par an (avec surbrillance de l'année en cours)
     //TODO : Ajouter des chiffres clé (Taux de recylage : valo matière + valo organique)
     const data_pie = alasql(`SELECT 

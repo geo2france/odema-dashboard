@@ -4,7 +4,7 @@ import { BarSeriesOption, EChartsOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import alasql from "alasql";
 import { useRef } from "react";
-import { useChartAction, useChartEvents } from "../../utils/usecharthighlight";
+import { useChartActionHightlight, useChartEvents } from "../../utils/usecharthighlight";
 
 export interface ChartEvolutionRepCollecteProps{
     data:BaseRecord[],
@@ -20,7 +20,7 @@ export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps>
     const chartRef = useRef<any>()
 
     useChartEvents({chartRef:chartRef, onFocus:onFocus})
-    useChartAction({chartRef:chartRef, item:focus_item, highlight_key:'seriesName'})
+    useChartActionHightlight({chartRef:chartRef, target:{seriesName:focus_item}})
 
     const data_chart = data
         .map((e) => ({ serie_name: chartBusinessProps(e.name).label, value: e.value, category: e.annee }))

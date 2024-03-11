@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { BaseRecord } from "@refinedev/core";
 import { chartBusinessProps, wrappe } from "../../utils";
-import { useChartAction, useChartEvents } from "../../utils/usecharthighlight";
+import { useChartActionHightlight, useChartEvents } from "../../utils/usecharthighlight";
 
 export interface ChartSankeyDestinationDMAProps {
     data: any[] | BaseRecord[]; 
@@ -14,7 +14,7 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
     const chartRef = useRef<any>()
 
     useChartEvents({chartRef:chartRef, onFocus:onFocus})
-    useChartAction({chartRef:chartRef, highlight_key:'name', item:focus_item})
+    useChartActionHightlight({chartRef:chartRef, target:{name:focus_item}})
 
     const links = data;
    
