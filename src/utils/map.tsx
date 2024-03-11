@@ -15,14 +15,15 @@ export interface IMapProps{
 export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot }) => {
   const mapRef = useRef<any>(null);
   const zoom = 16;
-  const style = 'https://demotiles.maplibre.org/style.json';
+  //const style = 'https://demotiles.maplibre.org/style.json';
 
   const aiot_center = data.find((e) => e.aiot == aiot)
   const center:LngLatLike = aiot_center ? [aiot_center.lng, aiot_center.lat] : [3,25] // ??
 
+
   useEffect(() => {
     if (mapRef.current){
-        mapRef.current.flyTo({center:center, speed: 0.8})
+        mapRef.current.flyTo({center:center, speed: 0.8, zoom:16})
     }
   }, [aiot] )
 
@@ -54,10 +55,13 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot }) => {
       zoom: zoom
     }}
     style={{width: 800, height: 600}}
-    mapStyle={style}
+    //mapStyle={style}
     onLoad={onLoad}
+    attributionControl={false}
   >
-    <Marker longitude={-122.4} latitude={37.8} color="red" />
+    {data.filter((e) => (e.annee == 2021)).map((item) =>
+        <Marker key={`${item.aiot} ${item.annee}`} longitude={item.lng} latitude={item.lat} color="red" />
+     ) }
   </Map>
   );
 }
