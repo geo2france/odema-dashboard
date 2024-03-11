@@ -1,6 +1,6 @@
 import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
-import { BarSeriesOption, EChartsOption } from "echarts";
+import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { useRef } from "react";
 import { useChartEvents } from "../../utils/usecharthighlight";
@@ -17,7 +17,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
 
     const data_chart = data
     .filter((e) => e.aiot == aiot)
-    .map((e) => ({ serie_name: e.name, value: e.tonnage, category: e.annee }))
+    .map((e) => ({ serie_name: e.name, value: e.tonnage, category: e.annee, capacite:e.capacite }))
     .sort((a, b) => a.category - b.category)
 
     const axie_category = [...new Set(data_chart.map(item => item.category))]
@@ -25,13 +25,15 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
         value: e
     }));
 
-    const myseries: BarSeriesOption[] = alasql(`
-    SELECT d.[serie_name] AS name, ARRAY(d.[value]) AS data
+    const data_agg = alasql(`
+    SELECT d.[serie_name] AS name, ARRAY(d.[value]) AS data, ARRAY(d.[capacite]) AS data_capacite
     FROM ? d
     GROUP BY d.[serie_name]
-`, [data_chart]).map((e: BaseRecord) => (
+`, [data_chart])
+
+    const myseries: BarSeriesOption[] = data_agg.map((e: BaseRecord) => (
         {
-            name:e.name,
+            name:`Entrants`,
             data:e.data,
             type: 'bar',
             stack: 'stack1',
@@ -42,8 +44,22 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
         }
     ))
 
+    const myseries_capcite: LineSeriesOption[] = data_agg.map((e: BaseRecord) => (
+        {
+            name:`Capacite`,
+            data:e.data_capacite,
+            type: 'line',
+            step: 'middle',
+            itemStyle:{color:'#D44F4A'},
+            tooltip:{
+                show:true,
+                valueFormatter: (value:number) => (`${Math.round(Number(value)).toLocaleString()} t` )
+            }
+        }
+    ))
+
     const option: EChartsOption ={
-        series:myseries,
+        series:[...myseries, ...myseries_capcite],
         legend: {top:'top', show:true},
         tooltip: {
             trigger: 'item'
@@ -56,9 +72,13 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
         ],
         yAxis: [
             {
-                type: 'value'
+                type: 'value',
+                axisLabel:{formatter: (value) => `${value.toLocaleString()} t`}
             }
         ],
+        grid:{
+            left:'75px',
+        },
     }
 
     return (
