@@ -7,11 +7,12 @@ import axios from "axios";
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { BaseOptionType } from "antd/es/select";
 import alasql from "alasql";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
 
 import DataJson from "/data/isdnd_tonnage_annee.json?url";
 import { Attribution } from "../attributions";
+import { Map } from "../../utils/map";
 
 
 
@@ -20,6 +21,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
     const [aiot, setAiot] = useState('0007003529')
     const [year, setYear] = useState(2022)
+    const [center, setCenter] = useState([2.4125069,50.67431])
 
     const IREP_attribution = {name: "Registre Francais des émissions polluantes", 
     url:'https://www.data.gouv.fr/fr/datasets/registre-francais-des-emissions-polluantes/'}
@@ -32,6 +34,12 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
             .then((res) => res.data),
     })
 
+    useEffect(() => {
+        const a = data_isdnd?.data ? data_isdnd.find((e:any) => e.aiot == aiot) : center;
+        //console.warn(a)
+        setCenter([a.lng, a.lat])
+        //setCenter([2.4125069,50.67431])
+    },[data_isdnd, aiot])
 
 
     const select_options:BaseOptionType[] = data_isdnd ? alasql(`
@@ -77,6 +85,12 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                  <Attribution data={[IREP_attribution]}/>
                 </Card>
                </Col>
+
+               <Col span={14}>
+                    <Card>
+                    { data_isdnd ? <Map data={data_isdnd} aiot={aiot} /> : <small>Chargement</small>}
+                    </Card>
+                </Col>
 
         </Row>
     </>)
