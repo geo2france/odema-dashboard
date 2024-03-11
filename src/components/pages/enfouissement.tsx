@@ -55,7 +55,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         message="En cours de construction"
                         description="Page en cours de construction"
                         type="warning"
-                        showIcon
+                        showIcon closable
                     />
                 </Col>
                 <Col span={10}>
