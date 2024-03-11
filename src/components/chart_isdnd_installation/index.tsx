@@ -73,7 +73,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
         yAxis: [
             {
                 type: 'value',
-                axisLabel:{formatter: (value) => `${value.toLocaleString()} t`}
+                axisLabel:{formatter: (value:number) => `${value.toLocaleString()} t`}
             }
         ],
         grid:{
