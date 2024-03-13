@@ -46,14 +46,7 @@ const layer_raster:LayerProps = {
     'id': 'isdnd',
     'type': 'circle',
     'paint': {
-      'circle-radius':  {
-        property: 'tonnage',
-        type:  'exponential',
-        stops: [
-          [0, 0],
-          [1000000, 50]
-        ]
-      },  
+      'circle-radius': ["interpolate", ["linear"], ['get', 'tonnage'],0,5,1000000,50], 
       'circle-color': ['case', ['==', ['get', 'aiot'], aiot] ,'#3887be', "#828282"],
       'circle-opacity': ['case', ['==', ['get', 'aiot'], aiot] ,0.8, 0.5]
 
@@ -64,14 +57,7 @@ const layer_raster:LayerProps = {
     'id': 'isdnd_capacite',
     'type': 'circle',
     'paint': {
-      'circle-radius':  {
-        property: 'capacite',
-        type:  'exponential',
-        stops: [
-          [0, 1],
-          [1000000, 50]
-        ]
-      },  
+      'circle-radius': ["interpolate", ["linear"], ['get', 'capacite'],0,5,1000000,50], 
       'circle-color': 'black',
       "circle-opacity":0,
       "circle-stroke-width":2,
@@ -87,17 +73,26 @@ const layer_raster:LayerProps = {
     }
   }
 
+  const onMouseMoveMap = (evt:any) => { //Commun
+    if (evt?.features.length > 0) {
+      mapRef.current.getCanvasContainer().style.cursor = 'pointer'
+    }else {
+      mapRef.current.getCanvasContainer().style.cursor = 'grab'
+    }
+  }
+
   return (
     <Map
       ref={mapRef}
       initialViewState={{
-        latitude: 49.96462,
+        latitude: 49.96462, //Centroid enveloppe HDF
         longitude: 2.820399,
         zoom: zoom
       }}
-      style={{ width: '100%', height: 600 }}
+      style={{ width: '100%', height: 500 }}
       //mapStyle={style}
       onClick={onClickMap}
+      onMouseMove={onMouseMoveMap}
       attributionControl={false}
       interactiveLayerIds={['isdnd_entrant','isdnd_capacite']}
     >
@@ -107,8 +102,8 @@ const layer_raster:LayerProps = {
       </Source>
 
       <Source {...source_isdn}>
-        <Layer {...layer_entrants} id={"isdnd_entrant"} />
-        <Layer {...layer_capacite} id={"isdnd_capacite"}/>
+        <Layer {...layer_entrants} id="isdnd_entrant" />
+        <Layer {...layer_capacite} id="isdnd_capacite"/>
       </Source>
 
 
