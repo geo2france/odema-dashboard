@@ -38,7 +38,7 @@ const layer_raster:LayerProps = {
 
  const source_isdn:SourceProps = {
     type: 'geojson',
-    data:BaseRecordToGeojsonPoint({data:data.filter((e) => (e.annee == year)), y:'lng',x:'lat'})
+    data:BaseRecordToGeojsonPoint({data:data.filter((e) => (e.annee == year && e.capacite > 0 )), y:'lng',x:'lat'})
   }
 
 
