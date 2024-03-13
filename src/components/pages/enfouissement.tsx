@@ -76,6 +76,12 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                </Col>
 
                <Col span={14}>
+                    <Card>
+                    { data_isdnd ? <MapIsdnd data={data_isdnd} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
+                    </Card>
+                </Col>
+
+               <Col span={12}>
                 <Card title={`Tonnage enfouis par installation en ${year}`}>
                     <small>Ajouter légende (département)</small><br/>
                     <small>Le même graphique par département ?</small>
@@ -84,11 +90,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 </Card>
                </Col>
 
-               <Col span={14}>
-                    <Card>
-                    { data_isdnd ? <MapIsdnd data={data_isdnd} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
-                    </Card>
-                </Col>
+
 
         </Row>
     </>)
