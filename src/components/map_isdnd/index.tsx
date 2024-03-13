@@ -3,7 +3,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { BaseRecord } from '@refinedev/core';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
 import { BaseRecordToGeojsonPoint } from '../../utils';
-//import './map.css';
+import { BaseLayer } from '../map_baselayer';
 
 export interface IMapProps{
     data:BaseRecord[],
@@ -11,30 +11,11 @@ export interface IMapProps{
     onClick?:Function
 }
 
-
 export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, onClick }) => {
   const mapRef = useRef<any>(null);
   const zoom = 6.5;
   const year = 2022
-  //const style = 'https://demotiles.maplibre.org/style.json';
 
-
-const source_raster:SourceProps = //Ressource commune (fond de plan)
-  {
-    type: 'raster',
-    attribution: 'OpenStreetMap',
-    tiles: [
-        //'https://www.geo2france.fr/geoserver/geo2france/ows/?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=ortho_regionale_2018_rvb'
-        'https://osm.geo2france.fr/mapcache/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=false&LAYERS=grey&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&STYLES=&BBOX={bbox-epsg-3857}'
-      ],
-    tileSize: 256
-    }
-
-const layer_raster:LayerProps = {
-  'id': 'orthoHR-layer',
-  'type': 'raster',
-  'paint': {}
-};
 
  const source_isdn:SourceProps = {
     type: 'geojson',
@@ -90,16 +71,13 @@ const layer_raster:LayerProps = {
         zoom: zoom
       }}
       style={{ width: '100%', height: 500 }}
-      //mapStyle={style}
       onClick={onClickMap}
       onMouseMove={onMouseMoveMap}
       attributionControl={true}
       interactiveLayerIds={['isdnd_entrant','isdnd_capacite']}
     >
 
-      <Source {...source_raster}>
-        <Layer {...layer_raster} />
-      </Source>
+      <BaseLayer layer="osm"/>
 
       <Source {...source_isdn}>
         <Layer {...layer_entrants} id="isdnd_entrant" />
