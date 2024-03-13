@@ -8,11 +8,12 @@ import { BaseRecordToGeojsonPoint } from '../../utils';
 
 export interface IMapProps{
     data:BaseRecord[],
-    aiot:string
+    aiot:string,
+    onClick?:Function
 }
 
 
-export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot }) => {
+export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, onClick }) => {
   const mapRef = useRef<any>(null);
   const zoom = 7;
   const year = 2022
@@ -50,7 +51,7 @@ const layer_raster:LayerProps = {
         type:  'exponential',
         stops: [
           [0, 0],
-          [1000000, 25]
+          [1000000, 50]
         ]
       },  
       'circle-color': ['case', ['==', ['get', 'aiot'], aiot] ,'#3887be', "#828282"],
@@ -68,13 +69,21 @@ const layer_raster:LayerProps = {
         type:  'exponential',
         stops: [
           [0, 1],
-          [1000000, 25]
+          [1000000, 50]
         ]
       },  
       'circle-color': 'black',
       "circle-opacity":0,
       "circle-stroke-width":2,
       "circle-stroke-color":['case', ['==', ['get', 'aiot'], aiot] ,'#f00', "#828282"]
+    }
+  }
+
+  const onClickMap =(evt:any) => { //Hook a faire ?
+    const clicked = evt?.features[0]?.properties
+    aiot = clicked ? clicked : aiot;
+    if (clicked && onClick) {
+      onClick(evt.features[0]?.properties)
     }
   }
 
@@ -88,7 +97,9 @@ const layer_raster:LayerProps = {
       }}
       style={{ width: '100%', height: 600 }}
       //mapStyle={style}
+      onClick={onClickMap}
       attributionControl={false}
+      interactiveLayerIds={['isdnd_entrant','isdnd_capacite']}
     >
 
       <Source {...source_raster}>
@@ -96,8 +107,8 @@ const layer_raster:LayerProps = {
       </Source>
 
       <Source {...source_isdn}>
-        <Layer {...layer_entrants} />
-        <Layer {...layer_capacite} />
+        <Layer {...layer_entrants} id={"isdnd_entrant"} />
+        <Layer {...layer_capacite} id={"isdnd_capacite"}/>
       </Source>
 
 

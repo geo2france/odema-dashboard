@@ -86,7 +86,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
                <Col span={14}>
                     <Card>
-                    { data_isdnd ? <MapIsdnd data={data_isdnd} aiot={aiot} /> : <small>Chargement</small>}
+                    { data_isdnd ? <MapIsdnd data={data_isdnd} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
                     </Card>
                 </Col>
 
