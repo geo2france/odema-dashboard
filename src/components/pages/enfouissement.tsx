@@ -47,7 +47,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
 
     return (<>
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} align="stretch">
                 <Col span={24}>
                     <Alert
                         message="En cours de construction"
@@ -59,7 +59,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 <Col span={10}>
 
                { data_isdnd ? 
-                     <Card title="Tonnage enfouis : détail par installation">
+                     <Card title="Tonnage enfouis : détail par installation" style={{height:"100%"}}>
                      <Select showSearch
                      optionFilterProp="label" 
                          defaultValue={aiot} value={aiot}
@@ -76,7 +76,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                </Col>
 
                <Col span={14}>
-                    <Card>
+                    <Card title="Installations de stockage de déchets non dangereux (ISDND)">
                     { data_isdnd ? <MapIsdnd data={data_isdnd} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
                     </Card>
                 </Col>
