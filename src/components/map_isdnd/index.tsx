@@ -1,5 +1,4 @@
-import React, { useRef, useEffect } from 'react';
-import { LngLatLike, MapLibreEvent } from 'maplibre-gl';
+import React, { useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { BaseRecord } from '@refinedev/core';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
@@ -15,19 +14,20 @@ export interface IMapProps{
 
 export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, onClick }) => {
   const mapRef = useRef<any>(null);
-  const zoom = 7;
+  const zoom = 6.5;
   const year = 2022
   //const style = 'https://demotiles.maplibre.org/style.json';
 
 
 const source_raster:SourceProps = //Ressource commune (fond de plan)
   {
-    'type': 'raster',
-    'tiles': [
+    type: 'raster',
+    attribution: 'OpenStreetMap',
+    tiles: [
         //'https://www.geo2france.fr/geoserver/geo2france/ows/?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=ortho_regionale_2018_rvb'
         'https://osm.geo2france.fr/mapcache/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=false&LAYERS=grey&TILED=true&WIDTH=256&HEIGHT=256&SRS=EPSG%3A3857&STYLES=&BBOX={bbox-epsg-3857}'
       ],
-    'tileSize': 256
+    tileSize: 256
     }
 
 const layer_raster:LayerProps = {
@@ -46,7 +46,7 @@ const layer_raster:LayerProps = {
     'id': 'isdnd',
     'type': 'circle',
     'paint': {
-      'circle-radius': ["interpolate", ["linear"], ['get', 'tonnage'],0,5,1000000,50], 
+      'circle-radius': ["interpolate", ["linear"], ['get', 'tonnage'],0,0,1000000,60], 
       'circle-color': ['case', ['==', ['get', 'aiot'], aiot] ,'#3887be', "#828282"],
       'circle-opacity': ['case', ['==', ['get', 'aiot'], aiot] ,0.8, 0.5]
 
@@ -57,7 +57,7 @@ const layer_raster:LayerProps = {
     'id': 'isdnd_capacite',
     'type': 'circle',
     'paint': {
-      'circle-radius': ["interpolate", ["linear"], ['get', 'capacite'],0,5,1000000,50], 
+      'circle-radius': ["interpolate", ["linear"], ['get', 'capacite'],0,0,1000000,60], 
       'circle-color': 'black',
       "circle-opacity":0,
       "circle-stroke-width":2,
@@ -93,7 +93,7 @@ const layer_raster:LayerProps = {
       //mapStyle={style}
       onClick={onClickMap}
       onMouseMove={onMouseMoveMap}
-      attributionControl={false}
+      attributionControl={true}
       interactiveLayerIds={['isdnd_entrant','isdnd_capacite']}
     >
 
