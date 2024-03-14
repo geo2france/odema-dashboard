@@ -8,14 +8,13 @@ import { BaseLayer } from '../map_baselayer';
 export interface IMapProps{
     data:BaseRecord[],
     aiot:string,
+    year?:number,
     onClick?:Function
 }
 
-export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, onClick }) => {
+export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick }) => {
   const mapRef = useRef<any>(null);
   const zoom = 6.5;
-  const year = 2022
-
 
  const source_isdn:SourceProps = {
     type: 'geojson',

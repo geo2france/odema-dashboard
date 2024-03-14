@@ -19,9 +19,9 @@ import { MapIsdnd } from "../map_isdnd";
 export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
 
-    const [aiot, setAiot] = useState('0007003529')
-    const [year, setYear] = useState(2022)
-    const [center, setCenter] = useState([2.4125069,50.67431])
+    const [aiot, setAiot] = useState<string>('0007003529')
+    const [year, setYear] = useState<number>(2022)
+    const [center, setCenter] = useState<number[]>([2.4125069,50.67431])
 
     const IREP_attribution = {name: "Registre Francais des émissions polluantes", 
     url:'https://www.data.gouv.fr/fr/datasets/registre-francais-des-emissions-polluantes/'}
@@ -67,7 +67,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         options={select_options} 
                         style={{width:'100%'}}/>
                         
-                    <ChartEvolutionISDND data={data_isdnd} aiot={aiot} onClick={(e:any) => setYear(e.name)}></ChartEvolutionISDND> 
+                    <ChartEvolutionISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setYear(e.name)}></ChartEvolutionISDND> 
                     <Attribution data={[IREP_attribution,
                         {name: 'Odema'}]} />
                     </Card>
@@ -76,8 +76,8 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                </Col>
 
                <Col span={14}>
-                    <Card title="Installations de stockage de déchets non dangereux (ISDND)">
-                    { data_isdnd ? <MapIsdnd data={data_isdnd} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
+                    <Card title={`Installations de stockage de déchets non dangereux (ISDND) ${year}`}>
+                    { data_isdnd ? <MapIsdnd data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
                     </Card>
                 </Col>
 
@@ -85,7 +85,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 <Card title={`Tonnage enfouis par installation en ${year}`}>
                     <small>Ajouter légende (département)</small><br/>
                     <small>Le même graphique par département ?</small>
-                 { data_isdnd ? <ChartRaceBarISDND data={data_isdnd} year={year} onClick={(e:any) => setAiot(e.data.key)} /> : <small>Chargement</small> }
+                 { data_isdnd ? <ChartRaceBarISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> : <small>Chargement</small> }
                  <Attribution data={[IREP_attribution]}/>
                 </Card>
                </Col>

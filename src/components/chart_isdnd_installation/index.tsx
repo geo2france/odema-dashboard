@@ -8,9 +8,10 @@ import { useChartEvents } from "../../utils/usecharthighlight";
 export interface IChartEvolutionISDND {
     data : BaseRecord[]
     aiot: string
+    year?:number
     onClick: Function
 }
-export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot, onClick }) => {
+export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot, onClick, year }) => {
     const chartRef = useRef<any>();
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
@@ -22,8 +23,12 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
 
     const axie_category = [...new Set(data_chart.map(item => item.category))]
     .map((e) => ({
-        value: e
+        value: e,
+        textStyle: {
+            fontWeight: e == year ? 700 : 400
+        }
     }));
+
 
     const data_agg = alasql(`
     SELECT d.[serie_name] AS name, ARRAY(d.[value]) AS data, ARRAY(d.[capacite]) AS data_capacite

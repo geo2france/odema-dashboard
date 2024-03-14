@@ -8,10 +8,11 @@ import { useChartEvents } from "../../utils/usecharthighlight";
 export interface IChartRaceBarISDND {
     data : BaseRecord[],
     year : number,
+    aiot? : string,
     onClick : any
 }
 
-export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick, year=2021 }) => {
+export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick, aiot, year=2021 }) => {
     const chartRef = useRef<any>();
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
@@ -24,8 +25,12 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         {code:'62', color:"#38A13F"},
     ]
 
-    const axie_category = alasql(`SELECT DISTINCT [name] FROM ? WHERE annee=${year} AND tonnage > 0 ORDER BY tonnage ASC
-    `, [data]).map((e:BaseRecord) => e.name)
+    const axie_category = alasql(`SELECT DISTINCT [name], [aiot] FROM ? WHERE annee=${year} AND tonnage > 0 ORDER BY tonnage ASC
+    `, [data]).map((e:BaseRecord) => ( {
+        value:e.name,
+        textStyle: {
+            fontWeight: e.aiot == aiot ? 700 : 400
+        }}))
 
     const data_chart = alasql(`
         SELECT [departement], [name], [aiot] as key, tonnage as [value]
