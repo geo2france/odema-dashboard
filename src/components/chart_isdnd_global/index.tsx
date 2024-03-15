@@ -23,7 +23,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
         data: data_chart.map((e:BaseRecord) => ({name:e.annee.toString(), value:e.tonnage}))
     }
 
-    const axie_category = [...new Set(data_chart.map(item => item.annee))]
+    const axie_category = [...new Set(data_chart.map((item:BaseRecord) => item.annee))]
     .map((e:any) => ({
         value: e,
         textStyle: {
