@@ -14,6 +14,7 @@ import DataJson from "/data/isdnd_tonnage_annee.json?url";
 import { Attribution } from "../attributions";
 import { MapIsdnd } from "../map_isdnd";
 import { TimelineIsdndCapacite } from "../timeline_isdnd_capacite";
+import { ChartIsdndGlobal } from "../chart_isdnd_global";
 
 
 
@@ -94,6 +95,15 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                <Col span={12}>
                 <Card title={`Arrếtés`}>
                 { data_isdnd ? <TimelineIsdndCapacite data={data_isdnd} aiot={aiot}></TimelineIsdndCapacite> : <small>Chargement</small> }
+                </Card>
+               </Col>
+
+               <Col span={12}>
+                <Card title={`Capacité régionale`}>
+                { data_isdnd ? <ChartIsdndGlobal data={data_isdnd} /> : <small>Chargement</small> }
+                <small>Données à vérfier + couvrir une période plus large (2010-2030) + ajouter les objectifs 2025 et 2020</small>
+                <br/><small>CF https://sig.hautsdefrance.fr/ext/g2f/odema/64f03092-5df6-474b-a8f2-c60719176df2/indicateur_isdnd.html</small>
+
                 </Card>
                </Col>
 
