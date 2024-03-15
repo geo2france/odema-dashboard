@@ -13,6 +13,7 @@ import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
 import DataJson from "/data/isdnd_tonnage_annee.json?url";
 import { Attribution } from "../attributions";
 import { MapIsdnd } from "../map_isdnd";
+import { TimelineIsdndCapacite } from "../timeline_isdnd_capacite";
 
 
 
@@ -26,6 +27,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
     const IREP_attribution = {name: "Registre Francais des émissions polluantes", 
     url:'https://www.data.gouv.fr/fr/datasets/registre-francais-des-emissions-polluantes/'}
 
+
     const {data:data_isdnd} = useQuery({ // A remplacer par appel API WFS
         queryKey: ['repoData'],
         queryFn: () =>
@@ -38,7 +40,6 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
         const a = data_isdnd?.data ? data_isdnd.find((e:any) => e.aiot == aiot) : center;
         setCenter([a.lng, a.lat])
     },[data_isdnd, aiot])
-
 
     const select_options:BaseOptionType[] = data_isdnd ? alasql(`
         SELECT DISTINCT aiot AS [value], name AS label
@@ -87,6 +88,12 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                     <small>Le même graphique par département ?</small>
                  { data_isdnd ? <ChartRaceBarISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> : <small>Chargement</small> }
                  <Attribution data={[IREP_attribution]}/>
+                </Card>
+               </Col>
+
+               <Col span={12}>
+                <Card title={`Arrếtés`}>
+                { data_isdnd ? <TimelineIsdndCapacite data={data_isdnd} aiot={aiot}></TimelineIsdndCapacite> : <small>Chargement</small> }
                 </Card>
                </Col>
 
