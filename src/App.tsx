@@ -25,7 +25,7 @@ const myTheme = {...RefineThemes.Orange,
   token: {
     colorPrimary: "#DEAD8F",
     linkHoverDecoration:'underline',
-    colorLink:'#DEAD8F',
+    colorLink:'#FF6A48',
     colorLinkHover:'#9D7156'
     },
 }
