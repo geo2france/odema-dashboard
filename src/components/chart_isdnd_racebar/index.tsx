@@ -1,6 +1,6 @@
 import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
-import { BarSeriesOption, EChartsOption } from "echarts";
+import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { useRef } from "react";
 import { useChartEvents } from "../../utils/usecharthighlight";
@@ -33,7 +33,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         }}))
 
     const data_chart = alasql(`
-        SELECT [departement], [name], [aiot] as key, tonnage as [value]
+        SELECT [departement], [name], [aiot] as key, tonnage as [value], [capacite]
         FROM ?
         WHERE annee=${year} AND tonnage > 0
         ORDER BY tonnage ASC
@@ -49,9 +49,19 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         ))
     }
 
+    const serieCapacite:LineSeriesOption={
+        type:'line',
+        name:'Capacite',symbol:'roundRect', symbolSize:5,
+        lineStyle:{opacity:0},
+        itemStyle:{color:'#D44F4A'},
+        data:data_chart.map((e:BaseRecord) => ({
+            value:e.capacite, name:e.name
+        }))
+    }
+
 
     const option: EChartsOption ={
-        series:[myserie],
+        series:[myserie, serieCapacite],
         legend: {
             top:'top', 
             show:false
