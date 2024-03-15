@@ -26,7 +26,7 @@ export const TimelineIsdndCapacite: React.FC<ITimelineIsdndCapaciteProps> = ({ d
     }]
 
 
-    const nom_isdnd = data.find((e:any) => e.aiot == aiot).name
+    const nom_isdnd = data.find((e:any) => e.aiot == aiot)?.name
 
 
     const items = data_sample.map((e:BaseRecord) => ({color:"#D44F4A", label:<> <b>{e.capacite.toLocaleString()} t</b> 🫙  {e.fin_effet} 📅</>, children:<><a href={e.url}>{e.nom}</a> {e.signature}</>}))
