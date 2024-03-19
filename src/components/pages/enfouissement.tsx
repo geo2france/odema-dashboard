@@ -53,7 +53,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 <Col span={24}>
                     <Alert
                         message="En cours de construction"
-                        description="Page en cours de construction"
+                        description={<>Page en cours de construction. Les données 2022 ne sont <b>pas encore validées</b>.</>}
                         type="warning"
                         showIcon closable
                     />
@@ -69,7 +69,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         options={select_options} 
                         style={{width:'100%'}}/>
                         
-                    <ChartEvolutionISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setYear(e.name)}></ChartEvolutionISDND> 
+                    <ChartEvolutionISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND> 
                     <Attribution data={[IREP_attribution,
                         {name: 'Odema'}]} />
                     </Card>

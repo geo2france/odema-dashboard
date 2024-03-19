@@ -18,28 +18,26 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
 
     const data_chart = data
     .filter((e) => e.aiot == aiot)
-    .map((e) => ({ serie_name: e.name, value: e.tonnage, category: e.annee, capacite:e.capacite }))
+    .map((e) => ({ serie_name: e.name, value: e.tonnage, category: e.annee.toString(), capacite:e.capacite }))
     .sort((a, b) => a.category - b.category)
 
-    const axie_category = [...new Set(data_chart.map(item => item.category))]
-    .map((e) => ({
-        value: e,
-        textStyle: {
-            fontWeight: e == year ? 700 : 400
-        }
-    }));
-
-
     const data_agg = alasql(`
-    SELECT d.[serie_name] AS name, ARRAY(d.[value]) AS data, ARRAY(d.[capacite]) AS data_capacite
-    FROM ? d
-    GROUP BY d.[serie_name]
+        SELECT d.[serie_name] AS name, ARRAY(@[d.category, d.[value]]) AS data, ARRAY(@[d.category, d.[capacite]]) AS data_capacite
+        FROM ? d
+        GROUP BY d.[serie_name]
 `, [data_chart])
+
 
     const myseries: BarSeriesOption[] = data_agg.map((e: BaseRecord) => (
         {
             name:`Entrants`,
-            data:e.data,
+            data:e.data.map((f:any[]) => ({
+                value:[f[0], f[1]],
+                itemStyle: {
+                    color: f[0] == year ? '#C1232B' : undefined
+                } 
+
+             })),
             type: 'bar',
             stack: 'stack1',
             tooltip:{
@@ -64,15 +62,15 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
     ))
 
     const option: EChartsOption ={
-        series:[...myseries, ...myseries_capcite],
+        series:[...myseries,...myseries_capcite],
         legend: {top:'top', show:true},
         tooltip: {
             trigger: 'item'
         },
         xAxis: [
             {
-                type: 'category',
-                data: axie_category
+                type: 'time',
+                //data: axie_category,
             }
         ],
         yAxis: [
