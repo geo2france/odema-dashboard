@@ -93,12 +93,6 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                </Col>
 
                <Col xl={12} xs={24}>
-                <Card title={`Arrếtés`}>
-                { data_isdnd ? <TimelineIsdndCapacite data={data_isdnd} aiot={aiot}></TimelineIsdndCapacite> : <small>Chargement</small> }
-                </Card>
-               </Col>
-
-               <Col xl={12} xs={24}>
                 <Card title={`Capacité régionale`}>
                 { data_isdnd ? <ChartIsdndGlobal data={data_isdnd} /> : <small>Chargement</small> }
                 <small>Données à vérfier + couvrir une période plus large (2010-2030) + ajouter les objectifs 2025 et 2020</small>
@@ -106,6 +100,14 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
                 </Card>
                </Col>
+
+               <Col xl={12} xs={24}>
+                <Card title={`Arrếtés`}>
+                { data_isdnd ? <TimelineIsdndCapacite data={data_isdnd} aiot={aiot}></TimelineIsdndCapacite> : <small>Chargement</small> }
+                </Card>
+               </Col>
+
+
 
 
 

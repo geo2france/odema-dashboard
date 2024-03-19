@@ -71,7 +71,8 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
             {
                 type: 'time',
                axisLabel:{rotate:-50},
-               maxInterval:1000*60*60*24*365 //1 year max interval
+               maxInterval:1000*60*60*24*365, //1 year max interval
+               max:'2023'
             }
         ],
         yAxis: [
