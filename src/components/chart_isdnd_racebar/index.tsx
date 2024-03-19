@@ -42,6 +42,9 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
     const myserie:BarSeriesOption={
         type:'bar',
         name:'ISDND',
+        tooltip:{
+            valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
+        },
         data:data_chart.map((e:BaseRecord) => ({
             value:e.value, name:e.name, key:e.key,
             itemStyle:{color:dptement_props.find(i => i.code==e.departement)?.color}
@@ -52,6 +55,9 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
     const serieCapacite:LineSeriesOption={
         type:'line',
         name:'Capacite',symbol:'roundRect', symbolSize:5,
+        tooltip:{
+            valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
+        },
         lineStyle:{opacity:0},
         itemStyle:{color:'#D44F4A'},
         data:data_chart.map((e:BaseRecord) => ({

@@ -29,6 +29,9 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
     const serie_tonnage: BarSeriesOption = {
         type: 'bar',
         name: 'Tonnages enfouis',
+        tooltip:{
+            valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
+        },
         data: data_chart.map((e: BaseRecord) => (
             { value: [e.annee.toString(), e.tonnage] }
         )),
@@ -40,6 +43,9 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
         itemStyle:{color:'#D44F4A'},
         showSymbol: false,
         step: 'end',
+        tooltip:{
+            valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
+        },
         data: data_chart.map((e: BaseRecord) => (
             { value: [e.annee.toString(), e.capacite] })
         )
@@ -61,6 +67,9 @@ const serie_objectif:LineSeriesOption = {
                 type: 'time',
             }
         ],
+        tooltip: {
+            trigger: 'axis',
+        },
         yAxis: [
             {
                 type: 'value',
