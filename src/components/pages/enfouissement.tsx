@@ -58,7 +58,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         showIcon closable
                     />
                 </Col>
-                <Col span={10}>
+                <Col xl={10} xs={24}>
 
                { data_isdnd ? 
                      <Card title="Tonnage enfouis : détail par installation" style={{height:"100%"}}>
@@ -77,13 +77,13 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
                </Col>
 
-               <Col span={14}>
+               <Col xl={14} xs={24}>
                     <Card title={`Installations de stockage de déchets non dangereux (ISDND) ${year}`}>
                     { data_isdnd ? <MapIsdnd data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
                     </Card>
                 </Col>
 
-               <Col span={12}>
+               <Col xl={12} xs={24}>
                 <Card title={`Tonnage enfouis par installation en ${year}`}>
                     <small>Ajouter légende (département)</small><br/>
                     <small>Le même graphique par département ?</small>
@@ -92,13 +92,13 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 </Card>
                </Col>
 
-               <Col span={12}>
+               <Col xl={12} xs={24}>
                 <Card title={`Arrếtés`}>
                 { data_isdnd ? <TimelineIsdndCapacite data={data_isdnd} aiot={aiot}></TimelineIsdndCapacite> : <small>Chargement</small> }
                 </Card>
                </Col>
 
-               <Col span={12}>
+               <Col xl={12} xs={24}>
                 <Card title={`Capacité régionale`}>
                 { data_isdnd ? <ChartIsdndGlobal data={data_isdnd} /> : <small>Chargement</small> }
                 <small>Données à vérfier + couvrir une période plus large (2010-2030) + ajouter les objectifs 2025 et 2020</small>
