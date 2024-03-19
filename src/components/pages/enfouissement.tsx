@@ -25,8 +25,8 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useState<number>(2022)
     const [center, setCenter] = useState<number[]>([2.4125069,50.67431])
 
-    const IREP_attribution = {name: "Registre Francais des émissions polluantes", 
-    url:'https://www.data.gouv.fr/fr/datasets/registre-francais-des-emissions-polluantes/'}
+    /*const IREP_attribution = {name: "Registre Francais des émissions polluantes", 
+    url:'https://www.data.gouv.fr/fr/datasets/registre-francais-des-emissions-polluantes/'}*/
 
 
     const {data:data_isdnd} = useQuery({ // A remplacer par appel API WFS
