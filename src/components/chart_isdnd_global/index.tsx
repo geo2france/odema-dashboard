@@ -19,9 +19,16 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
         ORDER BY [annee]
     `, [data])
 
+
+    const data_objectif = [
+        ['2010', 1241112*2],
+        ['2025', 1241112],
+        ['2050', 1241112]
+    ]
+
     const serie_tonnage: BarSeriesOption = {
         type: 'bar',
-        name: 'Entrant',
+        name: 'Tonnages enfouis',
         data: data_chart.map((e: BaseRecord) => (
             { value: [e.annee.toString(), e.tonnage] }
         )),
@@ -29,43 +36,25 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
 
     const serie_capacite: LineSeriesOption = {
         type: 'line', 
-        name: 'Capacite', 
+        name: 'Capacite réglementaire', 
         itemStyle:{color:'#D44F4A'},
         showSymbol: false,
         step: 'end',
         data: data_chart.map((e: BaseRecord) => (
             { value: [e.annee.toString(), e.capacite] })
-        ),
-        markLine:{
-            "label":{
-                "position":"start",
-                "textBorderColor":"#FEF8EF", 
-                "textBorderWidth":3,
-                "fontSize":13
-            
-            },
-            "data":[
-                [{
-                        "name": "Objectif 2025 -50%",
-                        "xAxis": "2025",
-                        "yAxis": 1241112,
-                        "symbol":"circle",
-                        "lineStyle":{
-                            "color":"#ff3333",
-                            "width":1,
-                            "type": 'dashed'
-                        }
-                    },{
-                        "xAxis": "max",
-                        "yAxis": 1200000,
-                        "symbol":"arrow"
-                }],
-            ]
-        },
-
+        )
     }
+
+const serie_objectif:LineSeriesOption = {
+    type: 'line', 
+    name: 'Objectif -50%', 
+    showSymbol: true,
+    data: data_objectif,
+    areaStyle:{opacity:0.1}
+}
+
     const option:EChartsOption = {
-        series:[serie_tonnage, serie_capacite],
+        series:[serie_tonnage, serie_capacite, serie_objectif],
         legend: {top:'top', show:true},
         xAxis: [
             {
@@ -79,6 +68,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
             }
         ]
     }
+    
     return (
         <ReactECharts
         option={option} ref={chartRef} style={{ height: "450px" }} /> 
