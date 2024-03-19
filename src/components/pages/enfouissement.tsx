@@ -58,6 +58,23 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         showIcon closable
                     />
                 </Col>
+
+                <Col xl={12} xs={24}>
+                <Card title={`Capacité régionale`}>
+                { data_isdnd ? <ChartIsdndGlobal data={data_isdnd} /> : <small>Chargement</small> }
+                <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]} />
+                </Card>
+               </Col>
+
+                <Col xl={12} xs={24}>
+                <Card title={`Tonnage enfouis par installation en ${year}`}>
+                    <small>Ajouter légende (département)</small><br/>
+                    <small>Le même graphique par département ?</small>
+                 { data_isdnd ? <ChartRaceBarISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> : <small>Chargement</small> }
+                 <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]}/>
+                </Card>
+               </Col>
+
                 <Col xl={10} xs={24}>
 
                { data_isdnd ? 
@@ -70,8 +87,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         style={{width:'100%'}}/>
                         
                     <ChartEvolutionISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND> 
-                    <Attribution data={[IREP_attribution,
-                        {name: 'Odema'}]} />
+                    <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]} />
                     </Card>
                 : <small>Chargement</small> }
 
@@ -82,24 +98,6 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                     { data_isdnd ? <MapIsdnd data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
                     </Card>
                 </Col>
-
-               <Col xl={12} xs={24}>
-                <Card title={`Tonnage enfouis par installation en ${year}`}>
-                    <small>Ajouter légende (département)</small><br/>
-                    <small>Le même graphique par département ?</small>
-                 { data_isdnd ? <ChartRaceBarISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> : <small>Chargement</small> }
-                 <Attribution data={[IREP_attribution]}/>
-                </Card>
-               </Col>
-
-               <Col xl={12} xs={24}>
-                <Card title={`Capacité régionale`}>
-                { data_isdnd ? <ChartIsdndGlobal data={data_isdnd} /> : <small>Chargement</small> }
-                <small>Données à vérfier + couvrir une période plus large (2010-2030) + ajouter les objectifs 2025 et 2020</small>
-                <br/><small>CF https://sig.hautsdefrance.fr/ext/g2f/odema/64f03092-5df6-474b-a8f2-c60719176df2/indicateur_isdnd.html</small>
-
-                </Card>
-               </Col>
 
                <Col xl={12} xs={24}>
                 <Card title={`Arrếtés`}>
