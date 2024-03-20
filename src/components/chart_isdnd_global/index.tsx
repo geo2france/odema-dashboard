@@ -39,7 +39,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
 
     const serie_capacite: LineSeriesOption = {
         type: 'line', 
-        name: 'Capacite réglementaire', 
+        name: 'Capacité autorisée', 
         itemStyle:{color:'#D44F4A'},
         showSymbol: false,
         step: 'end',
