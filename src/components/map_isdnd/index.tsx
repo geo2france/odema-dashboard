@@ -63,6 +63,7 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick }) => 
 
   return (
     <Map
+      reuseMaps
       ref={mapRef}
       initialViewState={{
         latitude: 49.96462, //Centroid enveloppe HDF
