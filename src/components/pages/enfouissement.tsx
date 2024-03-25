@@ -61,7 +61,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
                 <Col xl={12} xs={24}>
                 <Card title={`Capacité régionale`}>
-                { data_isdnd ? <ChartIsdndGlobal data={data_isdnd} /> : <small>Chargement</small> }
+                { data_isdnd ? <ChartIsdndGlobal data={data_isdnd} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> : <small>Chargement</small> }
                 <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]} />
                 </Card>
                </Col>

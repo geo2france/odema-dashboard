@@ -3,6 +3,7 @@ import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { useRef } from "react";
+import { useChartEvents } from "../../utils";
 
 export interface IChartIsdndGlobalProps {
     data : BaseRecord[]
@@ -11,6 +12,9 @@ export interface IChartIsdndGlobalProps {
 }
 export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onClick=() => undefined, year }) => {
     const chartRef = useRef<any>();
+
+    useChartEvents({chartRef:chartRef, onClick:onClick})
+
 
     const data_chart = alasql(`
         SELECT [annee], SUM([capacite]) as capacite, SUM([tonnage]) as tonnage 
@@ -33,7 +37,12 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
             valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         },
         data: data_chart.map((e: BaseRecord) => (
-            { value: [e.annee.toString(), e.tonnage] }
+            {
+                value: [e.annee.toString(), e.tonnage],
+                itemStyle: {
+                    color: e.annee == year ? '#C1232B' : undefined
+                }
+            }
         )),
     }
 
@@ -47,7 +56,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
             valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         },
         data: data_chart.map((e: BaseRecord) => (
-            { value: [e.annee.toString(), e.capacite] })
+            { value: [e.annee.toString(), e.capacite]  })
         )
     }
 
@@ -64,7 +73,7 @@ const serie_objectif:LineSeriesOption = {
         legend: {top:'top', show:true},
         xAxis: [
             {
-                type: 'time',
+                type: 'time'
             }
         ],
         tooltip: {
