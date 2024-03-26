@@ -1,12 +1,10 @@
 import { BaseRecord, IResourceComponentsProps } from "@refinedev/core"
-import { Row, Col, Alert, Select, Card, Button, Drawer, Tooltip } from "antd"
+import { Row, Col, Alert, Card, Drawer, Tooltip } from "antd"
 import {
     useQuery,
   } from "@tanstack/react-query";
 import axios from "axios";
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
-import { BaseOptionType } from "antd/es/select";
-import alasql from "alasql";
 import { useEffect, useState } from "react";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
 
@@ -56,13 +54,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
         setCenter([a.lng, a.lat])
     },[data_isdnd, aiot])
 
-    const select_options:BaseOptionType[] = data_isdnd ? alasql(`
-        SELECT DISTINCT aiot AS [value], name AS label
-        FROM ?
-    `, [data_isdnd]).map((e:BaseRecord) => ({value:e.value, label:`${e.label} (${e.value})`})) : undefined
-
-
-    return (<>
+      return (<>
       <Row gutter={[16, 16]} align="stretch">
                 <Col span={24}>
                     <Alert
@@ -93,13 +85,6 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
                { data_isdnd ? 
                      <Card title={`Tonnage enfouis : ${data_isdnd.find((e:BaseRecord) => e.aiot == aiot)?.name}`} style={{height:"100%"}}>
-
-                       {/* <Select showSearch 
-                        optionFilterProp="label" 
-                            defaultValue={aiot} value={aiot}
-                            onSelect={(e) => setAiot(e)}
-                            options={select_options} 
-               style={{width:'100%'}}/> */}
                             
                         <ChartEvolutionISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND>
 
