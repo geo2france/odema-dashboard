@@ -28,6 +28,9 @@ const myTheme = {...RefineThemes.Orange,
     colorLink:'#FF6A48',
     colorLinkHover:'#9D7156'
     },
+  components:{
+    Timeline:{itemPaddingBottom:40}
+  }
 }
 
 const App: React.FC = () => {

@@ -1,5 +1,5 @@
 import { BaseRecord, IResourceComponentsProps } from "@refinedev/core"
-import { Row, Col, Alert, Select, Card } from "antd"
+import { Row, Col, Alert, Select, Card, Button, Drawer, Tooltip } from "antd"
 import {
     useQuery,
   } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ import { MapIsdnd } from "../map_isdnd";
 import { TimelineIsdndCapacite } from "../timeline_isdnd_capacite";
 import { ChartIsdndGlobal } from "../chart_isdnd_global";
 import { Feature } from "maplibre-gl";
+import { HistoryOutlined } from "@ant-design/icons";
 
 
 
@@ -25,6 +26,8 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
     const [aiot, setAiot] = useState<string>('0007003529')
     const [year, setYear] = useState<number>(2022)
     const [center, setCenter] = useState<number[]>([2.4125069,50.67431])
+
+    const [drawerIsOpen, setdrawerIsOpen] = useState(false);
 
     /*const IREP_attribution = {name: "Registre Francais des émissions polluantes", 
     url:'https://www.data.gouv.fr/fr/datasets/registre-francais-des-emissions-polluantes/'}*/
@@ -89,16 +92,29 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={10} xs={24}>
 
                { data_isdnd ? 
-                     <Card title="Tonnage enfouis : détail par installation" style={{height:"100%"}}>
-                     <Select showSearch
-                     optionFilterProp="label" 
-                         defaultValue={aiot} value={aiot}
-                         onSelect={(e) => setAiot(e)}
-                        options={select_options} 
-                        style={{width:'100%'}}/>
-                        
-                    <ChartEvolutionISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND> 
-                    <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]} />
+                     <Card title={`Tonnage enfouis : ${data_isdnd.find((e:BaseRecord) => e.aiot == aiot)?.name}`} style={{height:"100%"}}>
+
+                       {/* <Select showSearch 
+                        optionFilterProp="label" 
+                            defaultValue={aiot} value={aiot}
+                            onSelect={(e) => setAiot(e)}
+                            options={select_options} 
+               style={{width:'100%'}}/> */}
+                            
+                        <ChartEvolutionISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND>
+
+                        <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]} /> 
+
+                        <div  style={{float:'right'}}>
+                          <Tooltip title="Historique des arrêtés">
+                              <a onClick={() => setdrawerIsOpen(true)}><HistoryOutlined /></a>
+                          </Tooltip>
+                        </div> 
+
+                        <Drawer title="Historique des arrêtés" onClose={() => setdrawerIsOpen(false)} open={drawerIsOpen}>
+                         { data_capacite ? <TimelineIsdndCapacite data={data_capacite} aiot={aiot}></TimelineIsdndCapacite> : <small>Chargement</small> }
+                        </Drawer>
+
                     </Card>
                 : <small>Chargement</small> }
 
@@ -109,16 +125,6 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                     { data_isdnd ? <MapIsdnd data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
                     </Card>
                 </Col>
-
-               <Col xl={12} xs={24}>
-                <Card title={`Arrếtés`}>
-                { data_capacite ? <TimelineIsdndCapacite data={data_capacite} aiot={aiot}></TimelineIsdndCapacite> : <small>Chargement</small> }
-                </Card>
-               </Col>
-
-
-
-
 
         </Row>
     </>)

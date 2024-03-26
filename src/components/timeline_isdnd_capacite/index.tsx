@@ -22,19 +22,20 @@ export const TimelineIsdndCapacite: React.FC<ITimelineIsdndCapaciteProps> = ({ d
         ORDER BY [annee]
     `,[data.filter((e:BaseRecord) => e.aiot == aiot)]).map((e:BaseRecord) => ({...e, signature:new Date(e.signature) }))
 
-    const nom_isdnd = data.find((e:any) => e.aiot == aiot)?.name
+    const nom_isdnd = data.find((e:any) => e.aiot == aiot)?.nom_isdnd
 
     const items = data_timeline.map((e:BaseRecord) => (
         {color:"#D44F4A",
         label:<>
-            <b>{e.capacite.toLocaleString()} t</b> 🫙
+            <b>{e.capacite.toLocaleString()} t</b> 🫙<br/>
             {e.debut_effet} - {e.fin_effet} 📅</>,
             children: (
                <><Tooltip title={e.nom}> <InfoCircleOutlined /> </Tooltip> <a href={e.url}>Arrếté du {e.signature.toLocaleDateString()}</a></> ) }
     ))
     return(
     <>
-        <h3>{nom_isdnd} {aiot}</h3>
+        <h3>{nom_isdnd} <br/><small>{aiot}</small></h3>
+        <br/>
         <Timeline mode='right'
             items={items}
         />
