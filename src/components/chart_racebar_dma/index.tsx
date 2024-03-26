@@ -20,7 +20,7 @@ export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_t
                             GROUP BY L_REGION, C_REGION, N_DEPT) as a
                         GROUP BY a.L_REGION, a.C_REGION
                         ORDER BY sum(a.TONNAGE_DMA) / sum(a.VA_POPANNEE)
-                        `, [data, data_territoire])
+                        `, [data, data_territoire]) //Reprendre avec les données à jours de l'ADEME "chiffre clés hors gravat"
            
     const option:EChartsOption = {
         yAxis: {

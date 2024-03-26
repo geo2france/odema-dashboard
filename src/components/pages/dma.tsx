@@ -78,7 +78,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
     });
 
     const {data:data_chiffre_cle, isFetching:isFetching_chiffre_cle} = useList({
-        resource:"sinoe-indicateurs-chiffres-cles-dma-avec-gravats-2009-2017/lines",
+        resource:"sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017/lines",
         dataProviderName:"ademe_opendata",
         pagination: {
             pageSize: 250,
@@ -109,7 +109,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
                     <LoadingComponent isLoading={isFetching}>
                         {datasankey ? (<ChartSankeyDestinationDMA onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
                         : <span>Chargement..</span>}
-                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement' }]}></Attribution>
+                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement' }]}></Attribution>
                     </LoadingComponent>
                 </Card>
             </Col>
@@ -118,7 +118,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
                     <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching}>
                         {data && data_chiffre_cle ? (<ChartPieTypeTraitement onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={data.data} c_region={cregion} data_territoire={data_chiffre_cle.data}/> )
                         : <span>Chargement..</span>}
-                        <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-oma-collectes-par-type-de-traitement' }]}></Attribution>
+                        <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement' }]}></Attribution>
                     </LoadingComponent>
                 </Card>
             </Col>
@@ -127,7 +127,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
                     <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching_performance}>
                         {data_performance && data_chiffre_cle ? (<ChartCollectePerformance data={data_performance.data} data_territoire={data_chiffre_cle.data}/> )
                         : <span>Chargement..</span>}
-                        <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/performances-collecte-oma-par-type-dechet-par-dept' }]}></Attribution>
+                        <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte' }]}></Attribution>
                     </LoadingComponent>
                 </Card>
             </Col>
