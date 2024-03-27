@@ -1,3 +1,6 @@
 [submodule "src/refine-datafair"]
 	path = src/refine-datafair
 	url = git@github.com:geo2france/refine-datafair.git
+[submodule "src/refine-wfs"]
+	path = src/refine-wfs
+	url = git@github.com:geo2france/refine-wfs.git

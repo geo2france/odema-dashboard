@@ -2,6 +2,7 @@ import { Refine } from "@refinedev/core";
 import { ThemedLayoutV2, notificationProvider, RefineThemes } from "@refinedev/antd";
 import routerBindings, { DocumentTitleHandler, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
 import {dataProvider as dfDataProvider} from "./refine-datafair";
+import {dataProvider as wfsDataProvider} from "./refine-wfs";
 import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
 
 import { ConfigProvider } from "antd";
@@ -41,7 +42,8 @@ const App: React.FC = () => {
           routerProvider={routerBindings}
           dataProvider={{
               default:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets"),
-              ademe_opendata:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets")
+              ademe_opendata:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets"),
+              geo2france:wfsDataProvider("https://www.geo2france.fr/geoserver/ows")
             }}
           notificationProvider={notificationProvider}
           resources={ressources}

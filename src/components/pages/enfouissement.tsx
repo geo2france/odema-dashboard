@@ -1,4 +1,4 @@
-import { BaseRecord, IResourceComponentsProps } from "@refinedev/core"
+import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
 import { Row, Col, Alert, Card, Drawer, Tooltip } from "antd"
 import {
     useQuery,
@@ -13,7 +13,6 @@ import { Attribution } from "../attributions";
 import { MapIsdnd } from "../map_isdnd";
 import { TimelineIsdndCapacite } from "../timeline_isdnd_capacite";
 import { ChartIsdndGlobal } from "../chart_isdnd_global";
-import { Feature } from "maplibre-gl";
 import { HistoryOutlined } from "@ant-design/icons";
 
 
@@ -39,15 +38,19 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
             .then((res) => res.data),
     })
 
-    const {data:data_capacite_q} = useQuery({ // TODO Appel WFS
-        queryKey: ['capacite'],
-        queryFn : () =>
-            axios
-              .get('https://www.geo2france.fr/geoserver/odema/ows?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=odema:capacite_isdnd&OUTPUTFORMAT=application%2Fjson')
-              .then((res) => res.data),
-    })
 
-    const data_capacite = data_capacite_q ? data_capacite_q.features.map((e:Feature) => e.properties): undefined
+    const data_capacite = useList({
+        resource:"odema:capacite_isdnd",
+        dataProviderName:"geo2france",
+        filters:[{
+            field:"aiot",
+            operator:"eq",
+            value:aiot
+        }],
+        pagination:{
+            mode:"off"
+        }
+    })
 
     useEffect(() => {
         const a = data_isdnd?.data ? data_isdnd.find((e:any) => e.aiot == aiot) : center;
@@ -97,7 +100,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         </div> 
 
                         <Drawer title="Historique des arrêtés" onClose={() => setdrawerIsOpen(false)} open={drawerIsOpen}>
-                         { data_capacite ? <TimelineIsdndCapacite data={data_capacite} aiot={aiot}></TimelineIsdndCapacite> : <small>Chargement</small> }
+                         { data_capacite.data ? <TimelineIsdndCapacite data={data_capacite.data.data} aiot={aiot}></TimelineIsdndCapacite> : <small>Chargement</small> }
                         </Drawer>
 
                     </Card>
