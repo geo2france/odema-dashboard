@@ -16,7 +16,7 @@ export interface AttributionProps {
 }
 
 export const Attribution: React.FC<AttributionProps> = ({ data }) => {
-    const licence_logo_style:React.CSSProperties = {height:'12px'}
+    const licence_logo_style:React.CSSProperties = {height:'12px', display:'inline'}
 
     const plural = data.length > 1 ? 's' : ''
     return (
