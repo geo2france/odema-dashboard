@@ -1,4 +1,4 @@
-import { Layout, Divider } from "antd";
+import { Layout, Divider, Flex } from "antd";
 import { CSSProperties } from "react";
 import { grey } from '@ant-design/colors';
 
@@ -13,8 +13,10 @@ import Odema from "/img/logo_odema.png";
 export const AppFooter: React.FC = () => {
 
   const style_img:CSSProperties = { 
-    height:'70px',
-    marginRight: '20px'
+    objectFit: 'contain',
+    //maxHeight:'70px',
+    height:'70px', //Si maxHeight, les images larges ont une width de 0 ??
+   maxWidth:'100%',
   }
 
   const logos = [
@@ -34,7 +36,7 @@ export const AppFooter: React.FC = () => {
             backgroundColor: "#fff",
           }}
         >
-            <div>
+            <div style={{display:"flex"}}> {/* Utiliser Flex ?*/}
             <a href="/">
               <img style={style_img} src={Odema} alt="Odema"/>
             </a>
@@ -45,7 +47,7 @@ export const AppFooter: React.FC = () => {
                   src={l.src} alt={l.name}/>
                 </a>
             )}
-          </div>
+            </div>
         </Layout.Footer>
   )
 }
