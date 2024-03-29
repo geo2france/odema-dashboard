@@ -7,6 +7,7 @@ import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
 
 import { ConfigProvider } from "antd";
 import "@refinedev/antd/dist/reset.css";
+import './index.css';
 
 import { DmaComponent } from "./components/pages/dma";
 import { ressources } from "./ressources"
@@ -21,6 +22,7 @@ import { RepPchimPage } from "./components/pages/rep_pchim";
 import { RepTlcPage } from "./components/pages/rep_tlc";
 import { RepMnuPage } from "./components/pages/rep_mnu";
 import { RepDispmedPage } from "./components/pages/rep_dispmed";
+import { ObjectifsPage } from "./components/pages/objectifs";
 
 const myTheme = {...RefineThemes.Orange, 
   token: {
@@ -81,6 +83,9 @@ const App: React.FC = () => {
               </Route>
               <Route path="cve">
                 <Route index element={<IncinerationtPage />} />
+              </Route>
+              <Route path="objectifs">
+                <Route index element={<ObjectifsPage />} />
               </Route>
               <Route path="*" element={<ErrorComponent />} />
             </Route>
