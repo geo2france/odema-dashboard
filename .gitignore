@@ -12,6 +12,13 @@
 /build
 /dist
 
+# doc
+/docs
+*.excalidraw
+
+# data
+/public/data
+
 # misc
 .DS_Store
 .env.local
