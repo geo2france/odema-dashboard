@@ -14,6 +14,7 @@ import { MapIsdnd } from "../map_isdnd";
 import { TimelineIsdndCapacite } from "../timeline_isdnd_capacite";
 import { ChartIsdndGlobal } from "../chart_isdnd_global";
 import { HistoryOutlined } from "@ant-design/icons";
+import { ChartDonutIsdndCapacite } from "../chat_donut_isdnd_capacite";
 
 
 
@@ -84,7 +85,13 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 </Card>
                </Col>
 
-                <Col xl={10} xs={24}>
+               <Col xl={8} lg={12} xs={24}>
+                    <Card title={`Repartition des capacités autorisées ${year}`}>
+                    { data_isdnd ? <ChartDonutIsdndCapacite data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.aiot)} /> : <small>Chargement</small>}
+                    </Card>
+                </Col>
+
+                <Col xl={8} lg={12} xs={24}>
 
                { data_isdnd ? 
                      <Card title={`Tonnage enfouis : ${data_isdnd.find((e:BaseRecord) => e.aiot == aiot)?.name}`} style={{height:"100%"}}>
@@ -108,7 +115,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
                </Col>
 
-               <Col xl={14} xs={24}>
+               <Col xl={8} lg={12} xs={24}>
                     <Card title={`Installations de stockage de déchets non dangereux (ISDND) ${year}`}>
                     { data_isdnd ? <MapIsdnd data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
                     </Card>

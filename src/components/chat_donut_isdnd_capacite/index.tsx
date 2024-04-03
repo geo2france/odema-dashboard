@@ -1,0 +1,45 @@
+import React, { useRef } from 'react';
+import ReactECharts from 'echarts-for-react';
+import { EChartsOption, TreemapSeriesOption } from 'echarts';
+import { BaseRecord } from '@refinedev/core';
+import alasql from 'alasql';
+import { ChartTerritoriesProps } from '../../utils/nomenclature';
+import { useChartEvents } from '../../utils';
+
+export interface IChartDonutIsdndCapacitePros {
+    data: BaseRecord[];
+    year: Number;
+    onClick?: Function;
+    aiot? : string;
+}
+
+export const ChartDonutIsdndCapacite: React.FC<IChartDonutIsdndCapacitePros> = ( {data, year, onClick = () => {}, aiot} ) => {  
+    const chartRef = useRef<any>();
+
+    useChartEvents({chartRef:chartRef, onClick:onClick})
+
+    const dataPie = alasql(`
+    SELECT [departement] as name, ARRAY(@{name:d.name, aiot: d.aiot, [value]:d.capacite}) as [children]
+    FROM ? d
+    WHERE [annee] = ${year}
+    GROUP BY [departement]
+    `, [data])
+
+    const serie:TreemapSeriesOption = {
+        type:'treemap',
+        data:dataPie.map((e:any) => ({
+            ...e, 
+            children:e.children.map((c:any) => ({...c, label:{fontWeight:c.aiot == aiot ? 'bold' : 'normal'}})),
+            itemStyle:{color:ChartTerritoriesProps(e.name)?.color}
+        })),
+        width:'100%', height:'100%',
+        roam:false, nodeClick:false, breadcrumb:{show:false}
+    }
+    const option:EChartsOption = {
+        series:[serie],
+    };
+
+    return (
+        <ReactECharts  ref={chartRef} option={option} style={{ height: '450px' }} />
+    );
+}
