@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { BaseRecord } from "@refinedev/core";
 import type {EChartsOption, PieSeriesOption} from "echarts"
@@ -9,9 +9,10 @@ export interface ChartCollectePerformanceProps {
     data: any[] | BaseRecord[]; // Spécifier les champs au niveau de la ressource
     data_territoire: any[] | BaseRecord[]; // Le endpoint précédent ne fournie pas la POPANNEE
     c_region?:string
+    style? : CSSProperties
   }
 
-export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> = ( {data, data_territoire, c_region='32'} ) => {
+export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> = ( {data, data_territoire, c_region='32', style} ) => {
 
     const data_pie = alasql(`SELECT TYP_COLLECTE, (sum(TONNAGE_T_HG) / sum(data_territoire.VA_POPANNEE))*1000 AS RATIO_KG_HAB 
                         FROM ? data 
@@ -66,6 +67,6 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
 
     return(
         <ReactECharts
-        option={option} style={{ height: "450px"}}/>
+        option={option} style={style}/>
     )
 }

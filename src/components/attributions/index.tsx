@@ -20,7 +20,7 @@ export const Attribution: React.FC<AttributionProps> = ({ data }) => {
 
     const plural = data.length > 1 ? 's' : ''
     return (
-        <>
+        <div style={{paddingLeft:4, paddingBottom:4}}>
             <Text type="secondary">{`Source${plural} des données: `}
                 {data.map((e: SourceProps, i:number) => (
                     <React.Fragment key={i}>
@@ -35,6 +35,6 @@ export const Attribution: React.FC<AttributionProps> = ({ data }) => {
                 </Tooltip>
             </Text>
 
-        </>
+        </div>
     )
 }

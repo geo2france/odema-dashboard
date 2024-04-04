@@ -2,15 +2,16 @@ import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
-import { useRef } from "react";
+import { CSSProperties, useRef } from "react";
 import { useChartEvents } from "../../utils";
 
 export interface IChartIsdndGlobalProps {
     data : BaseRecord[]
     year?:number
     onClick?: Function
+    style?: CSSProperties
 }
-export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onClick=() => undefined, year }) => {
+export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onClick=() => undefined, year, style}) => {
     const chartRef = useRef<any>();
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
@@ -89,6 +90,6 @@ const serie_objectif:LineSeriesOption = {
     
     return (
         <ReactECharts
-        option={option} ref={chartRef} style={{ height: "450px" }} /> 
+        option={option} ref={chartRef} style={style} /> 
     )
 }

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { CSSProperties, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, TreemapSeriesOption } from 'echarts';
 import { BaseRecord } from '@refinedev/core';
@@ -11,9 +11,10 @@ export interface IChartDonutIsdndCapacitePros {
     year: Number;
     onClick?: Function;
     aiot? : string;
+    style? : CSSProperties
 }
 
-export const ChartDonutIsdndCapacite: React.FC<IChartDonutIsdndCapacitePros> = ( {data, year, onClick = () => {}, aiot} ) => {  
+export const ChartDonutIsdndCapacite: React.FC<IChartDonutIsdndCapacitePros> = ( {data, year, onClick = () => {}, aiot, style} ) => {  
     const chartRef = useRef<any>();
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
@@ -40,6 +41,6 @@ export const ChartDonutIsdndCapacite: React.FC<IChartDonutIsdndCapacitePros> = (
     };
 
     return (
-        <ReactECharts  ref={chartRef} option={option} style={{ height: '450px' }} />
+        <ReactECharts  ref={chartRef} option={option} style={style} />
     );
 }
