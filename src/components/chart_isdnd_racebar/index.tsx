@@ -30,7 +30,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
     `, [data]).map((e:BaseRecord) => ( {
         value:e.name,
         textStyle: {
-            fontWeight: e.aiot == aiot ? 700 : 400
+            fontWeight: e.aiot == aiot ? 700 : 400,
         }}))
 
     const data_chart = alasql(`
@@ -79,7 +79,11 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         yAxis: [
             {
                 type: 'category',
-                data: axie_category
+                data: axie_category,
+                axisLabel: {
+                    interval: 0,
+                    fontSize: 10
+                }
             }
         ],
         xAxis: [
