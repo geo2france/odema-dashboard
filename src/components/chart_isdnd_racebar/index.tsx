@@ -2,17 +2,18 @@ import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
-import { useRef } from "react";
+import { CSSProperties, useRef } from "react";
 import { useChartEvents } from "../../utils/usecharthighlight";
 
 export interface IChartRaceBarISDND {
     data : BaseRecord[],
     year : number,
     aiot? : string,
-    onClick : any
+    onClick : any,
+    style? : CSSProperties
 }
 
-export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick, aiot, year=2021 }) => {
+export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick, aiot, year=2021, style }) => {
     const chartRef = useRef<any>();
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
@@ -94,6 +95,6 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
 
     return (
             <ReactECharts
-            option={option} ref={chartRef} style={{ height: "450px" }} />
+            option={option} ref={chartRef} style={style} />
     )
 }

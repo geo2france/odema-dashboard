@@ -5,8 +5,9 @@ import {dataProvider as dfDataProvider} from "./refine-datafair";
 import {dataProvider as wfsDataProvider} from "./refine-wfs";
 import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
 
-import { ConfigProvider } from "antd";
+import { ConfigProvider, ThemeConfig } from "antd";
 import "@refinedev/antd/dist/reset.css";
+import './index.css';
 
 import { DmaComponent } from "./components/pages/dma";
 import { ressources } from "./ressources"
@@ -23,15 +24,23 @@ import { RepMnuPage } from "./components/pages/rep_mnu";
 import { RepDispmedPage } from "./components/pages/rep_dispmed";
 import { ObjectifsPage } from "./components/pages/objectifs";
 
-const myTheme = {...RefineThemes.Orange, 
+const myTheme:ThemeConfig = {...RefineThemes.Orange, 
   token: {
     colorPrimary: "#DEAD8F",
     linkHoverDecoration:'underline',
     colorLink:'#FF6A48',
-    colorLinkHover:'#9D7156'
+    colorLinkHover:'#9D7156',
+    borderRadius:4,
     },
   components:{
-    Timeline:{itemPaddingBottom:40}
+    Timeline:{
+      itemPaddingBottom:40
+    },
+    Card:{
+      headerHeight:35,
+      headerFontSize:14,
+      paddingLG:0,
+    },
   }
 }
 

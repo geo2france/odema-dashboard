@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { CSSProperties, useState } from "react";
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
 import { Card, Col, Select, Row } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
@@ -19,6 +19,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
 
     const [focus, setFocus] = useState<string | undefined>(undefined) 
 
+    const chartStyle:CSSProperties = {height:'350px'}
     //const cregion = 32
 
     const {data, isFetching} = useList({
@@ -97,7 +98,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
         <>
         <Row gutter={[16,16]}>
             <Col span={24}>
-            <Card>
+            <Card style={{padding:12}}>
                 Année : <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} value={year}
                     options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
                 />     
@@ -107,7 +108,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             <Col xl={24/2} xs={24}>
                 <Card title="Destination des déchets">
                     <LoadingComponent isLoading={isFetching}>
-                        {datasankey ? (<ChartSankeyDestinationDMA onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
+                        {datasankey ? (<ChartSankeyDestinationDMA style={chartStyle} onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
                         : <span>Chargement..</span>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement' }]}></Attribution>
                     </LoadingComponent>
@@ -116,7 +117,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             <Col xl={24/2} xs={24}>
                 <Card title="Types de traitement" >
                     <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching}>
-                        {data && data_chiffre_cle ? (<ChartPieTypeTraitement onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={data.data} c_region={cregion} data_territoire={data_chiffre_cle.data}/> )
+                        {data && data_chiffre_cle ? (<ChartPieTypeTraitement style={chartStyle} onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={data.data} c_region={cregion} data_territoire={data_chiffre_cle.data}/> )
                         : <span>Chargement..</span>}
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement' }]}></Attribution>
                     </LoadingComponent>
@@ -125,7 +126,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             <Col xl={24/2} xs={24}>
                 <Card title="Performances de collecte" >
                     <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching_performance}>
-                        {data_performance && data_chiffre_cle ? (<ChartCollectePerformance data={data_performance.data} data_territoire={data_chiffre_cle.data}/> )
+                        {data_performance && data_chiffre_cle ? (<ChartCollectePerformance style={chartStyle} data={data_performance.data} data_territoire={data_chiffre_cle.data}/> )
                         : <span>Chargement..</span>}
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte' }]}></Attribution>
                     </LoadingComponent>
@@ -134,7 +135,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             <Col xl={24/2} xs={24}>
                 <Card title="Ratio régionaux">
                      <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching_performance}>
-                        {data_performance && data_chiffre_cle ? <ChartRaceBareDMA data={data_performance.data} data_territoire={data_chiffre_cle.data} highlight_region={cregion}/> : <span>Chargement</span>}
+                        {data_performance && data_chiffre_cle ? <ChartRaceBareDMA style={chartStyle} data={data_performance.data} data_territoire={data_chiffre_cle.data} highlight_region={cregion}/> : <span>Chargement</span>}
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017' }]}></Attribution>
                     </LoadingComponent>
                 </Card>

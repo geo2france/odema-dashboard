@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { CSSProperties, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { BaseRecord } from '@refinedev/core';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
@@ -9,12 +9,13 @@ export interface IMapProps{
     data:BaseRecord[],
     aiot:string,
     year?:number,
-    onClick?:Function
+    onClick?:Function,
+    style?:CSSProperties
 }
 
-export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick }) => {
+export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style }) => {
   const mapRef = useRef<any>(null);
-  const zoom = 6.5;
+  const zoom = 6.4;
 
  const source_isdn:SourceProps = {
     type: 'geojson',
@@ -70,7 +71,7 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick }) => 
         longitude: 2.820399,
         zoom: zoom
       }}
-      style={{ width: '100%', height: 500 }}
+      style={{ ...style, width: '100%', height:'500px',...style }}
       onClick={onClickMap}
       onMouseMove={onMouseMoveMap}
       attributionControl={true}

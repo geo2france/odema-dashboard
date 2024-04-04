@@ -5,7 +5,7 @@ import {
   } from "@tanstack/react-query";
 import axios from "axios";
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
 
 import DataJson from "/data/isdnd_tonnage_annee.json?url";
@@ -20,6 +20,7 @@ import { ChartDonutIsdndCapacite } from "../chat_donut_isdnd_capacite";
 
 export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
+    const chartStyle:CSSProperties = {height:'350px'}
 
     const [aiot, setAiot] = useState<string>('0007003529')
     const [year, setYear] = useState<number>(2022)
@@ -59,7 +60,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
     },[data_isdnd, aiot])
 
       return (<>
-      <Row gutter={[16, 16]} align="stretch">
+      <Row gutter={[14, 14]} align="stretch">
                 <Col span={24}>
                     <Alert
                         message="En cours de construction"
@@ -71,23 +72,21 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
                 <Col xl={12} xs={24}>
                 <Card title={`Capacité régionale`}>
-                { data_isdnd ? <ChartIsdndGlobal data={data_isdnd} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> : <small>Chargement</small> }
+                { data_isdnd ? <ChartIsdndGlobal style={chartStyle} data={data_isdnd} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> : <small>Chargement</small> }
                 <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]} />
                 </Card>
                </Col>
 
                 <Col xl={12} xs={24}>
                 <Card title={`Tonnage enfouis par installation en ${year}`}>
-                    <small>Ajouter légende (département)</small><br/>
-                    <small>Le même graphique par département ?</small>
-                 { data_isdnd ? <ChartRaceBarISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> : <small>Chargement</small> }
+                 { data_isdnd ? <ChartRaceBarISDND style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> : <small>Chargement</small> }
                  <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]}/>
                 </Card>
                </Col>
 
                <Col xl={8} lg={12} xs={24}>
                     <Card title={`Repartition des capacités autorisées ${year}`}>
-                    { data_isdnd ? <ChartDonutIsdndCapacite data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.aiot)} /> : <small>Chargement</small>}
+                    { data_isdnd ? <ChartDonutIsdndCapacite style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.aiot)} /> : <small>Chargement</small>}
                     </Card>
                 </Col>
 
@@ -96,7 +95,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                { data_isdnd ? 
                      <Card title={`Tonnage enfouis : ${data_isdnd.find((e:BaseRecord) => e.aiot == aiot)?.name}`} style={{height:"100%"}}>
                             
-                        <ChartEvolutionISDND data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND>
+                        <ChartEvolutionISDND style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND>
 
                         <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]} /> 
 
@@ -116,8 +115,8 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                </Col>
 
                <Col xl={8} lg={12} xs={24}>
-                    <Card title={`Installations de stockage de déchets non dangereux (ISDND) ${year}`}>
-                    { data_isdnd ? <MapIsdnd data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
+                    <Card title={`Installations de stockage de déchets non dangereux (ISDND) ${year}`} >
+                    { data_isdnd ? <MapIsdnd style={{height:376}} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
                     </Card>
                 </Col>
 
