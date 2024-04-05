@@ -85,7 +85,7 @@ const serie_objectif:LineSeriesOption = {
         yAxis: [
             {
                 type: 'value',
-                axisLabel:{formatter: (value:number) => `${value.toLocaleString()} t`}
+                axisLabel:{formatter: (value:number) => `${(value/1e6).toLocaleString()} Mt`}
             }
         ]
     }

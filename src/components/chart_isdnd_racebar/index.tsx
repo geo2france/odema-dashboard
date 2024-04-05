@@ -82,13 +82,14 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
                 data: axie_category,
                 axisLabel: {
                     interval: 0,
-                    fontSize: 10
+                    fontSize: 10,
                 }
             }
         ],
         xAxis: [
             {
-                type: 'value'
+                type: 'value',
+                axisLabel:{formatter: (value:number) => `${(value/1e3).toLocaleString()} kt`}
             }
         ],
         grid:{
