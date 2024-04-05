@@ -45,6 +45,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
                 }
             }
         )),
+        z:3
     }
 
     const serie_capacite: LineSeriesOption = {
@@ -58,7 +59,8 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
         },
         data: data_chart.map((e: BaseRecord) => (
             { value: [e.annee.toString(), e.capacite]  })
-        )
+        ),
+        z:2
     }
 
 const serie_objectif:LineSeriesOption = {
