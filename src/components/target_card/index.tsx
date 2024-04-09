@@ -1,6 +1,8 @@
 import React from 'react'
 import { ChartGaugeTarget } from '../chart_gauge_targets'
-import { Col, Descriptions, DescriptionsProps, Row, Tag } from 'antd';
+import { Col, Collapse, Descriptions, DescriptionsProps, Row, Tag } from 'antd';
+import { ChartTargetEvolution } from '../chart_target_evolution';
+import { BaseRecord } from '@refinedev/core';
 
 export interface ITargetCardProps {
     objectif_name:string,
@@ -10,10 +12,11 @@ export interface ITargetCardProps {
     due_date:string,
     ref_date:string,
     ref_value:number,
-    target_value:number
+    target_value:number,
+    data:BaseRecord[]
 }
 
-export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, value, date, due_date, ref_date, ref_value, target_value, unite} ) => {
+export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, value, date, due_date, ref_date, ref_value, target_value, unite, data} ) => {
     const percent:number = (ref_value - value) / (ref_value - target_value );
     const trajectoire_percent:number = 1 - (Number(due_date) - Number(date)) /  ( Number(due_date) - Number(ref_date) ) //Valeur théorique de la trajectoire
     
@@ -69,6 +72,9 @@ export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, value, d
     </Col>
 
         </Row>
+        <Collapse items={[  {  key: '1',
+    label: 'Evolution 📈',
+    children: <ChartTargetEvolution data={data}/> }]} ghost defaultActiveKey={['1']}  />
     </div>
   )
 }
