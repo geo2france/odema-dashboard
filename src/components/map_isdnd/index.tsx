@@ -1,6 +1,6 @@
 import React, { CSSProperties, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { BaseRecord } from '@refinedev/core';
+import { BaseRecord, useList } from '@refinedev/core';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
 import { BaseRecordToGeojsonPoint } from '../../utils';
 import { BaseLayer } from '../map_baselayer';
@@ -21,6 +21,13 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
     type: 'geojson',
     data:BaseRecordToGeojsonPoint({data:data.filter((e) => (e.annee == year && e.capacite > 0 )), y:'lng',x:'lat'})
   }
+
+  const geojson_dpt = useList({
+    resource:"spld:DEPARTEMENT",
+    meta:{srsname:'EPSG:4326'},
+    dataProviderName:"geo2france",
+    pagination:{mode:"off"}
+  })
 
 
   const layer_entrants:LayerProps = {
@@ -43,6 +50,20 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
       "circle-opacity":0,
       "circle-stroke-width":2,
       "circle-stroke-color":['case', ['==', ['get', 'aiot'], aiot] ,'#f00', "#828282"]
+    }
+  }
+
+  const source_departements:SourceProps = {
+    type:'geojson',
+    data:geojson_dpt.data?.geojson
+  }
+
+  const layer_departements:LayerProps = {
+    'id': 'dep',
+    'type': 'fill',
+    'paint': {
+      'fill-color': 'transparent',
+      'fill-outline-color': 'black'
     }
   }
 
@@ -79,6 +100,11 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
     >
 
       <BaseLayer layer="osm"/>
+
+      <Source {...source_departements}>
+        <Layer {...layer_departements}></Layer>
+      </Source>
+
 
       <Source {...source_isdn}>
         <Layer {...layer_entrants} id="isdnd_entrant" />
