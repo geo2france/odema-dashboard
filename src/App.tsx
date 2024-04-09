@@ -22,6 +22,7 @@ import { RepPchimPage } from "./components/pages/rep_pchim";
 import { RepTlcPage } from "./components/pages/rep_tlc";
 import { RepMnuPage } from "./components/pages/rep_mnu";
 import { RepDispmedPage } from "./components/pages/rep_dispmed";
+import { ObjectifsPage } from "./components/pages/objectifs";
 
 const myTheme:ThemeConfig = {...RefineThemes.Orange, 
   token: {
@@ -90,6 +91,9 @@ const App: React.FC = () => {
               </Route>
               <Route path="cve">
                 <Route index element={<IncinerationtPage />} />
+              </Route>
+              <Route path="objectifs">
+                <Route index element={<ObjectifsPage />} />
               </Route>
               <Route path="*" element={<ErrorComponent />} />
             </Route>
