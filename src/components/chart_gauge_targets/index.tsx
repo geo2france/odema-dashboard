@@ -13,7 +13,8 @@ export const ChartGaugeTarget: React.FC<IChartGaugeTargetProps> = ( {value, valu
 
     const myserie:GaugeSeriesOption={
         type:"gauge",
-        center: ['50%', '60%'],
+        center: ['50%', '100%'],
+        radius:'160%',
         startAngle: 180,
         endAngle: 0 ,
         min: 0,
