@@ -31,7 +31,7 @@ export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
         {current?.map((e:BaseRecord)=> 
           <Col span={8} key={e.id}>
             <Card title={e.cible}>
-            <TargetCard data={cible_indicateur.filter((x) => x.id_cible == e.id_cible)} objectif_name={e.cible} value={e.value} date={e.date} due_date={e.due_date} ref_date={e.ref_date} 
+            <TargetCard data={cible_indicateur.filter((x:BaseRecord) => x.id_cible == e.id_cible)} objectif_name={e.cible} value={e.value} date={e.date} due_date={e.due_date} ref_date={e.ref_date} 
               ref_value={e.ref_value} target_value={e.target} />
             </Card>
           </Col> 

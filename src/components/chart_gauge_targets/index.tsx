@@ -1,6 +1,6 @@
 import { GaugeSeriesOption } from 'echarts';
 import ReactECharts, { EChartsOption } from 'echarts-for-react'; 
-import { geekblue as palette , red, orange} from '@ant-design/colors';
+import { geekblue as palette , orange} from '@ant-design/colors';
 
 export interface IChartGaugeTargetProps {
     value:number,
