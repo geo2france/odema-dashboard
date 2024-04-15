@@ -41,6 +41,9 @@ const myTheme:ThemeConfig = {...RefineThemes.Orange,
       headerFontSize:14,
       paddingLG:0,
     },
+    Form:{
+      labelColor:'rgba(0,0,0,0.7)'
+    }
   }
 }
 

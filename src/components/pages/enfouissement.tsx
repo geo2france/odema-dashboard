@@ -1,5 +1,5 @@
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { Row, Col, Alert, Card, Drawer, Tooltip, Select } from "antd"
+import { Row, Col, Alert, Card, Drawer, Tooltip, Select, Form } from "antd"
 import {
     useQuery,
   } from "@tanstack/react-query";
@@ -75,19 +75,25 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
       return (<>
       <Row gutter={[14, 14]} align="stretch">
                 <Col span={24/2}>
-                    <Card title="Controle">
-                    <Select showSearch
-                        optionFilterProp="label"
-                        defaultValue={aiot} value={aiot}
-                        onSelect={setAiot}
-                        options={select_options}
-                        style={{width:'100%'}}/>
+                    <Card style={{height:'100%', alignContent:'center', display:'grid'}}>
+                        <Form  layout="inline" style={{padding:18}}>
+                            <Form.Item label="Installation">
+                                <Select showSearch
+                                    optionFilterProp="label"
+                                    defaultValue={aiot} value={aiot}
+                                    onSelect={setAiot}
+                                    options={select_options}
+                                    style={{width:'100%'}}/>
+                            </Form.Item>
+                            <Form.Item label="Année">
 
-                    <Select showSearch
-                        options={select_options_annees}
-                        style={{width:'100%'}}
-                        value={year} defaultValue={year}
-                        onSelect={setYear} />
+                                <Select showSearch
+                                    options={select_options_annees}
+                                    style={{width:'100%'}}
+                                    value={year} defaultValue={year}
+                                    onSelect={setYear} />
+                            </Form.Item>
+                        </Form>
                     </Card>
                 </Col>
                 <Col span={24/2}>
@@ -95,7 +101,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         message="En cours de construction"
                         description={<>Page en cours de construction. Les données 2022 et 2023 ne sont <b>pas encore validées</b>.</>}
                         type="warning"
-                        showIcon closable
+                        showIcon closable={false}
                     />
                 </Col>
 
