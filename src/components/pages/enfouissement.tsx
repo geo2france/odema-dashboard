@@ -1,5 +1,5 @@
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { Row, Col, Alert, Card, Drawer, Tooltip, Select, Form } from "antd"
+import { Row, Col, Alert, Card, Drawer, Tooltip, Select, Form, Button, Modal } from "antd"
 import {
     useQuery,
   } from "@tanstack/react-query";
@@ -17,10 +17,13 @@ import { HistoryOutlined } from "@ant-design/icons";
 import { ChartDonutIsdndCapacite } from "../chat_donut_isdnd_capacite";
 import { BaseOptionType } from "antd/lib/select";
 import alasql from "alasql";
+import { DashboardElement } from "../dashboard_element";
+
 
 
 
 export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
+
 
     const chartStyle:CSSProperties = {height:'350px'}
 
@@ -29,6 +32,8 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
     const [center, setCenter] = useState<number[]>([2.4125069,50.67431])
 
     const [drawerIsOpen, setdrawerIsOpen] = useState(false);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
 
     /*const IREP_attribution = {name: "Registre Francais des émissions polluantes", 
     url:'https://www.data.gouv.fr/fr/datasets/registre-francais-des-emissions-polluantes/'}*/
@@ -106,10 +111,11 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 </Col>
 
                 <Col xl={12} xs={24}>
-                <Card title={`Capacité régionale`}>
-                { data_isdnd ? <ChartIsdndGlobal style={chartStyle} data={data_isdnd} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> : <small>Chargement</small> }
-                <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]} />
-                </Card>
+                { data_isdnd ? 
+                   <DashboardElement title={`Capacité régionale`} isModalOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}>
+                    <ChartIsdndGlobal style={chartStyle} data={data_isdnd} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> 
+                    <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]} />
+                  </DashboardElement>  : <small>Chargement</small> }
                </Col>
 
                 <Col xl={12} xs={24}>
