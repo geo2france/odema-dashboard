@@ -1,5 +1,5 @@
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { Row, Col, Alert, Card, Drawer, Tooltip } from "antd"
+import { Row, Col, Alert, Card, Drawer, Tooltip, Select } from "antd"
 import {
     useQuery,
   } from "@tanstack/react-query";
@@ -15,6 +15,8 @@ import { TimelineIsdndCapacite } from "../timeline_isdnd_capacite";
 import { ChartIsdndGlobal } from "../chart_isdnd_global";
 import { HistoryOutlined } from "@ant-design/icons";
 import { ChartDonutIsdndCapacite } from "../chat_donut_isdnd_capacite";
+import { BaseOptionType } from "antd/lib/select";
+import alasql from "alasql";
 
 
 
@@ -40,6 +42,17 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
             .then((res) => res.data),
     })
 
+    const select_options:BaseOptionType[] = data_isdnd && alasql(`
+        SELECT DISTINCT aiot AS [value], name AS label
+        FROM ?
+    `, [data_isdnd]).map((e:BaseRecord) => ({value:e.value, label:`${e.label} (${e.value})`}))
+
+    const select_options_annees:BaseOptionType[] = data_isdnd && alasql(`
+    SELECT DISTINCT annee
+    FROM ?
+    WHERE tonnage > 0
+    ORDER BY annee DESC
+`, [data_isdnd]).map((e:BaseRecord) => ({value:Number(e.annee), label:e.annee}))
 
     const data_capacite = useList({
         resource:"odema:capacite_isdnd",
@@ -61,10 +74,26 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
       return (<>
       <Row gutter={[14, 14]} align="stretch">
-                <Col span={24}>
+                <Col span={24/2}>
+                    <Card title="Controle">
+                    <Select showSearch
+                        optionFilterProp="label"
+                        defaultValue={aiot} value={aiot}
+                        onSelect={setAiot}
+                        options={select_options}
+                        style={{width:'100%'}}/>
+
+                    <Select showSearch
+                        options={select_options_annees}
+                        style={{width:'100%'}}
+                        value={year} defaultValue={year}
+                        onSelect={setYear} />
+                    </Card>
+                </Col>
+                <Col span={24/2}>
                     <Alert
                         message="En cours de construction"
-                        description={<>Page en cours de construction. Les données 2022 ne sont <b>pas encore validées</b>.</>}
+                        description={<>Page en cours de construction. Les données 2022 et 2023 ne sont <b>pas encore validées</b>.</>}
                         type="warning"
                         showIcon closable
                     />
