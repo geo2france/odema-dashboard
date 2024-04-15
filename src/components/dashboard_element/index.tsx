@@ -6,7 +6,7 @@ import { Card, Button, Modal } from "antd"
 export interface IDashboardElementProps{
     title:string,
     children:any,
-    isModalOpen:boolean,
+    modalIsOpen:boolean,
     setModalIsOpen:Function
   }
 
@@ -15,7 +15,7 @@ export interface IDashboardElementProps{
  * @param param0 
  * @returns 
  */
-export const DashboardElement:React.FC<IDashboardElementProps> = ({children, isModalOpen,setModalIsOpen, title}) => {
+export const DashboardElement:React.FC<IDashboardElementProps> = ({children, modalIsOpen: isModalOpen,setModalIsOpen: setModalIsOpen, title}) => {
     return(
         <Card title={title}>
             <Button onClick={(e) => setModalIsOpen(true)}><FullscreenOutlined /></Button>
