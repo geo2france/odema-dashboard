@@ -1,0 +1,113 @@
+[
+    {
+        "id":1,
+        "id_cible":1,
+        "cible":"Réduire de 50% les qtt de DNDNI admis en installation de stockage en 2025 par rapport à 2010",
+        "indicateur":"Quantité de déchet DNDNI enfouis en ISDND (t)",
+        "date":"2010",
+        "value":2482224,
+        "territoire":"REG32",
+        "ref_date":"2010",
+        "due_date":"2030",
+        "target":1200000,
+        "ref_value":2482224
+
+    },
+    {
+        "id":2,
+        "id_cible":1,
+        "cible":"Réduire de 50% les qtt de DNDNI admis en installation de stockage en 2025 par rapport à 2010",
+        "indicateur":"Quantité de déchet DNDNI enfouis en ISDND (t)",
+        "date":"2016",
+        "value":2074795,
+        "territoire":"REG32",
+        "ref_date":"2010",
+        "due_date":"2030",
+        "target":1200000,
+        "ref_value":2482224
+
+    },
+    {
+        "id":3,
+        "id_cible":1,
+        "cible":"Réduire de 50% les qtt de DNDNI admis en installation de stockage en 2025 par rapport à 2010",
+        "indicateur":"Quantité de déchet DNDNI enfouis en ISDND (t)",
+        "date":"2017",
+        "value":2289298,
+        "territoire":"REG32",
+        "ref_date":"2010",
+        "due_date":"2030",
+        "target":1200000,
+        "ref_value":2482224
+
+    },
+    {
+        "id":4,
+        "id_cible":1,
+        "cible":"Réduire de 50% les qtt de DNDNI admis en installation de stockage en 2025 par rapport à 2010",
+        "indicateur":"Quantité de déchet DNDNI enfouis en ISDND (t)",
+        "date":"2018",
+        "value":2496651,
+        "territoire":"REG32",
+        "ref_date":"2010",
+        "due_date":"2030",
+        "target":1200000,
+        "ref_value":2482224
+
+    },
+    {
+        "id":5,
+        "id_cible":1,
+        "cible":"Réduire de 50% les qtt de DNDNI admis en installation de stockage en 2025 par rapport à 2010",
+        "indicateur":"Quantité de déchet DNDNI enfouis en ISDND (t)",
+        "date":"2019",
+        "value":2333939,
+        "territoire":"REG32",
+        "ref_date":"2010",
+        "due_date":"2030",
+        "target":1200000,
+        "ref_value":2482224
+
+    },
+    {
+        "id":6,
+        "id_cible":1,
+        "cible":"Réduire de 50% les qtt de DNDNI admis en installation de stockage en 2025 par rapport à 2010",
+        "indicateur":"Quantité de déchet DNDNI enfouis en ISDND (t)",
+        "date":"2020",
+        "value":2060003,
+        "territoire":"REG32",
+        "ref_date":"2010",
+        "due_date":"2030",
+        "target":1200000,
+        "ref_value":2482224
+
+    },
+    {
+        "id":7,
+        "id_cible":1,
+        "cible":"Réduire de 50% les qtt de DNDNI admis en installation de stockage en 2025 par rapport à 2010",
+        "indicateur":"Quantité de déchet DNDNI enfouis en ISDND (t)",
+        "date":"2021",
+        "value":2116115,
+        "territoire":"REG32",
+        "ref_date":"2010",
+        "due_date":"2030",
+        "target":1200000,
+        "ref_value":2482224
+
+    },
+    {
+        "id":8,
+        "id_cible":1,
+        "cible":"Réduire de 50% les qtt de DNDNI admis en installation de stockage en 2025 par rapport à 2010",
+        "indicateur":"Quantité de déchet DNDNI enfouis en ISDND (t)",
+        "date":"2022",
+        "value":2060003,
+        "territoire":"REG32",
+        "ref_date":"2010",
+        "due_date":"2030",
+        "target":1200000,
+        "ref_value":2482224
+    }
+]
