@@ -36,6 +36,14 @@ const style_img: CSSProperties = {
 export const CustomSider: React.FC = () => {
   const { token } = theme.useToken();
   const [collapsed, setCollapsed] = useState(false); // Etat du collapsible
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Vérifie si l'écran est mobile initialement
+
+
+    // Mettre à jour isMobile lors du redimensionnement de la fenêtre
+    window.addEventListener('resize', () => {
+      setIsMobile(window.innerWidth < 768);
+    });
+  
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -90,6 +98,7 @@ export const CustomSider: React.FC = () => {
     <Layout.Sider
       className="custom-sider"
       collapsible
+      collapsedWidth={isMobile ? 0 :80}
       collapsed={collapsed}
       onCollapse={toggleCollapsed}
       style={{
