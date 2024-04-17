@@ -21,9 +21,10 @@ export const AppSider: React.FC = () => {
 
 import React, { CSSProperties } from "react";
 import {  useMenu,} from "@refinedev/core";
-import { Layout, Menu, theme } from "antd";
+import { Divider, Layout, Menu, theme } from "antd";
 import type { RefineThemedLayoutV2SiderProps } from "@refinedev/antd";
 import { NavLink } from "react-router-dom";
+import { IdgAccount } from "../components/g2faccount";
 
 /*const drawerButtonStyles: CSSProperties = {
   borderTopLeftRadius: 0,
@@ -78,6 +79,8 @@ export const CustomSider: React.FC<RefineThemedLayoutV2SiderProps> = ({}) => {
             <Menu items={items} selectedKeys={[selectedKey]} mode="inline" style={{marginTop:"20px"}}>
                 
             </Menu>
+            <Divider />
+            <IdgAccount style={{paddingLeft: "24px"}}/>
         </Layout.Sider>
     )
 }
