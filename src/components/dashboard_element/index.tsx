@@ -1,6 +1,6 @@
 import { FullscreenOutlined, MoreOutlined } from "@ant-design/icons"
 import { Card, theme, Modal, Dropdown, MenuProps } from "antd"
-import React from "react";
+import React, { useState } from "react";
 import { Attribution, SourceProps } from "../attributions";
 
 const { useToken } = theme;
@@ -10,8 +10,8 @@ const { useToken } = theme;
 export interface IDashboardElementProps{
     title:string,
     children:any,
-    modalIsOpen:boolean,
-    setModalIsOpen:Function,
+   // modalIsOpen:boolean,
+   // setModalIsOpen:Function,
     attributionData?:SourceProps[]
   }
 
@@ -22,13 +22,15 @@ export interface IDashboardElementProps{
  */
 export const DashboardElement: React.FC<IDashboardElementProps> = ({
   children,
-  modalIsOpen: isModalOpen,
-  setModalIsOpen: setModalIsOpen,
+ // modalIsOpen: isModalOpen,
+ // setModalIsOpen: setModalIsOpen,
   title,
   attributionData,
 }) => {
 
     const { token } = useToken();
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
 
   const modifiedChildren = React.Children.map(children, (child, index) => {
     // Vérifiez si c'est le deuxième enfant
@@ -67,7 +69,7 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
 
       <Modal
         title={title}
-        open={isModalOpen}
+        open={modalIsOpen}
         onCancel={(e) => setModalIsOpen(false)}
         onOk={(e) => setModalIsOpen(false)}
         footer={null}
