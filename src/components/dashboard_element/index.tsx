@@ -10,7 +10,7 @@ const { useToken } = theme;
 export interface IDashboardElementProps{
     title:string,
     children:ReactNode,
-    attributionData?:SourceProps[]
+    attributions?:SourceProps[]
   }
 
 /**
@@ -21,7 +21,7 @@ export interface IDashboardElementProps{
 export const DashboardElement: React.FC<IDashboardElementProps> = ({
   children,
   title,
-  attributionData,
+  attributions: attributionData,
 }) => {
 
     const { token } = useToken();
@@ -48,16 +48,16 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     }
   ]
 
-  const dropdown_toolbox = <Dropdown menu={{ items:dd_items }} placement="bottomLeft">
+  const dropdown_toolbox = <Dropdown menu={{ items:dd_items }}>
                                 <a style={{color:token.colorTextBase}}><MoreOutlined style={{marginLeft:10}}/></a>
                             </Dropdown>
 
   return (
     <Card title={
-        <>
-          {dropdown_toolbox}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>         
           <span style={{marginLeft:5}}>{title}</span>
-        </>}>
+          <div style={{paddingRight:5, fontSize:16}}>{dropdown_toolbox}</div>
+        </div>}>
 
       {children}
 

@@ -109,20 +109,20 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
                 <Col xl={12} xs={24}>
                 { data_isdnd && 
-                   <DashboardElement title={`Capacité régionale`}  attributionData={[{name : 'GT ISDND'},{name: 'Odema'}]}>
+                   <DashboardElement title={`Capacité régionale`}  attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
                     <ChartIsdndGlobal style={chartStyle} data={data_isdnd} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> 
                   </DashboardElement>   }
                </Col>
 
                 <Col xl={12} xs={24}>
                  { data_isdnd && 
-                <DashboardElement title={`Tonnage enfouis par installation en ${year}`} attributionData={[{name : 'GT ISDND'},{name: 'Odema'}]}>
+                <DashboardElement title={`Tonnage enfouis par installation en ${year}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
                  <ChartRaceBarISDND style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> 
                  </DashboardElement>  }
                </Col>
 
                <Col xl={8} lg={12} xs={24}>
-                    <DashboardElement title={`Repartition des capacités autorisées ${year}`} attributionData={[{name : 'GT ISDND'},{name: 'Odema'}]}>
+                    <DashboardElement title={`Repartition des capacités autorisées ${year}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
                     { data_isdnd && <ChartDonutIsdndCapacite style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.aiot)} />}
                     </DashboardElement>
                 </Col>
@@ -130,7 +130,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={8} lg={12} xs={24}>
 
                { data_isdnd ? 
-                     <DashboardElement title={`Tonnage enfouis : ${data_isdnd.find((e:BaseRecord) => e.aiot == aiot)?.name}`} attributionData={[{name : 'GT ISDND'},{name: 'Odema'}]}>
+                     <DashboardElement title={`Tonnage enfouis : ${data_isdnd.find((e:BaseRecord) => e.aiot == aiot)?.name}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
                             
                         <ChartEvolutionISDND style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND>
 
