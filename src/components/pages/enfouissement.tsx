@@ -112,15 +112,15 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
                 <Col xl={12} xs={24}>
                 { data_isdnd ? 
-                   <DashboardElement title={`Capacité régionale`} modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}>
+                   <DashboardElement title={`Capacité régionale`} modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} attributionData={[{name : 'GT ISDND'},{name: 'Odema'}]}>
                     <ChartIsdndGlobal style={chartStyle} data={data_isdnd} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> 
-                    <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]} />
                   </DashboardElement>  : <small>Chargement</small> }
                </Col>
 
                 <Col xl={12} xs={24}>
                 <Card title={`Tonnage enfouis par installation en ${year}`}>
-                 { data_isdnd ? <ChartRaceBarISDND style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> : <small>Chargement</small> }
+                 { data_isdnd ? 
+                 <ChartRaceBarISDND style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> : <small>Chargement</small> }
                  <Attribution data={[{name : 'GT ISDND'},{name: 'Odema'}]}/>
                 </Card>
                </Col>
