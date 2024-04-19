@@ -10,7 +10,8 @@ const { useToken } = theme;
 export interface IDashboardElementProps{
     title:string,
     children:ReactNode,
-    attributions?:SourceProps[]
+    attributions?:SourceProps[],
+    toolbox?:boolean
   }
 
 /**
@@ -21,7 +22,8 @@ export interface IDashboardElementProps{
 export const DashboardElement: React.FC<IDashboardElementProps> = ({
   children,
   title,
-  attributions: attributionData,
+  attributions,
+  toolbox=true
 }) => {
 
     const { token } = useToken();
@@ -43,7 +45,7 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
   const dd_items: MenuProps['items'] = [
     {
         key: 'fullscreen',
-        label: <a onClick={(e) => setModalIsOpen(true)}><FullscreenOutlined /> Plein écran</a>
+        label: <a onClick={() => setModalIsOpen(true)}><FullscreenOutlined /> Plein écran</a>
 
     }
   ]
@@ -56,12 +58,12 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     <Card title={
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>         
           <span style={{marginLeft:5}}>{title}</span>
-          <div style={{paddingRight:5, fontSize:16}}>{dropdown_toolbox}</div>
+          <div style={{paddingRight:5, fontSize:16}}>{toolbox && dropdown_toolbox}</div>
         </div>}>
 
       {children}
 
-      { attributionData && <Attribution data={attributionData} /> }
+      { attributions && <Attribution data={attributions} /> }
 
       <Modal
         title={title}
@@ -72,7 +74,7 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
         wrapClassName="modal-fullscreen"
       >
         {modifiedChildren}
-        { attributionData && <Attribution data={attributionData} /> }
+        { attributions && <Attribution data={attributions} /> }
 
       </Modal>
     </Card>
