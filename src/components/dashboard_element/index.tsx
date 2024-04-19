@@ -16,8 +16,12 @@ export interface IDashboardElementProps{
 
 /**
  * Composant permettant d'afficher un graphique ou une carte dans une card avec utilitaires (exports données, fullscreen, etc.)
- * @param param0 
- * @returns 
+ * @param {object} props - Les propriétés du composant.
+ * @param {React.ReactNode} props.children - Les éléments enfants à afficher à l'intérieur de la card.
+ * @param {string} props.title - Le titre de la carte.
+ * @param {SourceProps[]} [props.attributions] - Les attributions des données affichées dans la card.
+ * @param {boolean} [props.toolbox=true] - Indique si la boîte à outils (toolbox) doit être affichée ou non. Par défaut, elle est affichée.
+ * @returns {React.ReactNode} - Le composant de la card avec les éléments enfants et les utilitaires.
  */
 export const DashboardElement: React.FC<IDashboardElementProps> = ({
   children,
