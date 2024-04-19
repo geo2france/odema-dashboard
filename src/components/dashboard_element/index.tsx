@@ -10,8 +10,6 @@ const { useToken } = theme;
 export interface IDashboardElementProps{
     title:string,
     children:any,
-   // modalIsOpen:boolean,
-   // setModalIsOpen:Function,
     attributionData?:SourceProps[]
   }
 
@@ -22,8 +20,6 @@ export interface IDashboardElementProps{
  */
 export const DashboardElement: React.FC<IDashboardElementProps> = ({
   children,
- // modalIsOpen: isModalOpen,
- // setModalIsOpen: setModalIsOpen,
   title,
   attributionData,
 }) => {
