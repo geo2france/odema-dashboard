@@ -1,5 +1,5 @@
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { Row, Col, Alert, Card, Drawer, Tooltip, Select, Form, Button, Modal } from "antd"
+import { Row, Col, Alert, Card, Drawer, Tooltip, Select, Form } from "antd"
 import {
     useQuery,
   } from "@tanstack/react-query";
@@ -9,7 +9,6 @@ import { CSSProperties, useEffect, useState } from "react";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
 
 import DataJson from "/data/isdnd_tonnage_annee.json?url";
-import { Attribution } from "../attributions";
 import { MapIsdnd } from "../map_isdnd";
 import { TimelineIsdndCapacite } from "../timeline_isdnd_capacite";
 import { ChartIsdndGlobal } from "../chart_isdnd_global";

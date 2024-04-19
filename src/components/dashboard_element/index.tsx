@@ -1,6 +1,6 @@
 import { FullscreenOutlined, MoreOutlined } from "@ant-design/icons"
 import { Card, theme, Modal, Dropdown, MenuProps } from "antd"
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { Attribution, SourceProps } from "../attributions";
 
 const { useToken } = theme;
@@ -9,7 +9,7 @@ const { useToken } = theme;
 
 export interface IDashboardElementProps{
     title:string,
-    children:any,
+    children:ReactNode,
     attributionData?:SourceProps[]
   }
 
