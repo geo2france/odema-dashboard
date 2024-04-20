@@ -11,7 +11,8 @@ export interface IDashboardElementProps{
     title:string,
     children:ReactNode,
     attributions?:SourceProps[],
-    toolbox?:boolean
+    toolbox?:boolean,
+    fullscreen?:boolean
   }
 
 /**
@@ -21,23 +22,23 @@ export interface IDashboardElementProps{
  * @param {string} props.title - Le titre de la carte.
  * @param {SourceProps[]} [props.attributions] - Les attributions des données affichées dans la card.
  * @param {boolean} [props.toolbox=true] - Indique si la boîte à outils (toolbox) doit être affichée ou non. Par défaut, elle est affichée.
+ * @param {boolean} [props.fullscreen=true] - Autoriser l'affichage en plein écran. Autorisé par défaut.
  * @returns {React.ReactNode} - Le composant de la card avec les éléments enfants et les utilitaires.
  */
 export const DashboardElement: React.FC<IDashboardElementProps> = ({
   children,
   title,
   attributions,
-  toolbox=true
+  toolbox=true,
+  fullscreen=true,
 }) => {
 
     const { token } = useToken();
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
-
-  const modifiedChildren = React.Children.map(children, (child, index) => {
-    // Vérifiez si c'est le deuxième enfant
-    if (index === 0 && React.isValidElement(child)) {
-      //Détecter ici s'il s'agit d'un graphique, ou d'une carte (sur quelle base ? chartRef ?)
+  const fullscreenChildren = React.Children.map(children, (child, index) => {
+    if (index === 0 && React.isValidElement(child)) { // Que le premier enfant
+      //Possible de détecter ici s'il s'agit d'un graphique, ou d'une carte ?
       return React.cloneElement(child, {
         ...child.props?.style,
         style: { height: "80vh" },
@@ -46,11 +47,12 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     return child;
   });
 
+
   const dd_items: MenuProps['items'] = [
     {
         key: 'fullscreen',
-        label: <a onClick={() => setModalIsOpen(true)}><FullscreenOutlined /> Plein écran</a>
-
+        label: <a onClick={() => setModalIsOpen(true)}><FullscreenOutlined /> Plein écran</a>,
+        disabled: !fullscreen,
     }
   ]
 
@@ -59,28 +61,31 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
                             </Dropdown>
 
   return (
+  <>
     <Card title={
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>         
           <span style={{marginLeft:5}}>{title}</span>
           <div style={{paddingRight:5, fontSize:16}}>{toolbox && dropdown_toolbox}</div>
         </div>}>
 
-      {children}
+        {children}
+        { attributions && <Attribution data={attributions} /> }
+    </Card>
 
-      { attributions && <Attribution data={attributions} /> }
-
+    { toolbox && fullscreen &&
       <Modal
+        forceRender={true}
         title={title}
         open={modalIsOpen}
-        onCancel={(e) => setModalIsOpen(false)}
-        onOk={(e) => setModalIsOpen(false)}
+        onCancel={() => setModalIsOpen(false)}
+        onOk={() => setModalIsOpen(false)}
         footer={null}
         wrapClassName="modal-fullscreen"
-      >
-        {modifiedChildren}
-        { attributions && <Attribution data={attributions} /> }
-
+        >
+            {fullscreenChildren}
+            { attributions && <Attribution data={attributions} /> }
       </Modal>
-    </Card>
+    }
+  </>
   );
 };
