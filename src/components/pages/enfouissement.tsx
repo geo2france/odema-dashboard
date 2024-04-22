@@ -122,14 +122,14 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                </Col>
 
                <Col xl={8} lg={12} xs={24}>
-                    <DashboardElement title={`Repartition des capacités autorisées ${year}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
-                    { data_isdnd && <ChartDonutIsdndCapacite style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.aiot)} />}
-                    </DashboardElement>
+               { data_isdnd && <DashboardElement title={`Repartition des capacités autorisées ${year}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
+                     <ChartDonutIsdndCapacite style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.aiot)} />
+                    </DashboardElement> }
                 </Col>
 
                 <Col xl={8} lg={12} xs={24}>
 
-               { data_isdnd ? 
+               { data_isdnd &&
                      <DashboardElement title={`Tonnage enfouis : ${data_isdnd.find((e:BaseRecord) => e.aiot == aiot)?.name}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
                             
                         <ChartEvolutionISDND style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND>
@@ -141,18 +141,17 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         </div> 
 
                         <Drawer title="Historique des arrêtés" onClose={() => setdrawerIsOpen(false)} open={drawerIsOpen}>
-                         { data_capacite.data ? <TimelineIsdndCapacite data={data_capacite.data.data} aiot={aiot}></TimelineIsdndCapacite> : <small>Chargement</small> }
+                         { data_capacite.data && <TimelineIsdndCapacite data={data_capacite.data.data} aiot={aiot}></TimelineIsdndCapacite> }
                         </Drawer>
 
-                    </DashboardElement>
-                : <small>Chargement</small> }
+                    </DashboardElement> }
 
                </Col>
 
                <Col xl={8} lg={12} xs={24}>
-                    <DashboardElement title={`Installations de stockage de déchets non dangereux (ISDND) ${year}`} >
-                    { data_isdnd ? <MapIsdnd style={{height:376}} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> : <small>Chargement</small>}
-                    </DashboardElement>
+               { data_isdnd && <DashboardElement title={`Installations de stockage de déchets non dangereux (ISDND) ${year}`} >
+                    <MapIsdnd style={{height:376}} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} />
+                    </DashboardElement>}
                 </Col>
 
         </Row>

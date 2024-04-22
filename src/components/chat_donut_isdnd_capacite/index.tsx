@@ -5,6 +5,7 @@ import { BaseRecord } from '@refinedev/core';
 import alasql from 'alasql';
 import { ChartTerritoriesProps } from '../../utils/nomenclature';
 import { useChartEvents } from '../../utils';
+import { useDashboardElement } from '../dashboard_element/hooks';
 
 export interface IChartDonutIsdndCapacitePros {
     data: BaseRecord[];
@@ -18,6 +19,8 @@ export const ChartDonutIsdndCapacite: React.FC<IChartDonutIsdndCapacitePros> = (
     const chartRef = useRef<any>();
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
+    useDashboardElement({chartRef})
+
 
     const dataPie = alasql(`
     SELECT [departement] as name, ARRAY(@{name:d.name, aiot: d.aiot, [value]:d.capacite}) as [children]

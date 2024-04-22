@@ -4,6 +4,7 @@ import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
 import { useChartEvents } from "../../utils/usecharthighlight";
+import { useDashboardElement } from "../dashboard_element/hooks";
 
 export interface IChartRaceBarISDND {
     data : BaseRecord[],
@@ -17,6 +18,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
     const chartRef = useRef<any>();
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
+    useDashboardElement({chartRef})
 
     const dptement_props = [
         {code:'02', color:'#038B4F'},

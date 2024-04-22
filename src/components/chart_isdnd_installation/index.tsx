@@ -4,6 +4,7 @@ import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
 import { useChartEvents } from "../../utils/usecharthighlight";
+import { useDashboardElement } from "../dashboard_element/hooks";
 
 export interface IChartEvolutionISDND {
     data : BaseRecord[]
@@ -16,6 +17,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
     const chartRef = useRef<any>();
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
+    useDashboardElement({chartRef})
 
     const data_chart = data
     .filter((e) => e.aiot == aiot)
