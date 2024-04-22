@@ -1,4 +1,4 @@
-import { FullscreenOutlined, MoreOutlined } from "@ant-design/icons"
+import { FileImageOutlined, FullscreenOutlined, MoreOutlined } from "@ant-design/icons"
 import { Card, theme, Modal, Dropdown, MenuProps } from "antd"
 import React, { ReactNode, createContext, useEffect, useState } from "react";
 import { Attribution, SourceProps } from "../attributions";
@@ -15,7 +15,8 @@ export interface IDashboardElementProps{
     children:ReactNode,
     attributions?:SourceProps[],
     toolbox?:boolean,
-    fullscreen?:boolean
+    fullscreen?:boolean,
+    exportPNG?:boolean
   }
 
 /**
@@ -34,6 +35,7 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
   attributions,
   toolbox=true,
   fullscreen=true,
+  exportPNG=true,
 }) => {
 
     const { token } = useToken();
@@ -82,7 +84,8 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     },
     {
       key: 'export_img',
-      label : <a onClick={downloadImage}>Télécharger image</a>
+      label : <a onClick={downloadImage}><FileImageOutlined /> Export (image)</a>,
+      disabled: !chartRef || !exportPNG
     }
   ]
 
