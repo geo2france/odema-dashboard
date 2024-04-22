@@ -10,7 +10,6 @@ export const chartContext = createContext<any>({setchartRef:()=>{}}); //Context 
 
 //TODO integrer le composant loading container
 
-
 export interface IDashboardElementProps{
     title:string,
     children:ReactNode,
@@ -40,6 +39,7 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     const { token } = useToken();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [chartRef, setchartRef] = useState(undefined);
+
     const [requestDlImage, setRequestDlImage ] = useState(false);
 
     const {img64, exportImage} = useChartExport({chartRef:chartRef})

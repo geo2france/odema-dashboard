@@ -4,6 +4,7 @@ import { BaseRecord, useList } from '@refinedev/core';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
 import { BaseRecordToGeojsonPoint } from '../../utils';
 import { BaseLayer } from '../map_baselayer';
+import { useDashboardElement } from '../dashboard_element/hooks';
 
 export interface IMapProps{
     data:BaseRecord[],
@@ -15,6 +16,9 @@ export interface IMapProps{
 
 export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style }) => {
   const mapRef = useRef<any>(null);
+  useDashboardElement({chartRef:mapRef})
+
+
   const zoom = 6.4;
 
  const source_isdn:SourceProps = {
@@ -86,6 +90,7 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
   return (
     <Map
       reuseMaps
+      preserveDrawingBuffer={true}
       ref={mapRef}
       initialViewState={{
         latitude: 49.96462, //Centroid enveloppe HDF

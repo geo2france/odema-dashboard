@@ -10,7 +10,7 @@ import { MutableRefObject, useContext, useEffect } from "react";
  */
 
 export interface useDashboardElementProps {
-  chartRef?: MutableRefObject<any>;
+  chartRef?: MutableRefObject<any>,
 }
 
 export const useDashboardElement = ({ chartRef }: useDashboardElementProps) => {

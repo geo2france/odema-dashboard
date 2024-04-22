@@ -1,8 +1,21 @@
 import { MutableRefObject, useEffect, useState } from "react";
-
 export interface useChartExportProps{
     chartRef?:MutableRefObject<any>,
   }
+
+/**
+ * Fonction pour obtenir l'export (img64) d'un echarts ou d'un maplibre
+ * @param ref - Référence de l'objet (echarts ou maplibre)
+ * @returns - L'image en base64
+ */
+export const getDataURL = (ref:MutableRefObject<any>) => {
+    if('getCanvas' in ref.current){ //maplibre
+        return ref.current.getCanvas().toDataURL();
+    }else if ('getEchartsInstance' in ref.current){ //Echart
+        return ref.current.getEchartsInstance().getDataURL();
+    }
+}
+
 
 /**
  * Hook personnalisé pour exporter une image à partir d'une instance ECharts.
@@ -20,10 +33,10 @@ export const useChartExport = ( {chartRef}:useChartExportProps) => {
     useEffect(() => {
         if (chartRef?.current && exportRequested) {
             console.log('export')
-            const mychart = chartRef.current.getEchartsInstance();
-                const dataURL = mychart.getDataURL();
-                setImage64(dataURL);
-                setExportRequested(false);
+            const dataURL = getDataURL(chartRef)
+            setImage64(dataURL);
+            console.log(dataURL)
+            setExportRequested(false);
         }              
         }, [chartRef, exportRequested]
     )
