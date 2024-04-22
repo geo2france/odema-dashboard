@@ -28,6 +28,7 @@ import { Layout, Menu, theme } from "antd";
 import { NavLink } from "react-router-dom";
 
 import './sider.css'
+import { useMenu } from "@refinedev/core";
 
 const style_img: CSSProperties = {
   width: "100%",
@@ -35,6 +36,7 @@ const style_img: CSSProperties = {
 
 export const CustomSider: React.FC = () => {
   const { token } = theme.useToken();
+  const { selectedKey } = useMenu();
   const [collapsed, setCollapsed] = useState(false); // Etat du collapsible
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Vérifie si l'écran est mobile initialement
 
@@ -122,25 +124,7 @@ export const CustomSider: React.FC = () => {
             <img style={style_img} src={Odema} alt="Logo Odema" />
           </NavLink>
         </div>
-        <Menu mode="inline" style={{ marginTop: "20px", width: collapsed ? "65%" : "100%"}} selectedKeys={[]}>
-          {items.map((item) =>
-            item.disabled ? (
-              <Menu.Item key={item.key} icon={item.icon} disabled>
-                {item.label}
-              </Menu.Item>
-            ) : item.children ? (
-              <Menu.SubMenu key={item.key} icon={item.icon} title={item.label}>
-                {item.children.map((child) => (
-                  <Menu.Item key={child.key}>{child.label}</Menu.Item>
-                ))}
-              </Menu.SubMenu>
-            ) : (
-              <Menu.Item key={item.key} icon={item.icon}>
-                {item.label}
-              </Menu.Item>
-            )
-          )}
-        </Menu>
+        <Menu items={items} selectedKeys={[selectedKey]} mode="inline" style={{marginTop:"20px", width: collapsed ? "65%" : "100%"}} />
       </div>
     </Layout.Sider>
   );
