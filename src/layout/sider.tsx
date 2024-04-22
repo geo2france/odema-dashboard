@@ -1,7 +1,6 @@
 import {
   ApiOutlined,
   CloseSquareOutlined,
-  FireOutlined,
   HomeOutlined,
   RollbackOutlined,
 } from "@ant-design/icons";
