@@ -4,6 +4,7 @@ import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
 import { useChartEvents } from "../../utils";
+import { useDashboardElement } from "../dashboard_element/hooks";
 
 export interface IChartIsdndGlobalProps {
     data : BaseRecord[]
@@ -14,6 +15,7 @@ export interface IChartIsdndGlobalProps {
 export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onClick=() => undefined, year, style}) => {
     const chartRef = useRef<any>();
 
+    useDashboardElement({chartRef})
     useChartEvents({chartRef:chartRef, onClick:onClick})
 
 
@@ -92,6 +94,6 @@ const serie_objectif:LineSeriesOption = {
     
     return (
         <ReactECharts
-        option={option} ref={chartRef} style={style} /> 
+        option={option} ref={chartRef} style={style} />
     )
 }

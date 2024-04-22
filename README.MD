@@ -26,6 +26,48 @@ Le contenu généré dans le dossier `dist` peut être coller sur un serveur htt
 
 - **Ademe** : les données sont récupérés sur le [portail opendata](https://data.ademe.fr/) via l'API Datafair. Un [connecteur](https://github.com/geo2france/refine-datafair) a été développé pour cet usage.
 
+## Développement
+
+### DashboardElement
+
+Le composant [DashboardElement](src/components/dashboard_element/index.tsx) peut-être utilisé pour ajouter des fonctionnalités à un _element_ (graphique ou cartographique) de tableau de bord.
+Il ajoute :
+- Une _card_ servant de conteneur, avec titre et crédit.
+- Un menu contextuel permettant à l'utilisateur de :
+    - Afficher le contenu en plein écran
+    - Exporter le contenu en format image (png)
+
+Pour fonctionner correctement, le composant enfant doit exporter la référence de l'élément graphique (_echart_ ou _maplibre_) à l'aide de du hook `useDashboardElement`.
+
+Exemples :
+```typescript
+export const MapIsdnd: React.FC<IMapProps> = ({ data, style }) => {
+  const mapRef = useRef<any>(null);
+  useDashboardElement({chartRef:mapRef})
+  [...]
+  return (
+    <Map
+      reuseMaps
+      preserveDrawingBuffer={true}
+      ref={mapRef}
+      style={style} [...]/>
+    )
+}
+```
+Pour les cartes, la propriété `preserveDrawingBuffer={true}` est nécessaire pour permettre l'export PNG (sinon, le fichier exporté sera blanc).
+
+```typescript
+export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, style}) => {
+    const chartRef = useRef<any>();
+    useDashboardElement({chartRef})
+    [...]
+    return (
+        <ReactECharts
+        option={option} ref={chartRef} style={style} />
+    )
+}
+```
+
 ## Learn More
 
 To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
