@@ -12,7 +12,7 @@ export const getDataURL = (ref:MutableRefObject<any>) => {
     if('getCanvas' in ref.current){ //maplibre
         return ref.current.getCanvas().toDataURL();
     }else if ('getEchartsInstance' in ref.current){ //Echart
-        return ref.current.getEchartsInstance().getDataURL();
+        return ref.current.getEchartsInstance().getDataURL({backgroundColor: '#fff'});
     }
 }
 
