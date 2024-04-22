@@ -6,9 +6,10 @@ import { useChartExport } from "../../utils/usechartexport";
 
 const { useToken } = theme;
 export const imgContext = createContext(undefined);
-export const chartContext = createContext<any>({setchartRef:()=>{}});
+export const chartContext = createContext<any>({setchartRef:()=>{}}); //Context permettant la remontée du ref Echarts enfant
 
 //TODO integrer le composant loading container
+
 
 export interface IDashboardElementProps{
     title:string,
