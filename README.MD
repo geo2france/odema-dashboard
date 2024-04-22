@@ -68,6 +68,29 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, style
 }
 ```
 
+### useChartEvents
+
+Le hook `useChartEvents` permet de définir des fonctions callback a executer au click (_onClick_) ou au survol (_onFocus_) des graphiques.
+Le callback reçoit comme paramètres un objet qui contient des information sur l'élément qui l'a déclanché (nom de la série, données, etc.). La structure de l'objet varie selon les type de graphique.
+
+Généralement, le callback est une fonction qui va modifier un état (_state_) du parent (_setState_).
+
+TODO : Exemple concret montrant comment l'année cliquée sur le graphique est remontée à la page.
+
+Exemple :
+```typescript
+    useChartEvents({chartRef, onFocus})
+```
+
+### useChartActionHightlight
+
+Le hook `useChartActionHightlight` permet de manuellement mettre en évidence (_highlight_) une portion du graphique.
+L'élement à éclairer peut-être définie par son nom ou le nom de sa série (ou plus rarement son index).
+
+TODO : Exemple concret avec _bar_ et _pie_ et cas d'usage.
+
+Notes : le _hilight_ est un effet subtile. Selon les cas, on privilégiera un changement de couleur pour mettre en évidence une information importante (par exemple l'année sélectionné).
+
 ## Learn More
 
 To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
