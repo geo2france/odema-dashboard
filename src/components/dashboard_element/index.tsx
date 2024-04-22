@@ -1,6 +1,6 @@
 import { FullscreenOutlined, MoreOutlined } from "@ant-design/icons"
 import { Card, theme, Modal, Dropdown, MenuProps } from "antd"
-import React, { ReactNode, createContext, useState } from "react";
+import React, { ReactNode, createContext, useEffect, useState } from "react";
 import { Attribution, SourceProps } from "../attributions";
 import { useChartExport } from "../../utils/usechartexport";
 
@@ -40,8 +40,27 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     const { token } = useToken();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [chartRef, setchartRef] = useState(undefined);
+    const [requestDlImage, setRequestDlImage ] = useState(false);
 
     const {img64, exportImage} = useChartExport({chartRef:chartRef})
+
+    const downloadImage = () => {
+      exportImage()
+      setRequestDlImage(true)
+    }
+
+  useEffect(() => { //Proposer le téléchargement d'une image générée.
+    if(img64 && requestDlImage){
+      const link = document.createElement('a');
+      link.href = img64;
+      link.download = `${title}.png`;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setRequestDlImage(false)
+    }
+  }, [img64, requestDlImage])
 
   const fullscreenChildren = React.Children.map(children, (child, index) => {
     if (index === 0 && React.isValidElement(child)) { // Que le premier enfant
@@ -63,9 +82,11 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     },
     {
       key: 'export_img',
-      label : <a onClick={exportImage}>Télécharger image</a>
+      label : <a onClick={downloadImage}>Télécharger image</a>
     }
   ]
+
+
 
   const dropdown_toolbox = <Dropdown menu={{ items:dd_items }}>
                                 <a style={{color:token.colorTextBase}}><MoreOutlined style={{marginLeft:10}}/></a>
