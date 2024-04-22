@@ -85,14 +85,8 @@ export const CustomSider: React.FC = () => {
     },
     {
       key: "/isdnd",
-      label: <NavLink to="/isdnd"> Enfouissement</NavLink>,
+      label: <NavLink to="/isdnd"> Elimination</NavLink>,
       icon: <CloseSquareOutlined />,
-    },
-    {
-      key: "/cve",
-      disabled: true,
-      label: <NavLink to="#"> Incinération</NavLink>,
-      icon: <FireOutlined />,
     },
   ];
 
