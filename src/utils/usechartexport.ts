@@ -32,13 +32,11 @@ export const useChartExport = ( {chartRef}:useChartExportProps) => {
 
     useEffect(() => {
         if (chartRef?.current && exportRequested) {
-            console.log('export')
             const dataURL = getDataURL(chartRef)
             setImage64(dataURL);
-            console.log(dataURL)
             setExportRequested(false);
         }              
-        }, [chartRef, exportRequested]
+        }, [exportRequested]
     )
 
     const exportImage = () => {

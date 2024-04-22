@@ -62,7 +62,7 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
       document.body.removeChild(link);
       setRequestDlImage(false)
     }
-  }, [img64, requestDlImage])
+  }, [img64])
 
   const fullscreenChildren = React.Children.map(children, (child, index) => {
     if (index === 0 && React.isValidElement(child)) { // Que le premier enfant
