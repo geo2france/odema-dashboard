@@ -102,7 +102,6 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
       <chartContext.Provider value={{chartRef, setchartRef}}>
         {children}
         { attributions && <Attribution data={attributions} /> }
-        {img64 && <><span>Debug :</span> <img src={img64} /> </>}
       </chartContext.Provider>
     </Card>
 
