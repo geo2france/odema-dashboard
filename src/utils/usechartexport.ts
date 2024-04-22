@@ -36,7 +36,7 @@ export const useChartExport = ( {chartRef}:useChartExportProps) => {
             setImage64(dataURL);
             setExportRequested(false);
         }              
-        }, [exportRequested]
+        }, [chartRef, exportRequested]
     )
 
     const exportImage = () => {
