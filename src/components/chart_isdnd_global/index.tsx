@@ -2,8 +2,9 @@ import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
-import { CSSProperties, useRef } from "react";
+import { CSSProperties, useContext, useEffect, useRef } from "react";
 import { useChartEvents } from "../../utils";
+import { chartContext } from "../dashboard_element";
 
 export interface IChartIsdndGlobalProps {
     data : BaseRecord[]
@@ -13,6 +14,14 @@ export interface IChartIsdndGlobalProps {
 }
 export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onClick=() => undefined, year, style}) => {
     const chartRef = useRef<any>();
+    const {setchartRef} = useContext(chartContext) //Gérer les cas où ce contexte n'existe pas
+
+    useEffect(() => {
+        if (setchartRef){
+                setchartRef(chartRef)
+            }
+        }, [chartRef]
+    ) //Simplifer dans le hook ? Par exemple creer un hook useDashboardElement ?
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
 
@@ -92,6 +101,6 @@ const serie_objectif:LineSeriesOption = {
     
     return (
         <ReactECharts
-        option={option} ref={chartRef} style={style} /> 
+        option={option} ref={chartRef} style={style} />
     )
 }

@@ -1,9 +1,12 @@
 import { FullscreenOutlined, MoreOutlined } from "@ant-design/icons"
 import { Card, theme, Modal, Dropdown, MenuProps } from "antd"
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, createContext, useState } from "react";
 import { Attribution, SourceProps } from "../attributions";
+import { useChartExport } from "../../utils/usechartexport";
 
 const { useToken } = theme;
+export const imgContext = createContext(undefined);
+export const chartContext = createContext<any>({setchartRef:()=>{}});
 
 //TODO integrer le composant loading container
 
@@ -35,6 +38,9 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
 
     const { token } = useToken();
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [chartRef, setchartRef] = useState(undefined);
+
+    const {img64, exportImage} = useChartExport({chartRef:chartRef})
 
   const fullscreenChildren = React.Children.map(children, (child, index) => {
     if (index === 0 && React.isValidElement(child)) { // Que le premier enfant
@@ -53,6 +59,10 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
         key: 'fullscreen',
         label: <a onClick={() => setModalIsOpen(true)}><FullscreenOutlined /> Plein écran</a>,
         disabled: !fullscreen,
+    },
+    {
+      key: 'export_img',
+      label : <a onClick={exportImage}>Télécharger image</a>
     }
   ]
 
@@ -67,9 +77,11 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
           <span style={{marginLeft:5}}>{title}</span>
           <div style={{paddingRight:5, fontSize:16}}>{toolbox && dropdown_toolbox}</div>
         </div>}>
-
+      <chartContext.Provider value={{chartRef, setchartRef}}>
         {children}
         { attributions && <Attribution data={attributions} /> }
+        {img64 && <><span>Debug :</span> <img src={img64} /> </>}
+      </chartContext.Provider>
     </Card>
 
     { toolbox && fullscreen &&
