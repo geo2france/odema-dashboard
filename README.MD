@@ -68,6 +68,14 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, style
 }
 ```
 
+Les données proposées au téléchargement à l'utilisateur sont à définir dans le hook `useExportData`. Si, pour un graphique, les données sont susceptibles de changer, on passera les variables qui déclanche se changement dans le paramètre `dependencies`
+
+Exemple :
+```typescript
+    //La sélection d'une autre année change les données affichées
+    useChartData({data:data_chart, dependencies:[year]})
+```
+
 ### useChartEvents
 
 Le hook `useChartEvents` permet de définir des fonctions callback à executer au click (_onClick_) ou au survol (_onFocus_) des graphiques.

@@ -4,7 +4,7 @@ import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
 import { useChartEvents } from "../../utils/usecharthighlight";
-import { useDashboardElement } from "../dashboard_element/hooks";
+import { useChartData, useDashboardElement } from "../dashboard_element/hooks";
 
 export interface IChartEvolutionISDND {
     data : BaseRecord[]
@@ -30,6 +30,9 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
         GROUP BY d.[serie_name]
 `, [data_chart])
 
+    useChartData({
+        data:data_chart.map(({category,value, ...rest}) => ({...rest, entrant:value, annee:category})), 
+        dependencies:[aiot]})
 
     const myseries: BarSeriesOption[] = data_agg.map((e: BaseRecord) => (
         {

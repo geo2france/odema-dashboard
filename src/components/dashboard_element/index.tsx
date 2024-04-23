@@ -1,13 +1,15 @@
-import { FileImageOutlined, FullscreenOutlined, MoreOutlined } from "@ant-design/icons"
+import { DownloadOutlined, FileImageOutlined, FullscreenOutlined, MoreOutlined } from "@ant-design/icons"
 import { Card, theme, Modal, Dropdown, MenuProps } from "antd"
 import React, { ReactNode, createContext, useEffect, useState } from "react";
 import { Attribution, SourceProps } from "../attributions";
 import { useChartExport } from "../../utils/usechartexport";
 import { LoadingComponent } from "../loading_container";
+import  XLSX  from 'xlsx';
+import { DataFileType } from "../../utils";
 
 const { useToken } = theme;
 export const imgContext = createContext(undefined);
-export const chartContext = createContext<any>({setchartRef:()=>{}}); //Context permettant la remontée du ref Echarts enfant
+export const chartContext = createContext<any>({setchartRef:()=>{}, setData:()=>{}, data:undefined }); //Context permettant la remontée du ref Echarts enfant
 
 //TODO integrer le composant loading container
 
@@ -18,7 +20,8 @@ export interface IDashboardElementProps{
     attributions?:SourceProps[],
     toolbox?:boolean,
     fullscreen?:boolean,
-    exportPNG?:boolean
+    exportPNG?:boolean,
+    exportData?:boolean,
   }
 
 /**
@@ -39,12 +42,15 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
   toolbox=true,
   fullscreen=true,
   exportPNG=true,
+  exportData=true,
 }) => {
     const { token } = useToken();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [chartRef, setchartRef] = useState(undefined);
-
+    const [data, setData] = useState(undefined);
     const [requestDlImage, setRequestDlImage ] = useState(false);
+    const [requestDlData, setrequestDlData ] = useState<DataFileType | null>(null);
+
 
     const {img64, exportImage} = useChartExport({chartRef:chartRef})
 
@@ -66,6 +72,21 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     }
   }, [img64])
 
+  const downloadData = (filetype:DataFileType) => {
+    setrequestDlData(filetype)
+  }
+
+
+  useEffect(() => {
+    if(data && requestDlData){
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, title);
+      XLSX.writeFile(workbook, `${title}.${requestDlData}`, { compression: true });
+      setrequestDlData(null)
+    }
+  },[requestDlData])
+
   const fullscreenChildren = React.Children.map(children, (child, index) => {
     if (index === 0 && React.isValidElement(child)) { // Que le premier enfant
       //Possible de détecter ici s'il s'agit d'un graphique, ou d'une carte ?
@@ -86,12 +107,25 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     },
     {
       key: 'export_img',
-      label : <a onClick={downloadImage}><FileImageOutlined /> Export (image)</a>,
+      label : <a onClick={downloadImage}><FileImageOutlined /> PNG</a>,
       disabled: !chartRef || !exportPNG
+    },
+    {
+      key: 'export_data_csv',
+      label : <a onClick={() => downloadData('csv')}><DownloadOutlined /> CSV</a>,
+      disabled: !data || !exportData
+    },
+    {
+      key: 'export_data_xls',
+      label : <a onClick={() => downloadData('xlsx')}><DownloadOutlined /> XLSX</a>,
+      disabled: !data || !exportData
+    },
+    {
+      key: 'export_data_ods',
+      label : <a onClick={() => downloadData('ods')}><DownloadOutlined /> ODS</a>,
+      disabled: !data || !exportData
     }
   ]
-
-
 
   const dropdown_toolbox = <Dropdown menu={{ items:dd_items }}>
                                 <a style={{color:token.colorTextBase}}><MoreOutlined style={{marginLeft:10}}/></a>
@@ -104,7 +138,7 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
           <span style={{marginLeft:5}}>{title}</span>
           <div style={{paddingRight:5, fontSize:16}}>{toolbox && dropdown_toolbox}</div>
         </div>}>
-      <chartContext.Provider value={{chartRef, setchartRef}}>
+      <chartContext.Provider value={{chartRef, setchartRef, setData}}>
         <LoadingComponent isFetching={isFetching}>
             {children}
         </LoadingComponent>
