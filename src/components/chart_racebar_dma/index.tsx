@@ -1,8 +1,9 @@
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { BaseRecord } from '@refinedev/core';
 import { EChartsOption } from "echarts";
 import alasql from "alasql";
+import { useDashboardElement } from "../dashboard_element/hooks";
 
 export interface ChartRaceBareDMAProps {
     data: any[] | BaseRecord[];
@@ -12,6 +13,9 @@ export interface ChartRaceBareDMAProps {
   }
 
 export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_territoire, highlight_region, style} ) => {  
+    const chartRef = useRef<any>()
+    useDashboardElement({chartRef})
+
     const chart_data = alasql(`
                         SELECT a.L_REGION, a.C_REGION,  sum(a.TONNAGE_DMA) as TONNAGE_DMA, sum(a.VA_POPANNEE) AS VA_POPANNEE
                         FROM (
@@ -60,6 +64,6 @@ export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_t
         ]
     }
     return (
-        <ReactECharts option={option} style={ style } />
+        <ReactECharts option={option} ref={chartRef} style={style} />
     )
 }

@@ -54,7 +54,7 @@ export const RepDispmedPage: React.FC<IResourceComponentsProps> = () => {
 
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
-                        <LoadingComponent isLoading={collecte.isFetching}>
+                        <LoadingComponent isFetching={collecte.isFetching}>
                             {collecte.data ? <ChartPieRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-disp-med-tonnages-collectes-en-2021' }]}></Attribution>
                         </LoadingComponent>
@@ -63,7 +63,7 @@ export const RepDispmedPage: React.FC<IResourceComponentsProps> = () => {
 
                 <Col xl={24/2} xs={24}>
                     <Card title="Evolution des tonnages collectés">
-                        <LoadingComponent isLoading={collecte.isFetching}>
+                        <LoadingComponent isFetching={collecte.isFetching}>
                             <small>Pas de données disponibles avant 2021</small> <br/>
                             {collecte.data ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-disp-med-tonnages-collectes-en-2021' }]}></Attribution>

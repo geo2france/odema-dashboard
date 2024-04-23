@@ -3,6 +3,7 @@ import { Card, theme, Modal, Dropdown, MenuProps } from "antd"
 import React, { ReactNode, createContext, useEffect, useState } from "react";
 import { Attribution, SourceProps } from "../attributions";
 import { useChartExport } from "../../utils/usechartexport";
+import { LoadingComponent } from "../loading_container";
 
 const { useToken } = theme;
 export const imgContext = createContext(undefined);
@@ -13,6 +14,7 @@ export const chartContext = createContext<any>({setchartRef:()=>{}}); //Context 
 export interface IDashboardElementProps{
     title:string,
     children:ReactNode,
+    isFetching?:boolean,
     attributions?:SourceProps[],
     toolbox?:boolean,
     fullscreen?:boolean,
@@ -33,11 +35,11 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
   children,
   title,
   attributions,
+  isFetching=false,
   toolbox=true,
   fullscreen=true,
   exportPNG=true,
 }) => {
-
     const { token } = useToken();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [chartRef, setchartRef] = useState(undefined);
@@ -98,12 +100,14 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
   return (
   <>
     <Card title={
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>         
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{marginLeft:5}}>{title}</span>
           <div style={{paddingRight:5, fontSize:16}}>{toolbox && dropdown_toolbox}</div>
         </div>}>
       <chartContext.Provider value={{chartRef, setchartRef}}>
-        {children}
+        <LoadingComponent isFetching={isFetching}>
+            {children}
+        </LoadingComponent>
         { attributions && <Attribution data={attributions} /> }
       </chartContext.Provider>
     </Card>
