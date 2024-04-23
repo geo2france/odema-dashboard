@@ -10,6 +10,7 @@ import alasql from "alasql";
 import ChartPieTypeTraitement from "../chart_pie_type_traitement";
 import { useSearchParamsState } from "../../utils";
 import { Attribution } from "../attributions";
+import { DashboardElement } from "../dashboard_element";
 
 
 export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
@@ -106,17 +107,13 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             </Col>
 
             <Col xl={24/2} xs={24}>
-                <Card title="Destination des déchets">
-                    <LoadingComponent isLoading={isFetching}>
-                        {datasankey ? (<ChartSankeyDestinationDMA style={chartStyle} onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> )
-                        : <span>Chargement..</span>}
-                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement' }]}></Attribution>
-                    </LoadingComponent>
-                </Card>
+                    <DashboardElement isFetching={isFetching} title="Destination des déchets" attributions={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement' }]}>
+                        {datasankey && <ChartSankeyDestinationDMA style={chartStyle} onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> }
+                    </DashboardElement>
             </Col>
             <Col xl={24/2} xs={24}>
                 <Card title="Types de traitement" >
-                    <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching}>
+                    <LoadingComponent isFetching={isFetching_chiffre_cle && isFetching}>
                         {data && data_chiffre_cle ? (<ChartPieTypeTraitement style={chartStyle} onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={data.data} c_region={cregion} data_territoire={data_chiffre_cle.data}/> )
                         : <span>Chargement..</span>}
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement' }]}></Attribution>
@@ -125,7 +122,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             </Col>
             <Col xl={24/2} xs={24}>
                 <Card title="Performances de collecte" >
-                    <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching_performance}>
+                    <LoadingComponent isFetching={isFetching_chiffre_cle && isFetching_performance}>
                         {data_performance && data_chiffre_cle ? (<ChartCollectePerformance style={chartStyle} data={data_performance.data} data_territoire={data_chiffre_cle.data}/> )
                         : <span>Chargement..</span>}
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte' }]}></Attribution>
@@ -134,7 +131,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             </Col>
             <Col xl={24/2} xs={24}>
                 <Card title="Ratio régionaux">
-                     <LoadingComponent isLoading={isFetching_chiffre_cle && isFetching_performance}>
+                     <LoadingComponent isFetching={isFetching_chiffre_cle && isFetching_performance}>
                         {data_performance && data_chiffre_cle ? <ChartRaceBareDMA style={chartStyle} data={data_performance.data} data_territoire={data_chiffre_cle.data} highlight_region={cregion}/> : <span>Chargement</span>}
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017' }]}></Attribution>
                     </LoadingComponent>
