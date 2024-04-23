@@ -5,6 +5,7 @@ import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require(
 import { chartBusinessProps } from "../../utils";
 import { CSSProperties, useRef } from "react";
 import { useChartActionHightlight, useChartEvents } from "../../utils/usecharthighlight";
+import { useDashboardElement } from "../dashboard_element/hooks";
 
 
 export interface ChartPieTypeTraitementProps {
@@ -21,6 +22,8 @@ const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ({data, da
     
     useChartEvents({chartRef:chartRef, onFocus:onFocus})
     useChartActionHightlight({chartRef:chartRef, target:{name:focus_item}})
+    useDashboardElement({chartRef})
+
     //TODO : Ajouter un onglet avec l'évolution des type de traitement par an (avec surbrillance de l'année en cours)
     //TODO : Ajouter des chiffres clé (Taux de recylage : valo matière + valo organique)
     const data_pie = alasql(`SELECT 
