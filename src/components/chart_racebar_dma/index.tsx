@@ -1,16 +1,21 @@
-import React from "react";
+import React, { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { BaseRecord } from '@refinedev/core';
 import { EChartsOption } from "echarts";
 import alasql from "alasql";
+import { useDashboardElement } from "../dashboard_element/hooks";
 
 export interface ChartRaceBareDMAProps {
     data: any[] | BaseRecord[];
     data_territoire: any[] | BaseRecord[];
     highlight_region : string;
+    style? : CSSProperties
   }
 
-export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_territoire, highlight_region} ) => {  
+export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_territoire, highlight_region, style} ) => {  
+    const chartRef = useRef<any>()
+    useDashboardElement({chartRef})
+
     const chart_data = alasql(`
                         SELECT a.L_REGION, a.C_REGION,  sum(a.TONNAGE_DMA) as TONNAGE_DMA, sum(a.VA_POPANNEE) AS VA_POPANNEE
                         FROM (
@@ -20,7 +25,7 @@ export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_t
                             GROUP BY L_REGION, C_REGION, N_DEPT) as a
                         GROUP BY a.L_REGION, a.C_REGION
                         ORDER BY sum(a.TONNAGE_DMA) / sum(a.VA_POPANNEE)
-                        `, [data, data_territoire])
+                        `, [data, data_territoire]) //Reprendre avec les données à jours de l'ADEME "chiffre clés hors gravat"
            
     const option:EChartsOption = {
         yAxis: {
@@ -59,6 +64,6 @@ export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_t
         ]
     }
     return (
-        <ReactECharts option={option} style={{ height: "450px"}} />
+        <ReactECharts option={option} ref={chartRef} style={style} />
     )
 }

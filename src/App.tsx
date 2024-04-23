@@ -2,10 +2,12 @@ import { Refine } from "@refinedev/core";
 import { ThemedLayoutV2, notificationProvider, RefineThemes } from "@refinedev/antd";
 import routerBindings, { DocumentTitleHandler, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
 import {dataProvider as dfDataProvider} from "./refine-datafair";
+import {dataProvider as wfsDataProvider} from "./refine-wfs";
 import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
 
-import { ConfigProvider } from "antd";
+import { ConfigProvider, ThemeConfig } from "antd";
 import "@refinedev/antd/dist/reset.css";
+import './index.css';
 
 import { DmaComponent } from "./components/pages/dma";
 import { ressources } from "./ressources"
@@ -20,14 +22,29 @@ import { RepPchimPage } from "./components/pages/rep_pchim";
 import { RepTlcPage } from "./components/pages/rep_tlc";
 import { RepMnuPage } from "./components/pages/rep_mnu";
 import { RepDispmedPage } from "./components/pages/rep_dispmed";
+import { ObjectifsPage } from "./components/pages/objectifs";
 
-const myTheme = {...RefineThemes.Orange, 
+const myTheme:ThemeConfig = {...RefineThemes.Orange, 
   token: {
     colorPrimary: "#DEAD8F",
     linkHoverDecoration:'underline',
     colorLink:'#FF6A48',
-    colorLinkHover:'#9D7156'
+    colorLinkHover:'#9D7156',
+    borderRadius:4,
     },
+  components:{
+    Timeline:{
+      itemPaddingBottom:40
+    },
+    Card:{
+      headerHeight:35,
+      headerFontSize:14,
+      paddingLG:0,
+    },
+    Form:{
+      labelColor:'rgba(0,0,0,0.7)'
+    }
+  }
 }
 
 const App: React.FC = () => {
@@ -38,7 +55,8 @@ const App: React.FC = () => {
           routerProvider={routerBindings}
           dataProvider={{
               default:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets"),
-              ademe_opendata:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets")
+              ademe_opendata:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets"),
+              geo2france:wfsDataProvider("https://www.geo2france.fr/geoserver/ows")
             }}
           notificationProvider={notificationProvider}
           resources={ressources}
@@ -76,6 +94,9 @@ const App: React.FC = () => {
               </Route>
               <Route path="cve">
                 <Route index element={<IncinerationtPage />} />
+              </Route>
+              <Route path="objectifs">
+                <Route index element={<ObjectifsPage />} />
               </Route>
               <Route path="*" element={<ErrorComponent />} />
             </Route>

@@ -2,19 +2,22 @@ import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
-import { useRef } from "react";
+import { CSSProperties, useRef } from "react";
 import { useChartEvents } from "../../utils/usecharthighlight";
+import { useDashboardElement } from "../dashboard_element/hooks";
 
 export interface IChartEvolutionISDND {
     data : BaseRecord[]
     aiot: string
     year?:number
     onClick: Function
+    style? : CSSProperties
 }
-export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot, onClick, year }) => {
+export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot, onClick, year, style }) => {
     const chartRef = useRef<any>();
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
+    useDashboardElement({chartRef})
 
     const data_chart = data
     .filter((e) => e.aiot == aiot)
@@ -78,7 +81,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
         yAxis: [
             {
                 type: 'value',
-                axisLabel:{formatter: (value:number) => `${value.toLocaleString()} t`}
+                axisLabel:{formatter: (value:number) => `${(value/1e3).toLocaleString()} kt`}
             }
         ],
         grid:{
@@ -88,6 +91,6 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
 
     return (
         <ReactECharts
-        option={option} ref={chartRef} style={{ height: "450px" }} />
+        option={option} ref={chartRef} style={style} />
     )
 }

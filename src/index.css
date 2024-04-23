@@ -1,0 +1,16 @@
+.modal-fullscreen > .ant-card-head-title  {
+    padding-left: 12px;
+}
+
+.modal-fullscreen > .ant-modal, .ant-modal-content  {
+    height: 95vh;
+    width: 95vw;
+    margin: 2.5vh;
+    top: 0;
+   }
+
+.modal-fullscreen >.ant-modal-body {
+height: calc(95vh - 110px);
+}
+
+

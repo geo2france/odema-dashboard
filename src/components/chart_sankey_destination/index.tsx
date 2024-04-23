@@ -1,20 +1,23 @@
-import React, { useRef } from "react";
+import React, { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { BaseRecord } from "@refinedev/core";
 import { chartBusinessProps, wrappe } from "../../utils";
 import { useChartActionHightlight, useChartEvents } from "../../utils/usecharthighlight";
+import { useDashboardElement } from "../dashboard_element/hooks";
 
 export interface ChartSankeyDestinationDMAProps {
     data: any[] | BaseRecord[]; 
     onFocus?:any;
     focus_item?:string;
+    style? : CSSProperties;
   }
 
-export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps> = ( {data, onFocus, focus_item} ) => {
+export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps> = ( {data, onFocus, focus_item, style} ) => {
     const chartRef = useRef<any>()
 
     useChartEvents({chartRef:chartRef, onFocus:onFocus})
     useChartActionHightlight({chartRef:chartRef, target:{name:focus_item}})
+    useDashboardElement({chartRef})
 
     const links = data;
    
@@ -56,7 +59,7 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
 
     return(
         <ReactECharts
-        option={option} ref={chartRef} style={{ height: "450px", marginTop:"0px"}}/>
+        option={option} ref={chartRef} style={{ ...style, marginTop:"0px"}}/>
     )
 }
 

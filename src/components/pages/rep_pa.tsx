@@ -62,7 +62,7 @@ export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
                 
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés par origine en ${year}`}>
-                        <LoadingComponent isLoading={collecte_pa.isFetching}>
+                        <LoadingComponent isFetching={collecte_pa.isFetching}>
                             {collecte_pa.data ? <ChartPieRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pa-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>
@@ -71,7 +71,7 @@ export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
 
                 <Col xl={24/2} xs={24}>
                     <Card title="Evolution des tonnages collectés">
-                        <LoadingComponent isLoading={collecte_pa.isFetching}>
+                        <LoadingComponent isFetching={collecte_pa.isFetching}>
                             {collecte_pa.data ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>

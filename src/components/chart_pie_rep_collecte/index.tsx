@@ -2,7 +2,7 @@ import { BaseRecord } from "@refinedev/core";
 import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { chartBusinessProps } from "../../utils";
-import { useRef } from "react";
+import { CSSProperties, useRef } from "react";
 import { useChartActionHightlight, useChartEvents } from "../../utils/usecharthighlight";
 
 export interface ChartPieRepCollecteProps {
@@ -12,10 +12,11 @@ export interface ChartPieRepCollecteProps {
     year?: number;
     onFocus?:any;
     focus_item?:string;
+    style? : CSSProperties
 }
 
 //Attend data de type {annee, name, value}
-export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, filiere, year, onFocus=(() => (undefined)), focus_item, c_region='32'} )  => {
+export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, filiere, year, onFocus=(() => (undefined)), focus_item, c_region='32', style} )  => {
     const data_pie = data.filter((e) => e.annee == year).map((e) => ({name:e.name, value:e.value}));
     const chartRef = useRef<any>()
 
@@ -76,6 +77,6 @@ export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, f
 
     return(
         <ReactECharts
-        option={option} ref={chartRef} style={{ height: "450px"}}/>
+        option={option} ref={chartRef} style={style}/>
     )
 }

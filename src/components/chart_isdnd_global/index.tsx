@@ -2,15 +2,22 @@ import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
-import { useRef } from "react";
+import { CSSProperties, useRef } from "react";
+import { useChartEvents } from "../../utils";
+import { useDashboardElement } from "../dashboard_element/hooks";
 
 export interface IChartIsdndGlobalProps {
     data : BaseRecord[]
     year?:number
     onClick?: Function
+    style?: CSSProperties
 }
-export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onClick=() => undefined, year }) => {
+export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onClick=() => undefined, year, style}) => {
     const chartRef = useRef<any>();
+
+    useDashboardElement({chartRef})
+    useChartEvents({chartRef:chartRef, onClick:onClick})
+
 
     const data_chart = alasql(`
         SELECT [annee], SUM([capacite]) as capacite, SUM([tonnage]) as tonnage 
@@ -33,8 +40,14 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
             valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         },
         data: data_chart.map((e: BaseRecord) => (
-            { value: [e.annee.toString(), e.tonnage] }
+            {
+                value: [e.annee.toString(), e.tonnage],
+                itemStyle: {
+                    color: e.annee == year ? '#C1232B' : undefined
+                }
+            }
         )),
+        z:3
     }
 
     const serie_capacite: LineSeriesOption = {
@@ -47,8 +60,9 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
             valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         },
         data: data_chart.map((e: BaseRecord) => (
-            { value: [e.annee.toString(), e.capacite] })
-        )
+            { value: [e.annee.toString(), e.capacite]  })
+        ),
+        z:2
     }
 
 const serie_objectif:LineSeriesOption = {
@@ -64,7 +78,7 @@ const serie_objectif:LineSeriesOption = {
         legend: {top:'top', show:true},
         xAxis: [
             {
-                type: 'time',
+                type: 'time'
             }
         ],
         tooltip: {
@@ -73,13 +87,13 @@ const serie_objectif:LineSeriesOption = {
         yAxis: [
             {
                 type: 'value',
-                axisLabel:{formatter: (value:number) => `${value.toLocaleString()} t`}
+                axisLabel:{formatter: (value:number) => `${(value/1e6).toLocaleString()} Mt`}
             }
         ]
     }
     
     return (
         <ReactECharts
-        option={option} ref={chartRef} style={{ height: "450px" }} /> 
+        option={option} ref={chartRef} style={style} />
     )
 }

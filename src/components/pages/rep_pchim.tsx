@@ -59,7 +59,7 @@ export const RepPchimPage: React.FC<IResourceComponentsProps> = () => {
                 </Col>
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
-                        <LoadingComponent isLoading={collecte_pchim.isFetching}>
+                        <LoadingComponent isFetching={collecte_pchim.isFetching}>
                             {collecte_pchim.data ? <ChartPieRepCollecte filiere='pchim' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pchim-tonnages-collectes-2021' }]}></Attribution>
                         </LoadingComponent>
@@ -68,7 +68,7 @@ export const RepPchimPage: React.FC<IResourceComponentsProps> = () => {
 
                 <Col xl={24/2} xs={24}>
                     <Card title="Evolution des tonnages collectés">
-                        <LoadingComponent isLoading={collecte_pchim.isFetching}>
+                        <LoadingComponent isFetching={collecte_pchim.isFetching}>
                             <small>Pas de données disponibles avant 2021</small> <br/>
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pchim-tonnages-collectes-2021' }]}></Attribution>
                         </LoadingComponent>
@@ -77,7 +77,7 @@ export const RepPchimPage: React.FC<IResourceComponentsProps> = () => {
 
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés par origine en ${year}`}>
-                        <LoadingComponent isLoading={collecte_pchim.isFetching}>
+                        <LoadingComponent isFetching={collecte_pchim.isFetching}>
                             {collecte_pchim.data ? <ChartPieRepCollecte filiere='pchim' data={data_standardized_origine} year={Number(year)}  focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pchim-tonnages-collectes-2021' }]}></Attribution>
                         </LoadingComponent>

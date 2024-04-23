@@ -1,25 +1,37 @@
-import React, { useRef } from 'react';
+import React, { CSSProperties, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { BaseRecord } from '@refinedev/core';
+import { BaseRecord, useList } from '@refinedev/core';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
 import { BaseRecordToGeojsonPoint } from '../../utils';
 import { BaseLayer } from '../map_baselayer';
+import { useDashboardElement } from '../dashboard_element/hooks';
 
 export interface IMapProps{
     data:BaseRecord[],
     aiot:string,
     year?:number,
-    onClick?:Function
+    onClick?:Function,
+    style?:CSSProperties
 }
 
-export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick }) => {
+export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style }) => {
   const mapRef = useRef<any>(null);
-  const zoom = 6.5;
+  useDashboardElement({chartRef:mapRef})
+
+
+  const zoom = 6.4;
 
  const source_isdn:SourceProps = {
     type: 'geojson',
     data:BaseRecordToGeojsonPoint({data:data.filter((e) => (e.annee == year && e.capacite > 0 )), y:'lng',x:'lat'})
   }
+
+  const geojson_dpt = useList({
+    resource:"spld:DEPARTEMENT",
+    meta:{srsname:'EPSG:4326'},
+    dataProviderName:"geo2france",
+    pagination:{mode:"off"}
+  })
 
 
   const layer_entrants:LayerProps = {
@@ -45,6 +57,20 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick }) => 
     }
   }
 
+  const source_departements:SourceProps = {
+    type:'geojson',
+    data:geojson_dpt.data?.geojson
+  }
+
+  const layer_departements:LayerProps = {
+    'id': 'dep',
+    'type': 'fill',
+    'paint': {
+      'fill-color': 'transparent',
+      'fill-outline-color': 'black'
+    }
+  }
+
   const onClickMap =(evt:any) => { //Hook a faire ?
     const clicked = evt?.features[0]?.properties
     aiot = clicked ? clicked : aiot;
@@ -64,13 +90,14 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick }) => 
   return (
     <Map
       reuseMaps
+      preserveDrawingBuffer
       ref={mapRef}
       initialViewState={{
         latitude: 49.96462, //Centroid enveloppe HDF
         longitude: 2.820399,
         zoom: zoom
       }}
-      style={{ width: '100%', height: 500 }}
+      style={{ ...style, width: '100%', height:'500px',...style }}
       onClick={onClickMap}
       onMouseMove={onMouseMoveMap}
       attributionControl={true}
@@ -78,6 +105,11 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick }) => 
     >
 
       <BaseLayer layer="osm"/>
+
+      <Source {...source_departements}>
+        <Layer {...layer_departements}></Layer>
+      </Source>
+
 
       <Source {...source_isdn}>
         <Layer {...layer_entrants} id="isdnd_entrant" />

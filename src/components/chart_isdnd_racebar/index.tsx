@@ -2,20 +2,23 @@ import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
-import { useRef } from "react";
+import { CSSProperties, useRef } from "react";
 import { useChartEvents } from "../../utils/usecharthighlight";
+import { useDashboardElement } from "../dashboard_element/hooks";
 
 export interface IChartRaceBarISDND {
     data : BaseRecord[],
     year : number,
     aiot? : string,
-    onClick : any
+    onClick : any,
+    style? : CSSProperties
 }
 
-export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick, aiot, year=2021 }) => {
+export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick, aiot, year=2021, style }) => {
     const chartRef = useRef<any>();
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
+    useDashboardElement({chartRef})
 
     const dptement_props = [
         {code:'02', color:'#038B4F'},
@@ -29,7 +32,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
     `, [data]).map((e:BaseRecord) => ( {
         value:e.name,
         textStyle: {
-            fontWeight: e.aiot == aiot ? 700 : 400
+            fontWeight: e.aiot == aiot ? 700 : 400,
         }}))
 
     const data_chart = alasql(`
@@ -78,12 +81,17 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         yAxis: [
             {
                 type: 'category',
-                data: axie_category
+                data: axie_category,
+                axisLabel: {
+                    interval: 0,
+                    fontSize: 10,
+                }
             }
         ],
         xAxis: [
             {
-                type: 'value'
+                type: 'value',
+                axisLabel:{formatter: (value:number) => `${(value/1e3).toLocaleString()} kt`}
             }
         ],
         grid:{
@@ -94,6 +102,6 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
 
     return (
             <ReactECharts
-            option={option} ref={chartRef} style={{ height: "450px" }} />
+            option={option} ref={chartRef} style={style} />
     )
 }

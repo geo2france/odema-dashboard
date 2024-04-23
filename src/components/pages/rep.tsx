@@ -122,7 +122,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={24/2} xs={24}>
                     <Card>
                         pu
-                        <LoadingComponent isLoading={collecte_pu.isFetching}>
+                        <LoadingComponent isFetching={collecte_pu.isFetching}>
                             {collecte_pu.data ? <ChartPieRepCollecte filiere='pu' data={data_standardized_pu} year={Number(year)} /> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pu-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingComponent>
@@ -131,7 +131,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={24/2} xs={24}>
                     <Card>
                         vhu
-                        <LoadingComponent isLoading={collecte_vhu.isFetching}>
+                        <LoadingComponent isFetching={collecte_vhu.isFetching}>
                             {collecte_vhu.data ? <ChartPieRepCollecte filiere='vhu' data={data_standardized_vhu} year={Number(year)} /> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-vhu-tonnages-collectes-cvhu-en-2018' }]}></Attribution>
                         </LoadingComponent>

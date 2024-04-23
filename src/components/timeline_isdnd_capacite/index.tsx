@@ -1,5 +1,7 @@
+import { InfoCircleOutlined } from "@ant-design/icons"
 import { BaseRecord } from "@refinedev/core"
-import { Timeline } from "antd"
+import alasql from "alasql"
+import { Timeline, Tooltip } from "antd"
 
 export interface ITimelineIsdndCapaciteProps {
     data : BaseRecord[]
@@ -8,35 +10,35 @@ export interface ITimelineIsdndCapaciteProps {
 
 export const TimelineIsdndCapacite: React.FC<ITimelineIsdndCapaciteProps> = ({ data, aiot }) => {
 
-    const data_sample = [{
-        signature:'2012-03-01',
-        nom : 'Arrete préfectoral XYZ',
-        url : 'https://www.geo2france.fr/public/odema/RPQS/doc/1711f826-0b5f-469f-b4ef-f1869f002d86.pdf',
-        capacite : 70000,
-        fin_effet:'2025-07-03',
-        debut_effet:'2012-03-01'
-    },
-    {
-        signature:'2021-03-01',
-        nom : 'arrete préfectoral ABC',
-        url : 'https://www.geo2france.fr/public/odema/RPQS/doc/1711f826-0b5f-469f-b4ef-f1869f002d86.pdf',
-        capacite : 60000,
-        fin_effet:'2040-07-03',
-        debut_effet:'2021-03-01'
-    }]
+    const data_timeline = alasql(`
+        SELECT [arrete_date_signature] AS signature,
+            [arrete_nom] AS nom,
+            [arrete_url] AS url,
+            [capacite],
+            MAX([annee]) AS fin_effet,
+            MIN([annee]) AS debut_effet
+        FROM ?
+        GROUP BY [arrete_date_signature], [arrete_url], [arrete_nom],[capacite]
+        ORDER BY [annee]
+    `,[data.filter((e:BaseRecord) => e.aiot == aiot)]).map((e:BaseRecord) => ({...e, signature:new Date(e.signature) }))
 
+    const nom_isdnd = data.find((e:any) => e.aiot == aiot)?.nom_isdnd
 
-    const nom_isdnd = data.find((e:any) => e.aiot == aiot)?.name
-
-
-    const items = data_sample.map((e:BaseRecord) => ({color:"#D44F4A", label:<> <b>{e.capacite.toLocaleString()} t</b> 🫙  {e.fin_effet} 📅</>, children:<><a href={e.url}>{e.nom}</a> {e.signature}</>}))
+    const items = data_timeline.map((e:BaseRecord) => (
+        {color:"#D44F4A",
+        label:<>
+            <b>{e.capacite.toLocaleString()} t</b> 🫙<br/>
+            {e.debut_effet} - {e.fin_effet} 📅</>,
+            children: (
+               <><Tooltip title={e.nom}> <InfoCircleOutlined /> </Tooltip> <a href={e.url}>Arrếté du {e.signature.toLocaleDateString()}</a></> ) }
+    ))
     return(
     <>
-    <h3>{nom_isdnd} {aiot}</h3>
-    <Timeline mode='right'
-        items={items}
-    />
-    <small>Données fictives</small>
+        <h3>{nom_isdnd} <br/><small>{aiot}</small></h3>
+        <br/>
+        <Timeline mode='right'
+            items={items}
+        />
     </>
     )
 }
