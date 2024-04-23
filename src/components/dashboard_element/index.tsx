@@ -122,7 +122,7 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
       disabled: !data || !exportData
     },
     {
-      key: 'export_data_xls',
+      key: 'export_data_ods',
       label : <a onClick={() => downloadData('ods')}><DownloadOutlined /> ODS</a>,
       disabled: !data || !exportData
     }
