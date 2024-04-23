@@ -30,7 +30,9 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
         GROUP BY d.[serie_name]
 `, [data_chart])
 
-    useChartData({data:data_chart, dependencies:[aiot]})
+    useChartData({
+        data:data_chart.map(({category,value, ...rest}) => ({...rest, entrant:value, annee:category})), 
+        dependencies:[aiot]})
 
     const myseries: BarSeriesOption[] = data_agg.map((e: BaseRecord) => (
         {
