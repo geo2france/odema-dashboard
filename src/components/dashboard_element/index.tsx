@@ -19,7 +19,8 @@ export interface IDashboardElementProps{
     attributions?:SourceProps[],
     toolbox?:boolean,
     fullscreen?:boolean,
-    exportPNG?:boolean
+    exportPNG?:boolean,
+    exportData?:boolean,
   }
 
 /**
@@ -40,6 +41,7 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
   toolbox=true,
   fullscreen=true,
   exportPNG=true,
+  exportData=true,
 }) => {
     const { token } = useToken();
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -115,11 +117,9 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     {
       key: 'export_data',
       label : <a onClick={downloadData}><DownloadOutlined /> Télécharger les données</a>,
-      disabled: !data
+      disabled: !data || !exportData
     }
   ]
-
-  //console.log(data)
 
   const dropdown_toolbox = <Dropdown menu={{ items:dd_items }}>
                                 <a style={{color:token.colorTextBase}}><MoreOutlined style={{marginLeft:10}}/></a>
