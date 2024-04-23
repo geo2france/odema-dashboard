@@ -106,9 +106,9 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
 
       <BaseLayer layer="osm"/>
 
-      <Source {...source_departements}>
+     {geojson_dpt.data && <Source {...source_departements}>
         <Layer {...layer_departements}></Layer>
-      </Source>
+      </Source> }
 
 
       <Source {...source_isdn}>
