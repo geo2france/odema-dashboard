@@ -4,12 +4,10 @@ import { Card, Col, Select, Row } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
-import { LoadingComponent } from "../loading_container";
 
 import alasql from "alasql";
 import ChartPieTypeTraitement from "../chart_pie_type_traitement";
 import { useSearchParamsState } from "../../utils";
-import { Attribution } from "../attributions";
 import { DashboardElement } from "../dashboard_element";
 
 
