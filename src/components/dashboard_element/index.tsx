@@ -5,6 +5,8 @@ import { Attribution, SourceProps } from "../attributions";
 import { useChartExport } from "../../utils/usechartexport";
 import { LoadingComponent } from "../loading_container";
 import Papa from 'papaparse';
+import  XLSX  from 'xlsx';
+import { DataFileType } from "../../utils";
 
 const { useToken } = theme;
 export const imgContext = createContext(undefined);
@@ -48,7 +50,7 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     const [chartRef, setchartRef] = useState(undefined);
     const [data, setData] = useState(undefined);
     const [requestDlImage, setRequestDlImage ] = useState(false);
-    const [requestDlData, setrequestDlData ] = useState(false);
+    const [requestDlData, setrequestDlData ] = useState<DataFileType | null>(null);
 
 
     const {img64, exportImage} = useChartExport({chartRef:chartRef})
@@ -71,23 +73,18 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     }
   }, [img64])
 
-  const downloadData = () => {
-    setrequestDlData(true)
+  const downloadData = (filetype:DataFileType) => {
+    setrequestDlData(filetype)
   }
+
 
   useEffect(() => {
     if(data && requestDlData){
-    const blob = new Blob([ Papa.unparse(data) ], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href =  url;
-    link.download = `${title}.csv`;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    setrequestDlData(false)
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, title);
+      XLSX.writeFile(workbook, `${title}.${requestDlData}`, { compression: true });
+      setrequestDlData(null)
     }
   },[requestDlData])
 
@@ -111,12 +108,22 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     },
     {
       key: 'export_img',
-      label : <a onClick={downloadImage}><FileImageOutlined /> Export (image)</a>,
+      label : <a onClick={downloadImage}><FileImageOutlined /> PNG</a>,
       disabled: !chartRef || !exportPNG
     },
     {
-      key: 'export_data',
-      label : <a onClick={downloadData}><DownloadOutlined /> Télécharger les données</a>,
+      key: 'export_data_csv',
+      label : <a onClick={() => downloadData('csv')}><DownloadOutlined /> CSV</a>,
+      disabled: !data || !exportData
+    },
+    {
+      key: 'export_data_xls',
+      label : <a onClick={() => downloadData('xlsx')}><DownloadOutlined /> XLSX</a>,
+      disabled: !data || !exportData
+    },
+    {
+      key: 'export_data_xls',
+      label : <a onClick={() => downloadData('ods')}><DownloadOutlined /> ODS</a>,
       disabled: !data || !exportData
     }
   ]
