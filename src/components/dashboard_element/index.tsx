@@ -1,13 +1,14 @@
-import { FileImageOutlined, FullscreenOutlined, MoreOutlined } from "@ant-design/icons"
+import { DownloadOutlined, FileImageOutlined, FullscreenOutlined, MoreOutlined } from "@ant-design/icons"
 import { Card, theme, Modal, Dropdown, MenuProps } from "antd"
 import React, { ReactNode, createContext, useEffect, useState } from "react";
 import { Attribution, SourceProps } from "../attributions";
 import { useChartExport } from "../../utils/usechartexport";
 import { LoadingComponent } from "../loading_container";
+import Papa from 'papaparse';
 
 const { useToken } = theme;
 export const imgContext = createContext(undefined);
-export const chartContext = createContext<any>({setchartRef:()=>{}}); //Context permettant la remontée du ref Echarts enfant
+export const chartContext = createContext<any>({setchartRef:()=>{}, setData:()=>{}, data:undefined }); //Context permettant la remontée du ref Echarts enfant
 
 //TODO integrer le composant loading container
 
@@ -43,8 +44,10 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
     const { token } = useToken();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [chartRef, setchartRef] = useState(undefined);
-
+    const [data, setData] = useState(undefined);
     const [requestDlImage, setRequestDlImage ] = useState(false);
+    const [requestDlData, setrequestDlData ] = useState(false);
+
 
     const {img64, exportImage} = useChartExport({chartRef:chartRef})
 
@@ -65,6 +68,26 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
       setRequestDlImage(false)
     }
   }, [img64])
+
+  const downloadData = () => {
+    setrequestDlData(true)
+  }
+
+  useEffect(() => {
+    if(data && requestDlData){
+    const blob = new Blob([ Papa.unparse(data) ], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href =  url;
+    link.download = `${title}.csv`;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setrequestDlData(false)
+    }
+  },[requestDlData])
 
   const fullscreenChildren = React.Children.map(children, (child, index) => {
     if (index === 0 && React.isValidElement(child)) { // Que le premier enfant
@@ -88,10 +111,15 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
       key: 'export_img',
       label : <a onClick={downloadImage}><FileImageOutlined /> Export (image)</a>,
       disabled: !chartRef || !exportPNG
+    },
+    {
+      key: 'export_data',
+      label : <a onClick={downloadData}><DownloadOutlined /> Télécharger les données</a>,
+      disabled: !data
     }
   ]
 
-
+  //console.log(data)
 
   const dropdown_toolbox = <Dropdown menu={{ items:dd_items }}>
                                 <a style={{color:token.colorTextBase}}><MoreOutlined style={{marginLeft:10}}/></a>
@@ -104,7 +132,7 @@ export const DashboardElement: React.FC<IDashboardElementProps> = ({
           <span style={{marginLeft:5}}>{title}</span>
           <div style={{paddingRight:5, fontSize:16}}>{toolbox && dropdown_toolbox}</div>
         </div>}>
-      <chartContext.Provider value={{chartRef, setchartRef}}>
+      <chartContext.Provider value={{chartRef, setchartRef, setData}}>
         <LoadingComponent isFetching={isFetching}>
             {children}
         </LoadingComponent>

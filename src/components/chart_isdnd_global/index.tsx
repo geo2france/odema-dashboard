@@ -4,7 +4,7 @@ import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
 import { useChartEvents } from "../../utils";
-import { useDashboardElement } from "../dashboard_element/hooks";
+import { useChartData, useDashboardElement } from "../dashboard_element/hooks";
 
 export interface IChartIsdndGlobalProps {
     data : BaseRecord[]
@@ -18,7 +18,6 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
     useDashboardElement({chartRef})
     useChartEvents({chartRef:chartRef, onClick:onClick})
 
-
     const data_chart = alasql(`
         SELECT [annee], SUM([capacite]) as capacite, SUM([tonnage]) as tonnage 
         FROM ?
@@ -26,6 +25,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onCli
         ORDER BY [annee]
     `, [data])
 
+    useChartData({data:data_chart, dependencies:[year]})
 
     const data_objectif = [
         ['2010', 1241112*2],

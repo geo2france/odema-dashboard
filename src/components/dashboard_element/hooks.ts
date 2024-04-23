@@ -22,3 +22,22 @@ export const useDashboardElement = ({ chartRef }: useDashboardElementProps) => {
     }
   }, [chartRef]);
 };
+
+/**
+ * Hook permettant de remonter les données au Dashboard Element
+ * @param {any} props.data - Les données à proposer au téléchargement.
+ * @param {Array<any>} [props.dependencies=[]] - Les dépendances suspeptibles de modifier les données
+ */
+export interface useChartDataProps {
+  data?: any,
+  dependencies?:any[]
+}
+export const useChartData = ({data, dependencies=[]}:useChartDataProps) => {
+  const { setData, data:contextdata } = useContext(chartContext); 
+
+  useEffect(() => {
+    if (data && contextdata != data) {
+      setData(data);
+    }
+  }, dependencies);
+}
