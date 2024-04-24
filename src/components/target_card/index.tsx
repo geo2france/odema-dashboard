@@ -20,28 +20,6 @@ export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, value, d
     const percent:number = (ref_value - value) / (ref_value - target_value );
     const trajectoire_percent:number = 1 - (Number(due_date) - Number(date)) /  ( Number(due_date) - Number(ref_date) ) //Valeur théorique de la trajectoire
     
-    const getState = (percent:number, trajectoire_percent:number) => {
-        if (percent >= 1.1) {
-            return(<Tag color="success"> Dépassé</Tag>)
-        }
-        else if (percent >= 1) {
-            return(<Tag color="success"> Atteint</Tag>)
-        }
-        else if (percent < -0.1) {
-            return(<Tag color="error"> Critique</Tag>)
-        }
-        else if (Math.abs(trajectoire_percent - percent) < 0.05 ) {
-            return(<Tag color="processing"> Sur la trajectoire </Tag>)
-        }
-        else if (trajectoire_percent - percent > 0.05 ) {
-            return(<Tag color="warning"> En retard </Tag>)
-        }
-        else if (trajectoire_percent - percent < -0.05 ) {
-            return(<Tag color="processing"> En avance </Tag>)
-        }
-    }
-
-    const state = getState(percent, trajectoire_percent)
     //const trajectory_slope = target_value > ref_value ? 'asc' : 'desc'
 
     const descriptionItems:DescriptionsProps['items'] = [
@@ -65,7 +43,8 @@ export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, value, d
 
         <Row>
         
-        <Col span={10} style={{textAlign:'center'}}><ChartGaugeTarget value_trajectoire={trajectoire_percent*100} value={Math.round(percent * 100)} />   {state}
+        <Col span={10} style={{textAlign:'center'}}>
+            <ChartGaugeTarget value_trajectoire={trajectoire_percent*100} value={Math.round(percent * 100)} />   
     </Col>
     <Col span={14}>  
     <Descriptions layout="vertical" items={descriptionItems} />

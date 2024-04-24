@@ -12,7 +12,21 @@ export interface IChartGaugeTargetProps {
 export const ChartGaugeTarget: React.FC<IChartGaugeTargetProps> = ( {value, value_trajectoire} ) => {
     const context = useContext(pageContext)
 
-    const color = value > value_trajectoire ? palette[5] : orange[5]
+    //const color = value > value_trajectoire ? palette[5] : orange[5]
+
+    const color = ((progress:number) => {
+        if (progress <= 30) {
+           return 'red';
+       } else if (progress <= 50) {
+           return 'orange';
+       } else if (progress <= 70) {
+           return 'greenyellow';
+       } else if (progress <= 90) {
+           return 'green';
+       } else {
+           return 'lime';
+       }
+   })(value)
 
     const myserie:GaugeSeriesOption={
         type:"gauge",
