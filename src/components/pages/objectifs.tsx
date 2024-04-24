@@ -15,9 +15,9 @@ export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
         queryFn: () =>
           axios
             .get(DataJson)
-            .then((res) => res.data),
+            .then((res) => res.data.sort((a:BaseRecord,b:BaseRecord) => Number(a.date) - Number(b.date) )),
     })
-
+    console.log(cible_indicateur)
     const current = cible_indicateur?.filter((e:BaseRecord) => e.date == "2021")
         .map((e:BaseRecord) => ({
             ...e, 
