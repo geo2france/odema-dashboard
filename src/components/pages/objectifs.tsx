@@ -5,10 +5,16 @@ import {
 import axios from "axios";
 
 import DataJson from "/data/objectifs.json?url";
-import { Card, Col, Row } from "antd";
+import { Card, Col, Row, Switch } from "antd";
 import { TargetCard } from "../target_card";
+import { createContext, useState } from "react";
+
+export const pageContext = createContext<any>({remaningTime:true}); //Context permettant la remontée du ref Echarts enfant
+
 
 export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
+
+    const [remaningTime, setRemaningTime] = useState(true)
 
     const {data:cible_indicateur} = useQuery({
         queryKey: ['fdfdsfdsfds'],
@@ -17,7 +23,7 @@ export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
             .get(DataJson)
             .then((res) => res.data.sort((a:BaseRecord,b:BaseRecord) => Number(a.date) - Number(b.date) )),
     })
-    console.log(cible_indicateur)
+
     const current = cible_indicateur?.filter((e:BaseRecord) => e.date == "2021")
         .map((e:BaseRecord) => ({
             ...e, 
@@ -26,7 +32,12 @@ export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
         }))
 
     return(
-        <><h2>Objectifs</h2>
+      <pageContext.Provider value={{remaningTime}}>
+
+        <h2>Objectifs</h2>
+        <Card style={{ backgroundColor: 'lightgoldenrodyellow' }}>
+          <Switch defaultChecked onChange={(e)=> setRemaningTime(e)} /> Temps restant
+        </Card>
         <Row gutter={[12,12]}>
         {current?.map((e:BaseRecord)=> 
           <Col span={8} key={e.id}>
@@ -37,6 +48,7 @@ export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
           </Col> 
         )}
         </Row>
-        </>
+
+        </pageContext.Provider>
     )
 }

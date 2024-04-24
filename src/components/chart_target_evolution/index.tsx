@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from 'echarts';
 import { CSSProperties, useRef } from 'react';
@@ -26,7 +26,7 @@ export const ChartTargetEvolution: React.FC<IChartTargetEvolutionProps> = ( {dat
     `, [data]).map((e:BaseRecord) => ({...e, offset:(e.max - e.min)*offset_coef}))[0]
 
     
-    const chartRef = useRef<any>()
+    const chartRef = useRef<any>();
 
     const serie: LineSeriesOption = {
       type: "line",
