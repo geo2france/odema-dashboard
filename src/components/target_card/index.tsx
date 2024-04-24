@@ -6,7 +6,6 @@ import { BaseRecord } from '@refinedev/core';
 
 export interface ITargetCardProps {
     objectif_name:string,
-    value:number,
     unite?:string,
     date:string, //year ?
     due_date:string,
@@ -16,8 +15,9 @@ export interface ITargetCardProps {
     data:BaseRecord[]
 }
 
-export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, value, date, due_date, ref_date, ref_value, target_value, unite, data} ) => {
-    const percent:number = (ref_value - value) / (ref_value - target_value );
+export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, date, due_date, ref_date, ref_value, target_value, unite, data} ) => {
+    const value = data.filter((e) => e.date.toString() == date)[0]?.value
+    const percent:number = value && (ref_value - value) / (ref_value - target_value );
     const trajectoire_percent:number = 1 - (Number(due_date) - Number(date)) /  ( Number(due_date) - Number(ref_date) ) //Valeur théorique de la trajectoire
     
     //const trajectory_slope = target_value > ref_value ? 'asc' : 'desc'
@@ -29,7 +29,7 @@ export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, value, d
         },
         {
             key: 'value',
-            label: 'Valeur', children: `${value.toLocaleString()} (${date})`
+            label: 'Valeur', children: `${value && value.toLocaleString()} (${date})`
         },
         {
             key: 'target',

@@ -8,6 +8,7 @@ import DataJson from "/data/objectifs.json?url";
 import { Card, Col, InputNumber, Row, Switch } from "antd";
 import { TargetCard } from "../target_card";
 import { createContext, useState } from "react";
+import alasql from "alasql";
 
 export interface PageContextI {
   remaningTime:boolean
@@ -18,7 +19,7 @@ export const pageContext = createContext<PageContextI>({remaningTime:true}); //C
 export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
 
     const [remaningTime, setRemaningTime] = useState(true)
-    const [year, setYear] = useState<number | null>(2021)
+    const [year, setYear] = useState<number>(2021)
 
 
     const {data:cible_indicateur} = useQuery({
@@ -29,12 +30,9 @@ export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
             .then((res) => res.data.sort((a:BaseRecord,b:BaseRecord) => Number(a.date) - Number(b.date) )),
     })
 
-    const current = cible_indicateur?.filter((e:BaseRecord) => e.date == year)
-        .map((e:BaseRecord) => ({
-            ...e, 
-            percent:(e.ref_value - e.value) / (e.ref_value - e.target ),
-            trajectoire:1 - (Number(e.due_date) - Number(e.date)) /  ( Number(e.due_date) - Number(e.ref_date) )
-        }))
+    const objectifs = cible_indicateur && alasql(`
+    SELECT DISTINCT id_cible, indicateur, due_date, ref_date, ref_value, [target] FROM ?
+    `, [cible_indicateur])
 
     return(
       <pageContext.Provider value={{remaningTime}}>
@@ -42,13 +40,14 @@ export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
         <h2>Objectifs</h2>
         <Card style={{ backgroundColor: 'lightgoldenrodyellow' }}>
           <Switch defaultChecked onChange={(e)=> setRemaningTime(e)} /> Temps restant
-          <InputNumber min={2009} max={2023} value={year} onChange={setYear} />;
+          <InputNumber min={2009} max={2023} value={year} onChange={(e) => e && setYear(e)} /> Année
         </Card>
         <Row gutter={[12,12]}>
-        {current?.map((e:BaseRecord)=> 
-          <Col span={8} key={e.id}>
+        {objectifs?.map((e:BaseRecord)=> 
+          <Col span={8} key={e.id_cible}>
             <Card title={e.cible}>
-            <TargetCard data={cible_indicateur.filter((x:BaseRecord) => x.id_cible == e.id_cible)} objectif_name={e.cible} value={e.value} date={e.date} due_date={e.due_date} ref_date={e.ref_date} 
+            <TargetCard data={cible_indicateur.filter((x:BaseRecord) => x.id_cible == e.id_cible)} objectif_name={e.cible} 
+              date={year.toString()} due_date={e.due_date} ref_date={e.ref_date} 
               ref_value={e.ref_value} target_value={e.target} />
             </Card>
           </Col> 
