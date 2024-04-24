@@ -1,6 +1,6 @@
 import React from 'react'
 import { ChartGaugeTarget } from '../chart_gauge_targets'
-import { Col, Collapse, Descriptions, DescriptionsProps, Row, Tag } from 'antd';
+import { Col, Collapse, Descriptions, DescriptionsProps, Row } from 'antd';
 import { ChartTargetEvolution } from '../chart_target_evolution';
 import { BaseRecord } from '@refinedev/core';
 
@@ -53,7 +53,7 @@ export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, date, du
         </Row>
         <Collapse items={[  {  key: '1',
     label: 'Evolution 📈',
-    children: <ChartTargetEvolution data={data}/> }]} ghost defaultActiveKey={['1']}  />
+    children: <ChartTargetEvolution data={data} current_year={Number(date)}/> }]} ghost defaultActiveKey={['1']}  />
     </div>
   )
 }
