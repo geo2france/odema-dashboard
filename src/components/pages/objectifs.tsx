@@ -5,7 +5,7 @@ import {
 import axios from "axios";
 
 import DataJson from "/data/objectifs.json?url";
-import { Card, Col, Row, Switch } from "antd";
+import { Card, Col, InputNumber, Row, Switch } from "antd";
 import { TargetCard } from "../target_card";
 import { createContext, useState } from "react";
 
@@ -18,6 +18,8 @@ export const pageContext = createContext<PageContextI>({remaningTime:true}); //C
 export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
 
     const [remaningTime, setRemaningTime] = useState(true)
+    const [year, setYear] = useState<number | null>(2021)
+
 
     const {data:cible_indicateur} = useQuery({
         queryKey: ['fdfdsfdsfds'],
@@ -27,7 +29,7 @@ export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
             .then((res) => res.data.sort((a:BaseRecord,b:BaseRecord) => Number(a.date) - Number(b.date) )),
     })
 
-    const current = cible_indicateur?.filter((e:BaseRecord) => e.date == "2021")
+    const current = cible_indicateur?.filter((e:BaseRecord) => e.date == year)
         .map((e:BaseRecord) => ({
             ...e, 
             percent:(e.ref_value - e.value) / (e.ref_value - e.target ),
@@ -40,6 +42,7 @@ export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
         <h2>Objectifs</h2>
         <Card style={{ backgroundColor: 'lightgoldenrodyellow' }}>
           <Switch defaultChecked onChange={(e)=> setRemaningTime(e)} /> Temps restant
+          <InputNumber min={2009} max={2023} value={year} onChange={setYear} />;
         </Card>
         <Row gutter={[12,12]}>
         {current?.map((e:BaseRecord)=> 

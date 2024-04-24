@@ -1,6 +1,6 @@
 import { GaugeSeriesOption } from 'echarts';
 import ReactECharts, { EChartsOption } from 'echarts-for-react'; 
-import { geekblue as palette , orange} from '@ant-design/colors';
+import { geekblue as palette } from '@ant-design/colors';
 import { useContext } from 'react';
 import { pageContext } from '../pages/objectifs';
 
@@ -11,8 +11,6 @@ export interface IChartGaugeTargetProps {
 
 export const ChartGaugeTarget: React.FC<IChartGaugeTargetProps> = ( {value, value_trajectoire} ) => {
     const context = useContext(pageContext)
-
-    //const color = value > value_trajectoire ? palette[5] : orange[5]
 
     const color = ((progress:number) => {
         if (progress <= 30) {
