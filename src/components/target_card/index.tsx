@@ -1,8 +1,23 @@
 import React from 'react'
 import { ChartGaugeTarget } from '../chart_gauge_targets'
-import { Col, Collapse, Descriptions, DescriptionsProps, Row } from 'antd';
+import { Col, Collapse, Descriptions, DescriptionsProps, Row, Tag } from 'antd';
 import { ChartTargetEvolution } from '../chart_target_evolution';
 import { BaseRecord } from '@refinedev/core';
+
+const tagColor = (tag: string) => {
+  switch (tag) {
+    case "Déchet":
+    case "Déchets":
+      return "purple";
+    case "Energie":
+      return "blue";
+    case "Climat":
+        return "orange"
+    default:
+      return "grey";
+  }
+};
+
 
 export interface ITargetCardProps {
     objectif_name:string,
@@ -12,10 +27,11 @@ export interface ITargetCardProps {
     ref_date:string,
     ref_value:number,
     target_value:number,
-    data:BaseRecord[]
+    data:BaseRecord[],
+    tags?:string[],
 }
 
-export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, date, due_date, ref_date, ref_value, target_value, unite, data} ) => {
+export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, date, due_date, ref_date, ref_value, target_value, unite, data, tags} ) => {
     const value = data.filter((e) => e.date.toString() == date)[0]?.value
     const percent:number = value && (ref_value - value) / (ref_value - target_value );
     const trajectoire_percent:number = 1 - (Number(due_date) - Number(date)) /  ( Number(due_date) - Number(ref_date) ) //Valeur théorique de la trajectoire
@@ -39,6 +55,7 @@ export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, date, du
 
     return (
     <div style={{padding:8}}>
+        {tags?.map((tag) => <Tag color={tagColor(tag)}>{tag}</Tag>) }
         <small>{objectif_name}</small>
 
         <Row>
