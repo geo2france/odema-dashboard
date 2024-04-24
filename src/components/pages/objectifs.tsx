@@ -18,7 +18,7 @@ export const pageContext = createContext<PageContextI>({remaningTime:true}); //C
 
 export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
 
-    const [remaningTime, setRemaningTime] = useState(true)
+    const [remaningTime, setRemaningTime] = useState(false)
     const [year, setYear] = useState<number>(2021)
 
 
@@ -39,7 +39,7 @@ export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
 
         <h2>Objectifs</h2>
         <Card style={{ backgroundColor: 'lightgoldenrodyellow' }}>
-          <Switch defaultChecked onChange={(e)=> setRemaningTime(e)} /> Temps restant
+          <Switch defaultChecked onChange={setRemaningTime} value={remaningTime}/> Temps restant
           <InputNumber min={2009} max={2023} value={year} onChange={(e) => e && setYear(e)} /> Année
         </Card>
         <Row gutter={[12,12]}>
