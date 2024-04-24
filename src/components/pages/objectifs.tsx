@@ -9,7 +9,10 @@ import { Card, Col, Row, Switch } from "antd";
 import { TargetCard } from "../target_card";
 import { createContext, useState } from "react";
 
-export const pageContext = createContext<any>({remaningTime:true}); //Context permettant la remontée du ref Echarts enfant
+export interface PageContextI {
+  remaningTime:boolean
+}
+export const pageContext = createContext<PageContextI>({remaningTime:true}); //Context permettant la remontée du ref Echarts enfant
 
 
 export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
