@@ -24,7 +24,10 @@ Le contenu généré dans le dossier `dist` peut être coller sur un serveur htt
 
 ## Sources de données
 
-- **Ademe** : les données sont récupérés sur le [portail opendata](https://data.ademe.fr/) via l'API Datafair. Un [connecteur](https://github.com/geo2france/refine-datafair) a été développé pour cet usage.
+- **Ademe** : depuis le [portail opendata](https://data.ademe.fr/) de l'Ademe via l'API Datafair.
+- **Odema** : depuis le [datahub](https://www.geo2france.fr/datahub/search?q=odema) de Géo2France par flux WFS.
+
+Les connecteurs [Datafair Data Provier](https://github.com/geo2france/refine-datafair) et [WFS Data Provier](https://github.com/geo2france/refine-wfs) ont été développés pour cet usage et sont utilisables par d'autres applications [Refine](https://github.com/refinedev/refine).
 
 ## Développement
 
@@ -100,6 +103,7 @@ To learn more about **Refine**, please check out the [Documentation](https://ref
 - **React Router** [Docs](https://refine.dev/docs/core/providers/router-provider/)
 - **REST Data Provider** [Docs](https://refine.dev/docs/core/providers/data-provider/#overview)
 - **Datafair Data Provier** [Docs](https://github.com/geo2france/refine-datafair)
+- **WFS Data Provier** [Docs](https://github.com/geo2france/refine-wfs)
 
 This [Refine](https://github.com/refinedev/refine) project was generated with [create refine-app](https://github.com/refinedev/refine/tree/master/packages/create-refine-app).
 
