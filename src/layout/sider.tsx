@@ -29,23 +29,12 @@ import "./sider.css";
 import { useMenu } from "@refinedev/core";
 
 
+
 const style_img: CSSProperties = {
   width: "100%",
 };
 
 export const CustomSider: React.FC = () => {
-  const { token } = theme.useToken();
-  const { selectedKey } = useMenu();
-  const [collapsed, setCollapsed] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
-  window.addEventListener("resize", () => {
-    setIsMobile(window.innerWidth < 768);
-  });
-
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
 
   const items = [
     {
@@ -86,6 +75,27 @@ export const CustomSider: React.FC = () => {
     },
   ];
 
+  const { token } = theme.useToken();
+  const { selectedKey } = useMenu();
+  const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  window.addEventListener("resize", () => {
+    setIsMobile(window.innerWidth < 768);
+  });
+
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
+
+  const siderStyle: CSSProperties = {
+    height: "100vh",
+    backgroundColor: token.colorBgContainer,
+    zIndex: 1, 
+    position: collapsed ? 'absolute' : (isMobile ? 'fixed' : 'absolute'), 
+    
+  };
+
   return (
     <Layout.Sider
       className="custom-sider"
@@ -93,12 +103,7 @@ export const CustomSider: React.FC = () => {
       collapsedWidth={isMobile ? 0 : 80}
       collapsed={collapsed}
       onCollapse={toggleCollapsed}
-      style={{
-        height: "100vh",
-        backgroundColor: token.colorBgContainer,
-        position: isMobile ? "fixed" : "static",
-        zIndex: 1,
-      }}
+      style={siderStyle}
     >
       <Row justify="center">
         <Col span={24}>
