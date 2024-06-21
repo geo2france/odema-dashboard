@@ -106,6 +106,3 @@ export const BaseRecordToGeojsonPoint = ({data, x, y, crs_name}:IBaseRecordToGeo
     }
     return geojson
 }
-
-
-export type DataFileType = 'csv' | 'xlsx' | 'ods';
