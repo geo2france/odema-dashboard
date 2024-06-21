@@ -5,3 +5,6 @@
 	path = src/refine-wfs
 	url = git@github.com:geo2france/refine-wfs.git
 
+[submodule "src/g2f-dashboard"]
+	path = src/g2f-dashboard
+	url = /home/jbdesbas/g2f-dashboard/
