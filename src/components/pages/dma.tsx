@@ -8,7 +8,7 @@ import { ChartRaceBareDMA } from "../chart_racebar_dma";
 import alasql from "alasql";
 import ChartPieTypeTraitement from "../chart_pie_type_traitement";
 import { useSearchParamsState } from "../../utils";
-import { DashboardElement } from "../dashboard_element";
+import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element";
 
 
 export const DmaComponent: React.FC<IResourceComponentsProps> = () => {

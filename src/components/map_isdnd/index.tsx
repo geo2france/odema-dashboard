@@ -4,7 +4,7 @@ import { BaseRecord, useList } from '@refinedev/core';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
 import { BaseRecordToGeojsonPoint } from '../../utils';
 import { BaseLayer } from '../map_baselayer';
-import { useDashboardElement } from '../dashboard_element/hooks';
+import { useDashboardElement } from '../../g2f-dashboard/components/dashboard_element/hooks';
 
 export interface IMapProps{
     data:BaseRecord[],

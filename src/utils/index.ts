@@ -3,7 +3,7 @@ import { FeatureCollection, Feature } from "geojson";
 import { useSearchParams } from "react-router-dom";
 
 export { chartBusinessProps} from "./nomenclature";
-export { useChartEvents, useChartActionHightlight as useChartAction } from "./usecharthighlight";
+export { useChartEvents, useChartActionHightlight as useChartAction } from "../g2f-dashboard/utils/usecharthightlight";
 
 
 

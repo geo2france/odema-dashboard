@@ -3,7 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import { BaseRecord } from '@refinedev/core';
 import { EChartsOption } from "echarts";
 import alasql from "alasql";
-import { useDashboardElement } from "../dashboard_element/hooks";
+import { useDashboardElement } from "../../g2f-dashboard/components/dashboard_element/hooks";
 
 export interface ChartRaceBareDMAProps {
     data: any[] | BaseRecord[];

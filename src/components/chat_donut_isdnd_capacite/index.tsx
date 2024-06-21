@@ -4,8 +4,8 @@ import { EChartsOption, TreemapSeriesOption } from 'echarts';
 import { BaseRecord } from '@refinedev/core';
 import alasql from 'alasql';
 import { ChartTerritoriesProps } from '../../utils/nomenclature';
-import { useChartEvents } from '../../utils';
-import { useChartData, useDashboardElement } from '../dashboard_element/hooks';
+import { useChartEvents } from "../../g2f-dashboard/utils/usecharthightlight";
+import { useChartData, useDashboardElement } from '../../g2f-dashboard/components/dashboard_element/hooks';
 
 export interface IChartDonutIsdndCapacitePros {
     data: BaseRecord[];
