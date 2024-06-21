@@ -3,7 +3,7 @@ import { Row, Col, Card, List } from "antd";
 import { useSearchParamsState } from "../../utils";
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte";
 import { LoadingComponent } from "../../g2f-dashboard/components/loading_container";
-import { Attribution } from "../attributions";
+import { Attribution } from "../../g2f-dashboard/components/attributions";
 import { RepTopbar } from "../rep_topbar";
 import alasql from "alasql";
 
