@@ -1,4 +1,3 @@
-import { useSearchParams } from "react-router-dom";
 
 export { chartBusinessProps} from "./nomenclature";
 export { useChartEvents, useChartActionHightlight as useChartAction } from "../g2f-dashboard/utils/usecharthightlight";
@@ -23,42 +22,6 @@ export const wrappe = (chaine: string, maxLength: number): string => {
         return result;
     }, []).join('\n');
 }
-
-
-/**
- * See https://blog.logrocket.com/use-state-url-persist-state-usesearchparams/
- * 
- * @param searchParamName 
- * @param defaultValue 
- * @returns searchParamsState & setSearchParamsState
- */
-export function useSearchParamsState(
-    searchParamName: string,
-    defaultValue: string
-): readonly [
-    searchParamsState: string,
-    setSearchParamsState: (newState: string) => void
-] {
-    const [searchParams, setSearchParams] = useSearchParams();
-
-    const acquiredSearchParam = searchParams.get(searchParamName);
-    const searchParamsState = acquiredSearchParam ?? defaultValue;
-
-    const setSearchParamsState = (newState: string) => {
-        const next = Object.assign(
-            {},
-            [...searchParams.entries()].reduce(
-                (o, [key, value]) => ({ ...o, [key]: value }),
-                {}
-            ),
-            { [searchParamName]: newState }
-        );
-        setSearchParams(next);
-    };
-    return [searchParamsState, setSearchParamsState];
-}
-
-
 
 
 export const default_app_palette = [
