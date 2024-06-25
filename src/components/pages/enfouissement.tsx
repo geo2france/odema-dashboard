@@ -27,11 +27,14 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
     const [drawerIsOpen, setdrawerIsOpen] = useState(false);
 
-    const {data:data_isdnd, isFetching:isFetchingIsdnd} = useList({
+    const {data:data_isdnd, isFetching:isFetchingIsdnd} = useList({ // Ne contient les capacité autorisé QUE pour les années où les entrants sont connus
         resource:"odema:isdnd_tonnage ",
         dataProviderName:"geo2france",
         pagination:{
             mode:"off"
+        },
+        meta:{
+            properties:['annee','aiot','name','tonnage','capacite','lat','lng','departement'] //Reduce size, keep only used fields
         }
     })
 
@@ -48,7 +51,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 `, [data_isdnd.data]).map((e:BaseRecord) => ({value:Number(e.annee), label:e.annee}))
 
 
-    const {data:data_capacite} = useList({ // Historique des arrếtés
+    const {data:data_capacite, isFetching:isFetchingCapacite} = useList({ // Historique des arrếtés
         resource:"odema:capacite_isdnd",
         dataProviderName:"geo2france",
        /* filters:[{
@@ -95,7 +98,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 </Col>
 
                 <Col xl={12} xs={24}>
-                   <DashboardElement isFetching={isFetchingIsdnd} title={`Capacité régionale`}  attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
+                   <DashboardElement isFetching={isFetchingIsdnd || isFetchingCapacite} title={`Capacité régionale`}  attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
                    { data_capacite && data_isdnd && <ChartIsdndGlobal style={chartStyle} data={data_isdnd.data} data_capacite={data_capacite.data} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> }
                   </DashboardElement>
                </Col>
@@ -115,7 +118,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={8} lg={12} xs={24}>
 
 
-                     <DashboardElement isFetching={isFetchingIsdnd} title={`Tonnage enfouis : ${data_isdnd?.data.find((e:BaseRecord) => e.aiot == aiot)?.name}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
+                     <DashboardElement isFetching={isFetchingIsdnd || isFetchingCapacite} title={`Tonnage enfouis : ${data_isdnd?.data.find((e:BaseRecord) => e.aiot == aiot)?.name}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
                      { data_isdnd &&  data_capacite &&  
                         <ChartEvolutionISDND style={chartStyle} data={data_isdnd.data} data_capacite={data_capacite.data} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND>
                       }
