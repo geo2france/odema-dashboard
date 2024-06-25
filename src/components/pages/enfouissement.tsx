@@ -1,22 +1,18 @@
+import { CSSProperties, useState } from "react";
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
 import { Row, Col, Alert, Card, Drawer, Tooltip, Select, Form } from "antd"
-import {
-    useQuery,
-  } from "@tanstack/react-query";
-import axios from "axios";
-import { ChartEvolutionISDND } from "../chart_isdnd_installation";
-import { CSSProperties, useEffect, useState } from "react";
-import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
+import alasql from "alasql";
 
-import DataJson from "/data/isdnd_tonnage_annee.json?url";
+import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element";
+
+import { ChartEvolutionISDND } from "../chart_isdnd_installation";
+import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
 import { MapIsdnd } from "../map_isdnd";
 import { TimelineIsdndCapacite } from "../timeline_isdnd_capacite";
 import { ChartIsdndGlobal } from "../chart_isdnd_global";
 import { HistoryOutlined } from "@ant-design/icons";
 import { ChartDonutIsdndCapacite } from "../chat_donut_isdnd_capacite";
 import { BaseOptionType } from "antd/lib/select";
-import alasql from "alasql";
-import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element";
 
 
 
@@ -28,26 +24,21 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
     const [aiot, setAiot] = useState<string>('0007003529')
     const [year, setYear] = useState<number>(2022)
-    const [center, setCenter] = useState<number[]>([2.4125069,50.67431])
 
     const [drawerIsOpen, setdrawerIsOpen] = useState(false);
 
-    /*const IREP_attribution = {name: "Registre Francais des émissions polluantes", 
-    url:'https://www.data.gouv.fr/fr/datasets/registre-francais-des-emissions-polluantes/'}*/
-
-
-    const {data:data_isdnd} = useQuery({ // A remplacer par appel API WFS
-        queryKey: ['repoData'],
-        queryFn: () =>
-          axios
-            .get(DataJson)
-            .then((res) => res.data),
+    const {data:data_isdnd} = useList({
+        resource:"odema:isdnd_tonnage ",
+        dataProviderName:"geo2france",
+        pagination:{
+            mode:"off"
+        }
     })
 
     const select_options:BaseOptionType[] = data_isdnd && alasql(`
         SELECT DISTINCT aiot AS [value], name AS label
         FROM ?
-    `, [data_isdnd]).map((e:BaseRecord) => ({value:e.value, label:`${e.label} (${e.value})`}))
+    `, [data_isdnd]).map((e:BaseRecord) => ({value:e.value, label:`${e.label} (${e.value})`})) // Liste des différentes installations
 
     const select_options_annees:BaseOptionType[] = data_isdnd && alasql(`
     SELECT DISTINCT annee
@@ -56,7 +47,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
     ORDER BY annee DESC
 `, [data_isdnd]).map((e:BaseRecord) => ({value:Number(e.annee), label:e.annee}))
 
-    const data_capacite = useList({
+    const data_capacite = useList({ // Historique des arrếtés
         resource:"odema:capacite_isdnd",
         dataProviderName:"geo2france",
         filters:[{
@@ -68,11 +59,6 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
             mode:"off"
         }
     })
-
-    useEffect(() => {
-        const a = data_isdnd?.data ? data_isdnd.find((e:any) => e.aiot == aiot) : center;
-        setCenter([a.lng, a.lat])
-    },[data_isdnd, aiot])
 
       return (<>
       <Row gutter={[14, 14]} align="stretch">
@@ -110,29 +96,29 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={12} xs={24}>
                 { data_isdnd && 
                    <DashboardElement title={`Capacité régionale`}  attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
-                    <ChartIsdndGlobal style={chartStyle} data={data_isdnd} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> 
+                    <ChartIsdndGlobal style={chartStyle} data={data_isdnd.data} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> 
                   </DashboardElement>   }
                </Col>
 
                 <Col xl={12} xs={24}>
                  { data_isdnd && 
                 <DashboardElement title={`Tonnage enfouis par installation en ${year}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
-                 <ChartRaceBarISDND style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> 
+                 <ChartRaceBarISDND style={chartStyle} data={data_isdnd.data} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> 
                  </DashboardElement>  }
                </Col>
 
                <Col xl={8} lg={12} xs={24}>
                { data_isdnd && <DashboardElement title={`Repartition des capacités autorisées ${year}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
-                     <ChartDonutIsdndCapacite style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.aiot)} />
+                     <ChartDonutIsdndCapacite style={chartStyle} data={data_isdnd.data} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.aiot)} />
                     </DashboardElement> }
                 </Col>
 
                 <Col xl={8} lg={12} xs={24}>
 
                { data_isdnd &&
-                     <DashboardElement title={`Tonnage enfouis : ${data_isdnd.find((e:BaseRecord) => e.aiot == aiot)?.name}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
+                     <DashboardElement title={`Tonnage enfouis : ${data_isdnd.data.find((e:BaseRecord) => e.aiot == aiot)?.name}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
                             
-                        <ChartEvolutionISDND style={chartStyle} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND>
+                        <ChartEvolutionISDND style={chartStyle} data={data_isdnd.data} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND>
 
                         <div  style={{float:'right'}}>
                           <Tooltip title="Historique des arrêtés">
@@ -150,7 +136,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
                <Col xl={8} lg={12} xs={24}>
                { data_isdnd && <DashboardElement title={`Installations de stockage de déchets non dangereux (ISDND) ${year}`} >
-                    <MapIsdnd style={{height:376}} data={data_isdnd} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} />
+                    <MapIsdnd style={{height:376}} data={data_isdnd.data} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} />
                     </DashboardElement>}
                 </Col>
 
