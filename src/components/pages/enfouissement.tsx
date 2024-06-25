@@ -16,7 +16,7 @@ import { HistoryOutlined } from "@ant-design/icons";
 import { ChartDonutIsdndCapacite } from "../chat_donut_isdnd_capacite";
 import { BaseOptionType } from "antd/lib/select";
 import alasql from "alasql";
-import { DashboardElement } from "../dashboard_element";
+import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element";
 
 
 

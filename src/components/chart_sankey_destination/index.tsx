@@ -2,8 +2,8 @@ import React, { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { BaseRecord } from "@refinedev/core";
 import { chartBusinessProps, wrappe } from "../../utils";
-import { useChartActionHightlight, useChartEvents } from "../../utils/usecharthighlight";
-import { useDashboardElement } from "../dashboard_element/hooks";
+import { useChartActionHightlight, useChartEvents } from "../../g2f-dashboard/utils/usecharthightlight";
+import { useDashboardElement } from "../../g2f-dashboard/components/dashboard_element/hooks";
 
 export interface ChartSankeyDestinationDMAProps {
     data: any[] | BaseRecord[]; 

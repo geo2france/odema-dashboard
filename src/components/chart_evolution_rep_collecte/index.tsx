@@ -4,7 +4,7 @@ import { BarSeriesOption, EChartsOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import alasql from "alasql";
 import { CSSProperties, useRef } from "react";
-import { useChartActionHightlight, useChartEvents } from "../../utils/usecharthighlight";
+import { useChartActionHightlight, useChartEvents } from "../../g2f-dashboard/utils/usecharthightlight";
 
 export interface ChartEvolutionRepCollecteProps{
     data:BaseRecord[],
