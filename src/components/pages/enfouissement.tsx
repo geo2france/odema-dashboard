@@ -66,7 +66,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
       return (<>
       <Row gutter={[14, 14]} align="stretch">
-                <Col span={24/2}>
+                <Col span={24}>
                     <Card style={{height:'100%', alignContent:'center', display:'grid'}}>
                         <Form  layout="inline" style={{padding:18}}>
                             <Form.Item label="Installation">
@@ -88,15 +88,6 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         </Form>
                     </Card>
                 </Col>
-                <Col span={24/2}>
-                    <Alert
-                        message="En cours de construction"
-                        description={<>Page en cours de construction. Les données 2022 et 2023 ne sont <b>pas encore validées</b>.</>}
-                        type="warning"
-                        showIcon closable={false}
-                    />
-                </Col>
-
                 <Col xl={12} xs={24}>
                    <DashboardElement isFetching={isFetchingIsdnd || isFetchingCapacite} title={`Capacité régionale`}  attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
                    { data_capacite && data_isdnd && <ChartIsdndGlobal style={chartStyle} data={data_isdnd.data} data_capacite={data_capacite.data} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> }
