@@ -38,23 +38,24 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
     const select_options:BaseOptionType[] = data_isdnd && alasql(`
         SELECT DISTINCT aiot AS [value], name AS label
         FROM ?
-    `, [data_isdnd]).map((e:BaseRecord) => ({value:e.value, label:`${e.label} (${e.value})`})) // Liste des différentes installations
+    `, [data_isdnd.data]).map((e:BaseRecord) => ({value:e.value, label:`${e.label} (${e.value})`})) // Liste des différentes installations
 
     const select_options_annees:BaseOptionType[] = data_isdnd && alasql(`
     SELECT DISTINCT annee
     FROM ?
     WHERE tonnage > 0
     ORDER BY annee DESC
-`, [data_isdnd]).map((e:BaseRecord) => ({value:Number(e.annee), label:e.annee}))
+`, [data_isdnd.data]).map((e:BaseRecord) => ({value:Number(e.annee), label:e.annee}))
 
-    const data_capacite = useList({ // Historique des arrếtés
+
+    const {data:data_capacite} = useList({ // Historique des arrếtés
         resource:"odema:capacite_isdnd",
         dataProviderName:"geo2france",
-        filters:[{
+       /* filters:[{
             field:"aiot",
             operator:"eq",
             value:aiot
-        }],
+        }],*/
         pagination:{
             mode:"off"
         }
@@ -95,7 +96,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
                 <Col xl={12} xs={24}>
                    <DashboardElement isFetching={isFetchingIsdnd} title={`Capacité régionale`}  attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
-                   { data_isdnd && <ChartIsdndGlobal style={chartStyle} data={data_isdnd.data} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> }
+                   { data_capacite && data_isdnd && <ChartIsdndGlobal style={chartStyle} data={data_isdnd.data} data_capacite={data_capacite.data} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> }
                   </DashboardElement>
                </Col>
 
@@ -115,9 +116,9 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
 
                      <DashboardElement isFetching={isFetchingIsdnd} title={`Tonnage enfouis : ${data_isdnd?.data.find((e:BaseRecord) => e.aiot == aiot)?.name}`} attributions={[{name : 'GT ISDND'},{name: 'Odema'}]}>
-                     { data_isdnd &&         
-                        <ChartEvolutionISDND style={chartStyle} data={data_isdnd.data} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND> }
-
+                     { data_isdnd &&  data_capacite &&  
+                        <ChartEvolutionISDND style={chartStyle} data={data_isdnd.data} data_capacite={data_capacite.data} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND>
+                      }
                         <div  style={{float:'right'}}>
                           <Tooltip title="Historique des arrêtés">
                               <a onClick={() => setdrawerIsOpen(true)}><HistoryOutlined /></a>
@@ -125,7 +126,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                         </div> 
 
                         <Drawer title="Historique des arrêtés" onClose={() => setdrawerIsOpen(false)} open={drawerIsOpen}>
-                         { data_capacite.data && <TimelineIsdndCapacite data={data_capacite.data.data} aiot={aiot}></TimelineIsdndCapacite> }
+                         { data_capacite && <TimelineIsdndCapacite data={data_capacite.data} aiot={aiot}></TimelineIsdndCapacite> }
                         </Drawer>
 
                     </DashboardElement> 
