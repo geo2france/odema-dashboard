@@ -31,6 +31,7 @@
     "react-dom": "^18.0.0",
     "react-map-gl": "^7.1.7",
     "react-router-dom": "^6.22.1",
+    "refine-datafair": "github:geo2france/refine-datafair",
     "refine-wfs": "github:geo2france/refine-wfs",
     "vite-plugin-svgr": "^4.2.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
