@@ -3,41 +3,44 @@ import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
-import { useChartEvents } from "../../utils/usecharthighlight";
-import { useDashboardElement } from "../dashboard_element/hooks";
+import { useChartEvents } from "../../g2f-dashboard/utils/usecharthightlight";
+import { useChartData, useDashboardElement } from "../../g2f-dashboard/components/dashboard_element/hooks";
 
 export interface IChartEvolutionISDND {
     data : BaseRecord[]
+    data_capacite : BaseRecord[]
     aiot: string
     year?:number
     onClick: Function
     style? : CSSProperties
 }
-export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot, onClick, year, style }) => {
+export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, data_capacite, aiot, onClick, year, style }) => {
     const chartRef = useRef<any>();
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
     useDashboardElement({chartRef})
 
-    const data_chart = data
-    .filter((e) => e.aiot == aiot)
-    .map((e) => ({ serie_name: e.name, value: e.tonnage, category: e.annee.toString(), capacite:e.capacite }))
-    .sort((a, b) => a.category - b.category)
+    const data_chart = alasql(`
+    SELECT c.[annee], SUM(c.[capacite]) as capacite, SUM(t.[tonnage]) as tonnage 
+    FROM ? t
+    RIGHT JOIN ? c ON c.[annee]=t.[annee] AND c.[aiot]=t.[aiot]
+    WHERE c.[aiot]='${aiot}'
+    GROUP BY c.[annee]
+    ORDER BY c.[annee]
+    `, [data, data_capacite])
 
-    const data_agg = alasql(`
-        SELECT d.[serie_name] AS name, ARRAY(@[d.category, d.[value]]) AS data, ARRAY(@[d.category, d.[capacite]]) AS data_capacite
-        FROM ? d
-        GROUP BY d.[serie_name]
-`, [data_chart])
+    useChartData({
+        data:data_chart, 
+        dependencies:[aiot]})
 
 
-    const myseries: BarSeriesOption[] = data_agg.map((e: BaseRecord) => (
+    const myseries: BarSeriesOption = 
         {
             name:`Entrants`,
-            data:e.data.map((f:any[]) => ({
-                value:[f[0], f[1]],
+            data:data_chart.map((f:BaseRecord) => ({
+                value:[f.annee.toString(), f.tonnage],
                 itemStyle: {
-                    color: f[0] == year ? '#C1232B' : undefined
+                    color: f.annee == year ? '#C1232B' : undefined
                 } 
 
              })),
@@ -45,27 +48,26 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, aiot
             stack: 'stack1',
             tooltip:{
                 show:true,
-                valueFormatter: (value:number) => (`${Math.round(Number(value)).toLocaleString()} t` )
+                valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
             }
         }
-    ))
 
-    const myseries_capcite: LineSeriesOption[] = data_agg.map((e: BaseRecord) => (
-        {
-            name:`Capacite`,
-            data:e.data_capacite,
-            type: 'line',
-            step: 'middle',
-            itemStyle:{color:'#D44F4A'},
-            tooltip:{
-                show:true,
-                valueFormatter: (value:number) => (`${Math.round(Number(value)).toLocaleString()} t` )
-            }
+    const myseries_capcite: LineSeriesOption = {
+        name:`Capacite`,
+        data:data_chart.map((f:BaseRecord) => ({
+            value:[f.annee.toString(), f.capacite],
+         })),
+        type: 'line',
+        step: 'middle',
+        itemStyle:{color:'#D44F4A'},
+        tooltip:{
+            show:true,
+            valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         }
-    ))
+    }
 
     const option: EChartsOption ={
-        series:[...myseries,...myseries_capcite],
+        series:[myseries, myseries_capcite],
         legend: {top:'top', show:true},
         tooltip: {
             trigger: 'item'

@@ -1,8 +1,8 @@
 import { Refine } from "@refinedev/core";
 import { ThemedLayoutV2, notificationProvider, RefineThemes } from "@refinedev/antd";
 import routerBindings, { DocumentTitleHandler, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
-import {dataProvider as dfDataProvider} from "./refine-datafair";
-import {dataProvider as wfsDataProvider} from "./refine-wfs";
+import {dataProvider as dfDataProvider} from "refine-datafair";
+import {dataProvider as wfsDataProvider} from "refine-wfs";
 import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
 
 import { ConfigProvider, ThemeConfig } from "antd";
@@ -22,7 +22,6 @@ import { RepPchimPage } from "./components/pages/rep_pchim";
 import { RepTlcPage } from "./components/pages/rep_tlc";
 import { RepMnuPage } from "./components/pages/rep_mnu";
 import { RepDispmedPage } from "./components/pages/rep_dispmed";
-import { ObjectifsPage } from "./components/pages/objectifs";
 
 const myTheme:ThemeConfig = {...RefineThemes.Orange, 
   token: {
@@ -94,9 +93,6 @@ const App: React.FC = () => {
               </Route>
               <Route path="cve">
                 <Route index element={<IncinerationtPage />} />
-              </Route>
-              <Route path="objectifs">
-                <Route index element={<ObjectifsPage />} />
               </Route>
               <Route path="*" element={<ErrorComponent />} />
             </Route>

@@ -3,8 +3,8 @@ import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
-import { useChartEvents } from "../../utils/usecharthighlight";
-import { useDashboardElement } from "../dashboard_element/hooks";
+import { useChartEvents } from "../../g2f-dashboard/utils/usecharthightlight";
+import { useChartData, useDashboardElement } from "../../g2f-dashboard/components/dashboard_element/hooks";
 
 export interface IChartRaceBarISDND {
     data : BaseRecord[],
@@ -36,11 +36,13 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         }}))
 
     const data_chart = alasql(`
-        SELECT [departement], [name], [aiot] as key, tonnage as [value], [capacite]
+        SELECT [departement], [name] as nom, [aiot] , tonnage, [capacite]
         FROM ?
         WHERE annee=${year} AND tonnage > 0
         ORDER BY tonnage ASC
     `,[data])
+
+    useChartData({data:data_chart, dependencies:[year]})
 
     const myserie:BarSeriesOption={
         type:'bar',
@@ -49,7 +51,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
             valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         },
         data:data_chart.map((e:BaseRecord) => ({
-            value:e.value, name:e.name, key:e.key,
+            value:e.tonnage, name:e.nom, key:e.aiot,
             itemStyle:{color:dptement_props.find(i => i.code==e.departement)?.color}
         }
         ))

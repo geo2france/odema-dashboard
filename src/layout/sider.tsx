@@ -23,37 +23,23 @@ export const AppSider: React.FC = () => {
 
 /*** WIP ***/
 import React, { CSSProperties, useState } from "react";
-import { Layout, Menu, theme } from "antd";
+import { Layout, Menu, theme, Row, Col } from "antd";
 import { NavLink } from "react-router-dom";
-
-import './sider.css'
+import "./sider.css";
 import { useMenu } from "@refinedev/core";
+
+
 
 const style_img: CSSProperties = {
   width: "100%",
 };
 
 export const CustomSider: React.FC = () => {
-  const { token } = theme.useToken();
-  const { selectedKey } = useMenu();
-  const [collapsed, setCollapsed] = useState(false); // Etat du collapsible
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Vérifie si l'écran est mobile initialement
-
-
-    // Mettre à jour isMobile lors du redimensionnement de la fenêtre
-    window.addEventListener('resize', () => {
-      setIsMobile(window.innerWidth < 768);
-    });
-  
-
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
 
   const items = [
     {
       key: "/dma",
-      label: <NavLink to="/dma"> DMA</NavLink>,
+      label: <NavLink to="/dma">DMA</NavLink>,
       icon: <HomeOutlined />,
     },
     {
@@ -89,36 +75,61 @@ export const CustomSider: React.FC = () => {
     },
   ];
 
+  const { token } = theme.useToken();
+  const { selectedKey } = useMenu();
+  const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  window.addEventListener("resize", () => {
+    setIsMobile(window.innerWidth < 768);
+  });
+
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
+
+  const siderStyle: CSSProperties = {
+    height: "100vh",
+    backgroundColor: token.colorBgContainer,
+    zIndex: 1, 
+    position: collapsed ? 'absolute' : (isMobile ? 'fixed' : 'absolute'), 
+    
+  };
+
   return (
     <Layout.Sider
       className="custom-sider"
       collapsible
-      collapsedWidth={isMobile ? 0 :80}
+      collapsedWidth={isMobile ? 0 : 80}
       collapsed={collapsed}
       onCollapse={toggleCollapsed}
-      style={{
-        height: "100vh",
-        backgroundColor: token.colorBgContainer,
-      }}
+      style={siderStyle}
     >
-      <div style={{ position: "fixed",}}>
-        <div
-          style={{
-            width: collapsed ? "80px" : "200px", // Largeur réduite en cas de collapse
-            padding: "0 16px",
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            height: "64px",
-            backgroundColor: token.colorBgElevated,
-          }}
-        >
-          <NavLink to={""}>
-            <img style={style_img} src={Odema} alt="Logo Odema" />
-          </NavLink>
-        </div>
-        <Menu items={items} selectedKeys={[selectedKey]} mode="inline" style={{marginTop:"20px", width: collapsed ? "65%" : "100%"}} />
-      </div>
+      <Row justify="center">
+        <Col span={24}>
+          <div
+            style={{
+              padding: "16px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: token.colorBgElevated,
+            }}
+          >
+            <NavLink to={""}>
+              <img style={style_img} src={Odema} alt="Logo Odema" />
+            </NavLink>
+          </div>
+        </Col>
+        <Col span={24}>
+          <Menu
+            items={items}
+            selectedKeys={[selectedKey]}
+            mode="inline"
+            style={{ marginTop: "20px", width: "100%" }}
+          />
+        </Col>
+      </Row>
     </Layout.Sider>
   );
 };

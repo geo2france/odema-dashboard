@@ -3,29 +3,31 @@ import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
-import { useChartEvents } from "../../utils";
-import { useDashboardElement } from "../dashboard_element/hooks";
+import { useChartEvents } from "../../g2f-dashboard/utils/usecharthightlight";
+import { useChartData, useDashboardElement } from "../../g2f-dashboard/components/dashboard_element/hooks";
 
 export interface IChartIsdndGlobalProps {
     data : BaseRecord[]
+    data_capacite : BaseRecord[]
     year?:number
     onClick?: Function
     style?: CSSProperties
 }
-export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, onClick=() => undefined, year, style}) => {
+export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, data_capacite, onClick=() => undefined, year, style}) => {
     const chartRef = useRef<any>();
 
     useDashboardElement({chartRef})
     useChartEvents({chartRef:chartRef, onClick:onClick})
 
-
     const data_chart = alasql(`
-        SELECT [annee], SUM([capacite]) as capacite, SUM([tonnage]) as tonnage 
-        FROM ?
-        GROUP BY [annee]
-        ORDER BY [annee]
-    `, [data])
-
+        SELECT c.[annee], SUM(c.[capacite]) as capacite, SUM(t.[tonnage]) as tonnage 
+        FROM ? t
+        RIGHT JOIN ? c ON c.[annee]=t.[annee] AND c.[aiot]=t.[aiot]
+        GROUP BY c.[annee]
+        ORDER BY c.[annee]
+    `, [data, data_capacite])
+    
+    useChartData({data:data_chart, dependencies:[year]})
 
     const data_objectif = [
         ['2010', 1241112*2],

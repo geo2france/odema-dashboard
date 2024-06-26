@@ -3,30 +3,25 @@ import ReactECharts from 'echarts-for-react';
 import { BaseRecord } from '@refinedev/core';
 import { EChartsOption } from "echarts";
 import alasql from "alasql";
-import { useDashboardElement } from "../dashboard_element/hooks";
+import { useDashboardElement } from "../../g2f-dashboard/components/dashboard_element/hooks";
 
 export interface ChartRaceBareDMAProps {
     data: any[] | BaseRecord[];
-    data_territoire: any[] | BaseRecord[];
     highlight_region : string;
     style? : CSSProperties
   }
 
-export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, data_territoire, highlight_region, style} ) => {  
+export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, highlight_region, style} ) => {  
     const chartRef = useRef<any>()
     useDashboardElement({chartRef})
 
     const chart_data = alasql(`
-                        SELECT a.L_REGION, a.C_REGION,  sum(a.TONNAGE_DMA) as TONNAGE_DMA, sum(a.VA_POPANNEE) AS VA_POPANNEE
-                        FROM (
-                            SELECT L_REGION, C_REGION, N_DEPT, sum(TONNAGE_T_HG) as TONNAGE_DMA, max(data_territoire.VA_POPANNEE) as VA_POPANNEE
-                            FROM ? data
-                            JOIN ? as data_territoire ON data_territoire.N_DEPT = data.N_DEPT AND data_territoire.Annee = data.ANNEE
-                            GROUP BY L_REGION, C_REGION, N_DEPT) as a
-                        GROUP BY a.L_REGION, a.C_REGION
-                        ORDER BY sum(a.TONNAGE_DMA) / sum(a.VA_POPANNEE)
-                        `, [data, data_territoire]) //Reprendre avec les données à jours de l'ADEME "chiffre clés hors gravat"
-           
+        SELECT d.[C_REGION], d.[L_REGION], SUM(d.[TONNAGE__DMA]) as TONNAGE_DMA, SUM(d.[VA_POPANNEE]) AS VA_POPANNEE
+        FROM ? d
+        GROUP BY d.[L_REGION], d.[C_REGION]
+        ORDER BY SUM(d.[TONNAGE__DMA]) / SUM(d.[VA_POPANNEE])
+    `,[data])
+
     const option:EChartsOption = {
         yAxis: {
             type: 'category',

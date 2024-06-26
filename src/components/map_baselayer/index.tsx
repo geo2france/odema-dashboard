@@ -1,4 +1,4 @@
-import { Layer, LayerProps, Source, SourceProps } from "react-map-gl"
+import { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
 
 export interface IMapBaseLayerProps {
     layer : 'osm' | 'ortho',

@@ -4,8 +4,8 @@ import { EChartsOption, TreemapSeriesOption } from 'echarts';
 import { BaseRecord } from '@refinedev/core';
 import alasql from 'alasql';
 import { ChartTerritoriesProps } from '../../utils/nomenclature';
-import { useChartEvents } from '../../utils';
-import { useDashboardElement } from '../dashboard_element/hooks';
+import { useChartEvents } from "../../g2f-dashboard/utils/usecharthightlight";
+import { useChartData, useDashboardElement } from '../../g2f-dashboard/components/dashboard_element/hooks';
 
 export interface IChartDonutIsdndCapacitePros {
     data: BaseRecord[];
@@ -28,6 +28,8 @@ export const ChartDonutIsdndCapacite: React.FC<IChartDonutIsdndCapacitePros> = (
     WHERE [annee] = ${year}
     GROUP BY [departement]
     `, [data])
+
+    useChartData({data:data.filter((e) => e.annee == year) , dependencies:[year]})
 
     const serie:TreemapSeriesOption = {
         type:'treemap',
