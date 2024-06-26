@@ -121,7 +121,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             </Col>
             <Col xl={24/2} xs={24}>
                 <DashboardElement title="Ratio régionaux" isFetching={isFetching_chiffre_cle && isFetching_performance} attributions={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017' }]}>
-                        {data_performance && data_chiffre_cle && <ChartRaceBareDMA style={chartStyle} data={data_performance.data} data_territoire={data_chiffre_cle.data} highlight_region={cregion}/>}
+                        {data_chiffre_cle && <ChartRaceBareDMA style={chartStyle} data={data_chiffre_cle.data} highlight_region={cregion}/>}
                 </DashboardElement>
             </Col>
         </Row>
