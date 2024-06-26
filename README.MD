@@ -31,18 +31,13 @@ Les connecteurs [Datafair Data Provider](https://github.com/geo2france/refine-da
 
 
 
-## Learn More
+## A propos
 
-To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
+Les composants et _hooks_ génériques développés pour ce projet sont disponibles ici : [g2f-dashboard](https://github.com/geo2france/g2f-dashboard). Ils peuvent être utilisés pour créer d'autres tableaux de bord.
 
-- **G2F-Dashboards** [Docs](https://github.com/geo2france/g2f-dashboard)
-- **Ant Design** [Docs](https://refine.dev/docs/ui-frameworks/antd/tutorial/)
-- **React Router** [Docs](https://refine.dev/docs/core/providers/router-provider/)
-- **REST Data Provider** [Docs](https://refine.dev/docs/core/providers/data-provider/#overview)
+Connecteurs :
 - **Datafair Data Provider** [Docs](https://github.com/geo2france/refine-datafair)
 - **WFS Data Provider** [Docs](https://github.com/geo2france/refine-wfs)
-
-This [Refine](https://github.com/refinedev/refine) project was generated with [create refine-app](https://github.com/refinedev/refine/tree/master/packages/create-refine-app).
 
 
 ## License
