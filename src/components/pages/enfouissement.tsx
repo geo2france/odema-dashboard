@@ -1,6 +1,6 @@
 import { CSSProperties, useState } from "react";
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { Row, Col, Alert, Card, Drawer, Tooltip, Select, Form } from "antd"
+import { Row, Col, Card, Drawer, Tooltip, Select, Form } from "antd"
 import alasql from "alasql";
 
 import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element";
