@@ -3,7 +3,7 @@ import { useSearchParamsState } from "../../g2f-dashboard/utils/useSearchParamsS
 import { Card, Col, Row, Select } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element"
-import { FilePdfOutlined } from "@ant-design/icons"
+import { FilePdfOutlined, FrownOutlined } from "@ant-design/icons"
 
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
@@ -94,7 +94,8 @@ export const DmaPageEPCI: React.FC = () => {
                     <ul>
                     {data_rpqs?.data && data_rpqs?.data?.length > 0 ? data_rpqs?.data.sort((a,b) => b.annee_exercice - a.annee_exercice).map((d) => 
                         <li key={d.annee_exercice}>
-                            {d.annee_exercice == year ? <strong>{d.annee_exercice}</strong> : d.annee_exercice}<a href={d.url}><FilePdfOutlined />  </a>
+                            {d.annee_exercice == year ? <strong>{d.annee_exercice}</strong> : d.annee_exercice}
+                                {d.url ? <a href={d.url}><span> </span><FilePdfOutlined />  </a> :  <><span> </span><FrownOutlined /></>}
                         </li>
                     ) : <small>Aucun rapport disponible.</small> }
                     </ul>
