@@ -22,6 +22,7 @@ import { RepPchimPage } from "./components/pages/rep_pchim";
 import { RepTlcPage } from "./components/pages/rep_tlc";
 import { RepMnuPage } from "./components/pages/rep_mnu";
 import { RepDispmedPage } from "./components/pages/rep_dispmed";
+import { DmaPageEPCI } from "./components/pages/dma_epci";
 
 const myTheme:ThemeConfig = {...RefineThemes.Orange, 
   token: {
@@ -78,6 +79,7 @@ const App: React.FC = () => {
               <Route index element={<DmaComponent />} />
               <Route path="DMA">
                 <Route index element={<DmaComponent />} />
+                <Route path="epci" element={<DmaPageEPCI />} />
               </Route>
               <Route path="REP">
                 <Route index element={<RepPage />} />
