@@ -3,6 +3,7 @@ import { useSearchParamsState } from "../../g2f-dashboard/utils/useSearchParamsS
 import { Card, Col, Row, Select } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element"
+import { FilePdfOutlined } from "@ant-design/icons"
 
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
@@ -38,6 +39,23 @@ export const DmaPageEPCI: React.FC = () => {
         ]
     })
 
+    const {data:data_rpqs, isFetching:data_rpqs_isFecthing} =  useList({ // Ne contient les capacité autorisé QUE pour les années où les entrants sont connus
+        resource:"odema:rqps ",
+        dataProviderName:"geo2france",
+        pagination:{
+            mode:"off"
+        },
+        filters:[
+            {
+                field:"code_epci",
+                operator:"eq",
+                value:siren_epci
+            }
+        ]
+    });
+
+    console.log(data_rpqs?.data)
+
     const {data:data_ecpci_collecte} = useList({ // Ne contient les capacité autorisé QUE pour les années où les entrants sont connus
         resource:"odema:territoires_collecte ",
         dataProviderName:"geo2france",
@@ -70,6 +88,17 @@ export const DmaPageEPCI: React.FC = () => {
             <DashboardElement isFetching={data_traitement_isFecthing} title="Destination des DMA (hors gravats)">{data_traitement &&  <ChartSankeyDestinationDMA 
                 data={data_traitement?.data.map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) } />}
             </DashboardElement>
+            </Col>
+            <Col span={8}> 
+                <Card title="Bilan RPQS">
+                    <ul>
+                    {data_rpqs?.data && data_rpqs?.data?.length > 0 ? data_rpqs?.data.sort((a,b) => b.annee_exercice - a.annee_exercice).map((d) => 
+                        <li key={d.annee_exercice}>
+                            {d.annee_exercice == year ? <strong>{d.annee_exercice}</strong> : d.annee_exercice}<a href={d.url}><FilePdfOutlined />  </a>
+                        </li>
+                    ) : <small>Aucun rapport disponible.</small> }
+                    </ul>
+                </Card>
             </Col>
         </Row>
     )
