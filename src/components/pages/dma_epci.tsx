@@ -9,7 +9,7 @@ export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
     const [year, setYear] = useSearchParamsState('year','2021')
 
-    const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useList({ // Ne contient les capacité autorisé QUE pour les années où les entrants sont connus
+    const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useList({ 
         resource:"odema:destination_dma_epci ",
         dataProviderName:"geo2france",
         pagination:{
@@ -39,7 +39,7 @@ export const DmaPageEPCI: React.FC = () => {
         ]
     })
 
-    const {data:data_rpqs, isFetching:data_rpqs_isFecthing} =  useList({ // Ne contient les capacité autorisé QUE pour les années où les entrants sont connus
+    const {data:data_rpqs} =  useList({ 
         resource:"odema:rqps ",
         dataProviderName:"geo2france",
         pagination:{
@@ -56,7 +56,7 @@ export const DmaPageEPCI: React.FC = () => {
 
     console.log(data_rpqs?.data)
 
-    const {data:data_ecpci_collecte} = useList({ // Ne contient les capacité autorisé QUE pour les années où les entrants sont connus
+    const {data:data_ecpci_collecte} = useList({
         resource:"odema:territoires_collecte ",
         dataProviderName:"geo2france",
         pagination:{
