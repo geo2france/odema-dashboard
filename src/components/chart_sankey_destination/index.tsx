@@ -20,7 +20,7 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
     useDashboardElement({chartRef})
 
     const links = data;
-   
+   console.log(data)
     const data_echart = [... new Set([
         ...data.map((d) => (d.source) ), 
         ...data.map((d) => (d.target) ) 
