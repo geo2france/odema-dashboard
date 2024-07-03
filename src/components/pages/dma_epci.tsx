@@ -68,6 +68,7 @@ export const DmaPageEPCI: React.FC = () => {
         }
     })
 
+    const territories = data_ecpci_collecte?.data.map((e) => ({label:e.epci_nom, value:e.epci_siren}))
 
     /* TODO : Prévoir un bloc de logique permettant de pré-traiter certaines données pour éviter de répéter 
     les mêmes requêtes dans différents composants dataviz */
@@ -107,7 +108,7 @@ export const DmaPageEPCI: React.FC = () => {
                                     optionFilterProp="label"
                                     defaultValue={siren_epci} value={siren_epci}
                                     onSelect={setSiren_epci}
-                                    options={data_ecpci_collecte?.data.map((e) => ({label:e.epci_nom, value:e.epci_siren}))}
+                                    options={territories}
                                     style={{width:'100%'}}/>
                     Année : <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} value={year}
                     options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
@@ -118,7 +119,7 @@ export const DmaPageEPCI: React.FC = () => {
             {
                 key_figures.map((f,idx) =>
                   <Col xl={4} md={12} xs={24} key={idx}>
-                    <KeyFigure value={(f.value * 100)} unit={f.unit} digits={1} name={f.name} icon={f.icon} description={f.description}/>
+                    <KeyFigure value={(f.value * 100)} unit={f.unit} digits={1} name={f.name} icon={f.icon} sub_value= 'Objectif 65%' description={f.description}/>
                   </Col>
                 )
             }
