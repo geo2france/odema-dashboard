@@ -4,6 +4,9 @@ import { Card, Col, Row, Select } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element"
 import { FilePdfOutlined, FrownOutlined } from "@ant-design/icons"
+import alasql from "alasql"
+import { KeyFigure } from "../../g2f-dashboard/components/key_figure"
+import { BsRecycle } from "react-icons/bs";
 
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
@@ -54,8 +57,6 @@ export const DmaPageEPCI: React.FC = () => {
         ]
     });
 
-    console.log(data_rpqs?.data)
-
     const {data:data_ecpci_collecte} = useList({
         resource:"odema:territoires_collecte ",
         dataProviderName:"geo2france",
@@ -68,6 +69,35 @@ export const DmaPageEPCI: React.FC = () => {
     })
 
 
+    /* TODO : Prévoir un bloc de logique permettant de pré-traiter certaines données pour éviter de répéter 
+    les mêmes requêtes dans différents composants dataviz */
+    const tonnage_dma = data_traitement && alasql(`
+    SELECT 
+    SUM( [tonnage_dma] ) as tonnage
+    FROM ?
+     `,[data_traitement.data])[0].tonnage
+
+    const tonnage_valo = data_traitement && alasql(`
+    SELECT 
+    SUM( [tonnage_dma] ) as tonnage
+    FROM ?
+    WHERE [l_typ_reg_service] in ('Valorisation matière','Valorisation organique')
+     `,[data_traitement.data])[0].tonnage
+
+    const key_figures:any[] = [
+        {id:"valo_dma", 
+        name:"Taux de valorisation des DMA",
+        description:"Part des DMA orientés vers les filières de valorisation matière ou organique (hors déblais et gravats).",
+        value:tonnage_valo/tonnage_dma,
+        icon: <BsRecycle />,
+        unit:'%'},
+        {id:"valo_dma", 
+        name:"Taux de valorisation des DMA",
+        description:"Part des DMA orientés vers les filières de valorisation matière ou organique (hors déblais et gravats).",
+        value:tonnage_valo/tonnage_dma,
+        icon: <BsRecycle />,
+        unit:'%'}
+    ]
     return (
         <Row gutter={[16,16]}>
             <Col span={24}>
@@ -83,6 +113,18 @@ export const DmaPageEPCI: React.FC = () => {
                     options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
                 />     
                 </Card>
+            </Col>
+
+            {
+                key_figures.map((f,idx) =>
+                  <Col xl={4} md={12} xs={24} key={idx}>
+                    <KeyFigure value={(f.value * 100)} unit={f.unit} digits={1} name={f.name} icon={f.icon} description={f.description}/>
+                  </Col>
+                )
+            }
+
+            <Col span={24-6}>
+
             </Col>
             <Col span={12}> 
             <DashboardElement isFetching={data_traitement_isFecthing} title="Destination des DMA (hors gravats)">{data_traitement &&  <ChartSankeyDestinationDMA 
