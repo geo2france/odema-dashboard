@@ -14,7 +14,7 @@ export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined) 
-console.log(focus)
+
     const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useList({ 
         resource:"odema:destination_dma_epci ",
         dataProviderName:"geo2france",
