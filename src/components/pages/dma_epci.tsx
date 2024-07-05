@@ -85,8 +85,6 @@ export const DmaPageEPCI: React.FC = () => {
     GROUP BY [annee]
      `,[data_traitement.data])
 
-    console.log(tonnage_valo?.find((e) => e.annee == year))
-
     const key_figures:any[] = [
         {id:"valo_dma", 
         name:"Taux de valorisation des DMA",
