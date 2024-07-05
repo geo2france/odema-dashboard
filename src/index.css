@@ -12,12 +12,3 @@
 .modal-fullscreen >.ant-modal-body {
 height: calc(95vh - 110px);
 }
-
-
-@media screen and (min-width: 729px) {
-    .ant-layout-content{
-        margin-left: 80px;
-    }
-  
-  }
-  

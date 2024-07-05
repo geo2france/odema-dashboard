@@ -92,7 +92,7 @@ export const CustomSider: React.FC = () => {
     height: "100vh",
     backgroundColor: token.colorBgContainer,
     zIndex: 1, 
-    position: collapsed ? 'absolute' : (isMobile ? 'fixed' : 'absolute'), 
+    position: collapsed ? 'relative' : (isMobile ? 'fixed' : 'relative'), 
     
   };
 
