@@ -1,6 +1,6 @@
 import { BaseRecord, useList } from "@refinedev/core"
 import { useSearchParamsState } from "../../g2f-dashboard/utils/useSearchParamsState"
-import { Card, Col, Row, Select } from "antd"
+import { Card, Col, Descriptions, DescriptionsProps, Row, Select } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element"
 import { FilePdfOutlined, FrownOutlined } from "@ant-design/icons"
@@ -9,6 +9,7 @@ import { KeyFigure } from "../../g2f-dashboard/components/key_figure"
 import { BsRecycle } from "react-icons/bs";
 import { ChartEvolutionTraitement } from "../chart_dma_evolution_type_traitement"
 import { useState } from "react"
+import { FaPeopleGroup } from "react-icons/fa6";
 
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
@@ -68,6 +69,26 @@ export const DmaPageEPCI: React.FC = () => {
 
     const territories = data_ecpci_collecte?.data.map((e) => ({label:e.epci_nom, value:e.epci_siren}))
 
+
+    const territoire_descritpion_item : DescriptionsProps['items'] = [
+        {
+            key:'name',
+            label:'Nom',
+            children:data_ecpci_collecte?.data.find((e) => (e.epci_siren == siren_epci))?.epci_nom
+        },
+        {
+            key:'siret',
+            label:'SIREN',
+            children:siren_epci
+        },
+        {
+            key:'population',
+            label:'Pop.',
+            children:<> {(999999).toLocaleString()} &nbsp;<FaPeopleGroup /></>
+        },
+    ]
+
+
     /* TODO : Prévoir un bloc de logique permettant de pré-traiter certaines données pour éviter de répéter 
     les mêmes requêtes dans différents composants dataviz */
     const tonnage_dma = data_traitement && alasql(`
@@ -103,7 +124,7 @@ export const DmaPageEPCI: React.FC = () => {
     ]
     return (
         <Row gutter={[16,16]}>
-            <Col span={24}>
+            <Col xs={24} xl={24/2}>
                 <Card>
                     EPCI : {siren_epci}
                     <Select showSearch
@@ -115,6 +136,11 @@ export const DmaPageEPCI: React.FC = () => {
                     Année : <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} value={year}
                     options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
                 />     
+                </Card>
+            </Col>
+            <Col xs={24} xl={24/2}>
+                <Card style={{padding:5}}> 
+                    <Descriptions title="Territoire" items={territoire_descritpion_item} />
                 </Card>
             </Col>
 
