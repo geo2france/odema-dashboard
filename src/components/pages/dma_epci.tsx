@@ -8,11 +8,13 @@ import alasql from "alasql"
 import { KeyFigure } from "../../g2f-dashboard/components/key_figure"
 import { BsRecycle } from "react-icons/bs";
 import { ChartEvolutionTraitement } from "../chart_dma_evolution_type_traitement"
+import { useState } from "react"
 
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
     const [year, setYear] = useSearchParamsState('year','2021')
-
+    const [focus, setFocus] = useState<string | undefined>(undefined) 
+console.log(focus)
     const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useList({ 
         resource:"odema:destination_dma_epci ",
         dataProviderName:"geo2france",
@@ -129,13 +131,16 @@ export const DmaPageEPCI: React.FC = () => {
             </Col>
             <Col span={12}> 
             <DashboardElement isFetching={data_traitement_isFecthing} title="Destination des DMA par type de déchet">{data_traitement &&  <ChartSankeyDestinationDMA 
-                data={data_traitement?.data.filter((d) => d.annee == year).map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) } />}
+                data={data_traitement?.data.filter((d) => d.annee == year).map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
+                onFocus={(e:any) => setFocus(e?.name)} focus_item={focus}
+                />}
             </DashboardElement>
             </Col>
             <Col span={12}> 
             <DashboardElement isFetching={data_traitement_isFecthing} title="Destination des DMA (hors gravats)">{data_traitement &&  
                 <ChartEvolutionTraitement 
-                data={data_traitement?.data } />}
+                data={data_traitement?.data }
+                onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus} />}
             </DashboardElement>
             </Col>
             <Col span={8}> 

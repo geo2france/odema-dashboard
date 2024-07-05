@@ -19,7 +19,7 @@ export const ChartEvolutionTraitement: React.FC<ChartEvolutionTraitementProps> =
     const chartRef = useRef<any>()
     
     useChartEvents({chartRef:chartRef, onFocus:onFocus})
-    useChartActionHightlight({chartRef:chartRef, target:{name:focus_item}})
+    useChartActionHightlight({chartRef:chartRef, target:{seriesName:focus_item}})
     useDashboardElement({chartRef})
 
     const data_chart = alasql(`SELECT [annee], [l_typ_reg_service], SUM([tonnage_dma]) as tonnage
@@ -42,7 +42,10 @@ export const ChartEvolutionTraitement: React.FC<ChartEvolutionTraitementProps> =
          stack:'total',
          itemStyle:{
               color:chartBusinessProps(e.l_typ_reg_service).color,
-         }
+         },
+         emphasis:{
+            focus:'series'
+        },
     })).sort((a:any,b:any) => (chartBusinessProps(a.name).sort || 0) - (chartBusinessProps(b.name).sort || 0)   )
 
     const option:EChartsOption = {
