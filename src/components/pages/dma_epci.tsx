@@ -7,6 +7,7 @@ import { FilePdfOutlined, FrownOutlined } from "@ant-design/icons"
 import alasql from "alasql"
 import { KeyFigure } from "../../g2f-dashboard/components/key_figure"
 import { BsRecycle } from "react-icons/bs";
+import { ChartEvolutionTraitement } from "../chart_dma_evolution_type_traitement"
 
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
@@ -23,11 +24,6 @@ export const DmaPageEPCI: React.FC = () => {
                 field:"siren_epci",
                 operator:"eq",
                 value:siren_epci
-            },
-            {
-                field:"annee",
-                operator:"eq",
-                value:year
             },
             {
                 field:"l_typ_reg_dechet",
@@ -74,28 +70,34 @@ export const DmaPageEPCI: React.FC = () => {
     les mêmes requêtes dans différents composants dataviz */
     const tonnage_dma = data_traitement && alasql(`
     SELECT 
+    [annee],
     SUM( [tonnage_dma] ) as tonnage
     FROM ?
-     `,[data_traitement.data])[0].tonnage
+    GROUP BY [annee]
+     `,[data_traitement.data])
 
     const tonnage_valo = data_traitement && alasql(`
     SELECT 
+    [annee],
     SUM( [tonnage_dma] ) as tonnage
     FROM ?
     WHERE [l_typ_reg_service] in ('Valorisation matière','Valorisation organique')
-     `,[data_traitement.data])[0].tonnage
+    GROUP BY [annee]
+     `,[data_traitement.data])
+
+    console.log(tonnage_valo?.find((e) => e.annee == year))
 
     const key_figures:any[] = [
         {id:"valo_dma", 
         name:"Taux de valorisation des DMA",
         description:"Part des DMA orientés vers les filières de valorisation matière ou organique (hors déblais et gravats).",
-        value:tonnage_valo/tonnage_dma,
+        value:tonnage_valo?.find((e:BaseRecord) => e.annee == year).tonnage / tonnage_dma?.find((e:BaseRecord) => e.annee == year).tonnage,
         icon: <BsRecycle />,
         unit:'%'},
         {id:"valo_dma", 
         name:"Taux de valorisation des DMA",
         description:"Part des DMA orientés vers les filières de valorisation matière ou organique (hors déblais et gravats).",
-        value:tonnage_valo/tonnage_dma,
+        value:tonnage_valo?.find((e:BaseRecord) => e.annee == year).tonnage / tonnage_dma?.find((e:BaseRecord) => e.annee == year).tonnage,
         icon: <BsRecycle />,
         unit:'%'}
     ]
@@ -128,8 +130,14 @@ export const DmaPageEPCI: React.FC = () => {
 
             </Col>
             <Col span={12}> 
-            <DashboardElement isFetching={data_traitement_isFecthing} title="Destination des DMA (hors gravats)">{data_traitement &&  <ChartSankeyDestinationDMA 
-                data={data_traitement?.data.map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) } />}
+            <DashboardElement isFetching={data_traitement_isFecthing} title="Destination des DMA par type de déchet">{data_traitement &&  <ChartSankeyDestinationDMA 
+                data={data_traitement?.data.filter((d) => d.annee == year).map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) } />}
+            </DashboardElement>
+            </Col>
+            <Col span={12}> 
+            <DashboardElement isFetching={data_traitement_isFecthing} title="Destination des DMA (hors gravats)">{data_traitement &&  
+                <ChartEvolutionTraitement 
+                data={data_traitement?.data } />}
             </DashboardElement>
             </Col>
             <Col span={8}> 
