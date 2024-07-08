@@ -9,12 +9,13 @@ import { KeyFigure } from "../../g2f-dashboard/components/key_figure"
 import { BsRecycle } from "react-icons/bs";
 import { ChartEvolutionTraitement } from "../chart_dma_evolution_type_traitement"
 import { useState } from "react"
-import { FaPeopleGroup } from "react-icons/fa6";
+import { FaPeopleGroup, FaHouseFlag } from "react-icons/fa6";
+
 
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
     const [year, setYear] = useSearchParamsState('year','2021')
-    const [focus, setFocus] = useState<string | undefined>(undefined) 
+    const [focus, setFocus] = useState<string | undefined>(undefined)
 
     const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useList({ 
         resource:"odema:destination_dma_epci ",
@@ -63,18 +64,20 @@ export const DmaPageEPCI: React.FC = () => {
             mode:"off"
         },
         meta:{
-            properties:["epci_siren", "epci_nom"]
+            properties:["epci_siren", "epci_nom","population","nombre_communes"]
         }
     })
 
-    const territories = data_ecpci_collecte?.data.map((e) => ({label:e.epci_nom, value:e.epci_siren}))
+    const options_territories = data_ecpci_collecte?.data.map((e) => ({label:e.epci_nom, value:e.epci_siren}))
+
+    const current_epci = data_ecpci_collecte?.data.find((e) => (e.epci_siren == siren_epci) )
 
 
     const territoire_descritpion_item : DescriptionsProps['items'] = [
         {
             key:'name',
             label:'Nom',
-            children:data_ecpci_collecte?.data.find((e) => (e.epci_siren == siren_epci))?.epci_nom
+            children:current_epci?.epci_nom
         },
         {
             key:'siret',
@@ -84,7 +87,12 @@ export const DmaPageEPCI: React.FC = () => {
         {
             key:'population',
             label:'Pop.',
-            children:<> {(999999).toLocaleString()} &nbsp;<FaPeopleGroup /></>
+            children:<> {current_epci?.population && (current_epci?.population).toLocaleString()} &nbsp;<FaPeopleGroup /></>
+        },
+        {
+            key:'nb_communes',
+            label:'Communes',
+            children:<> {current_epci?.nombre_communes && (current_epci?.nombre_communes).toLocaleString()} &nbsp;<FaHouseFlag /></>
         },
     ]
 
@@ -131,7 +139,7 @@ export const DmaPageEPCI: React.FC = () => {
                                     optionFilterProp="label"
                                     defaultValue={siren_epci} value={siren_epci}
                                     onSelect={setSiren_epci}
-                                    options={territories}
+                                    options={options_territories}
                                     style={{width:'100%'}}/>
                     Année : <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} value={year}
                     options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
