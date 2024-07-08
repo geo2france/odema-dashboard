@@ -122,6 +122,7 @@ export const DmaPageEPCI: React.FC = () => {
         description:"Part des DMA orientés vers les filières de valorisation matière ou organique (hors déblais et gravats).",
         value:(tonnage_valo?.find((e:BaseRecord) => e.annee == year).tonnage / tonnage_dma?.find((e:BaseRecord) => e.annee == year).tonnage)*100,
         sub_value:"Obj. régional : 65 %",
+        digits:1,
         icon: <BsRecycle />,
         unit:'%'},
         {id:"prod_dma", 
@@ -157,7 +158,7 @@ export const DmaPageEPCI: React.FC = () => {
             {
                 key_figures.map((f,idx) =>
                   <Col xl={4} md={12} xs={24} key={idx}>
-                    <KeyFigure value={(f.value)} unit={f.unit} digits={1} name={f.name} icon={f.icon} sub_value= {f.sub_value} description={f.description}/>
+                    <KeyFigure value={(f.value)} unit={f.unit} digits={f.digits || 0} name={f.name} icon={f.icon} sub_value= {f.sub_value} description={f.description}/>
                   </Col>
                 )
             }
