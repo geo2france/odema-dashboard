@@ -9,7 +9,7 @@ import { KeyFigure } from "../../g2f-dashboard/components/key_figure"
 import { BsRecycle } from "react-icons/bs";
 import { ChartEvolutionTraitement } from "../chart_dma_evolution_type_traitement"
 import { useState } from "react"
-import { FaPeopleGroup, FaHouseFlag } from "react-icons/fa6";
+import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 
 
 export const DmaPageEPCI: React.FC = () => {
@@ -120,15 +120,17 @@ export const DmaPageEPCI: React.FC = () => {
         {id:"valo_dma", 
         name:"Taux de valorisation des DMA",
         description:"Part des DMA orientés vers les filières de valorisation matière ou organique (hors déblais et gravats).",
-        value:tonnage_valo?.find((e:BaseRecord) => e.annee == year).tonnage / tonnage_dma?.find((e:BaseRecord) => e.annee == year).tonnage,
+        value:(tonnage_valo?.find((e:BaseRecord) => e.annee == year).tonnage / tonnage_dma?.find((e:BaseRecord) => e.annee == year).tonnage)*100,
+        sub_value:"Obj. régional : 65 %",
         icon: <BsRecycle />,
         unit:'%'},
-        {id:"valo_dma", 
-        name:"Taux de valorisation des DMA",
-        description:"Part des DMA orientés vers les filières de valorisation matière ou organique (hors déblais et gravats).",
-        value:tonnage_valo?.find((e:BaseRecord) => e.annee == year).tonnage / tonnage_dma?.find((e:BaseRecord) => e.annee == year).tonnage,
-        icon: <BsRecycle />,
-        unit:'%'}
+        {id:"prod_dma", 
+        name:"Production de DMA",
+        description:"Production globale annuelle de DMA (hors déblais et gravats).",
+        value: (tonnage_dma?.find((e:BaseRecord) => e.annee == year).tonnage  / current_epci?.population) * 1e3,
+        sub_value:"Obj. régional : 553 kg/hab",
+        icon: <FaTrashCan />,
+        unit:'kg/hab'}
     ]
     return (
         <Row gutter={[16,16]}>
@@ -155,7 +157,7 @@ export const DmaPageEPCI: React.FC = () => {
             {
                 key_figures.map((f,idx) =>
                   <Col xl={4} md={12} xs={24} key={idx}>
-                    <KeyFigure value={(f.value * 100)} unit={f.unit} digits={1} name={f.name} icon={f.icon} sub_value= 'Objectif 65%' description={f.description}/>
+                    <KeyFigure value={(f.value)} unit={f.unit} digits={1} name={f.name} icon={f.icon} sub_value= {f.sub_value} description={f.description}/>
                   </Col>
                 )
             }
@@ -164,17 +166,18 @@ export const DmaPageEPCI: React.FC = () => {
 
             </Col>
             <Col span={12}> 
-            <DashboardElement isFetching={data_traitement_isFecthing} title="Destination des DMA par type de déchet">{data_traitement &&  <ChartSankeyDestinationDMA 
+            <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des DMA par type de déchet en ${year}`}>{data_traitement &&  <ChartSankeyDestinationDMA 
                 data={data_traitement?.data.filter((d) => d.annee == year).map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
                 onFocus={(e:any) => setFocus(e?.name)} focus_item={focus}
                 />}
             </DashboardElement>
             </Col>
             <Col span={12}> 
-            <DashboardElement isFetching={data_traitement_isFecthing} title="Destination des DMA (hors gravats)">{data_traitement &&  
+            <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des DMA (hors gravats)`}>{data_traitement &&  
                 <ChartEvolutionTraitement 
                 data={data_traitement?.data }
-                onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus} />}
+                onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
+                year={Number(year)} />}
             </DashboardElement>
             </Col>
             <Col span={8}> 

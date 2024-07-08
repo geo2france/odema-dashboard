@@ -12,10 +12,11 @@ export interface ChartEvolutionTraitementProps {
     c_region?:string;
     onFocus?:any;
     focus_item?:string;
-    style? : CSSProperties
+    style? : CSSProperties;
+    year? : number
   }
 
-export const ChartEvolutionTraitement: React.FC<ChartEvolutionTraitementProps> = ({data, onFocus, focus_item, style} )  => {
+export const ChartEvolutionTraitement: React.FC<ChartEvolutionTraitementProps> = ({data, onFocus, focus_item, style, year} )  => {
     const chartRef = useRef<any>()
     
     useChartEvents({chartRef:chartRef, onFocus:onFocus})
@@ -35,7 +36,7 @@ export const ChartEvolutionTraitement: React.FC<ChartEvolutionTraitementProps> =
 
     const categories = alasql(`SELECT ARRAY(DISTINCT [annee]) as annees FROM ?`, [data])[0].annees.sort().map((e:number) => e.toString())
 
-     const series:BarSeriesOption[] = data_chart2.map((e:BaseRecord) => ({
+    const series:BarSeriesOption[] = data_chart2.map((e:BaseRecord) => ({
          name:e.l_typ_reg_service,
          data:e.data.map((e:number[]) => [e[0].toString(), e[1]]),
          type:'bar',
@@ -56,7 +57,13 @@ export const ChartEvolutionTraitement: React.FC<ChartEvolutionTraitementProps> =
         xAxis: [
             {
                 type: 'category',
-                data:categories
+                data:categories.map((annee:number) => ({
+                    value:annee,
+                    textStyle: {
+                        fontWeight: annee == year ? 700 : undefined,
+                        fontSize: annee == year ? 14 : undefined
+                    }
+                }))
             }],
         yAxis: [
             {
