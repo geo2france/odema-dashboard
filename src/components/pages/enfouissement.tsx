@@ -13,6 +13,7 @@ import { ChartIsdndGlobal } from "../chart_isdnd_global";
 import { HistoryOutlined } from "@ant-design/icons";
 import { ChartDonutIsdndCapacite } from "../chat_donut_isdnd_capacite";
 import { BaseOptionType } from "antd/lib/select";
+import { NextPrevSelect } from "../../g2f-dashboard/components/next_prev_select";
 
 
 
@@ -79,11 +80,11 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                             </Form.Item>
                             <Form.Item label="Année">
 
-                                <Select showSearch
-                                    options={select_options_annees}
-                                    style={{width:'100%'}}
-                                    value={year} defaultValue={year}
-                                    onSelect={setYear} />
+                            <NextPrevSelect reverse={true}
+                                options={select_options_annees}
+                                style={{width:'100%'}}
+                                value={year} defaultValue={year}
+                                onChange={(e) => setYear(Number(e))} />
                             </Form.Item>
                         </Form>
                     </Card>

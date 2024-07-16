@@ -10,6 +10,7 @@ import { BsRecycle } from "react-icons/bs";
 import { ChartEvolutionTraitement } from "../chart_dma_evolution_type_traitement"
 import { useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
+import { NextPrevSelect } from "../../g2f-dashboard/components/next_prev_select"
 
 
 export const DmaPageEPCI: React.FC = () => {
@@ -144,7 +145,7 @@ export const DmaPageEPCI: React.FC = () => {
                                     onSelect={setSiren_epci}
                                     options={options_territories}
                                     style={{width:'100%'}}/>
-                    Année : <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} value={year}
+                    Année : <NextPrevSelect onChange={(e:any) => e ? setYear(e) : undefined } reverse={true} defaultValue={year} value={year}
                     options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
                 />     
                 </Card>

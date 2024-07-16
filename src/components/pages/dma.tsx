@@ -1,6 +1,6 @@
 import React, { CSSProperties, useState } from "react";
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
-import { Card, Col, Select, Row } from 'antd';
+import { Card, Col, Row } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
@@ -9,6 +9,7 @@ import alasql from "alasql";
 import ChartPieTypeTraitement from "../chart_pie_type_traitement";
 import { useSearchParamsState } from "../../g2f-dashboard/utils/useSearchParamsState";
 import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element";
+import { NextPrevSelect } from "../../g2f-dashboard/components/next_prev_select";
 
 
 export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
@@ -98,7 +99,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
         <Row gutter={[16,16]}>
             <Col span={24}>
             <Card style={{padding:12}}>
-                Année : <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} value={year}
+                Année : <NextPrevSelect reverse={true} onChange={(e) => e ? setYear(e.toString()) : undefined } defaultValue={year} value={year}
                     options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
                 />     
                 </Card>
