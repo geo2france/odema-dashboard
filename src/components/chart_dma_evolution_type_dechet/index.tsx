@@ -4,8 +4,8 @@ import { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, BarSeriesOption } from "echarts";
 import { useDashboardElement } from "../../g2f-dashboard/components/dashboard_element/hooks";
-import { useChartActionHightlight } from "../../g2f-dashboard/utils/usecharthightlight";
-import { chartBusinessProps, useChartEvents } from "../../utils";
+import { useChartActionHightlight, useChartEvents } from "../../g2f-dashboard/utils/usecharthightlight";
+import { chartBusinessProps  } from "../../utils";
 
 interface DataProps {
     annee:number
