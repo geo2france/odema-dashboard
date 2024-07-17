@@ -4,7 +4,7 @@ import { BaseRecord } from "@refinedev/core";
 import type {EChartsOption, PieSeriesOption} from "echarts"
 import alasql from "alasql";
 import { chartBusinessProps } from "../../utils";
-import { useDashboardElement } from "../../g2f-dashboard/components/dashboard_element/hooks";
+import { useDashboardElement } from "../../g2f-dashboard";
 
 export interface ChartCollectePerformanceProps {
     data: any[] | BaseRecord[]; // Spécifier les champs au niveau de la ressource

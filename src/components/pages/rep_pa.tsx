@@ -1,7 +1,6 @@
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState } from "../../g2f-dashboard/utils/useSearchParamsState"
+import { useSearchParamsState, Attribution } from "../../g2f-dashboard"
 import { Row, Col, Card } from "antd"
-import { Attribution } from "../../g2f-dashboard/components/attributions"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { LoadingComponent } from "../../g2f-dashboard/components/loading_container"
 import { RepTopbar } from "../rep_topbar"

@@ -3,7 +3,7 @@ import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
 import { Row, Col, Card, Drawer, Tooltip, Select, Form } from "antd"
 import alasql from "alasql";
 
-import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element";
+import { DashboardElement, NextPrevSelect } from "../../g2f-dashboard";
 
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
@@ -13,9 +13,6 @@ import { ChartIsdndGlobal } from "../chart_isdnd_global";
 import { HistoryOutlined } from "@ant-design/icons";
 import { ChartDonutIsdndCapacite } from "../chat_donut_isdnd_capacite";
 import { BaseOptionType } from "antd/lib/select";
-import { NextPrevSelect } from "../../g2f-dashboard/components/next_prev_select";
-
-
 
 
 export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {

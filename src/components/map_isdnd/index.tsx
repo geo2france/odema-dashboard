@@ -2,9 +2,8 @@ import React, { CSSProperties, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { BaseRecord, useList } from '@refinedev/core';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
-import { BaseRecordToGeojsonPoint } from '../../g2f-dashboard/utils';
 import { BaseLayer } from '../map_baselayer';
-import { useDashboardElement } from '../../g2f-dashboard/components/dashboard_element/hooks';
+import { useDashboardElement, BaseRecordToGeojsonPoint } from '../../g2f-dashboard';
 
 export interface IMapProps{
     data:BaseRecord[],

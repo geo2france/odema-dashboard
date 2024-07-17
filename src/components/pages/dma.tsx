@@ -6,9 +6,7 @@ import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
 
 import alasql from "alasql";
-import { useSearchParamsState } from "../../g2f-dashboard/utils/useSearchParamsState";
-import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element";
-import { NextPrevSelect } from "../../g2f-dashboard/components/next_prev_select";
+import { useSearchParamsState, DashboardElement, NextPrevSelect } from "../../g2f-dashboard";
 import { ChartEvolutionTraitement } from "../chart_dma_evolution_type_traitement";
 import { ChartEvolutionTypeDechet } from "../chart_dma_evolution_type_dechet";
 

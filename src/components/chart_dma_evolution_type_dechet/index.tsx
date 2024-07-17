@@ -3,8 +3,7 @@ import alasql from "alasql";
 import { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, BarSeriesOption } from "echarts";
-import { useDashboardElement } from "../../g2f-dashboard/components/dashboard_element/hooks";
-import { useChartActionHightlight, useChartEvents } from "../../g2f-dashboard/utils/usecharthightlight";
+import { useChartActionHightlight, useChartEvents, useDashboardElement } from "../../g2f-dashboard"
 import { chartBusinessProps  } from "../../utils";
 
 interface DataProps {

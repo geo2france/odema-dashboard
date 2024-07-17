@@ -1,16 +1,13 @@
 import { BaseRecord, useList } from "@refinedev/core"
-import { useSearchParamsState } from "../../g2f-dashboard/utils/useSearchParamsState"
 import { Card, Col, Descriptions, DescriptionsProps, Row, Select } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
-import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element"
 import { FilePdfOutlined, FrownOutlined } from "@ant-design/icons"
 import alasql from "alasql"
-import { KeyFigure } from "../../g2f-dashboard/components/key_figure"
 import { BsRecycle } from "react-icons/bs";
 import { ChartEvolutionTraitement } from "../chart_dma_evolution_type_traitement"
 import { useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
-import { NextPrevSelect } from "../../g2f-dashboard/components/next_prev_select"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState } from "../../g2f-dashboard"
 
 
 export const DmaPageEPCI: React.FC = () => {

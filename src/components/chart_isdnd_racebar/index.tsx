@@ -3,8 +3,7 @@ import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
-import { useChartEvents } from "../../g2f-dashboard/utils/usecharthightlight";
-import { useChartData, useDashboardElement } from "../../g2f-dashboard/components/dashboard_element/hooks";
+import { useChartData, useDashboardElement, useChartEvents } from "../../g2f-dashboard";
 
 export interface IChartRaceBarISDND {
     data : BaseRecord[],
