@@ -9,12 +9,12 @@ import { chartBusinessProps, useChartEvents } from "../../utils";
 
 interface DataProps {
     annee:number
-    l_typ_reg_service:string
+    l_typ_reg_dechet:string
     tonnage_dma:number
     [key: string]: any
 }
 
-export interface ChartEvolutionTraitementProps {
+export interface ChartEvolutionTypeDechetProps {
     data: DataProps[]
     c_region?:string;
     onFocus?:any;
@@ -23,33 +23,33 @@ export interface ChartEvolutionTraitementProps {
     year? : number
   }
 
-export const ChartEvolutionTraitement: React.FC<ChartEvolutionTraitementProps> = ({data, onFocus, focus_item, style, year} )  => {
+export const ChartEvolutionTypeDechet: React.FC<ChartEvolutionTypeDechetProps> = ({data, onFocus, focus_item, style, year} )  => {
     const chartRef = useRef<any>()
     
     useChartEvents({chartRef:chartRef, onFocus:onFocus})
     useChartActionHightlight({chartRef:chartRef, target:{seriesName:focus_item}})
     useDashboardElement({chartRef})
 
-    const data_chart = alasql(`SELECT [annee], [l_typ_reg_service], SUM([tonnage_dma]) as tonnage
+    const data_chart = alasql(`SELECT [annee], [l_typ_reg_dechet], SUM([tonnage_dma]) as tonnage
     FROM ?
-    GROUP BY [annee], [l_typ_reg_service]
+    GROUP BY [annee], [l_typ_reg_dechet]
     `,[data]) //Somme par type de traitement
 
     const data_chart2 = alasql(`
-    SELECT [l_typ_reg_service], ARRAY(ARRAY[[annee], [tonnage]]) as data
+    SELECT [l_typ_reg_dechet], ARRAY(ARRAY[[annee], [tonnage]]) as data
     FROM ?
-    GROUP BY [l_typ_reg_service]
+    GROUP BY [l_typ_reg_dechet]
     `,[data_chart]) //Regroupement par type de traitement (= série pour echarts bar)
 
     const categories = alasql(`SELECT ARRAY(DISTINCT [annee]) as annees FROM ?`, [data])[0].annees.sort().map((e:number) => e.toString())
 
     const series:BarSeriesOption[] = data_chart2.map((e:BaseRecord) => ({
-         name:e.l_typ_reg_service,
+         name:e.l_typ_reg_dechet,
          data:e.data.map((e:number[]) => [e[0].toString(), e[1]]),
          type:'bar',
          stack:'total',
          itemStyle:{
-              color:chartBusinessProps(e.l_typ_reg_service).color,
+              color:chartBusinessProps(e.l_typ_reg_dechet).color,
          },
          emphasis:{
             focus:'series'

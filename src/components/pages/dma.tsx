@@ -6,10 +6,11 @@ import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
 
 import alasql from "alasql";
-import ChartPieTypeTraitement from "../chart_pie_type_traitement";
 import { useSearchParamsState } from "../../g2f-dashboard/utils/useSearchParamsState";
 import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element";
 import { NextPrevSelect } from "../../g2f-dashboard/components/next_prev_select";
+import { ChartEvolutionTraitement } from "../chart_dma_evolution_type_traitement";
+import { ChartEvolutionTypeDechet } from "../chart_dma_evolution_type_dechet";
 
 
 export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
@@ -26,18 +27,13 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             resource:"sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement/lines",
             dataProviderName:"ademe_opendata",
             pagination: {
-                pageSize: 150,
+                pageSize: 2000,
             },
             filters:[
                 {
                     field:"C_REGION",
                     operator:"eq",
                     value:cregion
-                },
-                {
-                    field:"ANNEE",
-                    operator:"eq",
-                    value:year
                 },
                 {
                     field:"L_TYP_REG_DECHET",
@@ -61,7 +57,8 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
         SELECT L_TYP_REG_DECHET, L_TYP_REG_SERVICE, sum(TONNAGE_DMA) as TONNAGE_DMA_sum
         FROM ?
         GROUP BY L_TYP_REG_DECHET, L_TYP_REG_SERVICE
-    `, [data.data]) : undefined
+    `, [data.data.filter((e) => e.ANNEE == Number(year))]) : undefined
+
 
     const {data:data_performance, isFetching: isFetching_performance} = useList({
         resource:"sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte/lines",
@@ -93,7 +90,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
         ]
     })
 
-
+    console.dir(data)
     return (
         <>
         <Row gutter={[16,16]}>
@@ -105,14 +102,28 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
                 </Card>
             </Col>
 
-            <Col xl={24/2} xs={24}>
+            <Col  xl={7} xs={24} > 
+                <DashboardElement isFetching={isFetching} title={`Destination des déchets par types de traitement`}>{data &&  
+                    <ChartEvolutionTypeDechet 
+                    data={ data?.data.map((e) => ({tonnage_dma:e.TONNAGE_DMA, annee:e.ANNEE, l_typ_reg_dechet:e.L_TYP_REG_DECHET })) }
+                    onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
+                    year={Number(year)} 
+                    />}
+                </DashboardElement>
+            </Col>
+
+            <Col xl={10} xs={24}>
                     <DashboardElement isFetching={isFetching} title="Destination des déchets" attributions={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement' }]}>
                         {datasankey && <ChartSankeyDestinationDMA style={chartStyle} onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> }
                     </DashboardElement>
             </Col>
-            <Col xl={24/2} xs={24}>
-                <DashboardElement title="Types de traitement" isFetching={isFetching_chiffre_cle && isFetching} attributions={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement' }]}>
-                        {data && data_chiffre_cle && (<ChartPieTypeTraitement style={chartStyle} onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={data.data} c_region={cregion} data_territoire={data_chiffre_cle.data}/> )}
+            <Col  xl={7} xs={24}> 
+                <DashboardElement isFetching={isFetching} title={`Destination des déchets par types de traitement`}>{data &&  
+                    <ChartEvolutionTraitement 
+                    data={ data?.data.map((e) => ({tonnage_dma:e.TONNAGE_DMA, annee:e.ANNEE, l_typ_reg_service:e.L_TYP_REG_SERVICE })) }
+                    onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
+                    year={Number(year)} 
+                    />}
                 </DashboardElement>
             </Col>
             <Col xl={24/2} xs={24}>

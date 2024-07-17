@@ -177,7 +177,7 @@ export const DmaPageEPCI: React.FC = () => {
             <Col span={12}> 
             <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des DMA (hors gravats)`}>{data_traitement &&  
                 <ChartEvolutionTraitement 
-                data={data_traitement?.data }
+                data={data_traitement?.data.map((e) => ({annee:e.annee, l_typ_reg_service:e.l_typ_reg_service, tonnage_dma:e.tonnage_dma})) }
                 onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
                 year={Number(year)} />}
             </DashboardElement>
