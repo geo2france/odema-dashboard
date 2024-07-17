@@ -7,7 +7,7 @@ import { BsRecycle } from "react-icons/bs";
 import { ChartEvolutionTraitement } from "../chart_dma_evolution_type_traitement"
 import { useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState } from "../../g2f-dashboard"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState } from "g2f-dashboard"
 
 
 export const DmaPageEPCI: React.FC = () => {

@@ -3,7 +3,7 @@ import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
 import { Row, Col, Card, Drawer, Tooltip, Select, Form } from "antd"
 import alasql from "alasql";
 
-import { DashboardElement, NextPrevSelect } from "../../g2f-dashboard";
+import { DashboardElement, NextPrevSelect } from "g2f-dashboard";
 
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";

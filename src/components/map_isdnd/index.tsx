@@ -3,7 +3,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { BaseRecord, useList } from '@refinedev/core';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
 import { BaseLayer } from '../map_baselayer';
-import { useDashboardElement, BaseRecordToGeojsonPoint } from '../../g2f-dashboard';
+import { useDashboardElement, BaseRecordToGeojsonPoint } from 'g2f-dashboard';
 
 export interface IMapProps{
     data:BaseRecord[],

@@ -1,6 +1,6 @@
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
 import { Row, Col, Card } from "antd"
-import { Attribution, useSearchParamsState, LoadingComponent } from "../../g2f-dashboard"
+import { Attribution, useSearchParamsState, LoadingComponent } from "g2f-dashboard"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { RepTopbar } from "../rep_topbar"
 import { useState } from "react"

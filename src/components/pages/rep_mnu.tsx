@@ -1,5 +1,5 @@
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState, Attribution, LoadingComponent  } from "../../g2f-dashboard"
+import { useSearchParamsState, Attribution, LoadingComponent  } from "g2f-dashboard"
 import { Row, Col, Card } from "antd"
 import { RepTopbar } from "../rep_topbar"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"

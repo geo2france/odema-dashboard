@@ -3,7 +3,7 @@ import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { chartBusinessProps } from "../../utils";
 import { CSSProperties, useRef } from "react";
-import { useChartActionHightlight, useChartEvents } from "../../g2f-dashboard";
+import { useChartActionHightlight, useChartEvents } from "g2f-dashboard";
 
 export interface ChartPieRepCollecteProps {
     data: any[] | BaseRecord[];
