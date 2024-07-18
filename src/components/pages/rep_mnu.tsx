@@ -1,5 +1,5 @@
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState, Attribution, LoadingComponent  } from "g2f-dashboard"
+import { useSearchParamsState, Attribution, LoadingContainer  } from "g2f-dashboard"
 import { Row, Col, Card } from "antd"
 import { RepTopbar } from "../rep_topbar"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
@@ -52,21 +52,21 @@ export const RepMnuPage: React.FC<IResourceComponentsProps> = () => {
             <Col xl={24 / 2} xs={24}>
                 <Card title={`Tonnages collectés en ${year}`}>
 
-                    <LoadingComponent isFetching={collecte.isFetching}>
+                    <LoadingContainer isFetching={collecte.isFetching}>
                         {collecte.data ? <b>{data_standardized.filter((e:BaseRecord) => (e.annee == Number(year)))[0]?.value}</b> : <b>...</b>}
                         <br /><small> Seul le tonnage 2021 est disponible. Type de déchet unique.</small><br />
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-mnu-tonnages-collectes-en-2021' }]}></Attribution>
-                    </LoadingComponent>
+                    </LoadingContainer>
                 </Card>
             </Col>
 
             <Col xl={24 / 2} xs={24}>
                 <Card title="Evolution des tonnages collectés">
-                    <LoadingComponent isFetching={collecte.isFetching}>
+                    <LoadingContainer isFetching={collecte.isFetching}>
                         <small>Pas de données disponibles avant 2021</small> <br/>
                         {collecte.data ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
-                    </LoadingComponent>
+                    </LoadingContainer>
                 </Card>
             </Col>
         </Row>

@@ -1,6 +1,6 @@
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
 import { Row, Col, Card, List } from "antd";
-import { useSearchParamsState, LoadingComponent, Attribution } from "g2f-dashboard";
+import { useSearchParamsState, LoadingContainer, Attribution } from "g2f-dashboard";
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte";
 import { RepTopbar } from "../rep_topbar";
 import alasql from "alasql";
@@ -120,19 +120,19 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={24/2} xs={24}>
                     <Card>
                         pu
-                        <LoadingComponent isFetching={collecte_pu.isFetching}>
+                        <LoadingContainer isFetching={collecte_pu.isFetching}>
                             {collecte_pu.data ? <ChartPieRepCollecte filiere='pu' data={data_standardized_pu} year={Number(year)} /> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pu-tonnages-collectes-en-2018' }]}></Attribution>
-                        </LoadingComponent>
+                        </LoadingContainer>
                     </Card>
                 </Col>
                 <Col xl={24/2} xs={24}>
                     <Card>
                         vhu
-                        <LoadingComponent isFetching={collecte_vhu.isFetching}>
+                        <LoadingContainer isFetching={collecte_vhu.isFetching}>
                             {collecte_vhu.data ? <ChartPieRepCollecte filiere='vhu' data={data_standardized_vhu} year={Number(year)} /> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-vhu-tonnages-collectes-cvhu-en-2018' }]}></Attribution>
-                        </LoadingComponent>
+                        </LoadingContainer>
                     </Card>
                 </Col>
                 <Col xl={24 / 2} xs={24}>

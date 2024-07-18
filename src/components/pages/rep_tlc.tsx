@@ -1,5 +1,5 @@
 import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState, Attribution, LoadingComponent } from "g2f-dashboard"
+import { useSearchParamsState, Attribution, LoadingContainer } from "g2f-dashboard"
 import { Row, Col, Card } from "antd"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { RepTopbar } from "../rep_topbar"
@@ -50,19 +50,19 @@ export const RepTlcPage: React.FC<IResourceComponentsProps> = () => {
 
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
-                        <LoadingComponent isFetching={collecte.isFetching}>
+                        <LoadingContainer isFetching={collecte.isFetching}>
                             {collecte.data ? <ChartPieRepCollecte filiere='tlc' data={data_standardized} year={Number(year)} focus_item={focus}  onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-tlc-tonnages-collectes-en-2021' }]}></Attribution>
-                        </LoadingComponent>
+                        </LoadingContainer>
                     </Card>
                 </Col>
 
                 <Col xl={24/2} xs={24}>
                     <Card title="Evolution des tonnages collectés">
-                        <LoadingComponent isFetching={collecte.isFetching}>
+                        <LoadingContainer isFetching={collecte.isFetching}>
                             <small>Pas de données disponibles avant 2021</small> <br/>
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-tlc-tonnages-collectes-en-2021' }]}></Attribution>
-                        </LoadingComponent>
+                        </LoadingContainer>
                     </Card>
                 </Col>
                 </Row>
