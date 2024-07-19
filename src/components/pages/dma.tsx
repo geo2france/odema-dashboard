@@ -7,8 +7,7 @@ import { ChartRaceBareDMA } from "../chart_racebar_dma";
 
 import alasql from "alasql";
 import { useSearchParamsState, DashboardElement, NextPrevSelect } from "g2f-dashboard";
-import { ChartEvolutionTraitement } from "../chart_dma_evolution_type_traitement";
-import { ChartEvolutionTypeDechet } from "../chart_dma_evolution_type_dechet";
+import { ChartEvolutionDechet } from "../chart_evolution_dechet";
 
 
 export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
@@ -113,7 +112,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
 
             <Col  xl={12} xs={24} > 
                 <DashboardElement isFetching={isFetching} title={`Type de déchets collectés`}>{data_typedechet_destination &&  
-                    <ChartEvolutionTypeDechet 
+                    <ChartEvolutionDechet 
                     data={ data_typedechet_destination.map((e:BaseRecord) => ({tonnage:e.TONNAGE_DMA, annee:e.ANNEE, type:e.L_TYP_REG_DECHET, population:e.VA_POPANNEE_REG })) }
                     onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
                     year={Number(year)} 
@@ -121,16 +120,16 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
                 </DashboardElement>
             </Col>
 
-
-            <Col  xl={12} xs={24}> 
-                <DashboardElement isFetching={isFetching} title={`Destination des déchets`}>{data &&  
-                    <ChartEvolutionTraitement 
-                    data={ data?.data.map((e) => ({tonnage_dma:e.TONNAGE_DMA, annee:e.ANNEE, l_typ_reg_service:e.L_TYP_REG_SERVICE })) }
+            <Col  xl={12} xs={24} > 
+                <DashboardElement isFetching={isFetching} title={`Destination des déchets`}>{data_typedechet_destination &&  
+                    <ChartEvolutionDechet 
+                    data={ data_typedechet_destination.map((e:BaseRecord) => ({tonnage:e.TONNAGE_DMA, annee:e.ANNEE, type:e.L_TYP_REG_SERVICE, population:e.VA_POPANNEE_REG })) }
                     onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
                     year={Number(year)} 
                     />}
                 </DashboardElement>
             </Col>
+
             <Col xl={24/2} xs={24}>
                 <DashboardElement title="Performances de collecte" isFetching={isFetching_chiffre_cle && isFetching_performance} attributions={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte' }]}>
                         {data_performance && data_chiffre_cle && 

@@ -4,10 +4,10 @@ import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { FilePdfOutlined, FrownOutlined } from "@ant-design/icons"
 import alasql from "alasql"
 import { BsRecycle } from "react-icons/bs";
-import { ChartEvolutionTraitement } from "../chart_dma_evolution_type_traitement"
 import { useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState } from "g2f-dashboard"
+import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 
 
 export const DmaPageEPCI: React.FC = () => {
@@ -165,16 +165,18 @@ export const DmaPageEPCI: React.FC = () => {
 
             </Col>
             <Col span={12}> 
-            <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des DMA par type de déchet en ${year}`}>{data_traitement &&  <ChartSankeyDestinationDMA 
+            <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des DMA par type de déchet en ${year}`}>
+                {data_traitement &&  <ChartSankeyDestinationDMA 
                 data={data_traitement?.data.filter((d) => d.annee == year).map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
                 onFocus={(e:any) => setFocus(e?.name)} focus_item={focus}
                 />}
             </DashboardElement>
             </Col>
             <Col span={12}> 
-            <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des DMA (hors gravats)`}>{data_traitement &&  
-                <ChartEvolutionTraitement 
-                data={data_traitement?.data.map((e) => ({annee:e.annee, l_typ_reg_service:e.l_typ_reg_service, tonnage_dma:e.tonnage_dma})) }
+            <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des DMA (hors gravats)`}>
+                {data_traitement && current_epci &&  
+                <ChartEvolutionDechet 
+                data={data_traitement?.data.map((e) => ({annee:e.annee, type:e.l_typ_reg_service, tonnage:e.tonnage_dma, population:current_epci.population})) }
                 onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
                 year={Number(year)} />}
             </DashboardElement>
