@@ -172,8 +172,19 @@ export const DmaPageEPCI: React.FC = () => {
                 />}
             </DashboardElement>
             </Col>
+
             <Col span={12}> 
-            <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des DMA (hors gravats)`}>
+            <DashboardElement isFetching={data_traitement_isFecthing} title={`Type de déchets collectés`}>
+                {data_traitement && current_epci &&  
+                <ChartEvolutionDechet 
+                data={data_traitement?.data.map((e) => ({annee:e.annee, type:e.l_typ_reg_dechet, tonnage:e.tonnage_dma, population:current_epci.population})) }
+                onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
+                year={Number(year)} />}
+            </DashboardElement>
+            </Col>
+
+            <Col span={12}> 
+            <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des déchets`}>
                 {data_traitement && current_epci &&  
                 <ChartEvolutionDechet 
                 data={data_traitement?.data.map((e) => ({annee:e.annee, type:e.l_typ_reg_service, tonnage:e.tonnage_dma, population:current_epci.population})) }
@@ -181,6 +192,7 @@ export const DmaPageEPCI: React.FC = () => {
                 year={Number(year)} />}
             </DashboardElement>
             </Col>
+
             <Col span={8}> 
                 <Card title="Bilan RPQS">
                     <ul>
