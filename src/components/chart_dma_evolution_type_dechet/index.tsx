@@ -8,8 +8,9 @@ import { chartBusinessProps  } from "../../utils";
 
 interface DataProps {
     annee:number
-    l_typ_reg_dechet:string
-    tonnage_dma:number
+    type:string
+    tonnage:number
+    population:number
     [key: string]: any
 }
 
@@ -22,6 +23,16 @@ export interface ChartEvolutionTypeDechetProps {
     year? : number
   }
 
+
+
+const tooltipFormatter = (e:any) => `
+    ${e.seriesName} <br>
+    ${e.marker}
+    ${e.name} :
+    <b>${e.data.value.toLocaleString(undefined, {maximumFractionDigits: 0})} kg/hab</b> 
+    (${e.data.tonnage.toLocaleString(undefined, {maximumFractionDigits: 0})} T)`
+
+
 export const ChartEvolutionTypeDechet: React.FC<ChartEvolutionTypeDechetProps> = ({data, onFocus, focus_item, style, year} )  => {
     const chartRef = useRef<any>()
     
@@ -29,26 +40,30 @@ export const ChartEvolutionTypeDechet: React.FC<ChartEvolutionTypeDechetProps> =
     useChartActionHightlight({chartRef:chartRef, target:{seriesName:focus_item}})
     useDashboardElement({chartRef})
 
-    const data_chart = alasql(`SELECT [annee], [l_typ_reg_dechet], SUM([tonnage_dma]) as tonnage
+    const data_chart = alasql(`SELECT 
+        [annee], 
+        [type], 
+        SUM([tonnage]) as tonnage, 
+        SUM(([tonnage]/[population])*1000) as ratio
     FROM ?
-    GROUP BY [annee], [l_typ_reg_dechet]
+    GROUP BY [annee], [type]
     `,[data]) //Somme par type de traitement
-
+    
     const data_chart2 = alasql(`
-    SELECT [l_typ_reg_dechet], ARRAY(ARRAY[[annee], [tonnage]]) as data
+    SELECT [type], ARRAY(ARRAY[[annee], [tonnage], [ratio]]) as data
     FROM ?
-    GROUP BY [l_typ_reg_dechet]
+    GROUP BY [type]
     `,[data_chart]) //Regroupement par type de traitement (= série pour echarts bar)
 
     const categories = alasql(`SELECT ARRAY(DISTINCT [annee]) as annees FROM ?`, [data])[0].annees.sort().map((e:number) => e.toString())
 
     const series:BarSeriesOption[] = data_chart2.map((e:BaseRecord) => ({
-         name:e.l_typ_reg_dechet,
-         data:e.data.map((e:number[]) => [e[0].toString(), e[1]]),
+         name:e.type,
+         data:e.data.map((e:number[]) => ({name:e[0].toString(), value:e[2], tonnage:e[1] })),
          type:'bar',
          stack:'total',
          itemStyle:{
-              color:chartBusinessProps(e.l_typ_reg_dechet).color,
+              color:chartBusinessProps(e.type).color,
          },
          emphasis:{
             focus:'series'
@@ -59,6 +74,7 @@ export const ChartEvolutionTypeDechet: React.FC<ChartEvolutionTypeDechetProps> =
         series:series,
         tooltip:{
             show:true,
+            formatter: tooltipFormatter
         },
         xAxis: [
             {
@@ -73,7 +89,8 @@ export const ChartEvolutionTypeDechet: React.FC<ChartEvolutionTypeDechetProps> =
             }],
         yAxis: [
             {
-                type: 'value'
+                type: 'value',
+                name:'Quantité (kg/hab)'
             }
         ]
 
