@@ -202,7 +202,7 @@ export const DmaPageEPCI: React.FC = () => {
 
             <Col xs={24} xl={24/2}> 
                 <Card title={<span style={{marginLeft:5}}>Bilans RPQS</span>}>
-                    {data_rpqs?.data && data_rpqs?.data?.length > 0 ? data_rpqs?.data.sort((a,b) => b.annee_exercice - a.annee_exercice).map((d) => 
+                    {data_rpqs?.data && data_rpqs?.data?.filter((e) => e.url).length > 0 ? data_rpqs?.data.sort((a,b) => b.annee_exercice - a.annee_exercice).map((d) => 
                             <Card.Grid hoverable={d.url} key={d.annee_exercice} style={{width:'20%',   paddingTop: 5, textAlign: 'center'}}>
                                 {d.url ? 
                                     <a href={d.url}><FilePdfOutlined style={{fontSize:25}}/>  </a> :  
@@ -214,7 +214,7 @@ export const DmaPageEPCI: React.FC = () => {
                                     <span>{d.annee_exercice}</span> : 
                                         <span style={{color:grey[1]}}>{d.annee_exercice}</span>}
                             </Card.Grid>
-                    ) : <small>Aucun rapport disponible.</small> }
+                    ) : <small style={{margin:5}}>🙁 Aucun rapport n'est disponible.</small> }
                 </Card>
             </Col>
         </Row>
