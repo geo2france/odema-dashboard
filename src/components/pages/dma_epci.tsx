@@ -1,5 +1,5 @@
 import { BaseRecord, useList } from "@refinedev/core"
-import { Card, Col, Descriptions, DescriptionsProps, Row, Select } from "antd"
+import { Card, Col, Descriptions, DescriptionsProps, Form, Row, Select } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { FilePdfOutlined, FrownOutlined } from "@ant-design/icons"
 import alasql from "alasql"
@@ -133,23 +133,29 @@ export const DmaPageEPCI: React.FC = () => {
     ]
     return (
         <Row gutter={[16,16]}>
-            <Col xs={24} xl={24/2}>
-                <Card>
-                    EPCI : {siren_epci}
-                    <Select showSearch
-                                    optionFilterProp="label"
-                                    defaultValue={siren_epci} value={siren_epci}
-                                    onSelect={setSiren_epci}
-                                    options={options_territories}
-                                    style={{width:'100%'}}/>
-                    Année : <NextPrevSelect onChange={(e:any) => e ? setYear(e) : undefined } reverse={true} defaultValue={year} value={year}
-                    options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
-                />     
+            <Col xs={24} xl={24}>
+                <Card style={{padding:10}}>
+                    <Form layout="inline">
+                        <Form.Item name="annee" label="Année" initialValue={year}>
+                            <NextPrevSelect 
+                                    onChange={(e:any) => e ? setYear(e) : undefined } 
+                                    reverse={true} 
+                                    options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
+                                />     
+                        </Form.Item>
+                        <Form.Item name="epci" label="EPCI" initialValue={siren_epci} >
+                            <Select showSearch
+                                        optionFilterProp="label"
+                                        onSelect={setSiren_epci}
+                                        options={options_territories}
+                                        style={{width:450}}/>
+                        </Form.Item>
+                    </Form>
                 </Card>
             </Col>
             <Col xs={24} xl={24/2}>
-                <Card style={{padding:5}}> 
-                    <Descriptions title="Territoire" items={territoire_descritpion_item} />
+                <Card style={{padding:5}} title="Territoire"> 
+                    <Descriptions  items={territoire_descritpion_item} style={{marginTop:5}} />
                 </Card>
             </Col>
 
