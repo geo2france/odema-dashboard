@@ -1,13 +1,14 @@
 import { BaseRecord, useList } from "@refinedev/core"
 import { Card, Col, Descriptions, DescriptionsProps, Form, Row, Select } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
-import { FilePdfOutlined, FrownOutlined } from "@ant-design/icons"
+import { FilePdfOutlined } from "@ant-design/icons"
 import alasql from "alasql"
 import { BsRecycle } from "react-icons/bs";
 import { useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState } from "g2f-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
+import { grey } from '@ant-design/colors';
 
 
 export const DmaPageEPCI: React.FC = () => {
@@ -170,7 +171,7 @@ export const DmaPageEPCI: React.FC = () => {
             <Col span={24-6}>
 
             </Col>
-            <Col span={12}> 
+            <Col xs={24} xl={24/2}> 
             <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des DMA par type de déchet en ${year}`}>
                 {data_traitement &&  <ChartSankeyDestinationDMA 
                 data={data_traitement?.data.filter((d) => d.annee == year).map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
@@ -179,7 +180,7 @@ export const DmaPageEPCI: React.FC = () => {
             </DashboardElement>
             </Col>
 
-            <Col span={12}> 
+            <Col xs={24} xl={24/2}> 
             <DashboardElement isFetching={data_traitement_isFecthing} title={`Type de déchets collectés`}>
                 {data_traitement && current_epci &&  
                 <ChartEvolutionDechet 
@@ -189,7 +190,7 @@ export const DmaPageEPCI: React.FC = () => {
             </DashboardElement>
             </Col>
 
-            <Col span={12}> 
+            <Col xs={24} xl={24/2}> 
             <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des déchets`}>
                 {data_traitement && current_epci &&  
                 <ChartEvolutionDechet 
@@ -199,16 +200,21 @@ export const DmaPageEPCI: React.FC = () => {
             </DashboardElement>
             </Col>
 
-            <Col span={8}> 
-                <Card title="Bilan RPQS">
-                    <ul>
+            <Col xs={24} xl={24/2}> 
+                <Card title={<span style={{marginLeft:5}}>Bilans RPQS</span>}>
                     {data_rpqs?.data && data_rpqs?.data?.length > 0 ? data_rpqs?.data.sort((a,b) => b.annee_exercice - a.annee_exercice).map((d) => 
-                        <li key={d.annee_exercice}>
-                            {d.annee_exercice == year ? <strong>{d.annee_exercice}</strong> : d.annee_exercice}
-                                {d.url ? <a href={d.url}><span> </span><FilePdfOutlined />  </a> :  <><span> </span><FrownOutlined /></>}
-                        </li>
+                            <Card.Grid hoverable={d.url} key={d.annee_exercice} style={{width:'20%',   paddingTop: 5, textAlign: 'center'}}>
+                                {d.url ? 
+                                    <a href={d.url}><FilePdfOutlined style={{fontSize:25}}/>  </a> :  
+                                    <FilePdfOutlined style={{color:grey[1], fontSize:25}}/> }
+                                <br />
+                            {d.annee_exercice == year ? 
+                                <strong>{d.annee_exercice}</strong> : 
+                                d.url ? 
+                                    <span>{d.annee_exercice}</span> : 
+                                        <span style={{color:grey[1]}}>{d.annee_exercice}</span>}
+                            </Card.Grid>
                     ) : <small>Aucun rapport disponible.</small> }
-                    </ul>
                 </Card>
             </Col>
         </Row>
