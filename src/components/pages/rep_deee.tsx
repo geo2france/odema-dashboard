@@ -7,16 +7,20 @@ import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { useState } from "react"
 import { AppareilsElectriques, GrosElectromenagers, PetitsAppareilsElectriques } from "../../utils/picto"
 import alasql from "alasql"
+import useApi from "../../utils/useApi"
+
+import { ademe_opendataProvider } from "../../App"
+
 
 export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
 
     const [cregion, _setcregion] = useSearchParamsState('region','32')
-    const collecte_d3e = useList(
+    const collecte_d3e = useApi(
         {
             resource: "rep-deee-tonnages-collectes-en-2018/lines",
-            dataProviderName: "ademe_opendata",
+            dataProvider: ademe_opendataProvider,
             pagination: {
                 pageSize: 500,
             },

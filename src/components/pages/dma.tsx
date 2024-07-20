@@ -1,5 +1,5 @@
 import React, { CSSProperties, useState } from "react";
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
+import { BaseRecord, IResourceComponentsProps } from "@refinedev/core";
 import { Card, Col, Row } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
@@ -8,6 +8,8 @@ import { ChartRaceBareDMA } from "../chart_racebar_dma";
 import alasql from "alasql";
 import { useSearchParamsState, DashboardElement, NextPrevSelect } from "g2f-dashboard";
 import { ChartEvolutionDechet } from "../chart_evolution_dechet";
+import useApi from "../../utils/useApi";
+import { ademe_opendataProvider } from "../../App";
 
 
 export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
@@ -18,9 +20,9 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
     const chartStyle:CSSProperties = {height:'350px'}
     //const cregion = 32
 
-    const {data, isFetching} = useList({
+    const {data, isFetching} = useApi({
             resource:"sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement/lines",
-            dataProviderName:"ademe_opendata",
+            dataProvider:ademe_opendataProvider,
             pagination: {
                 pageSize: 2000,
             },
@@ -55,9 +57,9 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
     `, [data.data.filter((e) => e.ANNEE == Number(year))]) : undefined
 
 
-    const {data:data_performance, isFetching: isFetching_performance} = useList({
+    const {data:data_performance, isFetching: isFetching_performance} = useApi({
         resource:"sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte/lines",
-        dataProviderName:"ademe_opendata",
+        dataProvider:ademe_opendataProvider,
         pagination: {
             pageSize: 600,
         },
@@ -70,9 +72,9 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
         ]
     });
 
-    const {data:data_chiffre_cle, isFetching:isFetching_chiffre_cle} = useList({
+    const {data:data_chiffre_cle, isFetching:isFetching_chiffre_cle} = useApi({
         resource:"sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017/lines",
-        dataProviderName:"ademe_opendata",
+        dataProvider:ademe_opendataProvider,
         pagination: {
             pageSize: 5000,
         }

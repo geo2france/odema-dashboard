@@ -1,4 +1,4 @@
-import { BaseRecord, useList } from "@refinedev/core"
+import { BaseRecord } from "@refinedev/core"
 import { Card, Col, Descriptions, DescriptionsProps, Form, Row, Select } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { FilePdfOutlined } from "@ant-design/icons"
@@ -9,6 +9,8 @@ import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState } from "g2f-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
+import useApi from "../../utils/useApi"
+import { geo2franceProvider } from "../../App"
 
 
 export const DmaPageEPCI: React.FC = () => {
@@ -16,9 +18,9 @@ export const DmaPageEPCI: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
 
-    const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useList({ 
+    const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useApi({ 
         resource:"odema:destination_dma_epci ",
-        dataProviderName:"geo2france",
+        dataProvider:geo2franceProvider,
         pagination:{
             mode:"off"
         },
@@ -41,9 +43,9 @@ export const DmaPageEPCI: React.FC = () => {
         ]
     })
 
-    const {data:data_rpqs} =  useList({ 
+    const {data:data_rpqs} =  useApi({ 
         resource:"odema:rqps ",
-        dataProviderName:"geo2france",
+        dataProvider:geo2franceProvider,
         pagination:{
             mode:"off"
         },
@@ -56,9 +58,9 @@ export const DmaPageEPCI: React.FC = () => {
         ]
     });
 
-    const {data:data_ecpci_collecte} = useList({
+    const {data:data_ecpci_collecte} = useApi({
         resource:"odema:territoires_collecte ",
-        dataProviderName:"geo2france",
+        dataProvider:geo2franceProvider,
         pagination:{
             mode:"off"
         },

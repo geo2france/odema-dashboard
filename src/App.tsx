@@ -47,6 +47,10 @@ const myTheme:ThemeConfig = {...RefineThemes.Orange,
   }
 }
 
+//Cf https://github.com/geo2france/g2f-dashboard/issues/5
+export const geo2franceProvider = wfsDataProvider("https://www.geo2france.fr/geoserver/ows")
+export const ademe_opendataProvider = dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets") 
+
 const App: React.FC = () => {
   return (
     <HashRouter>
