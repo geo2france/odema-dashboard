@@ -4,12 +4,8 @@
 
 .ant-layout-sider{
     height : auto  !important;
-}
-
-.ant-menu{
     min-height: 100vh !important;
 }
-
 
 .ant-layout-sider-trigger{
     color:white !important;
