@@ -172,7 +172,14 @@ export const DmaPageEPCI: React.FC = () => {
 
             </Col>
             <Col xs={24} xl={24/2}> 
-            <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des DMA par type de déchet en ${year}`}>
+            <DashboardElement 
+                isFetching={data_traitement_isFecthing} 
+                title={`Destination des DMA par type de déchet en ${year}`}
+                attributions={[
+                    {name: "Ademe",
+                      url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                    },
+                  ]}>
                 {data_traitement &&  <ChartSankeyDestinationDMA 
                 data={data_traitement?.data.filter((d) => d.annee == year).map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
                 onFocus={(e:any) => setFocus(e?.name)} focus_item={focus}
@@ -181,7 +188,14 @@ export const DmaPageEPCI: React.FC = () => {
             </Col>
 
             <Col xs={24} xl={24/2}> 
-            <DashboardElement isFetching={data_traitement_isFecthing} title={`Type de déchets collectés`}>
+            <DashboardElement 
+                isFetching={data_traitement_isFecthing} 
+                title={`Type de déchets collectés`}
+                attributions={[
+                    {name: "Ademe",
+                      url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                    },
+                  ]}>
                 {data_traitement && current_epci &&  
                 <ChartEvolutionDechet 
                 data={data_traitement?.data.map((e) => ({annee:e.annee, type:e.l_typ_reg_dechet, tonnage:e.tonnage_dma, population:current_epci.population})) }
@@ -191,7 +205,14 @@ export const DmaPageEPCI: React.FC = () => {
             </Col>
 
             <Col xs={24} xl={24/2}> 
-            <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des déchets`}>
+            <DashboardElement 
+                isFetching={data_traitement_isFecthing} 
+                title={`Destination des déchets`}
+                attributions={[
+                    {name: "Ademe",
+                      url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                    },
+                  ]}>
                 {data_traitement && current_epci &&  
                 <ChartEvolutionDechet 
                 data={data_traitement?.data.map((e) => ({annee:e.annee, type:e.l_typ_reg_service, tonnage:e.tonnage_dma, population:current_epci.population})) }

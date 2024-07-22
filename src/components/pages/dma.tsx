@@ -94,62 +94,147 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
  
 
     return (
-        <>
-        <Row gutter={[16,16]}>
-            <Col span={24}>
-                <Card style={{padding:12}}>
-                Année : <NextPrevSelect reverse={true} onChange={(e) => e ? setYear(e.toString()) : undefined } defaultValue={year} value={year}
-                    options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
-                />     
-                </Card>
-            </Col>
+      <>
+        <Row gutter={[16, 16]}>
+          <Col span={24}>
+            <Card style={{ padding: 12 }}>
+              Année :{" "}
+              <NextPrevSelect
+                reverse={true}
+                onChange={(e) => (e ? setYear(e.toString()) : undefined)}
+                defaultValue={year}
+                value={year}
+                options={Array.from(
+                  { length: 2021 - 2009 + 1 },
+                  (_, i) => 2009 + i
+                )
+                  .filter((num) => num % 2 !== 0)
+                  .reverse()
+                  .map((i) => ({ label: i, value: i }))}
+              />
+            </Card>
+          </Col>
 
-            <Col xl={12} xs={24}>
-                    <DashboardElement isFetching={isFetching} title={`Types et destination des déchets en ${year}`} attributions={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement' }]}>
-                        {datasankey && <ChartSankeyDestinationDMA style={chartStyle} onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> }
-                    </DashboardElement>
-            </Col>
+          <Col xl={12} xs={24}>
+            <DashboardElement
+              isFetching={isFetching}
+              title={`Types et destination des déchets en ${year}`}
+              attributions={[
+                {name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                },
+              ]}
+            >
+              {datasankey && (
+                <ChartSankeyDestinationDMA
+                  style={chartStyle}
+                  onFocus={(e: any) => setFocus(e?.name)}
+                  focus_item={focus}
+                  data={datasankey.map((i: BaseRecord) => ({
+                    value: Math.max(i.TONNAGE_DMA_sum, 1),
+                    source: i.L_TYP_REG_DECHET,
+                    target: i.L_TYP_REG_SERVICE,
+                  }))}
+                />
+              )}
+            </DashboardElement>
+          </Col>
 
-            <Col  xl={12} xs={24} > 
-                <DashboardElement isFetching={isFetching} title={`Type de déchets collectés`}>{data_typedechet_destination &&  
-                    <ChartEvolutionDechet 
-                    data={ data_typedechet_destination.map((e:BaseRecord) => ({tonnage:e.TONNAGE_DMA, annee:e.ANNEE, type:e.L_TYP_REG_DECHET, population:e.VA_POPANNEE_REG })) }
-                    onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
-                    year={Number(year)} 
-                    />}
-                </DashboardElement>
-            </Col>
+          <Col xl={12} xs={24}>
+            <DashboardElement
+              isFetching={isFetching}
+              title={`Type de déchets collectés`}
+              attributions={[
+                {name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                },
+              ]}
+            >
+              {data_typedechet_destination && (
+                <ChartEvolutionDechet
+                  data={data_typedechet_destination.map((e: BaseRecord) => ({
+                    tonnage: e.TONNAGE_DMA,
+                    annee: e.ANNEE,
+                    type: e.L_TYP_REG_DECHET,
+                    population: e.VA_POPANNEE_REG,
+                  }))}
+                  onFocus={(e: any) => setFocus(e?.seriesName)}
+                  focus_item={focus}
+                  year={Number(year)}
+                />
+              )}
+            </DashboardElement>
+          </Col>
 
-            <Col  xl={12} xs={24} > 
-                <DashboardElement isFetching={isFetching} title={`Destination des déchets`}>{data_typedechet_destination &&  
-                    <ChartEvolutionDechet 
-                    data={ data_typedechet_destination.map((e:BaseRecord) => ({tonnage:e.TONNAGE_DMA, annee:e.ANNEE, type:e.L_TYP_REG_SERVICE, population:e.VA_POPANNEE_REG })) }
-                    onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
-                    year={Number(year)} 
-                    />}
-                </DashboardElement>
-            </Col>
+          <Col xl={12} xs={24}>
+            <DashboardElement
+              isFetching={isFetching}
+              title={`Destination des déchets`}
+              attributions={[
+                {name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                },
+              ]}
+            >
+              {data_typedechet_destination && (
+                <ChartEvolutionDechet
+                  data={data_typedechet_destination.map((e: BaseRecord) => ({
+                    tonnage: e.TONNAGE_DMA,
+                    annee: e.ANNEE,
+                    type: e.L_TYP_REG_SERVICE,
+                    population: e.VA_POPANNEE_REG,
+                  }))}
+                  onFocus={(e: any) => setFocus(e?.seriesName)}
+                  focus_item={focus}
+                  year={Number(year)}
+                />
+              )}
+            </DashboardElement>
+          </Col>
 
-            <Col xl={24/2} xs={24}>
-                <DashboardElement title="Performances de collecte" isFetching={isFetching_chiffre_cle && isFetching_performance} attributions={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte' }]}>
-                        {data_performance && data_chiffre_cle && 
-                        <ChartCollectePerformance 
-                        style={chartStyle} 
-                        data={data_performance.data} 
-                        data_territoire={data_chiffre_cle.data.filter((e) => e.Annee == year)}/> }
-                </DashboardElement>
-            </Col>
-            <Col xl={24/2} xs={24}>
-                <DashboardElement title="Ratio régionaux" isFetching={isFetching_chiffre_cle && isFetching_performance} attributions={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017' }]}>
-                        {data_chiffre_cle && 
-                        <ChartRaceBareDMA 
-                            style={chartStyle} 
-                            data={data_chiffre_cle.data.filter((e) => e.Annee == year)} 
-                            highlight_region={cregion}/>}
-                </DashboardElement>
-            </Col>
+          <Col xl={24 / 2} xs={24}>
+            <DashboardElement
+              title="Performances de collecte"
+              isFetching={isFetching_chiffre_cle && isFetching_performance}
+              attributions={[
+                {
+                  name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte",
+                },
+              ]}
+            >
+              {data_performance && data_chiffre_cle && (
+                <ChartCollectePerformance
+                  style={chartStyle}
+                  data={data_performance.data}
+                  data_territoire={data_chiffre_cle.data.filter(
+                    (e) => e.Annee == year
+                  )}
+                />
+              )}
+            </DashboardElement>
+          </Col>
+          <Col xl={24 / 2} xs={24}>
+            <DashboardElement
+              title="Ratio régionaux"
+              isFetching={isFetching_chiffre_cle && isFetching_performance}
+              attributions={[
+                {
+                  name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017",
+                },
+              ]}
+            >
+              {data_chiffre_cle && (
+                <ChartRaceBareDMA
+                  style={chartStyle}
+                  data={data_chiffre_cle.data.filter((e) => e.Annee == year)}
+                  highlight_region={cregion}
+                />
+              )}
+            </DashboardElement>
+          </Col>
         </Row>
-
       </>
-      );
+    );
 };
