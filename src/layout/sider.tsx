@@ -28,7 +28,6 @@ import "./sider.css";
 import { useMenu } from "@refinedev/core";
 
 
-
 const style_img: CSSProperties = {
   width: "100%",
 };
@@ -38,8 +37,13 @@ export const CustomSider: React.FC = () => {
   const items = [
     {
       key: "/dma",
-      label: <NavLink to="/dma">DMA</NavLink>,
+      label: <>DMA</>,
       icon: <HomeOutlined />,
+      children: [
+        { key: "/dma/region", label: <NavLink to="/dma">Hauts-de-France </NavLink> },
+        { key: "/dma/epci", label: <NavLink to="/dma/epci">EPCI</NavLink> },
+
+      ]
     },
     {
       key: "#/rep",
