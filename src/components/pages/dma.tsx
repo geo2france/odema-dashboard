@@ -54,7 +54,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
         SELECT L_TYP_REG_DECHET, L_TYP_REG_SERVICE, sum(TONNAGE_DMA) as TONNAGE_DMA_sum
         FROM ?
         GROUP BY L_TYP_REG_DECHET, L_TYP_REG_SERVICE
-    `, [data.data.filter((e) => e.ANNEE == Number(year))]) : undefined
+    `, [data.data.filter((e:any) => e.ANNEE == Number(year))]) : undefined
 
 
     const {data:data_performance, isFetching: isFetching_performance} = useApi({
@@ -138,7 +138,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
                         <ChartCollectePerformance 
                         style={chartStyle} 
                         data={data_performance.data} 
-                        data_territoire={data_chiffre_cle.data.filter((e) => e.Annee == year)}/> }
+                        data_territoire={data_chiffre_cle.data.filter((e:any) => e.Annee == year)}/> }
                 </DashboardElement>
             </Col>
             <Col xl={24/2} xs={24}>
@@ -146,7 +146,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
                         {data_chiffre_cle && 
                         <ChartRaceBareDMA 
                             style={chartStyle} 
-                            data={data_chiffre_cle.data.filter((e) => e.Annee == year)} 
+                            data={data_chiffre_cle.data.filter((e:any) => e.Annee == year)} 
                             highlight_region={cregion}/>}
                 </DashboardElement>
             </Col>

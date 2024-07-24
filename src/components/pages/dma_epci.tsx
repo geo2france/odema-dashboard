@@ -69,9 +69,9 @@ export const DmaPageEPCI: React.FC = () => {
         }
     })
 
-    const options_territories = data_ecpci_collecte?.data.map((e) => ({label:e.epci_nom, value:e.epci_siren}))
+    const options_territories = data_ecpci_collecte?.data.map((e:any) => ({label:e.epci_nom, value:e.epci_siren}))
 
-    const current_epci = data_ecpci_collecte?.data.find((e) => (e.epci_siren == siren_epci) )
+    const current_epci = data_ecpci_collecte?.data.find((e:any) => (e.epci_siren == siren_epci) )
 
 
     const territoire_descritpion_item : DescriptionsProps['items'] = [
@@ -176,7 +176,7 @@ export const DmaPageEPCI: React.FC = () => {
             <Col xs={24} xl={24/2}> 
             <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des DMA par type de déchet en ${year}`}>
                 {data_traitement &&  <ChartSankeyDestinationDMA 
-                data={data_traitement?.data.filter((d) => d.annee == year).map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
+                data={data_traitement?.data.filter((d:any) => d.annee == year).map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
                 onFocus={(e:any) => setFocus(e?.name)} focus_item={focus}
                 />}
             </DashboardElement>
@@ -186,7 +186,7 @@ export const DmaPageEPCI: React.FC = () => {
             <DashboardElement isFetching={data_traitement_isFecthing} title={`Type de déchets collectés`}>
                 {data_traitement && current_epci &&  
                 <ChartEvolutionDechet 
-                data={data_traitement?.data.map((e) => ({annee:e.annee, type:e.l_typ_reg_dechet, tonnage:e.tonnage_dma, population:current_epci.population})) }
+                data={data_traitement?.data.map((e:any) => ({annee:e.annee, type:e.l_typ_reg_dechet, tonnage:e.tonnage_dma, population:current_epci.population})) }
                 onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
                 year={Number(year)} />}
             </DashboardElement>
@@ -196,7 +196,7 @@ export const DmaPageEPCI: React.FC = () => {
             <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des déchets`}>
                 {data_traitement && current_epci &&  
                 <ChartEvolutionDechet 
-                data={data_traitement?.data.map((e) => ({annee:e.annee, type:e.l_typ_reg_service, tonnage:e.tonnage_dma, population:current_epci.population})) }
+                data={data_traitement?.data.map((e:any) => ({annee:e.annee, type:e.l_typ_reg_service, tonnage:e.tonnage_dma, population:current_epci.population})) }
                 onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
                 year={Number(year)} />}
             </DashboardElement>
@@ -204,7 +204,7 @@ export const DmaPageEPCI: React.FC = () => {
 
             <Col xs={24} xl={24/2}> 
                 <Card title={<span style={{marginLeft:5}}>Bilans RPQS</span>}>
-                    {data_rpqs?.data && data_rpqs?.data?.filter((e) => e.url).length > 0 ? data_rpqs?.data.sort((a,b) => b.annee_exercice - a.annee_exercice).map((d) => 
+                    {data_rpqs?.data && data_rpqs?.data?.filter((e:any) => e.url).length > 0 ? data_rpqs?.data.sort((a:any,b:any) => b.annee_exercice - a.annee_exercice).map((d:any) => 
                             <Card.Grid hoverable={d.url} key={d.annee_exercice} style={{width:'20%',   paddingTop: 5, textAlign: 'center'}}>
                                 {d.url ? 
                                     <a href={d.url}><FilePdfOutlined style={{fontSize:25}}/>  </a> :  
