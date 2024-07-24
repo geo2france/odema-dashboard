@@ -2,8 +2,9 @@ import { Refine } from "@refinedev/core";
 import { ThemedLayoutV2, notificationProvider, RefineThemes } from "@refinedev/antd";
 import routerBindings, { DocumentTitleHandler, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
 import {dataProvider as dfDataProvider} from "refine-datafair";
-import {dataProvider as wfsDataProvider} from "refine-wfs";
+import { WfsProvider } from "g2f-dashboard";
 import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
+import { QueryClient,  QueryClientProvider } from '@tanstack/react-query'
 
 import { ConfigProvider, ThemeConfig } from "antd";
 import "@refinedev/antd/dist/reset.css";
@@ -48,11 +49,14 @@ const myTheme:ThemeConfig = {...RefineThemes.Orange,
 }
 
 //Cf https://github.com/geo2france/g2f-dashboard/issues/5
-export const geo2franceProvider = wfsDataProvider("https://www.geo2france.fr/geoserver/ows")
+export const geo2franceProvider = WfsProvider("https://www.geo2france.fr/geoserver/ows")
 export const ademe_opendataProvider = dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets") 
+
+const queryClient = new QueryClient()
 
 const App: React.FC = () => {
   return (
+  <QueryClientProvider client={queryClient}>
     <HashRouter>
       <ConfigProvider theme={myTheme}>
         <Refine
@@ -60,7 +64,8 @@ const App: React.FC = () => {
           dataProvider={{
               default:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets"),
               ademe_opendata:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets"),
-              geo2france:wfsDataProvider("https://www.geo2france.fr/geoserver/ows")
+              //@ts-ignore
+              geo2france:geo2franceProvider
             }}
           notificationProvider={notificationProvider}
           resources={ressources}
@@ -108,6 +113,7 @@ const App: React.FC = () => {
         </Refine>
       </ConfigProvider>
     </HashRouter>
+  </QueryClientProvider>
   );
 };
 

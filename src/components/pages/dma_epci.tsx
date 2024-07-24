@@ -9,7 +9,7 @@ import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState } from "g2f-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
-import useApi from "../../utils/useApi"
+import { useApi } from "g2f-dashboard"
 import { geo2franceProvider } from "../../App"
 
 

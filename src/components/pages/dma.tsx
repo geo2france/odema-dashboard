@@ -8,7 +8,7 @@ import { ChartRaceBareDMA } from "../chart_racebar_dma";
 import alasql from "alasql";
 import { useSearchParamsState, DashboardElement, NextPrevSelect } from "g2f-dashboard";
 import { ChartEvolutionDechet } from "../chart_evolution_dechet";
-import useApi from "../../utils/useApi";
+import { useApi } from "g2f-dashboard"
 import { ademe_opendataProvider } from "../../App";
 
 

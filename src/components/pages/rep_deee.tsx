@@ -1,4 +1,4 @@
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
+import { BaseRecord, IResourceComponentsProps } from "@refinedev/core"
 import { useSearchParamsState, LoadingContainer, Attribution } from "g2f-dashboard"
 import { Row, Col, Card } from "antd"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
@@ -7,7 +7,7 @@ import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { useState } from "react"
 import { AppareilsElectriques, GrosElectromenagers, PetitsAppareilsElectriques } from "../../utils/picto"
 import alasql from "alasql"
-import useApi from "../../utils/useApi"
+import { useApi } from "g2f-dashboard"
 
 import { ademe_opendataProvider } from "../../App"
 
