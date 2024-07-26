@@ -12,3 +12,7 @@
 .modal-fullscreen >.ant-modal-body {
 height: calc(95vh - 110px);
 }
+
+body {
+    margin:0px;
+}

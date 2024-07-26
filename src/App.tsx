@@ -3,7 +3,6 @@ import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
 import { QueryClient,  QueryClientProvider } from '@tanstack/react-query'
 
 import { ConfigProvider, Layout, ThemeConfig } from "antd";
-import "@refinedev/antd/dist/reset.css";
 import './index.css';
 
 import { DmaComponent } from "./components/pages/dma";
