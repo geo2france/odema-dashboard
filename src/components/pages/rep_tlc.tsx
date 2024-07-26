@@ -1,21 +1,21 @@
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState, Attribution, LoadingContainer } from "g2f-dashboard"
+import { useSearchParamsState, Attribution, LoadingContainer, useApi, SimpleRecord } from "g2f-dashboard"
 import { Row, Col, Card } from "antd"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { RepTopbar } from "../rep_topbar"
 import { useState } from "react"
 import { Textiles } from "../../utils/picto"
 import alasql from "alasql"
+import { ademe_opendataProvider } from "../../App"
 
-export const RepTlcPage: React.FC<IResourceComponentsProps> = () => {
+export const RepTlcPage: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
     //const [cregion, _setcregion] = useSearchParamsState('region','32')
 
-    const collecte = useList(
+    const collecte = useApi(
         {
             resource: "rep-tlc-tonnages-collectes-en-2021/lines",
-            dataProviderName: "ademe_opendata",
+            dataProvider: ademe_opendataProvider,
             pagination: {
                 pageSize: 150,
             },
@@ -32,7 +32,7 @@ export const RepTlcPage: React.FC<IResourceComponentsProps> = () => {
     const data_standardized = collecte?.data ? alasql(`SELECT [Année_des_données] AS annee, [origine], sum([tonnage]) AS tonnage
     FROM ? d
     GROUP BY [Année_des_données], [origine]
-    `, [collecte.data.data]).map((e:BaseRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
+    `, [collecte.data.data]).map((e:SimpleRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
     :undefined
 
 

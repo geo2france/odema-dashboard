@@ -1,4 +1,3 @@
-import { BaseRecord, useList } from "@refinedev/core"
 import { Card, Col, Descriptions, DescriptionsProps, Form, Row, Select } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { FilePdfOutlined } from "@ant-design/icons"
@@ -6,9 +5,11 @@ import alasql from "alasql"
 import { BsRecycle } from "react-icons/bs";
 import { useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard } from "g2f-dashboard"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord } from "g2f-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
+import { useApi } from "g2f-dashboard"
+import { geo2franceProvider } from "../../App"
 
 
 export const DmaPageEPCI: React.FC = () => {
@@ -16,9 +17,9 @@ export const DmaPageEPCI: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
 
-    const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useList({ 
+    const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useApi({ 
         resource:"odema:destination_dma_epci ",
-        dataProviderName:"geo2france",
+        dataProvider:geo2franceProvider,
         pagination:{
             mode:"off"
         },
@@ -41,9 +42,9 @@ export const DmaPageEPCI: React.FC = () => {
         ]
     })
 
-    const {data:data_rpqs} =  useList({ 
+    const {data:data_rpqs} =  useApi({ 
         resource:"odema:rqps ",
-        dataProviderName:"geo2france",
+        dataProvider:geo2franceProvider,
         pagination:{
             mode:"off"
         },
@@ -56,9 +57,9 @@ export const DmaPageEPCI: React.FC = () => {
         ]
     });
 
-    const {data:data_ecpci_collecte} = useList({
+    const {data:data_ecpci_collecte} = useApi({
         resource:"odema:territoires_collecte ",
-        dataProviderName:"geo2france",
+        dataProvider:geo2franceProvider,
         pagination:{
             mode:"off"
         },
@@ -67,9 +68,9 @@ export const DmaPageEPCI: React.FC = () => {
         }
     })
 
-    const options_territories = data_ecpci_collecte?.data.map((e) => ({label:e.epci_nom, value:e.epci_siren}))
+    const options_territories = data_ecpci_collecte?.data.map((e:any) => ({label:e.epci_nom, value:e.epci_siren}))
 
-    const current_epci = data_ecpci_collecte?.data.find((e) => (e.epci_siren == siren_epci) )
+    const current_epci = data_ecpci_collecte?.data.find((e:any) => (e.epci_siren == siren_epci) )
 
 
     const territoire_descritpion_item : DescriptionsProps['items'] = [
@@ -119,7 +120,7 @@ export const DmaPageEPCI: React.FC = () => {
         {id:"valo_dma", 
         name:"Taux de valorisation des DMA",
         description:"Part des DMA orientés vers les filières de valorisation matière ou organique (hors déblais et gravats).",
-        value:(tonnage_valo?.find((e:BaseRecord) => e.annee == year).tonnage / tonnage_dma?.find((e:BaseRecord) => e.annee == year).tonnage)*100,
+        value:(tonnage_valo?.find((e:SimpleRecord) => e.annee == year).tonnage / tonnage_dma?.find((e:SimpleRecord) => e.annee == year).tonnage)*100,
         sub_value:"Obj. régional : 65 %",
         digits:1,
         icon: <BsRecycle />,
@@ -127,7 +128,7 @@ export const DmaPageEPCI: React.FC = () => {
         {id:"prod_dma", 
         name:"Production de DMA",
         description:"Production globale annuelle de DMA (hors déblais et gravats).",
-        value: (tonnage_dma?.find((e:BaseRecord) => e.annee == year).tonnage  / current_epci?.population) * 1e3,
+        value: (tonnage_dma?.find((e:SimpleRecord) => e.annee == year).tonnage  / current_epci?.population) * 1e3,
         sub_value:"Obj. régional : 553 kg/hab",
         icon: <FaTrashCan />,
         unit:'kg/hab'}
@@ -181,7 +182,7 @@ export const DmaPageEPCI: React.FC = () => {
                     },
                   ]}>
                 {data_traitement &&  <ChartSankeyDestinationDMA 
-                data={data_traitement?.data.filter((d) => d.annee == year).map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
+                data={data_traitement?.data.filter((d:any) => d.annee == year).map((i:SimpleRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
                 onFocus={(e:any) => setFocus(e?.name)} focus_item={focus}
                 />}
             </DashboardElement>
@@ -198,7 +199,7 @@ export const DmaPageEPCI: React.FC = () => {
                   ]}>
                 {data_traitement && current_epci &&  
                 <ChartEvolutionDechet 
-                data={data_traitement?.data.map((e) => ({annee:e.annee, type:e.l_typ_reg_dechet, tonnage:e.tonnage_dma, population:current_epci.population})) }
+                data={data_traitement?.data.map((e:any) => ({annee:e.annee, type:e.l_typ_reg_dechet, tonnage:e.tonnage_dma, population:current_epci.population})) }
                 onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
                 year={Number(year)} />}
             </DashboardElement>
@@ -215,7 +216,7 @@ export const DmaPageEPCI: React.FC = () => {
                   ]}>
                 {data_traitement && current_epci &&  
                 <ChartEvolutionDechet 
-                data={data_traitement?.data.map((e) => ({annee:e.annee, type:e.l_typ_reg_service, tonnage:e.tonnage_dma, population:current_epci.population})) }
+                data={data_traitement?.data.map((e:any) => ({annee:e.annee, type:e.l_typ_reg_service, tonnage:e.tonnage_dma, population:current_epci.population})) }
                 onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
                 year={Number(year)} />}
             </DashboardElement>
@@ -230,9 +231,9 @@ export const DmaPageEPCI: React.FC = () => {
                     comme manquants, merci de bien vouloir nous les transmettre.</p></div>} 
                     title={<span style={{marginLeft:5}}>Bilans RPQS</span>}>
                      {data_rpqs?.data && data_rpqs?.data?.
-                                filter((e) => e.url).length > 0 ? data_rpqs?.data.
-                                sort((a,b) => b.annee_exercice - a.annee_exercice).
-                                map((d) => 
+                                filter((e:any) => e.url).length > 0 ? data_rpqs?.data.
+                                sort((a:any,b:any) => b.annee_exercice - a.annee_exercice).
+                                map((d:any) => 
                            <Card.Grid 
                                 key={d.annee_exercice}
                                 hoverable={d.url}  

@@ -1,38 +1,21 @@
 import {
-  ApiOutlined,
   CloseSquareOutlined,
   HomeOutlined,
   RollbackOutlined,
 } from "@ant-design/icons";
-import { ThemedTitleV2 } from "@refinedev/antd";
 import Odema from "/img/logo_odema.png";
-
-export const AppTitle: React.FC = () => {
-  return (
-    <ThemedTitleV2 collapsed={false} icon={<ApiOutlined />} text="Odema" />
-  );
-};
-
-export const AppSider: React.FC = () => {
-  return (
-    <>
-      <CustomSider  />
-    </>
-  );
-};
 
 import React, { CSSProperties, useState } from "react";
 import { Layout, Menu, theme, Row, Col } from "antd";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import "./sider.css";
-import { useMenu } from "@refinedev/core";
 
 
 const style_img: CSSProperties = {
   width: "100%",
 };
 
-export const CustomSider: React.FC = () => {
+export const AppSider: React.FC = () => {
 
   const items = [
     {
@@ -77,9 +60,9 @@ export const CustomSider: React.FC = () => {
       icon: <CloseSquareOutlined />,
     },
   ];
-
+  
   const { token } = theme.useToken();
-  const { selectedKey } = useMenu();
+  const { pathname:selectedKey } = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 

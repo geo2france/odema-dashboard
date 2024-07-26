@@ -1,9 +1,8 @@
-import { BaseRecord } from "@refinedev/core";
 import alasql from "alasql";
 import { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, BarSeriesOption } from "echarts";
-import { useChartActionHightlight, useChartEvents, useDashboardElement } from "g2f-dashboard"
+import { SimpleRecord, useChartActionHightlight, useChartEvents, useDashboardElement } from "g2f-dashboard"
 import { chartBusinessProps  } from "../../utils";
 
 interface DataProps {
@@ -57,7 +56,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
 
     const categories = alasql(`SELECT ARRAY(DISTINCT [annee]) as annees FROM ?`, [data])[0].annees.sort().map((e:number) => e.toString())
 
-    const series:BarSeriesOption[] = data_chart2.map((e:BaseRecord) => ({
+    const series:BarSeriesOption[] = data_chart2.map((e:SimpleRecord) => ({
          name:e.type,
          data:e.data.map((e:number[]) => ([e[0].toString(), e[2], e[1] ])),
          type:'bar',

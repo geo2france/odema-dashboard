@@ -1,13 +1,12 @@
-import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
-import { useChartData, useDashboardElement, useChartEvents } from "g2f-dashboard";
+import { useChartData, useDashboardElement, useChartEvents, SimpleRecord } from "g2f-dashboard";
 
 export interface IChartIsdndGlobalProps {
-    data : BaseRecord[]
-    data_capacite : BaseRecord[]
+    data : SimpleRecord[]
+    data_capacite : SimpleRecord[]
     year?:number
     onClick?: Function
     style?: CSSProperties
@@ -40,7 +39,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, data_
         tooltip:{
             valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         },
-        data: data_chart.map((e: BaseRecord) => (
+        data: data_chart.map((e: SimpleRecord) => (
             {
                 value: [e.annee.toString(), e.tonnage],
                 itemStyle: {
@@ -60,7 +59,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, data_
         tooltip:{
             valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         },
-        data: data_chart.map((e: BaseRecord) => (
+        data: data_chart.map((e: SimpleRecord) => (
             { value: [e.annee.toString(), e.capacite]  })
         ),
         z:2

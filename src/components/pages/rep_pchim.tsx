@@ -1,21 +1,21 @@
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState, Attribution, LoadingContainer } from "g2f-dashboard/"
+import { useSearchParamsState, Attribution, LoadingContainer, useApi, SimpleRecord } from "g2f-dashboard/"
 import { Row, Col, Card } from "antd"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { RepTopbar } from "../rep_topbar"
 import { useState } from "react"
 import { DechetsDiffusSpecifiques, EnginsPyrotechniques, Extincteurs } from "../../utils/picto"
 import alasql from "alasql"
+import { ademe_opendataProvider } from "../../App"
 
-export const RepPchimPage: React.FC<IResourceComponentsProps> = () => {
+export const RepPchimPage: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
 
     //const [_cregion, _setcregion] = useSearchParamsState('region','32')
-    const collecte_pchim = useList(
+    const collecte_pchim = useApi(
         {
             resource: "rep-pchim-tonnages-collectes-2021/lines",
-            dataProviderName: "ademe_opendata",
+            dataProvider: ademe_opendataProvider,
             pagination: {
                 pageSize: 500,
             },
@@ -33,13 +33,13 @@ export const RepPchimPage: React.FC<IResourceComponentsProps> = () => {
     const data_standardized = collecte_pchim?.data ? alasql(`SELECT [Année_des_données] AS annee, [equip_declare], sum([Somme_de_masse]) AS tonnage
     FROM ? d
     GROUP BY [Année_des_données], [equip_declare]
-    `, [collecte_pchim.data.data]).map((e:BaseRecord) => ({annee:e.annee, name: e.equip_declare, value: e.tonnage} )) 
+    `, [collecte_pchim.data.data]).map((e:SimpleRecord) => ({annee:e.annee, name: e.equip_declare, value: e.tonnage} )) 
     :undefined
 
     const data_standardized_origine = collecte_pchim?.data ? alasql(`SELECT [Année_des_données] AS annee, COALESCE([origine],'AUTR') as origine, sum([Somme_de_masse]) AS tonnage
     FROM ? d
     GROUP BY [Année_des_données], COALESCE([origine],'AUTR')
-    `, [collecte_pchim.data.data]).map((e:BaseRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
+    `, [collecte_pchim.data.data]).map((e:SimpleRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
     :undefined
 
     return (<>

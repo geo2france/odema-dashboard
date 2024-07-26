@@ -1,5 +1,4 @@
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState, Attribution, LoadingContainer } from "g2f-dashboard"
+import { useSearchParamsState, Attribution, LoadingContainer, useApi, SimpleRecord } from "g2f-dashboard"
 import { Row, Col, Card } from "antd"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { RepTopbar } from "../rep_topbar"
@@ -7,18 +6,19 @@ import { useState } from "react"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { PilesEtBatteries } from "../../utils/picto"
 import alasql from "alasql"
+import { ademe_opendataProvider } from "../../App"
 
-export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
+export const RepPaPage: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
     const [cregion, _setcregion] = useSearchParamsState('region','32')
 
     const filiere = 'pa'
 
-    const collecte_pa = useList(
+    const collecte_pa = useApi(
         {
             resource: "rep-pa-tonnages-collectes-en-2018/lines",
-            dataProviderName: "ademe_opendata",
+            dataProvider: ademe_opendataProvider,
             pagination: {
                 pageSize: 500,
             },
@@ -44,7 +44,7 @@ export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
     SELECT d3.[Code_Région], d3.[Année_des_données] AS annee,  'Autre' AS type, sum(d3.[Autre]) AS tonnage
     FROM ? d3
     GROUP BY d3.[Code_Région], d3.[Année_des_données]
-    `, [collecte_pa.data.data,collecte_pa.data.data,collecte_pa.data.data]).map((e:BaseRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) : undefined
+    `, [collecte_pa.data.data,collecte_pa.data.data,collecte_pa.data.data]).map((e:SimpleRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) : undefined
 
     return (<>
 

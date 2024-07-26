@@ -1,5 +1,4 @@
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState, LoadingContainer, Attribution } from "g2f-dashboard"
+import { useSearchParamsState, LoadingContainer, Attribution, SimpleRecord } from "g2f-dashboard"
 import { Row, Col, Card } from "antd"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { RepTopbar } from "../rep_topbar"
@@ -7,16 +6,20 @@ import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { useState } from "react"
 import { AppareilsElectriques, GrosElectromenagers, PetitsAppareilsElectriques } from "../../utils/picto"
 import alasql from "alasql"
+import { useApi } from "g2f-dashboard"
 
-export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
+import { ademe_opendataProvider } from "../../App"
+
+
+export const RepDeeePage: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
 
     const [cregion, _setcregion] = useSearchParamsState('region','32')
-    const collecte_d3e = useList(
+    const collecte_d3e = useApi(
         {
             resource: "rep-deee-tonnages-collectes-en-2018/lines",
-            dataProviderName: "ademe_opendata",
+            dataProvider: ademe_opendataProvider,
             pagination: {
                 pageSize: 500,
             },
@@ -35,7 +38,7 @@ export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
             FROM ? d
             GROUP BY [Code_région], [Année_des_données], d.Flux
             `, [collecte_d3e.data.data])
-            .map((e:BaseRecord) => ({annee:e.annee, name: e.Flux, value: e.tonnage} )) 
+            .map((e:SimpleRecord) => ({annee:e.annee, name: e.Flux, value: e.tonnage} )) 
         : undefined
 
     const data_standardized_origine = collecte_d3e?.data ? //Tonnage par origine de collecte
@@ -43,7 +46,7 @@ export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
             FROM ? d
             GROUP BY [Code_région], [Année_des_données], d.[Origine]
             `, [collecte_d3e.data.data])
-            .map((e:BaseRecord) => ({annee:e.annee, name: e.Origine, value: e.tonnage} )) 
+            .map((e:SimpleRecord) => ({annee:e.annee, name: e.Origine, value: e.tonnage} )) 
         : undefined
 
     return (<>
