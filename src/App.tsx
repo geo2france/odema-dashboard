@@ -10,7 +10,6 @@ import "@refinedev/antd/dist/reset.css";
 import './index.css';
 
 import { DmaComponent } from "./components/pages/dma";
-import { ressources } from "./ressources"
 import { AppFooter, AppSider } from "./layout";
 import { ErrorComponent } from "./components/pages/error";
 import { RepPage } from "./components/pages/rep";
@@ -60,16 +59,7 @@ const App: React.FC = () => {
       <ConfigProvider theme={myTheme}>
         <Refine
           routerProvider={routerBindings}
-          dataProvider={{
-              //@ts-ignore
-              default:ademe_opendataProvider,
-              //@ts-ignore
-              ademe_opendata:ademe_opendataProvider,
-              //@ts-ignore
-              geo2france:geo2franceProvider
-            }}
           notificationProvider={notificationProvider}
-          resources={ressources}
           options={{
             syncWithLocation: true,
             warnWhenUnsavedChanges: true,
