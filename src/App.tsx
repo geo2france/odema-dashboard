@@ -1,11 +1,11 @@
 import { Refine } from "@refinedev/core";
-import { ThemedLayoutV2, notificationProvider, RefineThemes } from "@refinedev/antd";
+import { notificationProvider, RefineThemes } from "@refinedev/antd";
 import routerBindings, { DocumentTitleHandler, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
 import { WfsProvider, DatafairProvider } from "g2f-dashboard";
 import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
 import { QueryClient,  QueryClientProvider } from '@tanstack/react-query'
 
-import { ConfigProvider, ThemeConfig } from "antd";
+import { ConfigProvider, Layout, ThemeConfig } from "antd";
 import "@refinedev/antd/dist/reset.css";
 import './index.css';
 
@@ -68,12 +68,15 @@ const App: React.FC = () => {
           <Routes>
             <Route
               element={
-                <ThemedLayoutV2
-                  Sider={() => <AppSider /> }
-                  Footer={() => <AppFooter />}
-                >
-                  <Outlet />
-                </ThemedLayoutV2>
+                <Layout>
+                  <Layout>
+                    <AppSider />
+                    <div style={{padding:24}}>
+                      <Outlet />
+                    </div>
+                  </Layout>
+                  <AppFooter />
+                </Layout>
               }
             >
               <Route index element={<DmaComponent />} />
