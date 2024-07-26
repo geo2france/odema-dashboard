@@ -1,7 +1,6 @@
-import { IResourceComponentsProps } from "@refinedev/core"
 import { Row, Col, Alert } from "antd"
 
-export const IncinerationtPage: React.FC<IResourceComponentsProps> = () => {
+export const IncinerationtPage: React.FC = () => {
 
     return (<>
       <Row gutter={[16, 16]}>

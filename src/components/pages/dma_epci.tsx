@@ -1,4 +1,3 @@
-import { BaseRecord } from "@refinedev/core"
 import { Card, Col, Descriptions, DescriptionsProps, Form, Row, Select } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { FilePdfOutlined } from "@ant-design/icons"
@@ -6,7 +5,7 @@ import alasql from "alasql"
 import { BsRecycle } from "react-icons/bs";
 import { useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard } from "g2f-dashboard"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord } from "g2f-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { useApi } from "g2f-dashboard"
@@ -121,7 +120,7 @@ export const DmaPageEPCI: React.FC = () => {
         {id:"valo_dma", 
         name:"Taux de valorisation des DMA",
         description:"Part des DMA orientés vers les filières de valorisation matière ou organique (hors déblais et gravats).",
-        value:(tonnage_valo?.find((e:BaseRecord) => e.annee == year).tonnage / tonnage_dma?.find((e:BaseRecord) => e.annee == year).tonnage)*100,
+        value:(tonnage_valo?.find((e:SimpleRecord) => e.annee == year).tonnage / tonnage_dma?.find((e:SimpleRecord) => e.annee == year).tonnage)*100,
         sub_value:"Obj. régional : 65 %",
         digits:1,
         icon: <BsRecycle />,
@@ -129,7 +128,7 @@ export const DmaPageEPCI: React.FC = () => {
         {id:"prod_dma", 
         name:"Production de DMA",
         description:"Production globale annuelle de DMA (hors déblais et gravats).",
-        value: (tonnage_dma?.find((e:BaseRecord) => e.annee == year).tonnage  / current_epci?.population) * 1e3,
+        value: (tonnage_dma?.find((e:SimpleRecord) => e.annee == year).tonnage  / current_epci?.population) * 1e3,
         sub_value:"Obj. régional : 553 kg/hab",
         icon: <FaTrashCan />,
         unit:'kg/hab'}
@@ -183,7 +182,7 @@ export const DmaPageEPCI: React.FC = () => {
                     },
                   ]}>
                 {data_traitement &&  <ChartSankeyDestinationDMA 
-                data={data_traitement?.data.filter((d:any) => d.annee == year).map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
+                data={data_traitement?.data.filter((d:any) => d.annee == year).map((i:SimpleRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
                 onFocus={(e:any) => setFocus(e?.name)} focus_item={focus}
                 />}
             </DashboardElement>

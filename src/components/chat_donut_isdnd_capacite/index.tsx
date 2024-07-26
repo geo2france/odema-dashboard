@@ -1,13 +1,12 @@
 import React, { CSSProperties, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, TreemapSeriesOption } from 'echarts';
-import { BaseRecord } from '@refinedev/core';
 import alasql from 'alasql';
 import { ChartTerritoriesProps } from '../../utils/nomenclature';
-import { useChartData, useDashboardElement, useChartEvents } from 'g2f-dashboard';
+import { useChartData, useDashboardElement, useChartEvents, SimpleRecord } from 'g2f-dashboard';
 
 export interface IChartDonutIsdndCapacitePros {
-    data: BaseRecord[];
+    data: SimpleRecord[];
     year: Number;
     onClick?: Function;
     aiot? : string;

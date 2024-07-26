@@ -1,6 +1,5 @@
-import { BaseRecord, IResourceComponentsProps } from "@refinedev/core"
 import { Row, Col, Card } from "antd"
-import { Attribution, useSearchParamsState, LoadingContainer, useApi } from "g2f-dashboard"
+import { Attribution, useSearchParamsState, LoadingContainer, useApi, SimpleRecord } from "g2f-dashboard"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { RepTopbar } from "../rep_topbar"
 import { useState } from "react"
@@ -9,7 +8,7 @@ import { Dasri } from "../../utils/picto"
 import alasql from "alasql"
 import { ademe_opendataProvider } from "../../App"
 
-export const RepDispmedPage: React.FC<IResourceComponentsProps> = () => {
+export const RepDispmedPage: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
     const [_cregion, _setcregion] = useSearchParamsState('region','32')
@@ -36,7 +35,7 @@ export const RepDispmedPage: React.FC<IResourceComponentsProps> = () => {
     const data_standardized = collecte?.data ? alasql(`SELECT [Année_des_données] AS annee, [origine], sum([tonnage]) AS tonnage
     FROM ? d
     GROUP BY [origine], [Année_des_données] 
-    `, [collecte.data.data]).map((e:BaseRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
+    `, [collecte.data.data]).map((e:SimpleRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
     :undefined
 
     return (<>

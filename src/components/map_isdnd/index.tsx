@@ -1,13 +1,12 @@
 import React, { CSSProperties, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { BaseRecord } from '@refinedev/core';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
 import { BaseLayer } from '../map_baselayer';
-import { useDashboardElement, BaseRecordToGeojsonPoint, useApi } from 'g2f-dashboard';
+import { useDashboardElement, BaseRecordToGeojsonPoint, useApi, SimpleRecord } from 'g2f-dashboard';
 import { geo2franceProvider } from '../../App';
 
 export interface IMapProps{
-    data:BaseRecord[],
+    data:SimpleRecord[],
     aiot:string,
     year?:number,
     onClick?:Function,

@@ -1,6 +1,5 @@
-import { BaseRecord, IResourceComponentsProps } from "@refinedev/core";
 import { Row, Col, Card, List } from "antd";
-import { useSearchParamsState, LoadingContainer, Attribution, useApi } from "g2f-dashboard";
+import { useSearchParamsState, LoadingContainer, Attribution, useApi, SimpleRecord } from "g2f-dashboard";
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte";
 import { RepTopbar } from "../rep_topbar";
 import alasql from "alasql";
@@ -8,7 +7,7 @@ import { ademe_opendataProvider } from "../../App";
 
 //TODO splitter cette page pour chaque filière (rep_mnu.tsx, rep_vhu.tsx...). Ici mettre un Tab pour chaque filière.
 
-export const RepPage: React.FC<IResourceComponentsProps> = () => {
+export const RepPage: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
 
     const [cregion, _setcregion] = useSearchParamsState('region','32')
@@ -53,7 +52,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
     FROM ? d4
     GROUP BY d4.[Code_Région], d4.[Année_des_données]
     `, [collecte_pu.data.data,collecte_pu.data.data,collecte_pu.data.data,collecte_pu.data.data])
-    .map((e:BaseRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
+    .map((e:SimpleRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
     :undefined
 
     const collecte_vhu = useApi(
@@ -108,7 +107,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
     SELECT d6.[Code_Région], d6.[Années] as annee, "Garages_indépendants_et_autres_professionnels_de_l'entretien" AS type, sum(d6.[Garages_indépendants_et_autres_professionnels_de_l_entretien]::NUMBER) AS tonnage
     FROM ? d6
     GROUP BY d6.[Code_Région], d6.[Années]
-    `, [data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2]).map((e:BaseRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
+    `, [data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2]).map((e:SimpleRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
     :undefined
 
     return(

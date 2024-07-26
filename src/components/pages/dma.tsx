@@ -1,18 +1,17 @@
 import React, { CSSProperties, useState } from "react";
-import { BaseRecord, IResourceComponentsProps } from "@refinedev/core";
 import { Card, Col, Row } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
 
 import alasql from "alasql";
-import { useSearchParamsState, DashboardElement, NextPrevSelect } from "g2f-dashboard";
+import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord } from "g2f-dashboard";
 import { ChartEvolutionDechet } from "../chart_evolution_dechet";
 import { useApi } from "g2f-dashboard"
 import { ademe_opendataProvider } from "../../App";
 
 
-export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
+export const DmaComponent: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [cregion, _setcregion] = useSearchParamsState('region','32')
     const [focus, setFocus] = useState<string | undefined>(undefined) 
@@ -132,7 +131,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
                   style={chartStyle}
                   onFocus={(e: any) => setFocus(e?.name)}
                   focus_item={focus}
-                  data={datasankey.map((i: BaseRecord) => ({
+                  data={datasankey.map((i: SimpleRecord) => ({
                     value: Math.max(i.TONNAGE_DMA_sum, 1),
                     source: i.L_TYP_REG_DECHET,
                     target: i.L_TYP_REG_SERVICE,
@@ -154,7 +153,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             >
               {data_typedechet_destination && (
                 <ChartEvolutionDechet
-                  data={data_typedechet_destination.map((e: BaseRecord) => ({
+                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
                     tonnage: e.TONNAGE_DMA,
                     annee: e.ANNEE,
                     type: e.L_TYP_REG_DECHET,
@@ -180,7 +179,7 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
             >
               {data_typedechet_destination && (
                 <ChartEvolutionDechet
-                  data={data_typedechet_destination.map((e: BaseRecord) => ({
+                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
                     tonnage: e.TONNAGE_DMA,
                     annee: e.ANNEE,
                     type: e.L_TYP_REG_SERVICE,

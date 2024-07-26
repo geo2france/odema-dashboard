@@ -1,12 +1,11 @@
-import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
-import { useChartData, useDashboardElement, useChartEvents } from "g2f-dashboard";
+import { useChartData, useDashboardElement, useChartEvents, SimpleRecord } from "g2f-dashboard";
 
 export interface IChartRaceBarISDND {
-    data : BaseRecord[],
+    data : SimpleRecord[],
     year : number,
     aiot? : string,
     onClick : any,
@@ -28,7 +27,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
     ]
 
     const axie_category = alasql(`SELECT DISTINCT [name], [aiot] FROM ? WHERE annee=${year} AND tonnage > 0 ORDER BY tonnage ASC
-    `, [data]).map((e:BaseRecord) => ( {
+    `, [data]).map((e:SimpleRecord) => ( {
         value:e.name,
         textStyle: {
             fontWeight: e.aiot == aiot ? 700 : 400,
@@ -49,7 +48,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         tooltip:{
             valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         },
-        data:data_chart.map((e:BaseRecord) => ({
+        data:data_chart.map((e:SimpleRecord) => ({
             value:e.tonnage, name:e.nom, key:e.aiot,
             itemStyle:{color:dptement_props.find(i => i.code==e.departement)?.color}
         }
@@ -64,7 +63,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         },
         lineStyle:{opacity:0},
         itemStyle:{color:'#D44F4A'},
-        data:data_chart.map((e:BaseRecord) => ({
+        data:data_chart.map((e:SimpleRecord) => ({
             value:e.capacite, name:e.name
         }))
     }

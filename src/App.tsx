@@ -1,6 +1,3 @@
-import { Refine } from "@refinedev/core";
-import { notificationProvider, RefineThemes } from "@refinedev/antd";
-import routerBindings, { DocumentTitleHandler, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
 import { WfsProvider, DatafairProvider } from "g2f-dashboard";
 import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
 import { QueryClient,  QueryClientProvider } from '@tanstack/react-query'
@@ -23,7 +20,8 @@ import { RepMnuPage } from "./components/pages/rep_mnu";
 import { RepDispmedPage } from "./components/pages/rep_dispmed";
 import { DmaPageEPCI } from "./components/pages/dma_epci";
 
-const myTheme:ThemeConfig = {...RefineThemes.Orange, 
+
+const myTheme:ThemeConfig = {
   token: {
     colorPrimary: "#DEAD8F",
     linkHoverDecoration:'underline',
@@ -57,14 +55,6 @@ const App: React.FC = () => {
   <QueryClientProvider client={queryClient}>
     <HashRouter>
       <ConfigProvider theme={myTheme}>
-        <Refine
-          routerProvider={routerBindings}
-          notificationProvider={notificationProvider}
-          options={{
-            syncWithLocation: true,
-            warnWhenUnsavedChanges: true,
-          }}
-        >
           <Routes>
             <Route
               element={
@@ -102,9 +92,6 @@ const App: React.FC = () => {
               <Route path="*" element={<ErrorComponent />} />
             </Route>
           </Routes>
-          <UnsavedChangesNotifier />
-          <DocumentTitleHandler handler={() => 'Odema tableau de bord'} />
-        </Refine>
       </ConfigProvider>
     </HashRouter>
   </QueryClientProvider>

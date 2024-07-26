@@ -1,9 +1,8 @@
 import { CSSProperties, useState } from "react";
-import { BaseRecord, IResourceComponentsProps } from "@refinedev/core"
 import { Row, Col, Card, Drawer, Tooltip, Select, Form } from "antd"
 import alasql from "alasql";
 
-import { DashboardElement, NextPrevSelect, useApi } from "g2f-dashboard";
+import { DashboardElement, NextPrevSelect, SimpleRecord, useApi } from "g2f-dashboard";
 
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
@@ -16,7 +15,7 @@ import { BaseOptionType } from "antd/lib/select";
 import { geo2franceProvider } from "../../App";
 
 
-export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
+export const EnfouissementPage: React.FC = () => {
 
 
     const chartStyle:CSSProperties = {height:'350px'}
@@ -40,14 +39,14 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
     const select_options:BaseOptionType[] = data_isdnd && alasql(`
         SELECT DISTINCT aiot AS [value], name AS label
         FROM ?
-    `, [data_isdnd.data]).map((e:BaseRecord) => ({value:e.value, label:`${e.label} (${e.value})`})) // Liste des différentes installations
+    `, [data_isdnd.data]).map((e:SimpleRecord) => ({value:e.value, label:`${e.label} (${e.value})`})) // Liste des différentes installations
 
     const select_options_annees:BaseOptionType[] = data_isdnd && alasql(`
     SELECT DISTINCT annee
     FROM ?
     WHERE tonnage > 0
     ORDER BY annee DESC
-`, [data_isdnd.data]).map((e:BaseRecord) => ({value:Number(e.annee), label:e.annee}))
+`, [data_isdnd.data]).map((e:SimpleRecord) => ({value:Number(e.annee), label:e.annee}))
 
 
     const {data:data_capacite, isFetching:isFetchingCapacite} = useApi({ // Historique des arrếtés
@@ -108,7 +107,7 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={8} lg={12} xs={24}>
 
 
-                     <DashboardElement isFetching={isFetchingIsdnd || isFetchingCapacite} title={`Tonnage enfouis : ${data_isdnd?.data.find((e:BaseRecord) => e.aiot == aiot)?.name}`} attributions={[{name : 'GT ISDND', url:'https://www.geo2france.fr/datahub/dataset/1a1480b4-8c8b-492d-9cd0-a91b49576017'},{name: 'Odema'}]}>
+                     <DashboardElement isFetching={isFetchingIsdnd || isFetchingCapacite} title={`Tonnage enfouis : ${data_isdnd?.data.find((e:SimpleRecord) => e.aiot == aiot)?.name}`} attributions={[{name : 'GT ISDND', url:'https://www.geo2france.fr/datahub/dataset/1a1480b4-8c8b-492d-9cd0-a91b49576017'},{name: 'Odema'}]}>
                      { data_isdnd &&  data_capacite &&  
                         <ChartEvolutionISDND style={chartStyle} data={data_isdnd.data} data_capacite={data_capacite.data} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND>
                       }

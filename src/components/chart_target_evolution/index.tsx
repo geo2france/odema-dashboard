@@ -2,7 +2,7 @@ import React from 'react';
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from 'echarts';
 import { CSSProperties, useRef } from 'react';
-import { BaseRecord } from '@refinedev/core';
+import { SimpleRecord } from 'g2f-dashboard';
 
 
 interface IChartTargetEvolutionProps {
@@ -12,7 +12,7 @@ interface IChartTargetEvolutionProps {
 
 export const ChartTargetEvolution: React.FC<IChartTargetEvolutionProps> = ( {data, style} ) => {  
 
-    const line_data = data.map((e:BaseRecord) => ({value:[e.date, e.value]}))
+    const line_data = data.map((e:SimpleRecord) => ({value:[e.date, e.value]}))
 
     const target_data = [ [data[0].ref_date, data[0].ref_value], [data[0].due_date, data[0].target]]
 

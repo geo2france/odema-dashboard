@@ -1,12 +1,11 @@
-import { BaseRecord } from "@refinedev/core";
 import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { chartBusinessProps } from "../../utils";
 import { CSSProperties, useRef } from "react";
-import { useChartActionHightlight, useChartEvents } from "g2f-dashboard";
+import { SimpleRecord, useChartActionHightlight, useChartEvents } from "g2f-dashboard";
 
 export interface ChartPieRepCollecteProps {
-    data: any[] | BaseRecord[];
+    data: any[] | SimpleRecord[];
     filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' | 'mnu' | 'disp_med' | 'pu' | 'vhu';
     c_region?: string;
     year?: number;
@@ -24,13 +23,13 @@ export const ChartPieRepCollecte: React.FC<ChartPieRepCollecteProps> = ({data, f
     useChartActionHightlight({chartRef:chartRef, target:{name:focus_item}})
 
     const total = data_pie.reduce(
-        (accum:number, current:BaseRecord) => accum + current.value,
+        (accum:number, current:SimpleRecord) => accum + current.value,
         0
       );
 
     const myserie:PieSeriesOption = {
         type : 'pie',
-        data : data_pie.map((e:BaseRecord) => (
+        data : data_pie.map((e:SimpleRecord) => (
             {...e, 
                 name:chartBusinessProps(e.name).label, 
                 itemStyle:{color:chartBusinessProps(e.name).color}}

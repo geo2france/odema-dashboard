@@ -1,14 +1,14 @@
 import React, { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
-import { BaseRecord } from "@refinedev/core";
+import {SimpleRecord} from "g2f-dashboard"
 import type {EChartsOption, PieSeriesOption} from "echarts"
 import alasql from "alasql";
 import { chartBusinessProps } from "../../utils";
 import { useDashboardElement } from "g2f-dashboard";
 
 export interface ChartCollectePerformanceProps {
-    data: any[] | BaseRecord[]; // Spécifier les champs au niveau de la ressource
-    data_territoire: any[] | BaseRecord[]; // Le endpoint précédent ne fournie pas la POPANNEE
+    data: any[] | SimpleRecord[]; // Spécifier les champs au niveau de la ressource
+    data_territoire: any[] | SimpleRecord[]; // Le endpoint précédent ne fournie pas la POPANNEE
     c_region?:string
     style? : CSSProperties
   }
@@ -27,7 +27,7 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
 
     const myserie:PieSeriesOption = {
         type : 'pie',
-        data : data_pie.map((e:BaseRecord) => ({name: e.TYP_COLLECTE, value: e.RATIO_KG_HAB, itemStyle:{color:chartBusinessProps(e.TYP_COLLECTE).color}})),
+        data : data_pie.map((e:SimpleRecord) => ({name: e.TYP_COLLECTE, value: e.RATIO_KG_HAB, itemStyle:{color:chartBusinessProps(e.TYP_COLLECTE).color}})),
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,
         itemStyle: {
@@ -60,7 +60,7 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
             left: 'center',
             top: 'center',
             style: {
-                text: `${Math.round(data_pie.reduce((acc:number, obj:BaseRecord) => acc + obj.RATIO_KG_HAB, 0))} kg/hab`,
+                text: `${Math.round(data_pie.reduce((acc:number, obj:SimpleRecord) => acc + obj.RATIO_KG_HAB, 0))} kg/hab`,
                 fill: '#666',
                 fontSize: 16,
                 fontWeight: 'bold'
