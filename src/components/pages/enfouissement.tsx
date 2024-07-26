@@ -1,9 +1,9 @@
 import { CSSProperties, useState } from "react";
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
+import { BaseRecord, IResourceComponentsProps } from "@refinedev/core"
 import { Row, Col, Card, Drawer, Tooltip, Select, Form } from "antd"
 import alasql from "alasql";
 
-import { DashboardElement, NextPrevSelect } from "g2f-dashboard";
+import { DashboardElement, NextPrevSelect, useApi } from "g2f-dashboard";
 
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
@@ -13,6 +13,7 @@ import { ChartIsdndGlobal } from "../chart_isdnd_global";
 import { HistoryOutlined } from "@ant-design/icons";
 import { ChartDonutIsdndCapacite } from "../chat_donut_isdnd_capacite";
 import { BaseOptionType } from "antd/lib/select";
+import { geo2franceProvider } from "../../App";
 
 
 export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
@@ -25,9 +26,9 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 
     const [drawerIsOpen, setdrawerIsOpen] = useState(false);
 
-    const {data:data_isdnd, isFetching:isFetchingIsdnd} = useList({ // Ne contient les capacité autorisé QUE pour les années où les entrants sont connus
+    const {data:data_isdnd, isFetching:isFetchingIsdnd} = useApi({ // Ne contient les capacité autorisé QUE pour les années où les entrants sont connus
         resource:"odema:isdnd_tonnage ",
-        dataProviderName:"geo2france",
+        dataProvider:geo2franceProvider,
         pagination:{
             mode:"off"
         },
@@ -49,10 +50,10 @@ export const EnfouissementPage: React.FC<IResourceComponentsProps> = () => {
 `, [data_isdnd.data]).map((e:BaseRecord) => ({value:Number(e.annee), label:e.annee}))
 
 
-    const {data:data_capacite, isFetching:isFetchingCapacite} = useList({ // Historique des arrếtés
+    const {data:data_capacite, isFetching:isFetchingCapacite} = useApi({ // Historique des arrếtés
         resource:"odema:capacite_isdnd",
-        dataProviderName:"geo2france",
-       /* filters:[{
+        dataProvider:geo2franceProvider,
+        /* filters:[{
             field:"aiot",
             operator:"eq",
             value:aiot

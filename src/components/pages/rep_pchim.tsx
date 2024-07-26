@@ -1,21 +1,22 @@
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState, Attribution, LoadingContainer } from "g2f-dashboard/"
+import { BaseRecord, IResourceComponentsProps } from "@refinedev/core"
+import { useSearchParamsState, Attribution, LoadingContainer, useApi } from "g2f-dashboard/"
 import { Row, Col, Card } from "antd"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { RepTopbar } from "../rep_topbar"
 import { useState } from "react"
 import { DechetsDiffusSpecifiques, EnginsPyrotechniques, Extincteurs } from "../../utils/picto"
 import alasql from "alasql"
+import { ademe_opendataProvider } from "../../App"
 
 export const RepPchimPage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
 
     //const [_cregion, _setcregion] = useSearchParamsState('region','32')
-    const collecte_pchim = useList(
+    const collecte_pchim = useApi(
         {
             resource: "rep-pchim-tonnages-collectes-2021/lines",
-            dataProviderName: "ademe_opendata",
+            dataProvider: ademe_opendataProvider,
             pagination: {
                 pageSize: 500,
             },

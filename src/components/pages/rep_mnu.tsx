@@ -1,11 +1,12 @@
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState, Attribution, LoadingContainer  } from "g2f-dashboard"
+import { BaseRecord, IResourceComponentsProps } from "@refinedev/core"
+import { useSearchParamsState, Attribution, LoadingContainer, useApi  } from "g2f-dashboard"
 import { Row, Col, Card } from "antd"
 import { RepTopbar } from "../rep_topbar"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { useState } from "react"
 import { Medicaments } from "../../utils/picto"
 import alasql from "alasql"
+import { ademe_opendataProvider } from "../../App"
 
 export const RepMnuPage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
@@ -14,10 +15,10 @@ export const RepMnuPage: React.FC<IResourceComponentsProps> = () => {
 
     const filiere = 'mnu'
 
-    const collecte = useList(
+    const collecte = useApi(
         {
             resource: "rep-mnu-tonnages-collectes-en-2021/lines",
-            dataProviderName: "ademe_opendata",
+            dataProvider: ademe_opendataProvider,
             pagination: {
                 pageSize: 500,
             },

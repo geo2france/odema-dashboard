@@ -6,7 +6,7 @@ import alasql from "alasql"
 import { BsRecycle } from "react-icons/bs";
 import { useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState } from "g2f-dashboard"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard } from "g2f-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { useApi } from "g2f-dashboard"
@@ -174,7 +174,14 @@ export const DmaPageEPCI: React.FC = () => {
 
             </Col>
             <Col xs={24} xl={24/2}> 
-            <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des DMA par type de déchet en ${year}`}>
+            <DashboardElement 
+                isFetching={data_traitement_isFecthing} 
+                title={`Destination des DMA par type de déchet en ${year}`}
+                attributions={[
+                    {name: "Ademe",
+                      url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                    },
+                  ]}>
                 {data_traitement &&  <ChartSankeyDestinationDMA 
                 data={data_traitement?.data.filter((d:any) => d.annee == year).map((i:BaseRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
                 onFocus={(e:any) => setFocus(e?.name)} focus_item={focus}
@@ -183,7 +190,14 @@ export const DmaPageEPCI: React.FC = () => {
             </Col>
 
             <Col xs={24} xl={24/2}> 
-            <DashboardElement isFetching={data_traitement_isFecthing} title={`Type de déchets collectés`}>
+            <DashboardElement 
+                isFetching={data_traitement_isFecthing} 
+                title={`Type de déchets collectés`}
+                attributions={[
+                    {name: "Ademe",
+                      url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                    },
+                  ]}>
                 {data_traitement && current_epci &&  
                 <ChartEvolutionDechet 
                 data={data_traitement?.data.map((e:any) => ({annee:e.annee, type:e.l_typ_reg_dechet, tonnage:e.tonnage_dma, population:current_epci.population})) }
@@ -193,7 +207,14 @@ export const DmaPageEPCI: React.FC = () => {
             </Col>
 
             <Col xs={24} xl={24/2}> 
-            <DashboardElement isFetching={data_traitement_isFecthing} title={`Destination des déchets`}>
+            <DashboardElement 
+                isFetching={data_traitement_isFecthing} 
+                title={`Destination des déchets`}
+                attributions={[
+                    {name: "Ademe",
+                      url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                    },
+                  ]}>
                 {data_traitement && current_epci &&  
                 <ChartEvolutionDechet 
                 data={data_traitement?.data.map((e:any) => ({annee:e.annee, type:e.l_typ_reg_service, tonnage:e.tonnage_dma, population:current_epci.population})) }
@@ -203,9 +224,21 @@ export const DmaPageEPCI: React.FC = () => {
             </Col>
 
             <Col xs={24} xl={24/2}> 
-                <Card title={<span style={{marginLeft:5}}>Bilans RPQS</span>}>
-                    {data_rpqs?.data && data_rpqs?.data?.filter((e:any) => e.url).length > 0 ? data_rpqs?.data.sort((a:any,b:any) => b.annee_exercice - a.annee_exercice).map((d:any) => 
-                            <Card.Grid hoverable={d.url} key={d.annee_exercice} style={{width:'20%',   paddingTop: 5, textAlign: 'center'}}>
+                <FlipCard 
+                    information={<div style={{padding:5}}><p>L'article <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031840555/2021-09-21">L2224-1</a> du
+                    Code général des collectivités territoriales impose aux collectivités ayant la compétence collecte ou traitement de déchets 
+                    de publier annuellement un RPQS de gestion et prévention des déchets.</p>
+                    <p><strong>Un travail de centralisation</strong> par l'Odema est en cours. Si vous avez en votre possession des documents identifiés 
+                    comme manquants, merci de bien vouloir nous les transmettre.</p></div>} 
+                    title={<span style={{marginLeft:5}}>Bilans RPQS</span>}>
+                     {data_rpqs?.data && data_rpqs?.data?.
+                                filter((e:any) => e.url).length > 0 ? data_rpqs?.data.
+                                sort((a:any,b:any) => b.annee_exercice - a.annee_exercice).
+                                map((d:any) => 
+                           <Card.Grid 
+                                key={d.annee_exercice}
+                                hoverable={d.url}  
+                                style={{width:'20%',   paddingTop: 5, textAlign: 'center'}}>
                                 {d.url ? 
                                     <a href={d.url}><FilePdfOutlined style={{fontSize:25}}/>  </a> :  
                                     <FilePdfOutlined style={{color:grey[1], fontSize:25}}/> }
@@ -217,7 +250,7 @@ export const DmaPageEPCI: React.FC = () => {
                                         <span style={{color:grey[1]}}>{d.annee_exercice}</span>}
                             </Card.Grid>
                     ) : <small style={{margin:5}}>🙁 Aucun rapport n'est disponible.</small> }
-                </Card>
+                </FlipCard>
             </Col>
         </Row>
     )

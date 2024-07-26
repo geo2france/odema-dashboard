@@ -1,5 +1,5 @@
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState, Attribution, LoadingContainer } from "g2f-dashboard"
+import { BaseRecord, IResourceComponentsProps } from "@refinedev/core"
+import { useSearchParamsState, Attribution, LoadingContainer, useApi } from "g2f-dashboard"
 import { Row, Col, Card } from "antd"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { RepTopbar } from "../rep_topbar"
@@ -7,6 +7,7 @@ import { useState } from "react"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { PilesEtBatteries } from "../../utils/picto"
 import alasql from "alasql"
+import { ademe_opendataProvider } from "../../App"
 
 export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
@@ -15,10 +16,10 @@ export const RepPaPage: React.FC<IResourceComponentsProps> = () => {
 
     const filiere = 'pa'
 
-    const collecte_pa = useList(
+    const collecte_pa = useApi(
         {
             resource: "rep-pa-tonnages-collectes-en-2018/lines",
-            dataProviderName: "ademe_opendata",
+            dataProvider: ademe_opendataProvider,
             pagination: {
                 pageSize: 500,
             },

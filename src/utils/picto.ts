@@ -38,3 +38,7 @@ export const Extincteurs = extincteur
 
 import pyro from "../assets/picto_dechet/Dechets_Picto_Engins-pyrotechniques_Fusees-de-detresse.svg?react";
 export const EnginsPyrotechniques = pyro
+
+/* Région HDF */
+import map_hdf from "../assets/map_hauts-de-france_dep.svg?react";
+export const MapHDF = map_hdf
