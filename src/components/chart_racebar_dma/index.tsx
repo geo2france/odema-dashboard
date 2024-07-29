@@ -1,12 +1,11 @@
 import React, { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
-import { BaseRecord } from '@refinedev/core';
 import { EChartsOption } from "echarts";
 import alasql from "alasql";
-import { useDashboardElement } from "../../g2f-dashboard/components/dashboard_element/hooks";
+import { SimpleRecord, useDashboardElement } from "g2f-dashboard";
 
 export interface ChartRaceBareDMAProps {
-    data: any[] | BaseRecord[];
+    data: any[] | SimpleRecord[];
     highlight_region : string;
     style? : CSSProperties
   }
@@ -25,7 +24,7 @@ export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, highli
     const option:EChartsOption = {
         yAxis: {
             type: 'category',
-            data: chart_data.map((e:BaseRecord) => e['L_REGION'])
+            data: chart_data.map((e:SimpleRecord) => e['L_REGION'])
         },
         xAxis: {
             type: 'value',
@@ -49,7 +48,7 @@ export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, highli
                 emphasis:{
                     focus:'self'
                 },
-                data:chart_data.map((e:BaseRecord) => ({
+                data:chart_data.map((e:SimpleRecord) => ({
                   value : (e['TONNAGE_DMA']/e['VA_POPANNEE'])*1e3,
                   itemStyle: {
                     color: e['C_REGION'] == highlight_region ? '#a90000' : undefined

@@ -1,14 +1,12 @@
-import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
-import { useChartEvents } from "../../g2f-dashboard/utils/usecharthightlight";
-import { useChartData, useDashboardElement } from "../../g2f-dashboard/components/dashboard_element/hooks";
+import { useChartData, useDashboardElement, useChartEvents, SimpleRecord } from "g2f-dashboard";
 
 export interface IChartEvolutionISDND {
-    data : BaseRecord[]
-    data_capacite : BaseRecord[]
+    data : SimpleRecord[]
+    data_capacite : SimpleRecord[]
     aiot: string
     year?:number
     onClick: Function
@@ -37,7 +35,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, data
     const myseries: BarSeriesOption = 
         {
             name:`Entrants`,
-            data:data_chart.map((f:BaseRecord) => ({
+            data:data_chart.map((f:SimpleRecord) => ({
                 value:[f.annee.toString(), f.tonnage],
                 itemStyle: {
                     color: f.annee == year ? '#C1232B' : undefined
@@ -54,7 +52,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, data
 
     const myseries_capcite: LineSeriesOption = {
         name:`Capacite`,
-        data:data_chart.map((f:BaseRecord) => ({
+        data:data_chart.map((f:SimpleRecord) => ({
             value:[f.annee.toString(), f.capacite],
          })),
         type: 'line',

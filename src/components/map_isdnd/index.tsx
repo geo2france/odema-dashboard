@@ -1,13 +1,12 @@
 import React, { CSSProperties, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { BaseRecord, useList } from '@refinedev/core';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
-import { BaseRecordToGeojsonPoint } from '../../g2f-dashboard/utils';
 import { BaseLayer } from '../map_baselayer';
-import { useDashboardElement } from '../../g2f-dashboard/components/dashboard_element/hooks';
+import { useDashboardElement, BaseRecordToGeojsonPoint, useApi, SimpleRecord } from 'g2f-dashboard';
+import { geo2franceProvider } from '../../App';
 
 export interface IMapProps{
-    data:BaseRecord[],
+    data:SimpleRecord[],
     aiot:string,
     year?:number,
     onClick?:Function,
@@ -26,10 +25,10 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
     data:BaseRecordToGeojsonPoint({data:data.filter((e) => (e.annee == year && e.capacite > 0 )), y:'lng',x:'lat'})
   }
 
-  const geojson_dpt = useList({
+  const geojson_dpt = useApi({
     resource:"spld:DEPARTEMENT",
     meta:{srsname:'EPSG:4326'},
-    dataProviderName:"geo2france",
+    dataProvider:geo2franceProvider,
     pagination:{mode:"off"}
   })
 

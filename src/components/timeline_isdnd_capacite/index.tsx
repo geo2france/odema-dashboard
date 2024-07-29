@@ -1,10 +1,10 @@
 import { InfoCircleOutlined } from "@ant-design/icons"
-import { BaseRecord } from "@refinedev/core"
 import alasql from "alasql"
 import { Timeline, Tooltip } from "antd"
+import { SimpleRecord } from "g2f-dashboard"
 
 export interface ITimelineIsdndCapaciteProps {
-    data : BaseRecord[]
+    data : SimpleRecord[]
     aiot : string
 }
 
@@ -20,11 +20,11 @@ export const TimelineIsdndCapacite: React.FC<ITimelineIsdndCapaciteProps> = ({ d
         FROM ?
         GROUP BY [arrete_date_signature], [arrete_url], [arrete_nom],[capacite]
         ORDER BY [annee]
-    `,[data.filter((e:BaseRecord) => e.aiot == aiot)]).map((e:BaseRecord) => ({...e, signature:new Date(e.signature) }))
+    `,[data.filter((e:SimpleRecord) => e.aiot == aiot)]).map((e:SimpleRecord) => ({...e, signature:new Date(e.signature) }))
 
     const nom_isdnd = data.find((e:any) => e.aiot == aiot)?.nom_isdnd
 
-    const items = data_timeline.map((e:BaseRecord) => (
+    const items = data_timeline.map((e:SimpleRecord) => (
         {color:"#D44F4A",
         label:<>
             <b>{e.capacite.toLocaleString()} t</b> 🫙<br/>

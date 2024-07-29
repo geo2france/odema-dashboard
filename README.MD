@@ -7,8 +7,6 @@
 ### Installation et test 
 ```bash
 git clone git@github.com:geo2france/odema-dashboard.git
-git submodule init
-git submodule update
 npm install
 npm run dev
 ```
@@ -21,7 +19,7 @@ Rendez-vous ensuite sur [http://localhost:5173/](http://localhost:5173/)
 npm run build
 ```
 
-Le contenu généré dans le dossier `dist` peut être coller sur un serveur http sans configuration particulière.
+Le contenu généré dans le dossier `dist` peut être copier sur un serveur http sans configuration particulière.
 
 
 ## Sources de données

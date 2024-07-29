@@ -1,24 +1,25 @@
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState } from "../../g2f-dashboard/utils/useSearchParamsState"
+import { useSearchParamsState, LoadingContainer, Attribution, SimpleRecord } from "g2f-dashboard"
 import { Row, Col, Card } from "antd"
-import { Attribution } from "../../g2f-dashboard/components/attributions"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
-import { LoadingComponent } from "../../g2f-dashboard/components/loading_container"
 import { RepTopbar } from "../rep_topbar"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { useState } from "react"
 import { AppareilsElectriques, GrosElectromenagers, PetitsAppareilsElectriques } from "../../utils/picto"
 import alasql from "alasql"
+import { useApi } from "g2f-dashboard"
 
-export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
+import { ademe_opendataProvider } from "../../App"
+
+
+export const RepDeeePage: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
 
     const [cregion, _setcregion] = useSearchParamsState('region','32')
-    const collecte_d3e = useList(
+    const collecte_d3e = useApi(
         {
             resource: "rep-deee-tonnages-collectes-en-2018/lines",
-            dataProviderName: "ademe_opendata",
+            dataProvider: ademe_opendataProvider,
             pagination: {
                 pageSize: 500,
             },
@@ -37,7 +38,7 @@ export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
             FROM ? d
             GROUP BY [Code_région], [Année_des_données], d.Flux
             `, [collecte_d3e.data.data])
-            .map((e:BaseRecord) => ({annee:e.annee, name: e.Flux, value: e.tonnage} )) 
+            .map((e:SimpleRecord) => ({annee:e.annee, name: e.Flux, value: e.tonnage} )) 
         : undefined
 
     const data_standardized_origine = collecte_d3e?.data ? //Tonnage par origine de collecte
@@ -45,7 +46,7 @@ export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
             FROM ? d
             GROUP BY [Code_région], [Année_des_données], d.[Origine]
             `, [collecte_d3e.data.data])
-            .map((e:BaseRecord) => ({annee:e.annee, name: e.Origine, value: e.tonnage} )) 
+            .map((e:SimpleRecord) => ({annee:e.annee, name: e.Origine, value: e.tonnage} )) 
         : undefined
 
     return (<>
@@ -63,28 +64,28 @@ export const RepDeeePage: React.FC<IResourceComponentsProps> = () => {
                     </Col>
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés par flux en ${year}`}>
-                        <LoadingComponent isFetching={collecte_d3e.isFetching}>
+                        <LoadingContainer isFetching={collecte_d3e.isFetching}>
                             {collecte_d3e.data ? <ChartPieRepCollecte filiere='d3e' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
-                        </LoadingComponent>
+                        </LoadingContainer>
                     </Card>
                 </Col>
 
                 <Col xl={24/2} xs={24}>
                     <Card title="Evolution des tonnages collectés">
-                        <LoadingComponent isFetching={collecte_d3e.isFetching}>
+                        <LoadingContainer isFetching={collecte_d3e.isFetching}>
                             {collecte_d3e.data ? <ChartEvolutionRepCollecte filiere='d3e' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
-                        </LoadingComponent>
+                        </LoadingContainer>
                     </Card>
                 </Col>
 
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés par origine en ${year}`}>
-                        <LoadingComponent isFetching={collecte_d3e.isFetching}>
+                        <LoadingContainer isFetching={collecte_d3e.isFetching}>
                             {collecte_d3e.data ? <ChartPieRepCollecte filiere='d3e' data={data_standardized_origine} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
-                        </LoadingComponent>
+                        </LoadingContainer>
                     </Card>
                 </Col>
                 </Row>

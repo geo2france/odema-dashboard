@@ -1,16 +1,11 @@
-import { Refine } from "@refinedev/core";
-import { ThemedLayoutV2, notificationProvider, RefineThemes } from "@refinedev/antd";
-import routerBindings, { DocumentTitleHandler, UnsavedChangesNotifier } from "@refinedev/react-router-v6";
-import {dataProvider as dfDataProvider} from "refine-datafair";
-import {dataProvider as wfsDataProvider} from "refine-wfs";
-import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
+import { WfsProvider, DatafairProvider } from "g2f-dashboard";
+import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { QueryClient,  QueryClientProvider } from '@tanstack/react-query'
 
-import { ConfigProvider, ThemeConfig } from "antd";
-import "@refinedev/antd/dist/reset.css";
+import { ConfigProvider, Layout, ThemeConfig } from "antd";
 import './index.css';
 
 import { DmaComponent } from "./components/pages/dma";
-import { ressources } from "./ressources"
 import { AppFooter, AppSider } from "./layout";
 import { ErrorComponent } from "./components/pages/error";
 import { RepPage } from "./components/pages/rep";
@@ -22,8 +17,10 @@ import { RepPchimPage } from "./components/pages/rep_pchim";
 import { RepTlcPage } from "./components/pages/rep_tlc";
 import { RepMnuPage } from "./components/pages/rep_mnu";
 import { RepDispmedPage } from "./components/pages/rep_dispmed";
+import { DmaPageEPCI } from "./components/pages/dma_epci";
 
-const myTheme:ThemeConfig = {...RefineThemes.Orange, 
+
+const myTheme:ThemeConfig = {
   token: {
     colorPrimary: "#DEAD8F",
     linkHoverDecoration:'underline',
@@ -46,38 +43,36 @@ const myTheme:ThemeConfig = {...RefineThemes.Orange,
   }
 }
 
+//Cf https://github.com/geo2france/g2f-dashboard/issues/5
+export const geo2franceProvider = WfsProvider("https://www.geo2france.fr/geoserver/ows")
+export const ademe_opendataProvider = DatafairProvider("https://data.ademe.fr/data-fair/api/v1/datasets") 
+
+const queryClient = new QueryClient()
+
 const App: React.FC = () => {
   return (
+  <QueryClientProvider client={queryClient}>
     <HashRouter>
       <ConfigProvider theme={myTheme}>
-        <Refine
-          routerProvider={routerBindings}
-          dataProvider={{
-              default:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets"),
-              ademe_opendata:dfDataProvider("https://data.ademe.fr/data-fair/api/v1/datasets"),
-              geo2france:wfsDataProvider("https://www.geo2france.fr/geoserver/ows")
-            }}
-          notificationProvider={notificationProvider}
-          resources={ressources}
-          options={{
-            syncWithLocation: true,
-            warnWhenUnsavedChanges: true,
-          }}
-        >
           <Routes>
             <Route
               element={
-                <ThemedLayoutV2
-                  Sider={() => <AppSider /> }
-                  Footer={() => <AppFooter />}
-                >
-                  <Outlet />
-                </ThemedLayoutV2>
+                <Layout>
+                  <Layout>
+                    <AppSider />
+                    <div style={{padding:24}}>
+                      <Outlet />
+                    </div>
+                  </Layout>
+                  <AppFooter />
+                </Layout>
               }
             >
-              <Route index element={<DmaComponent />} />
+              <Route index element={<Navigate to="/dma/region" />} />
               <Route path="DMA">
-                <Route index element={<DmaComponent />} />
+                <Route index element={<Navigate to="/dma/region" />} />
+                <Route path="epci" element={<DmaPageEPCI />} />
+                <Route path="region" element={<DmaComponent />} />
               </Route>
               <Route path="REP">
                 <Route index element={<RepPage />} />
@@ -97,11 +92,9 @@ const App: React.FC = () => {
               <Route path="*" element={<ErrorComponent />} />
             </Route>
           </Routes>
-          <UnsavedChangesNotifier />
-          <DocumentTitleHandler handler={() => 'Odema tableau de bord'} />
-        </Refine>
       </ConfigProvider>
     </HashRouter>
+  </QueryClientProvider>
   );
 };
 
