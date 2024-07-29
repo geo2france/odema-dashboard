@@ -23,7 +23,7 @@ export const AppSider: React.FC = () => {
       label: <>DMA</>,
       icon: <HomeOutlined />,
       children: [
-        { key: "/dma/region", label: <NavLink to="/dma">Hauts-de-France </NavLink> },
+        { key: "/dma/region", label: <NavLink to="/dma/region">Hauts-de-France </NavLink> },
         { key: "/dma/epci", label: <NavLink to="/dma/epci">EPCI</NavLink> },
 
       ]

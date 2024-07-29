@@ -1,5 +1,5 @@
 import { WfsProvider, DatafairProvider } from "g2f-dashboard";
-import { HashRouter, Routes, Route, Outlet } from "react-router-dom";
+import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { QueryClient,  QueryClientProvider } from '@tanstack/react-query'
 
 import { ConfigProvider, Layout, ThemeConfig } from "antd";
@@ -68,10 +68,11 @@ const App: React.FC = () => {
                 </Layout>
               }
             >
-              <Route index element={<DmaComponent />} />
+              <Route index element={<Navigate to="/dma/region" />} />
               <Route path="DMA">
-                <Route index element={<DmaComponent />} />
+                <Route index element={<Navigate to="/dma/region" />} />
                 <Route path="epci" element={<DmaPageEPCI />} />
+                <Route path="region" element={<DmaComponent />} />
               </Route>
               <Route path="REP">
                 <Route index element={<RepPage />} />
