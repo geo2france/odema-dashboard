@@ -5,6 +5,7 @@ import alasql from "alasql"
 import { BsRecycle } from "react-icons/bs";
 import { useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
+import { TbReportMoney } from "react-icons/tb";
 import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord } from "g2f-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
@@ -41,6 +42,25 @@ export const DmaPageEPCI: React.FC = () => {
             }
         ]
     })
+
+    const {data:data_ti} = useApi({
+        resource:"odema:population_tarification_ti_epci",
+        dataProvider:geo2franceProvider,
+        pagination:{ mode: "off" },
+        filters:[
+            {
+                field:"annee",
+                value:year,
+                operator:"eq"
+            },
+            {
+                field:"epci_siren",
+                operator:"eq",
+                value:siren_epci
+            }
+        ]
+    });
+
 
     const {data:data_rpqs} =  useApi({ 
         resource:"odema:rqps ",
@@ -131,7 +151,16 @@ export const DmaPageEPCI: React.FC = () => {
         value: (tonnage_dma?.find((e:SimpleRecord) => e.annee == year).tonnage  / current_epci?.population) * 1e3,
         sub_value:"Obj. régional : 553 kg/hab",
         icon: <FaTrashCan />,
-        unit:'kg/hab'}
+        unit:'kg/hab'},
+        {
+            id:"pop_ti",
+            name:"Part de la population en TI",
+            description: "Par de la population pour laquelle la taxe ou redevance d'enlèvement des déchets ménagers comprend une part incitative, c'est à dire dépendante de la masse de déchets produite et/ou du nombre de levées",
+            value: data_ti?.data[0].part_pop_ti*100,
+            sub_value:"Obj. régional : 30 %",
+            icon:<TbReportMoney />,
+            unit:"%"
+        }
     ]
     return (
         <Row gutter={[16,16]}>
