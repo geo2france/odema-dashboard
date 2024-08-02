@@ -13,9 +13,11 @@ import { useApi } from "g2f-dashboard"
 import { geo2franceProvider } from "../../App"
 
 
+const [maxYear, minYear, defaultYear] = [2023,2009,2021]
+
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
-    const [year, setYear] = useSearchParamsState('year','2021')
+    const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
     const [focus, setFocus] = useState<string | undefined>(undefined)
 
     const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useApi({ 
@@ -163,123 +165,198 @@ export const DmaPageEPCI: React.FC = () => {
         }
     ]
     return (
-        <Row gutter={[16,16]}>
-            <Col xs={24} xl={24}>
-                <Card style={{padding:10}}>
-                    <Form layout="inline">
-                        <Form.Item name="annee" label="Année" initialValue={year}>
-                            <NextPrevSelect 
-                                    onChange={(e:any) => e ? setYear(e) : undefined } 
-                                    reverse={true} 
-                                    options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
-                                />     
-                        </Form.Item>
-                        <Form.Item name="epci" label="EPCI" initialValue={siren_epci} >
-                            <Select showSearch
-                                        optionFilterProp="label"
-                                        onSelect={setSiren_epci}
-                                        options={options_territories}
-                                        style={{width:450}}/>
-                        </Form.Item>
-                    </Form>
-                </Card>
-            </Col>
-            <Col xs={24} xl={24/2}>
-                <Card style={{padding:5}} title="Territoire"> 
-                    <Descriptions  items={territoire_descritpion_item} style={{marginTop:5}} />
-                </Card>
-            </Col>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} xl={24}>
+          <Card style={{ padding: 10 }}>
+            <Form layout="inline">
+              <Form.Item name="annee" label="Année" initialValue={year}>
+                <NextPrevSelect
+                  onChange={(e: any) => (e ? setYear(e) : undefined)}
+                  reverse={true}
+                  options={
+                    Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
+                    .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
+                    .reverse()
+                    .map((i) => ({ label: i, value: i }))}
+                />
+              </Form.Item>
+              <Form.Item name="epci" label="EPCI" initialValue={siren_epci}>
+                <Select
+                  showSearch
+                  optionFilterProp="label"
+                  onSelect={setSiren_epci}
+                  options={options_territories}
+                  style={{ width: 450 }}
+                />
+              </Form.Item>
+            </Form>
+          </Card>
+        </Col>
+        <Col xs={24} xl={24 / 2}>
+          <Card style={{ padding: 5 }} title="Territoire">
+            <Descriptions
+              items={territoire_descritpion_item}
+              style={{ marginTop: 5 }}
+            />
+          </Card>
+        </Col>
 
-            {
-                key_figures.map((f,idx) =>
-                  <Col xl={4} md={12} xs={24} key={idx}>
-                    <KeyFigure value={(f.value)} unit={f.unit} digits={f.digits || 0} name={f.name} icon={f.icon} sub_value= {f.sub_value} description={f.description}/>
-                  </Col>
-                )
+        {key_figures.map((f, idx) => (
+          <Col xl={4} md={12} xs={24} key={idx}>
+            <KeyFigure
+              value={f.value}
+              unit={f.unit}
+              digits={f.digits || 0}
+              name={f.name}
+              icon={f.icon}
+              sub_value={f.sub_value}
+              description={f.description}
+            />
+          </Col>
+        ))}
+
+        <Col span={24 - 6}></Col>
+        <Col xs={24} xl={24 / 2}>
+          <DashboardElement
+            isFetching={data_traitement_isFecthing}
+            title={`Destination des DMA par type de déchet en ${year}`}
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+              },
+            ]}
+          >
+            {data_traitement && (
+              <ChartSankeyDestinationDMA
+                data={data_traitement?.data
+                  .filter((d: any) => d.annee == year)
+                  .map((i: SimpleRecord) => ({
+                    value: Math.max(i.tonnage_dma, 1),
+                    source: i.l_typ_reg_dechet,
+                    target: i.l_typ_reg_service,
+                  }))}
+                onFocus={(e: any) => setFocus(e?.name)}
+                focus_item={focus}
+              />
+            )}
+          </DashboardElement>
+        </Col>
+
+        <Col xs={24} xl={24 / 2}>
+          <DashboardElement
+            isFetching={data_traitement_isFecthing}
+            title={`Type de déchets collectés`}
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+              },
+            ]}
+          >
+            {data_traitement && current_epci && (
+              <ChartEvolutionDechet
+                data={data_traitement?.data.map((e: any) => ({
+                  annee: e.annee,
+                  type: e.l_typ_reg_dechet,
+                  tonnage: e.tonnage_dma,
+                  population: current_epci.population,
+                }))}
+                onFocus={(e: any) => setFocus(e?.seriesName)}
+                focus_item={focus}
+                year={Number(year)}
+              />
+            )}
+          </DashboardElement>
+        </Col>
+
+        <Col xs={24} xl={24 / 2}>
+          <DashboardElement
+            isFetching={data_traitement_isFecthing}
+            title={`Destination des déchets`}
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+              },
+            ]}
+          >
+            {data_traitement && current_epci && (
+              <ChartEvolutionDechet
+                data={data_traitement?.data.map((e: any) => ({
+                  annee: e.annee,
+                  type: e.l_typ_reg_service,
+                  tonnage: e.tonnage_dma,
+                  population: current_epci.population,
+                }))}
+                onFocus={(e: any) => setFocus(e?.seriesName)}
+                focus_item={focus}
+                year={Number(year)}
+              />
+            )}
+          </DashboardElement>
+        </Col>
+
+        <Col xs={24} xl={24 / 2}>
+          <FlipCard
+            information={
+              <div style={{ padding: 5 }}>
+                <p>
+                  L'article{" "}
+                  <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031840555/2021-09-21">
+                    L2224-1
+                  </a>{" "}
+                  du Code général des collectivités territoriales impose aux
+                  collectivités ayant la compétence collecte ou traitement de
+                  déchets de publier annuellement un RPQS de gestion et
+                  prévention des déchets.
+                </p>
+                <p>
+                  <strong>Un travail de centralisation</strong> par l'Odema est
+                  en cours. Si vous avez en votre possession des documents
+                  identifiés comme manquants, merci de bien vouloir nous les
+                  transmettre.
+                </p>
+              </div>
             }
-
-            <Col span={24-6}>
-
-            </Col>
-            <Col xs={24} xl={24/2}> 
-            <DashboardElement 
-                isFetching={data_traitement_isFecthing} 
-                title={`Destination des DMA par type de déchet en ${year}`}
-                attributions={[
-                    {name: "Ademe",
-                      url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-                    },
-                  ]}>
-                {data_traitement &&  <ChartSankeyDestinationDMA 
-                data={data_traitement?.data.filter((d:any) => d.annee == year).map((i:SimpleRecord) => ({value:Math.max(i.tonnage_dma,1), source:i.l_typ_reg_dechet, target:i.l_typ_reg_service})) }
-                onFocus={(e:any) => setFocus(e?.name)} focus_item={focus}
-                />}
-            </DashboardElement>
-            </Col>
-
-            <Col xs={24} xl={24/2}> 
-            <DashboardElement 
-                isFetching={data_traitement_isFecthing} 
-                title={`Type de déchets collectés`}
-                attributions={[
-                    {name: "Ademe",
-                      url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-                    },
-                  ]}>
-                {data_traitement && current_epci &&  
-                <ChartEvolutionDechet 
-                data={data_traitement?.data.map((e:any) => ({annee:e.annee, type:e.l_typ_reg_dechet, tonnage:e.tonnage_dma, population:current_epci.population})) }
-                onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
-                year={Number(year)} />}
-            </DashboardElement>
-            </Col>
-
-            <Col xs={24} xl={24/2}> 
-            <DashboardElement 
-                isFetching={data_traitement_isFecthing} 
-                title={`Destination des déchets`}
-                attributions={[
-                    {name: "Ademe",
-                      url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-                    },
-                  ]}>
-                {data_traitement && current_epci &&  
-                <ChartEvolutionDechet 
-                data={data_traitement?.data.map((e:any) => ({annee:e.annee, type:e.l_typ_reg_service, tonnage:e.tonnage_dma, population:current_epci.population})) }
-                onFocus={(e:any) => setFocus(e?.seriesName)} focus_item={focus}
-                year={Number(year)} />}
-            </DashboardElement>
-            </Col>
-
-            <Col xs={24} xl={24/2}> 
-                <FlipCard 
-                    information={<div style={{padding:5}}><p>L'article <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031840555/2021-09-21">L2224-1</a> du
-                    Code général des collectivités territoriales impose aux collectivités ayant la compétence collecte ou traitement de déchets 
-                    de publier annuellement un RPQS de gestion et prévention des déchets.</p>
-                    <p><strong>Un travail de centralisation</strong> par l'Odema est en cours. Si vous avez en votre possession des documents identifiés 
-                    comme manquants, merci de bien vouloir nous les transmettre.</p></div>} 
-                    title={<span style={{marginLeft:5}}>Bilans RPQS</span>}>
-                     {data_rpqs?.data && data_rpqs?.data?.
-                                filter((e:any) => e.url).length > 0 ? data_rpqs?.data.
-                                sort((a:any,b:any) => b.annee_exercice - a.annee_exercice).
-                                map((d:any) => 
-                           <Card.Grid 
-                                key={d.annee_exercice}
-                                hoverable={d.url}  
-                                style={{width:'20%',   paddingTop: 5, textAlign: 'center'}}>
-                                {d.url ? 
-                                    <a href={d.url}><FilePdfOutlined style={{fontSize:25}}/>  </a> :  
-                                    <FilePdfOutlined style={{color:grey[1], fontSize:25}}/> }
-                                <br />
-                            {d.annee_exercice == year ? 
-                                <strong>{d.annee_exercice}</strong> : 
-                                d.url ? 
-                                    <span>{d.annee_exercice}</span> : 
-                                        <span style={{color:grey[1]}}>{d.annee_exercice}</span>}
-                            </Card.Grid>
-                    ) : <small style={{margin:5}}>🙁 Aucun rapport n'est disponible.</small> }
-                </FlipCard>
-            </Col>
-        </Row>
-    )
+            title={<span style={{ marginLeft: 5 }}>Bilans RPQS</span>}
+          >
+            {data_rpqs?.data &&
+            data_rpqs?.data?.filter((e: any) => e.url).length > 0 ? (
+              data_rpqs?.data
+                .sort((a: any, b: any) => b.annee_exercice - a.annee_exercice)
+                .map((d: any) => (
+                  <Card.Grid
+                    key={d.annee_exercice}
+                    hoverable={d.url}
+                    style={{ width: "20%", paddingTop: 5, textAlign: "center" }}
+                  >
+                    {d.url ? (
+                      <a href={d.url}>
+                        <FilePdfOutlined style={{ fontSize: 25 }} />{" "}
+                      </a>
+                    ) : (
+                      <FilePdfOutlined
+                        style={{ color: grey[1], fontSize: 25 }}
+                      />
+                    )}
+                    <br />
+                    {d.annee_exercice == year ? (
+                      <strong>{d.annee_exercice}</strong>
+                    ) : d.url ? (
+                      <span>{d.annee_exercice}</span>
+                    ) : (
+                      <span style={{ color: grey[1] }}>{d.annee_exercice}</span>
+                    )}
+                  </Card.Grid>
+                ))
+            ) : (
+              <small style={{ margin: 5 }}>
+                🙁 Aucun rapport n'est disponible.
+              </small>
+            )}
+          </FlipCard>
+        </Col>
+      </Row>
+    );
 }
