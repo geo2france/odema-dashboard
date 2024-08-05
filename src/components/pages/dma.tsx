@@ -8,7 +8,8 @@ import alasql from "alasql";
 import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord } from "g2f-dashboard";
 import { ChartEvolutionDechet } from "../chart_evolution_dechet";
 import { useApi } from "g2f-dashboard"
-import { ademe_opendataProvider } from "../../App";
+import { ademe_opendataProvider, geo2franceProvider } from "../../App";
+import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti";
 
 
 export const DmaComponent: React.FC = () => {
@@ -78,6 +79,12 @@ export const DmaComponent: React.FC = () => {
             pageSize: 5000,
         }
     })
+
+    const {data:data_ti, isFetching:isFetching_ti} = useApi({
+      resource:"odema:population_tarification_ti_region",
+      dataProvider:geo2franceProvider,
+      pagination:{ mode: "off" }
+  });
 
     const pop_region = data_chiffre_cle?.data && alasql(`
         SELECT [Annee] as [annee], SUM([VA_POPANNEE]) AS [population]
@@ -235,6 +242,27 @@ export const DmaComponent: React.FC = () => {
               )}
             </DashboardElement>
           </Col>
+
+          <Col xl={24 / 2} xs={24}>
+            <DashboardElement
+              title="Tarification incitative"
+              isFetching={isFetching_ti}
+              attributions={[
+                {
+                  name: "Odema"
+                },
+              ]}
+            >
+              {data_ti && (
+                <ChartEvolutionPopTi
+                  style={chartStyle}
+                  data={data_ti.data}
+                  year={Number(year)}
+                />
+              )}
+            </DashboardElement>
+          </Col>
+
         </Row>
       </>
     );
