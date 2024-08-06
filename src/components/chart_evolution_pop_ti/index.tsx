@@ -4,7 +4,6 @@ import { EChartsOption, LineSeriesOption } from "echarts";
 
 import { useChartData, useDashboardElement } from "g2f-dashboard";
 import { useChartActionHightlight, useChartEvents } from "g2f-dashboard";
-import alasql from "alasql";
 
 /**
  * La structures des données attendues.
@@ -24,6 +23,14 @@ export interface ChartEvolutionPopTiProps {
     year?: number
   }
 
+/* Un formatter permettant de mettre en avant une année particulière
+Ajouter une entrée rich dans axisLabel avec la clé "currentDate"
+*/
+const formatter_currentyear = (value:number, year?:number) => {
+  const value_year:number = new Date(value).getFullYear()
+  return value_year == year ? `{currentDate|${value_year} }` : value_year.toString()
+}
+
 export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, onFocus, focus_item, style, year} )  => {
     const chartRef = useRef<any>()
     const threshold_proj = 2023 ; // Année après laquelle démarre la projection
@@ -31,8 +38,6 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
     useChartEvents({chartRef:chartRef, onFocus:onFocus}) // Optionnel, récupérer des évenements (click ou focus) vers le parents
     useChartActionHightlight({chartRef:chartRef, target:{seriesName:focus_item}}) // Optionnel, pour déclencher des Hightlight sur le graphique
     useDashboardElement({chartRef})  // Nécessaire pour DashboardElement
-
-    const categories = alasql(`SELECT ARRAY(DISTINCT [annee]) as annees FROM ?`, [data])[0].annees.sort().map((e:number) => e.toString())
 
     const data_objectif = [
         [2015, 0.041],
@@ -56,6 +61,7 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
         value:[e.annee.toString(), Math.round( (e.pop_ti / e.pop_totale) * 100 *10)/10]
             } )),
       type: "line",
+      color:"#d1956a",
       emphasis: { focus: "none" },
     };
 
@@ -66,6 +72,7 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
           symbol: e.annee == threshold_proj ? 'none' : undefined
           } )),
         type: "line",
+        color:"#d1956a",
         emphasis: { focus: "none" },
         lineStyle:{
             type:"dotted"
@@ -78,9 +85,10 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
           value:[e[0].toString(), e[1] * 100],
           } )),
         type: "line",
+        color:"#91cc75",
         emphasis: { focus: "none" },
         lineStyle:{
-            type:"dashed"
+            type:"dashed",
         }
       };
 
@@ -92,18 +100,28 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
         },
         tooltip:{
             show:true,
+            trigger: 'axis',
             valueFormatter: (value) => ( `${value} %` )
         },
         xAxis: [
             {
-                type: 'category',
-                data:categories.map((annee:number) => ({
+                type: 'time',
+                axisLabel:{
+                  formatter: (value:number) => formatter_currentyear(value, year),
+                  rich: {
+                    currentDate: {
+                        fontWeight: 'bold'
+                    }
+                },
+
+              }
+                /*data:categories.map((annee:number) => ({
                     value:annee,
                     textStyle: {
                         fontWeight: annee == year ? 700 : undefined,
                         fontSize: annee == year ? 14 : undefined
                     }
-                })),
+                })),*/
             }],
         yAxis: [
             {
