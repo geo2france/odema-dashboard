@@ -103,7 +103,7 @@ export const DmaComponent: React.FC = () => {
 
     return (
       <>
-        <Row gutter={[16, 16]}>
+        <Row gutter={[8, 8]}>
           <Col span={24}>
             <Card style={{ padding: 12 }}>
               Année :{" "}
