@@ -6,7 +6,7 @@ import { BsRecycle } from "react-icons/bs";
 import { useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { TbReportMoney } from "react-icons/tb";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord } from "g2f-dashboard"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, cardStyles } from "g2f-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { useApi } from "g2f-dashboard"
@@ -193,7 +193,7 @@ export const DmaPageEPCI: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} xl={24 / 2}>
-          <Card style={{ padding: 5 }} title="Territoire">
+          <Card title="Territoire" styles={{...cardStyles, body:{padding:10}}}>
             <Descriptions
               items={territoire_descritpion_item}
               style={{ marginTop: 5 }}

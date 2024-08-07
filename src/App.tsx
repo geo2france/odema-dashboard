@@ -34,11 +34,6 @@ const myTheme:ThemeConfig = {
     Timeline:{
       itemPaddingBottom:40
     },
-    Card:{
-      headerHeight:35,
-      headerFontSize:14,
-      paddingLG:0,
-    },
     Form:{
       labelColor:'rgba(0,0,0,0.7)'
     }
