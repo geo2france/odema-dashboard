@@ -249,7 +249,8 @@ export const DmaComponent: React.FC = () => {
               isFetching={isFetching_ti}
               attributions={[
                 {
-                  name: "Odema"
+                  name: "Odema",
+                  url:"https://www.geo2france.fr/datahub/dataset/891b801c-6196-42bc-99fd-e84663eaaa2f"
                 },
               ]}
             >
