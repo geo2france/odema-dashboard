@@ -106,7 +106,7 @@ export const DmaComponent: React.FC = () => {
       <>
         <Control>
           <Form layout="inline">
-            <Form.Item name="annee" label="Année" initialValue={year}>
+            <Form.Item label="Année">
                   <NextPrevSelect
                     onChange={(e: any) => (e ? setYear(e) : undefined)}
                     reverse={true}

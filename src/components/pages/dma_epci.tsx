@@ -173,10 +173,11 @@ export const DmaPageEPCI: React.FC = () => {
       <>
       <Control>
         <Form layout="inline">
-            <Form.Item name="annee" label="Année" initialValue={year}>
+            <Form.Item label="Année">
                 <NextPrevSelect
                   onChange={(e: any) => (e ? setYear(e) : undefined)}
                   reverse={true}
+                  value={year}
                   options={
                     Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
                     .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
@@ -184,8 +185,9 @@ export const DmaPageEPCI: React.FC = () => {
                     .map((i) => ({ label: i, value: i }))}
                 />
             </Form.Item>
-            <Form.Item name="epci" label="EPCI" initialValue={siren_epci}>
+            <Form.Item label="EPCI">
                 <Select
+                  value={siren_epci}
                   showSearch
                   optionFilterProp="label"
                   onSelect={setSiren_epci}
