@@ -32,8 +32,8 @@ export const AppFooter: React.FC = () => {
             textAlign: "center",
             color: "#fff",
             backgroundColor: "#fff",
-            position:"fixed",
-            bottom:"0px",
+            position:"sticky",
+            bottom:0,
             right:"0px",
             width:"100%"
           }}
