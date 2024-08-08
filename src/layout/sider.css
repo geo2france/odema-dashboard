@@ -5,8 +5,15 @@
 .ant-layout-sider{
     height : auto  !important;
     min-height: 100vh !important;
+
 }
 
 .ant-layout-sider-trigger{
     color:white !important;
+}
+
+.ant-layout-sider-children{
+    position: sticky !important;
+    top:0 !important;
+    height: unset !important;
 }
