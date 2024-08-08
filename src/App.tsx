@@ -57,7 +57,7 @@ const App: React.FC = () => {
                 <Layout>
                   <Layout>
                     <AppSider />
-                    <div style={{padding:24, width:"100%", marginBottom:150}}>
+                    <div style={{width:"100%", marginBottom:150}}>
                       <Outlet />
                     </div>
                   </Layout>

@@ -1,24 +1,25 @@
 import React, { CSSProperties, useState } from "react";
-import { Card, Col, Row } from 'antd';
+import { Col, Form, Row } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
 
 import alasql from "alasql";
-import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord } from "g2f-dashboard";
+import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord, Control } from "g2f-dashboard";
 import { ChartEvolutionDechet } from "../chart_evolution_dechet";
 import { useApi } from "g2f-dashboard"
 import { ademe_opendataProvider, geo2franceProvider } from "../../App";
 import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti";
 
+const [maxYear, minYear, defaultYear] = [2023,2009,2021]
+
 
 export const DmaComponent: React.FC = () => {
-    const [year, setYear] = useSearchParamsState('year','2021')
+    const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
     const [cregion, _setcregion] = useSearchParamsState('region','32')
     const [focus, setFocus] = useState<string | undefined>(undefined) 
 
     const chartStyle:CSSProperties = {height:'350px'}
-    //const cregion = 32
 
     const {data, isFetching} = useApi({
             resource:"sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement/lines",
@@ -103,32 +104,31 @@ export const DmaComponent: React.FC = () => {
 
     return (
       <>
-        <Row gutter={[8, 8]}>
-          <Col span={24}>
-            <Card style={{ padding: 12 }}>
-              Année :{" "}
-              <NextPrevSelect
-                reverse={true}
-                onChange={(e) => (e ? setYear(e.toString()) : undefined)}
-                defaultValue={year}
-                value={year}
-                options={Array.from(
-                  { length: 2021 - 2009 + 1 },
-                  (_, i) => 2009 + i
-                )
-                  .filter((num) => num % 2 !== 0)
-                  .reverse()
-                  .map((i) => ({ label: i, value: i }))}
-              />
-            </Card>
-          </Col>
+        <Control>
+          <Form layout="inline">
+            <Form.Item name="annee" label="Année" initialValue={year}>
+                  <NextPrevSelect
+                    onChange={(e: any) => (e ? setYear(e) : undefined)}
+                    reverse={true}
+                    value={year}
+                    options={
+                      Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
+                      .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
+                      .reverse()
+                      .map((i) => ({ label: i, value: i }))}
+                  />
+            </Form.Item>
+          </Form>
+        </Control>
 
+        <Row gutter={[8, 8]} style={{ margin: 16 }}>
           <Col xl={12} xs={24}>
             <DashboardElement
               isFetching={isFetching}
               title={`Types et destination des déchets en ${year}`}
               attributions={[
-                {name: "Ademe",
+                {
+                  name: "Ademe",
                   url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
                 },
               ]}
@@ -153,7 +153,8 @@ export const DmaComponent: React.FC = () => {
               isFetching={isFetching}
               title={`Type de déchets collectés`}
               attributions={[
-                {name: "Ademe",
+                {
+                  name: "Ademe",
                   url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
                 },
               ]}
@@ -179,7 +180,8 @@ export const DmaComponent: React.FC = () => {
               isFetching={isFetching}
               title={`Destination des déchets`}
               attributions={[
-                {name: "Ademe",
+                {
+                  name: "Ademe",
                   url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
                 },
               ]}
@@ -216,7 +218,7 @@ export const DmaComponent: React.FC = () => {
                   style={chartStyle}
                   data={data_performance.data}
                   data_territoire={data_chiffre_cle.data.filter(
-                    (e:any) => e.Annee == year
+                    (e: any) => e.Annee == year
                   )}
                 />
               )}
@@ -236,7 +238,9 @@ export const DmaComponent: React.FC = () => {
               {data_chiffre_cle && (
                 <ChartRaceBareDMA
                   style={chartStyle}
-                  data={data_chiffre_cle.data.filter((e:any) => e.Annee == year)}
+                  data={data_chiffre_cle.data.filter(
+                    (e: any) => e.Annee == year
+                  )}
                   highlight_region={cregion}
                 />
               )}
@@ -250,7 +254,7 @@ export const DmaComponent: React.FC = () => {
               attributions={[
                 {
                   name: "Odema",
-                  url:"https://www.geo2france.fr/datahub/dataset/891b801c-6196-42bc-99fd-e84663eaaa2f"
+                  url: "https://www.geo2france.fr/datahub/dataset/891b801c-6196-42bc-99fd-e84663eaaa2f",
                 },
               ]}
             >
@@ -263,7 +267,6 @@ export const DmaComponent: React.FC = () => {
               )}
             </DashboardElement>
           </Col>
-
         </Row>
       </>
     );

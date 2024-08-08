@@ -6,7 +6,7 @@ import { BsRecycle } from "react-icons/bs";
 import { useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { TbReportMoney } from "react-icons/tb";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, cardStyles } from "g2f-dashboard"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, cardStyles, Control } from "g2f-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { useApi } from "g2f-dashboard"
@@ -19,6 +19,8 @@ export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
     const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
     const [focus, setFocus] = useState<string | undefined>(undefined)
+
+
 
     const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useApi({ 
         resource:"odema:destination_dma_epci ",
@@ -164,12 +166,14 @@ export const DmaPageEPCI: React.FC = () => {
             unit:"%"
         }
     ]
+
+
+
     return (
-      <Row gutter={[16, 16]}>
-        <Col xs={24} xl={24}>
-          <Card style={{ padding: 10 }}>
-            <Form layout="inline">
-              <Form.Item name="annee" label="Année" initialValue={year}>
+      <>
+      <Control>
+        <Form layout="inline">
+            <Form.Item name="annee" label="Année" initialValue={year}>
                 <NextPrevSelect
                   onChange={(e: any) => (e ? setYear(e) : undefined)}
                   reverse={true}
@@ -179,8 +183,8 @@ export const DmaPageEPCI: React.FC = () => {
                     .reverse()
                     .map((i) => ({ label: i, value: i }))}
                 />
-              </Form.Item>
-              <Form.Item name="epci" label="EPCI" initialValue={siren_epci}>
+            </Form.Item>
+            <Form.Item name="epci" label="EPCI" initialValue={siren_epci}>
                 <Select
                   showSearch
                   optionFilterProp="label"
@@ -188,10 +192,10 @@ export const DmaPageEPCI: React.FC = () => {
                   options={options_territories}
                   style={{ width: 450 }}
                 />
-              </Form.Item>
-            </Form>
-          </Card>
-        </Col>
+            </Form.Item>
+          </Form>
+      </Control>
+      <Row gutter={[8, 8]} style={{margin:16}}>
         <Col xs={24} xl={24 / 2}>
           <Card title="Territoire" styles={{...cardStyles, body:{padding:10}}}>
             <Descriptions
@@ -358,5 +362,6 @@ export const DmaPageEPCI: React.FC = () => {
           </FlipCard>
         </Col>
       </Row>
+      </>
     );
 }
