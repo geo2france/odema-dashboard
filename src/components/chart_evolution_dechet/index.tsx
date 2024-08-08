@@ -2,7 +2,7 @@ import alasql from "alasql";
 import { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, BarSeriesOption } from "echarts";
-import { SimpleRecord, useChartActionHightlight, useChartEvents, useDashboardElement } from "g2f-dashboard"
+import { SimpleRecord, useChartActionHightlight, useChartData, useChartEvents, useDashboardElement } from "g2f-dashboard"
 import { chartBusinessProps  } from "../../utils";
 
 interface DataProps {
@@ -48,6 +48,8 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
     GROUP BY [annee], [type]
     `,[data]) //Somme par type de traitement
     
+    useChartData({data:data_chart})
+
     const data_chart2 = alasql(`
     SELECT [type], ARRAY(ARRAY[[annee], [tonnage], [ratio]]) as data
     FROM ?
