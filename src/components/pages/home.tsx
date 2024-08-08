@@ -58,7 +58,7 @@ const ListRelated:React.FC = () => {
 
 export const HomePage:React.FC = () => {
     return (
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} style={{ margin: 16 }}>
         <Col xs={24}>
           <Card style={{ width: "100%", padding: 15 }}>
             <Row gutter={32} align={"middle"}>
