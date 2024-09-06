@@ -1,13 +1,12 @@
-import { BaseRecord } from "@refinedev/core"
 import { chartBusinessProps } from "../../utils"
 import { BarSeriesOption, EChartsOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import alasql from "alasql";
 import { CSSProperties, useRef } from "react";
-import { useChartActionHightlight, useChartEvents } from "../../g2f-dashboard/utils/usecharthightlight";
+import { SimpleRecord, useChartActionHightlight, useChartEvents } from "g2f-dashboard";
 
 export interface ChartEvolutionRepCollecteProps{
-    data:BaseRecord[],
+    data:SimpleRecord[],
     filiere: 'd3e' | 'pa' | 'pchim' | 'tlc' | 'mnu' | 'disp_med' | 'pu' | 'vhu';
     year?:number
     onFocus?:any;
@@ -39,7 +38,7 @@ export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps>
         SELECT d.[serie_name] AS name, ARRAY(d.[value]) AS data
         FROM ? d
         GROUP BY d.[serie_name]
-    `, [data_chart]).map((e: BaseRecord) => (
+    `, [data_chart]).map((e: SimpleRecord) => (
             {
                 name:e.name,
                 data:e.data,

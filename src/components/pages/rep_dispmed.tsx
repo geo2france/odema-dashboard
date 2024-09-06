@@ -1,26 +1,24 @@
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core"
-import { useSearchParamsState } from "../../g2f-dashboard/utils/useSearchParamsState"
 import { Row, Col, Card } from "antd"
-import { Attribution } from "../../g2f-dashboard/components/attributions"
+import { Attribution, useSearchParamsState, LoadingContainer, useApi, SimpleRecord } from "g2f-dashboard"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
-import { LoadingComponent } from "../../g2f-dashboard/components/loading_container"
 import { RepTopbar } from "../rep_topbar"
 import { useState } from "react"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { Dasri } from "../../utils/picto"
 import alasql from "alasql"
+import { ademe_opendataProvider } from "../../App"
 
-export const RepDispmedPage: React.FC<IResourceComponentsProps> = () => {
+export const RepDispmedPage: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
     const [focus, setFocus] = useState<string | undefined>(undefined)
     const [_cregion, _setcregion] = useSearchParamsState('region','32')
 
     const filiere = 'disp_med'
 
-    const collecte = useList(
+    const collecte = useApi(
         {
             resource: "rep-disp-med-tonnages-collectes-en-2021/lines",
-            dataProviderName: "ademe_opendata",
+            dataProvider: ademe_opendataProvider,
             pagination: {
                 pageSize: 150,
             },
@@ -37,7 +35,7 @@ export const RepDispmedPage: React.FC<IResourceComponentsProps> = () => {
     const data_standardized = collecte?.data ? alasql(`SELECT [Année_des_données] AS annee, [origine], sum([tonnage]) AS tonnage
     FROM ? d
     GROUP BY [origine], [Année_des_données] 
-    `, [collecte.data.data]).map((e:BaseRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
+    `, [collecte.data.data]).map((e:SimpleRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
     :undefined
 
     return (<>
@@ -54,20 +52,20 @@ export const RepDispmedPage: React.FC<IResourceComponentsProps> = () => {
 
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
-                        <LoadingComponent isFetching={collecte.isFetching}>
+                        <LoadingContainer isFetching={collecte.isFetching}>
                             {collecte.data ? <ChartPieRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-disp-med-tonnages-collectes-en-2021' }]}></Attribution>
-                        </LoadingComponent>
+                        </LoadingContainer>
                     </Card>
                 </Col>
 
                 <Col xl={24/2} xs={24}>
                     <Card title="Evolution des tonnages collectés">
-                        <LoadingComponent isFetching={collecte.isFetching}>
+                        <LoadingContainer isFetching={collecte.isFetching}>
                             <small>Pas de données disponibles avant 2021</small> <br/>
                             {collecte.data ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-disp-med-tonnages-collectes-en-2021' }]}></Attribution>
-                        </LoadingComponent>
+                        </LoadingContainer>
                     </Card>
                 </Col>
 

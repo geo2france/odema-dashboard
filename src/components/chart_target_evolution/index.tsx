@@ -2,8 +2,8 @@ import React from 'react';
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from 'echarts';
 import { CSSProperties, useRef } from 'react';
-import { BaseRecord } from '@refinedev/core';
 import alasql from 'alasql';
+import { SimpleRecord } from 'g2f-dashboard';
 
 
 interface IChartTargetEvolutionProps {
@@ -14,7 +14,7 @@ interface IChartTargetEvolutionProps {
 
 export const ChartTargetEvolution: React.FC<IChartTargetEvolutionProps> = ( {data, style, current_year} ) => {  
 
-    const line_data = data.map((e:BaseRecord) => ({value:[e.date, e.value]}))
+    const line_data = data.map((e:SimpleRecord) => ({value:[e.date, e.value]}))
 
     const target_data = [ [data[0].ref_date, data[0].ref_value], [data[0].due_date, data[0].target]]
 
@@ -24,7 +24,7 @@ export const ChartTargetEvolution: React.FC<IChartTargetEvolutionProps> = ( {dat
       MIN(MIN([value], [ref_value], [target])) as min,
       MAX(MAX([value], [ref_value], [target])) as max
     FROM ?
-    `, [data]).map((e:BaseRecord) => ({...e, offset:(e.max - e.min)*offset_coef}))[0]
+    `, [data]).map((e:any) => ({...e, offset:(e.max - e.min)*offset_coef}))[0]
 
     
     const chartRef = useRef<any>();

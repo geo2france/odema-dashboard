@@ -4,41 +4,40 @@
 
 ## Mise en route
 
+### Installation et test 
 ```bash
 git clone git@github.com:geo2france/odema-dashboard.git
-git submodule init
-git submodule update
 npm install
 npm run dev
 ```
 
-Compilation et génération de la doc : 
+Rendez-vous ensuite sur [http://localhost:5173/](http://localhost:5173/)
+
+### Compilation et déploiement 
+
 ```bash
 npm run build
-npm run generate-docs
 ```
 
-
-Le contenu généré dans le dossier `dist` peut être coller sur un serveur http sans configuration particulière.
+Le contenu généré dans le dossier `dist` peut être copier sur un serveur http sans configuration particulière.
 
 
 ## Sources de données
 
-- **Ademe** : les données sont récupérés sur le [portail opendata](https://data.ademe.fr/) via l'API Datafair. Un [connecteur](https://github.com/geo2france/refine-datafair) a été développé pour cet usage.
+- **Ademe** : depuis le [portail opendata](https://data.ademe.fr/) de l'Ademe via l'API Datafair.
+- **Odema** : depuis le [datahub](https://www.geo2france.fr/datahub/search?q=odema) de Géo2France par flux WFS.
+
+Les connecteurs [Datafair Data Provider](https://github.com/geo2france/refine-datafair) et [WFS Data Provider](https://github.com/geo2france/refine-wfs) ont été développés pour cet usage et sont utilisables par d'autres applications [Refine](https://github.com/refinedev/refine).
 
 
 
-## Learn More
+## A propos
 
-To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
+Les composants et _hooks_ génériques développés pour ce projet sont disponibles ici : [g2f-dashboard](https://github.com/geo2france/g2f-dashboard). Ils peuvent être utilisés pour créer d'autres tableaux de bord.
 
-- **G2F-Dashboards** [Docs](https://github.com/geo2france/g2f-dashboard)
-- **Ant Design** [Docs](https://refine.dev/docs/ui-frameworks/antd/tutorial/)
-- **React Router** [Docs](https://refine.dev/docs/core/providers/router-provider/)
-- **REST Data Provider** [Docs](https://refine.dev/docs/core/providers/data-provider/#overview)
-- **Datafair Data Provier** [Docs](https://github.com/geo2france/refine-datafair)
-
-This [Refine](https://github.com/refinedev/refine) project was generated with [create refine-app](https://github.com/refinedev/refine/tree/master/packages/create-refine-app).
+Connecteurs :
+- **Datafair Data Provider** [Docs](https://github.com/geo2france/refine-datafair)
+- **WFS Data Provider** [Docs](https://github.com/geo2france/refine-wfs)
 
 
 ## License

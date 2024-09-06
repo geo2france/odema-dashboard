@@ -1,4 +1,3 @@
-import { BaseRecord, IResourceComponentsProps } from "@refinedev/core"
 import {
     useQuery,
   } from "@tanstack/react-query";
@@ -16,7 +15,7 @@ export interface PageContextI {
 export const pageContext = createContext<PageContextI>({remaningTime:true}); //Context permettant la remontée du ref Echarts enfant
 
 
-export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
+export const ObjectifsPage: React.FC = () => {
 
     const [remaningTime, setRemaningTime] = useState(false)
     const [year, setYear] = useState<number>(2021)
@@ -27,7 +26,7 @@ export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
         queryFn: () =>
           axios
             .get(DataJson)
-            .then((res) => res.data.sort((a:BaseRecord,b:BaseRecord) => Number(a.date) - Number(b.date) )),
+            .then((res) => res.data.sort((a:any,b:any) => Number(a.date) - Number(b.date) )),
     })
 
     const objectifs = cible_indicateur && alasql(`
@@ -43,10 +42,10 @@ export const ObjectifsPage: React.FC<IResourceComponentsProps> = () => {
           <InputNumber min={2009} max={2023} value={year} onChange={(e) => e && setYear(e)} /> Année
         </Card>
         <Row gutter={[12,12]}>
-        {objectifs?.map((e:BaseRecord)=> 
+        {objectifs?.map((e:any)=> 
           <Col span={8} key={e.id_cible}>
             <Card title={e.cible}>
-            <TargetCard data={cible_indicateur.filter((x:BaseRecord) => x.id_cible == e.id_cible)} objectif_name={e.indicateur} 
+            <TargetCard data={cible_indicateur.filter((x:any) => x.id_cible == e.id_cible)} objectif_name={e.indicateur} 
               tags={e.tags?.split(',')}
               date={year.toString()} due_date={e.due_date} ref_date={e.ref_date} 
               ref_value={e.ref_value} target_value={e.target} />

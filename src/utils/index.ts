@@ -1,6 +1,4 @@
-
 export { chartBusinessProps} from "./nomenclature";
-export { useChartEvents, useChartActionHightlight as useChartAction } from "../g2f-dashboard/utils/usecharthightlight";
 
 
 

@@ -13,7 +13,7 @@ import Odema from "/img/logo_odema.png";
 export const AppFooter: React.FC = () => {
 
   const style_img:CSSProperties = { 
-    height:'70px',
+    height:'40px',
     marginRight: '20px'
   }
 
@@ -32,13 +32,17 @@ export const AppFooter: React.FC = () => {
             textAlign: "center",
             color: "#fff",
             backgroundColor: "#fff",
+            position:"sticky",
+            bottom:0,
+            right:"0px",
+            width:"100%"
           }}
         >
             <div>
             <a href="/">
               <img style={style_img} src={Odema} alt="Odema"/>
             </a>
-            <Divider type="vertical" style={{ height: "70px", backgroundColor: grey[2] }} />
+            <Divider type="vertical" style={{ height: "30px", backgroundColor: grey[2] }} />
             { logos.map((l) => 
               <a href={l.url} key={l.name}> 
                 <img style={style_img}

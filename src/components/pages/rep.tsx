@@ -1,23 +1,21 @@
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
 import { Row, Col, Card, List } from "antd";
-import { useSearchParamsState } from "../../g2f-dashboard/utils/useSearchParamsState";
+import { useSearchParamsState, LoadingContainer, Attribution, useApi, SimpleRecord } from "g2f-dashboard";
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte";
-import { LoadingComponent } from "../../g2f-dashboard/components/loading_container";
-import { Attribution } from "../../g2f-dashboard/components/attributions";
 import { RepTopbar } from "../rep_topbar";
 import alasql from "alasql";
+import { ademe_opendataProvider } from "../../App";
 
 //TODO splitter cette page pour chaque filière (rep_mnu.tsx, rep_vhu.tsx...). Ici mettre un Tab pour chaque filière.
 
-export const RepPage: React.FC<IResourceComponentsProps> = () => {
+export const RepPage: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year','2021')
 
     const [cregion, _setcregion] = useSearchParamsState('region','32')
     
-    const collecte_pu = useList(
+    const collecte_pu = useApi(
         {
             resource: "rep-pu-tonnages-collectes-en-2018/lines",
-            dataProviderName: "ademe_opendata",
+            dataProvider: ademe_opendataProvider,
             pagination: {
                 pageSize: 150,
             },
@@ -54,13 +52,13 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
     FROM ? d4
     GROUP BY d4.[Code_Région], d4.[Année_des_données]
     `, [collecte_pu.data.data,collecte_pu.data.data,collecte_pu.data.data,collecte_pu.data.data])
-    .map((e:BaseRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
+    .map((e:SimpleRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
     :undefined
 
-    const collecte_vhu = useList(
+    const collecte_vhu = useApi(
         {
             resource: "rep-vhu-tonnages-collectes-cvhu-en-2018/lines",
-            dataProviderName: "ademe_opendata",
+            dataProvider: ademe_opendataProvider,
             pagination: {
                 pageSize: 150,
             },
@@ -80,7 +78,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
         }
     )
 
-    const data_vhu2 = collecte_vhu.data?.data.map((e) => ({...e,
+    const data_vhu2 = collecte_vhu.data?.data.map((e:any) => ({...e,
         'Compagnies_et_mutuelles_d_assurances':e["Compagnies_et_mutuelles_d'assurances"],
         'Garages_indépendants_et_autres_professionnels_de_l_entretien':e["Garages_indépendants_et_autres_professionnels_de_l'entretien"],
     })) // Fix name with quote...
@@ -109,7 +107,7 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
     SELECT d6.[Code_Région], d6.[Années] as annee, "Garages_indépendants_et_autres_professionnels_de_l'entretien" AS type, sum(d6.[Garages_indépendants_et_autres_professionnels_de_l_entretien]::NUMBER) AS tonnage
     FROM ? d6
     GROUP BY d6.[Code_Région], d6.[Années]
-    `, [data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2]).map((e:BaseRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
+    `, [data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2]).map((e:SimpleRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
     :undefined
 
     return(
@@ -122,19 +120,19 @@ export const RepPage: React.FC<IResourceComponentsProps> = () => {
                 <Col xl={24/2} xs={24}>
                     <Card>
                         pu
-                        <LoadingComponent isFetching={collecte_pu.isFetching}>
+                        <LoadingContainer isFetching={collecte_pu.isFetching}>
                             {collecte_pu.data ? <ChartPieRepCollecte filiere='pu' data={data_standardized_pu} year={Number(year)} /> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pu-tonnages-collectes-en-2018' }]}></Attribution>
-                        </LoadingComponent>
+                        </LoadingContainer>
                     </Card>
                 </Col>
                 <Col xl={24/2} xs={24}>
                     <Card>
                         vhu
-                        <LoadingComponent isFetching={collecte_vhu.isFetching}>
+                        <LoadingContainer isFetching={collecte_vhu.isFetching}>
                             {collecte_vhu.data ? <ChartPieRepCollecte filiere='vhu' data={data_standardized_vhu} year={Number(year)} /> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-vhu-tonnages-collectes-cvhu-en-2018' }]}></Attribution>
-                        </LoadingComponent>
+                        </LoadingContainer>
                     </Card>
                 </Col>
                 <Col xl={24 / 2} xs={24}>

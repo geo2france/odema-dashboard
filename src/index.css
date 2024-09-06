@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 .modal-fullscreen > .ant-card-head-title  {
     padding-left: 12px;
 }
@@ -13,11 +15,6 @@
 height: calc(95vh - 110px);
 }
 
-
-@media screen and (min-width: 729px) {
-    .ant-layout-content{
-        margin-left: 80px;
-    }
-  
-  }
-  
+body {
+    margin:0px;
+}

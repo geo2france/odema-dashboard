@@ -1,42 +1,37 @@
 import React, { CSSProperties, useState } from "react";
-import { BaseRecord, IResourceComponentsProps, useList } from "@refinedev/core";
-import { Card, Col, Select, Row } from 'antd';
+import { Col, Form, Row } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
 
 import alasql from "alasql";
-import ChartPieTypeTraitement from "../chart_pie_type_traitement";
-import { useSearchParamsState } from "../../g2f-dashboard/utils/useSearchParamsState";
-import { DashboardElement } from "../../g2f-dashboard/components/dashboard_element";
+import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord, Control } from "g2f-dashboard";
+import { ChartEvolutionDechet } from "../chart_evolution_dechet";
+import { useApi } from "g2f-dashboard"
+import { ademe_opendataProvider, geo2franceProvider } from "../../App";
+import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti";
+
+const [maxYear, minYear, defaultYear] = [2023,2009,2021]
 
 
-export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
-    const [year, setYear] = useSearchParamsState('year','2021')
-
+export const DmaComponent: React.FC = () => {
+    const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
     const [cregion, _setcregion] = useSearchParamsState('region','32')
-
     const [focus, setFocus] = useState<string | undefined>(undefined) 
 
     const chartStyle:CSSProperties = {height:'350px'}
-    //const cregion = 32
 
-    const {data, isFetching} = useList({
+    const {data, isFetching} = useApi({
             resource:"sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement/lines",
-            dataProviderName:"ademe_opendata",
+            dataProvider:ademe_opendataProvider,
             pagination: {
-                pageSize: 150,
+                pageSize: 2000,
             },
             filters:[
                 {
                     field:"C_REGION",
                     operator:"eq",
                     value:cregion
-                },
-                {
-                    field:"ANNEE",
-                    operator:"eq",
-                    value:year
                 },
                 {
                     field:"L_TYP_REG_DECHET",
@@ -60,11 +55,12 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
         SELECT L_TYP_REG_DECHET, L_TYP_REG_SERVICE, sum(TONNAGE_DMA) as TONNAGE_DMA_sum
         FROM ?
         GROUP BY L_TYP_REG_DECHET, L_TYP_REG_SERVICE
-    `, [data.data]) : undefined
+    `, [data.data.filter((e:any) => e.ANNEE == Number(year))]) : undefined
 
-    const {data:data_performance, isFetching: isFetching_performance} = useList({
+
+    const {data:data_performance, isFetching: isFetching_performance} = useApi({
         resource:"sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte/lines",
-        dataProviderName:"ademe_opendata",
+        dataProvider:ademe_opendataProvider,
         pagination: {
             pageSize: 600,
         },
@@ -77,55 +73,201 @@ export const DmaComponent: React.FC<IResourceComponentsProps> = () => {
         ]
     });
 
-    const {data:data_chiffre_cle, isFetching:isFetching_chiffre_cle} = useList({
+    const {data:data_chiffre_cle, isFetching:isFetching_chiffre_cle} = useApi({
         resource:"sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017/lines",
-        dataProviderName:"ademe_opendata",
+        dataProvider:ademe_opendataProvider,
         pagination: {
-            pageSize: 250,
-        },
-        filters:[
-            {
-                field:"Annee",
-                operator:"eq",
-                value:year
-            },
-        ]
+            pageSize: 5000,
+        }
     })
 
+    const {data:data_ti, isFetching:isFetching_ti} = useApi({
+      resource:"odema:population_tarification_ti_region",
+      dataProvider:geo2franceProvider,
+      pagination:{ mode: "off" }
+  });
+
+    const pop_region = data_chiffre_cle?.data && alasql(`
+        SELECT [Annee] as [annee], SUM([VA_POPANNEE]) AS [population]
+        FROM ?
+        WHERE [C_REGION]='${cregion}'
+        GROUP BY [Annee]
+    `, [data_chiffre_cle.data])
+
+    const data_typedechet_destination = data_chiffre_cle?.data && data?.data && pop_region && alasql(
+        `SELECT d.*, dc.[VA_POPANNEE], p.[population] AS [VA_POPANNEE_REG]
+        FROM ? d
+        JOIN ? dc ON dc.[Annee] = d.[ANNEE] AND dc.[C_DEPT]=d.[C_DEPT]
+        JOIN ? p ON p.[annee] = d.[ANNEE] AND d.[C_REGION] = '${cregion}'
+        `, [ data?.data, data_chiffre_cle?.data, pop_region]) // Ajoute la population departementale et régionale
+ 
 
     return (
-        <>
-        <Row gutter={[16,16]}>
-            <Col span={24}>
-            <Card style={{padding:12}}>
-                Année : <Select onChange={(e) => e ? setYear(e) : undefined } defaultValue={year} value={year}
-                    options={ Array.from({ length: 2021 - 2009 + 1 }, (_, i) => 2009 + i).filter(num => num % 2 !== 0).reverse().map((i) => ({label:i, value:i}) ) }
-                />     
-                </Card>
-            </Col>
+      <>
+        <Control>
+          <Form layout="inline">
+            <Form.Item label="Année">
+                  <NextPrevSelect
+                    onChange={(e: any) => (e ? setYear(e) : undefined)}
+                    reverse={true}
+                    value={year}
+                    options={
+                      Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
+                      .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
+                      .reverse()
+                      .map((i) => ({ label: i, value: i }))}
+                  />
+            </Form.Item>
+          </Form>
+        </Control>
 
-            <Col xl={24/2} xs={24}>
-                    <DashboardElement isFetching={isFetching} title="Destination des déchets" attributions={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement' }]}>
-                        {datasankey && <ChartSankeyDestinationDMA style={chartStyle} onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={datasankey.map((i:BaseRecord) => ({value:Math.max(i.TONNAGE_DMA_sum,1), source:i.L_TYP_REG_DECHET, target:i.L_TYP_REG_SERVICE}))}/> }
-                    </DashboardElement>
-            </Col>
-            <Col xl={24/2} xs={24}>
-                <DashboardElement title="Types de traitement" isFetching={isFetching_chiffre_cle && isFetching} attributions={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement' }]}>
-                        {data && data_chiffre_cle && (<ChartPieTypeTraitement style={chartStyle} onFocus={(e:any) => setFocus(e?.name)} focus_item={focus} data={data.data} c_region={cregion} data_territoire={data_chiffre_cle.data}/> )}
-                </DashboardElement>
-            </Col>
-            <Col xl={24/2} xs={24}>
-                <DashboardElement title="Performances de collecte" isFetching={isFetching_chiffre_cle && isFetching_performance} attributions={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte' }]}>
-                        {data_performance && data_chiffre_cle && <ChartCollectePerformance style={chartStyle} data={data_performance.data} data_territoire={data_chiffre_cle.data}/> }
-                </DashboardElement>
-            </Col>
-            <Col xl={24/2} xs={24}>
-                <DashboardElement title="Ratio régionaux" isFetching={isFetching_chiffre_cle && isFetching_performance} attributions={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017' }]}>
-                        {data_performance && data_chiffre_cle && <ChartRaceBareDMA style={chartStyle} data={data_performance.data} data_territoire={data_chiffre_cle.data} highlight_region={cregion}/>}
-                </DashboardElement>
-            </Col>
+        <Row gutter={[8, 8]} style={{ margin: 16 }}>
+          <Col xl={12} xs={24}>
+            <DashboardElement
+              isFetching={isFetching}
+              title={`Types et destination des déchets en ${year}`}
+              attributions={[
+                {
+                  name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                },
+              ]}
+            >
+              {datasankey && (
+                <ChartSankeyDestinationDMA
+                  style={chartStyle}
+                  onFocus={(e: any) => setFocus(e?.name)}
+                  focus_item={focus}
+                  data={datasankey.map((i: SimpleRecord) => ({
+                    value: Math.max(i.TONNAGE_DMA_sum, 1),
+                    source: i.L_TYP_REG_DECHET,
+                    target: i.L_TYP_REG_SERVICE,
+                  }))}
+                />
+              )}
+            </DashboardElement>
+          </Col>
+
+          <Col xl={12} xs={24}>
+            <DashboardElement
+              isFetching={isFetching}
+              title={`Type de déchets collectés`}
+              attributions={[
+                {
+                  name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                },
+              ]}
+            >
+              {data_typedechet_destination && (
+                <ChartEvolutionDechet
+                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
+                    tonnage: e.TONNAGE_DMA,
+                    annee: e.ANNEE,
+                    type: e.L_TYP_REG_DECHET,
+                    population: e.VA_POPANNEE_REG,
+                  }))}
+                  onFocus={(e: any) => setFocus(e?.seriesName)}
+                  focus_item={focus}
+                  year={Number(year)}
+                />
+              )}
+            </DashboardElement>
+          </Col>
+
+          <Col xl={12} xs={24}>
+            <DashboardElement
+              isFetching={isFetching}
+              title={`Destination des déchets`}
+              attributions={[
+                {
+                  name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                },
+              ]}
+            >
+              {data_typedechet_destination && (
+                <ChartEvolutionDechet
+                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
+                    tonnage: e.TONNAGE_DMA,
+                    annee: e.ANNEE,
+                    type: e.L_TYP_REG_SERVICE,
+                    population: e.VA_POPANNEE_REG,
+                  }))}
+                  onFocus={(e: any) => setFocus(e?.seriesName)}
+                  focus_item={focus}
+                  year={Number(year)}
+                />
+              )}
+            </DashboardElement>
+          </Col>
+
+          <Col xl={24 / 2} xs={24}>
+            <DashboardElement
+              title="Performances de collecte"
+              isFetching={isFetching_chiffre_cle && isFetching_performance}
+              attributions={[
+                {
+                  name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte",
+                },
+              ]}
+            >
+              {data_performance && data_chiffre_cle && (
+                <ChartCollectePerformance
+                  style={chartStyle}
+                  data={data_performance.data}
+                  data_territoire={data_chiffre_cle.data.filter(
+                    (e: any) => e.Annee == year
+                  )}
+                />
+              )}
+            </DashboardElement>
+          </Col>
+          <Col xl={24 / 2} xs={24}>
+            <DashboardElement
+              title="Ratio régionaux"
+              isFetching={isFetching_chiffre_cle && isFetching_performance}
+              attributions={[
+                {
+                  name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017",
+                },
+              ]}
+            >
+              {data_chiffre_cle && (
+                <ChartRaceBareDMA
+                  style={chartStyle}
+                  data={data_chiffre_cle.data.filter(
+                    (e: any) => e.Annee == year
+                  )}
+                  highlight_region={cregion}
+                />
+              )}
+            </DashboardElement>
+          </Col>
+
+          <Col xl={24 / 2} xs={24}>
+            <DashboardElement
+              title="Tarification incitative"
+              isFetching={isFetching_ti}
+              attributions={[
+                {
+                  name: "Odema",
+                  url: "https://www.geo2france.fr/datahub/dataset/891b801c-6196-42bc-99fd-e84663eaaa2f",
+                },
+              ]}
+            >
+              {data_ti && (
+                <ChartEvolutionPopTi
+                  style={chartStyle}
+                  data={data_ti.data}
+                  year={Number(year)}
+                />
+              )}
+            </DashboardElement>
+          </Col>
         </Row>
-
       </>
-      );
+    );
 };

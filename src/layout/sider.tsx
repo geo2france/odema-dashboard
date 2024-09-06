@@ -1,46 +1,32 @@
 import {
-  ApiOutlined,
   CloseSquareOutlined,
   HomeOutlined,
   RollbackOutlined,
 } from "@ant-design/icons";
-import { ThemedTitleV2 } from "@refinedev/antd";
 import Odema from "/img/logo_odema.png";
 
-export const AppTitle: React.FC = () => {
-  return (
-    <ThemedTitleV2 collapsed={false} icon={<ApiOutlined />} text="Odema" />
-  );
-};
-
-export const AppSider: React.FC = () => {
-  return (
-    <>
-      <CustomSider  />
-    </>
-  );
-};
-
-/*** WIP ***/
 import React, { CSSProperties, useState } from "react";
 import { Layout, Menu, theme, Row, Col } from "antd";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import "./sider.css";
-import { useMenu } from "@refinedev/core";
-
 
 
 const style_img: CSSProperties = {
   width: "100%",
 };
 
-export const CustomSider: React.FC = () => {
+export const AppSider: React.FC = () => {
 
   const items = [
     {
       key: "/dma",
-      label: <NavLink to="/dma">DMA</NavLink>,
+      label: <>DMA</>,
       icon: <HomeOutlined />,
+      children: [
+        { key: "/dma/region", label: <NavLink to="/dma/region">Hauts-de-France </NavLink> },
+        { key: "/dma/epci", label: <NavLink to="/dma/epci">EPCI</NavLink> },
+
+      ]
     },
     {
       key: "#/rep",
@@ -74,9 +60,9 @@ export const CustomSider: React.FC = () => {
       icon: <CloseSquareOutlined />,
     },
   ];
-
+  
   const { token } = theme.useToken();
-  const { selectedKey } = useMenu();
+  const { pathname:selectedKey } = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -90,20 +76,22 @@ export const CustomSider: React.FC = () => {
 
   const siderStyle: CSSProperties = {
     height: "100vh",
+    width : '100%',
     backgroundColor: token.colorBgContainer,
-    zIndex: 1, 
-    position: collapsed ? 'absolute' : (isMobile ? 'fixed' : 'absolute'), 
-    
+    zIndex: 2, 
+    position: isMobile ? 'fixed' : 'relative', 
   };
 
   return (
-    <Layout.Sider
-      className="custom-sider"
+    <>
+    <Layout.Sider //TODO remplacer le Sider par un drawer
+      theme="light"
       collapsible
-      collapsedWidth={isMobile ? 0 : 80}
+      collapsedWidth={isMobile ? 0 : 80} //Utiliser la propriété breakpoint ?
       collapsed={collapsed}
       onCollapse={toggleCollapsed}
       style={siderStyle}
+      width={isMobile ? '80%' : undefined}
     >
       <Row justify="center">
         <Col span={24}>
@@ -117,7 +105,7 @@ export const CustomSider: React.FC = () => {
             }}
           >
             <NavLink to={""}>
-              <img style={style_img} src={Odema} alt="Logo Odema" />
+              <img style={style_img} src={Odema} alt="Logo Odema" /> {/* TODO : utiliser une version mini du logo en affichage mobile */}
             </NavLink>
           </div>
         </Col>
@@ -131,5 +119,19 @@ export const CustomSider: React.FC = () => {
         </Col>
       </Row>
     </Layout.Sider>
+    { isMobile  && !collapsed &&
+
+            <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.1)',
+              zIndex: 1,
+            }} ></div>
+          }
+            </>
   );
 };

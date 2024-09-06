@@ -2,7 +2,7 @@ import React from 'react'
 import { ChartGaugeTarget } from '../chart_gauge_targets'
 import { Col, Collapse, Descriptions, DescriptionsProps, Row, Tag } from 'antd';
 import { ChartTargetEvolution } from '../chart_target_evolution';
-import { BaseRecord } from '@refinedev/core';
+import { SimpleRecord } from 'g2f-dashboard';
 
 const tagColor = (tag: string) => {
   switch (tag) {
@@ -27,8 +27,8 @@ export interface ITargetCardProps {
     ref_date:string,
     ref_value:number,
     target_value:number,
-    data:BaseRecord[],
     tags?:string[],
+    data:SimpleRecord[]
 }
 
 export const TargetCard: React.FC<ITargetCardProps> = ( {objectif_name, date, due_date, ref_date, ref_value, target_value, unite, data, tags} ) => {
