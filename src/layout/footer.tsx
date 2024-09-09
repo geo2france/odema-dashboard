@@ -1,5 +1,5 @@
 import { Layout, Divider } from "antd";
-import { CSSProperties, useState } from "react";
+import { CSSProperties, useState,useEffect } from "react";
 import { grey } from "@ant-design/colors";
 
 import Ademe from "/img/Logo_ADEME.svg";
@@ -18,6 +18,18 @@ export const AppFooter: React.FC = () => {
   const toggleFooter = () => {
     setIsVisible(!isVisible);
   };
+
+// Détecter la taille de l'écran pour les mobiles
+useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth < 768) {  
+      setIsVisible(false);
+    } else {  
+      setIsVisible(true);
+    }
+  };
+  handleResize();
+}, []);
 
   const style_img: CSSProperties = {
     height: "40px",
@@ -50,9 +62,8 @@ export const AppFooter: React.FC = () => {
         textAlign: "center",
         color: "#fff",
         backgroundColor: "#fff",
-        bottom: isVisible ? "0" : "-100px", 
+        bottom: isVisible ? "0" : "-140px", 
         position: "sticky",
-
         right: "0px",
         transition: "bottom 0.5s", 
         width: "100%",
@@ -77,7 +88,7 @@ export const AppFooter: React.FC = () => {
       <div
         style={{
           position: "fixed",
-          bottom: isVisible ? "100px" : "10px",
+          bottom: isVisible ? "140px" : "10px",
           right: "10px",
           cursor: "pointer",
           zIndex: 1001,
