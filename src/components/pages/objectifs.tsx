@@ -8,6 +8,7 @@ import { Card, Col, InputNumber, Row, Switch } from "antd";
 import { TargetCard } from "../target_card";
 import { createContext, useState } from "react";
 import alasql from "alasql";
+import { ChartTargetBar } from "../chart_target_bar";
 
 export interface PageContextI {
   remaningTime:boolean
@@ -52,6 +53,11 @@ export const ObjectifsPage: React.FC = () => {
             </Card>
           </Col> 
         )}
+        <Col span={8}>
+          <Card>
+          <ChartTargetBar />
+          </Card>
+        </Col>
         </Row>
 
         </pageContext.Provider>
