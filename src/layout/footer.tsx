@@ -1,5 +1,5 @@
 import { Layout, Divider } from "antd";
-import { CSSProperties, useState,useEffect } from "react";
+import { CSSProperties, useState, useEffect } from "react";
 import { grey } from "@ant-design/colors";
 
 import Ademe from "/img/Logo_ADEME.svg";
@@ -10,7 +10,7 @@ import Cerdd from "/img/Logo_cerdd.svg";
 import Geo2France from "/img/geo2france.svg";
 import Odema from "/img/logo_odema.png";
 
-import { UpOutlined, DownOutlined } from "@ant-design/icons"; // Utilisation d'icônes Ant Design pour la flèche
+import { UpOutlined, DownOutlined } from "@ant-design/icons"; 
 
 export const AppFooter: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -19,17 +19,21 @@ export const AppFooter: React.FC = () => {
     setIsVisible(!isVisible);
   };
 
-// Détecter la taille de l'écran pour les mobiles
-useEffect(() => {
-  const handleResize = () => {
-    if (window.innerWidth < 768) {  
-      setIsVisible(false);
-    } else {  
-      setIsVisible(true);
-    }
-  };
-  handleResize();
-}, []);
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const style_img: CSSProperties = {
     height: "40px",
@@ -56,17 +60,19 @@ useEffect(() => {
     { src: Cerdd, name: "CERDD", url: "https://www.cerdd.org/" },
     { src: Geo2France, name: "Géo2France", url: "https://www.geo2france.fr/" },
   ];
+
   return (
     <Layout.Footer
       style={{
         textAlign: "center",
         color: "#fff",
         backgroundColor: "#fff",
-        bottom: isVisible ? "0" : "-140px", 
-        position: "sticky",
+        bottom: isVisible ? "0" : "-300px", 
+        position: "fixed", 
         right: "0px",
-        transition: "bottom 0.5s", 
+        transition: "bottom 0.5s ease-in-out", 
         width: "100%",
+       
       }}
     >
       <div>
@@ -88,7 +94,7 @@ useEffect(() => {
       <div
         style={{
           position: "fixed",
-          bottom: isVisible ? "140px" : "10px",
+          bottom: "10px", 
           right: "10px",
           cursor: "pointer",
           zIndex: 1001,
