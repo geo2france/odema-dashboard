@@ -56,7 +56,7 @@ export const AppSider: React.FC = () => {
     },
     {
       key: "/isdnd",
-      label: <NavLink to="/isdnd"> Elimination</NavLink>,
+      label: <NavLink to="/isdnd"> Exutoires</NavLink>,
       icon: <CloseSquareOutlined />,
     },
   ];
