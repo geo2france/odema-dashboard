@@ -40,6 +40,9 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
         {
             name: 'Access From',
             type: 'sankey',
+            itemStyle:{
+                borderRadius:2,
+            },
             layoutIterations: 0,
             emphasis: {
                 itemStyle: {

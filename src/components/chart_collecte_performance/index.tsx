@@ -31,7 +31,7 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,
         itemStyle: {
-          borderRadius: 10,
+          borderRadius: 5,
           borderColor: '#fff',
           borderWidth: 2
         },
