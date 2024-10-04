@@ -1,8 +1,8 @@
-import React, { CSSProperties, useRef } from "react";
+import React, { CSSProperties, useMemo, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption } from "echarts";
 import alasql from "alasql";
-import { SimpleRecord, useDashboardElement } from "g2f-dashboard";
+import { SimpleRecord, useChartData, useDashboardElement } from "g2f-dashboard";
 
 export interface ChartRaceBareDMAProps {
     data: any[] | SimpleRecord[];
@@ -14,12 +14,16 @@ export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, highli
     const chartRef = useRef<any>()
     useDashboardElement({chartRef})
 
-    const chart_data = alasql(`
-        SELECT d.[C_REGION], d.[L_REGION], SUM(d.[TONNAGE__DMA]) as TONNAGE_DMA, SUM(d.[VA_POPANNEE]) AS VA_POPANNEE
-        FROM ? d
-        GROUP BY d.[L_REGION], d.[C_REGION]
-        ORDER BY SUM(d.[TONNAGE__DMA]) / SUM(d.[VA_POPANNEE])
-    `,[data])
+    const chart_data = useMemo(() => alasql(`
+            SELECT d.[C_REGION], d.[L_REGION], SUM(d.[TONNAGE__DMA]) as TONNAGE_DMA, SUM(d.[VA_POPANNEE]) AS VA_POPANNEE
+            FROM ? d
+            GROUP BY d.[L_REGION], d.[C_REGION]
+            ORDER BY SUM(d.[TONNAGE__DMA]) / SUM(d.[VA_POPANNEE])
+            `,[data]),
+            [data]
+    );
+
+    useChartData({data, dependencies:[data]});
 
     const option:EChartsOption = {
         yAxis: {

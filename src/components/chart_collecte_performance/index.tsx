@@ -1,6 +1,6 @@
-import React, { CSSProperties, useRef } from "react";
+import React, { CSSProperties, useMemo, useRef } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
-import {SimpleRecord} from "g2f-dashboard"
+import {SimpleRecord, useChartData} from "g2f-dashboard"
 import type {EChartsOption, PieSeriesOption} from "echarts"
 import alasql from "alasql";
 import { chartBusinessProps } from "../../utils";
@@ -17,13 +17,15 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
     const chartRef = useRef<any>()
     useDashboardElement({chartRef})
 
-    const data_pie = alasql(`SELECT TYP_COLLECTE, (sum(TONNAGE_T_HG) / sum(data_territoire.VA_POPANNEE))*1000 AS RATIO_KG_HAB 
+    const data_pie = useMemo(() => alasql(`SELECT TYP_COLLECTE, (sum(TONNAGE_T_HG) / sum(data_territoire.VA_POPANNEE))*1000 AS RATIO_KG_HAB 
                         FROM ? data 
                         JOIN ? as data_territoire ON data_territoire.N_DEPT = data.N_DEPT AND data_territoire.Annee = data.ANNEE
                         WHERE C_REGION='${c_region}'
-                        GROUP BY TYP_COLLECTE`, [data, data_territoire])
+                        GROUP BY TYP_COLLECTE`, [data, data_territoire]),
+        [data, data_territoire, c_region]               
+    )
 
-
+    useChartData({data:data_pie, dependencies:[data_pie]})
 
     const myserie:PieSeriesOption = {
         type : 'pie',
