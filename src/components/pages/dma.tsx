@@ -1,5 +1,5 @@
 import React, { CSSProperties, useState } from "react";
-import { Col, Form, Row } from 'antd';
+import { Col, Form, Row, Typography } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
@@ -11,8 +11,10 @@ import { useApi } from "g2f-dashboard"
 import { ademe_opendataProvider, geo2franceProvider } from "../../App";
 import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti";
 
+const {Text} = Typography;
 const [maxYear, minYear, defaultYear] = [2023,2009,2021]
 
+const note_methodo_gravats = <Text type="secondary">L'analyse n'inclue pas les <b>gravats et inertes</b></Text>
 
 export const DmaComponent: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
@@ -124,6 +126,7 @@ export const DmaComponent: React.FC = () => {
         <Row gutter={[8, 8]} style={{ margin: 16 }}>
           <Col xl={12} xs={24}>
             <DashboardElement
+              description= {note_methodo_gravats}
               isFetching={isFetching}
               title={`Types et destination des déchets en ${year}`}
               attributions={[
@@ -151,6 +154,7 @@ export const DmaComponent: React.FC = () => {
           <Col xl={12} xs={24}>
             <DashboardElement
               isFetching={isFetching}
+              description= {note_methodo_gravats}
               title={`Type de déchets collectés`}
               attributions={[
                 {
@@ -179,6 +183,7 @@ export const DmaComponent: React.FC = () => {
             <DashboardElement
               isFetching={isFetching}
               title={`Destination des déchets`}
+              description= {note_methodo_gravats}
               attributions={[
                 {
                   name: "Ademe",
@@ -250,6 +255,8 @@ export const DmaComponent: React.FC = () => {
           <Col xl={24 / 2} xs={24}>
             <DashboardElement
               title="Tarification incitative"
+              description="Tarification incitative : mode de tarification qui comprend une part incitative sur les OMR.
+              Cette part peut concerner le volume de déchets et/ou le nombre de levées."
               isFetching={isFetching_ti}
               attributions={[
                 {
