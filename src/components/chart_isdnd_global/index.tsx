@@ -25,7 +25,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, data_
         ORDER BY c.[annee]
     `, [data, data_capacite])
     
-    useChartData({data:data_chart, dependencies:[year]})
+    useChartData({data:data_chart}) //Pas de  dependencies : les données du graphique ne change pas
 
     const data_objectif = [
         ['2010', 1241112*2],
@@ -75,6 +75,7 @@ const serie_objectif:LineSeriesOption = {
 
     const option:EChartsOption = {
         series:[serie_tonnage, serie_capacite, serie_objectif],
+        animation:false,
         legend: {top:'top', show:true},
         xAxis: [
             {
