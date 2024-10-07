@@ -2,7 +2,7 @@ import { CSSProperties, useState } from "react";
 import { Row, Col, Drawer, Tooltip, Select, Form } from "antd"
 import alasql from "alasql";
 
-import { Control, DashboardElement, NextPrevSelect, SimpleRecord, useApi } from "g2f-dashboard";
+import { Control, DashboardElement, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "g2f-dashboard";
 
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
@@ -20,7 +20,7 @@ export const EnfouissementPage: React.FC = () => {
 
     const chartStyle:CSSProperties = {height:'350px'}
 
-    const [aiot, setAiot] = useState<string>('0007003529')
+    const [aiot, setAiot] = useSearchParamsState('aiot','0007003529')
     const [year, setYear] = useState<number>(2022)
 
     const [drawerIsOpen, setdrawerIsOpen] = useState(false);
