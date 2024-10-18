@@ -1,7 +1,7 @@
 import alasql from "alasql";
 import { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
-import { EChartsOption, BarSeriesOption } from "echarts";
+import { EChartsOption, BarSeriesOption, LineSeriesOption } from "echarts";
 import { SimpleRecord, useChartActionHightlight, useChartData, useChartEvents, useDashboardElement } from "g2f-dashboard"
 import { chartBusinessProps  } from "../../utils";
 
@@ -19,7 +19,8 @@ export interface ChartEvolutionTypeDechetProps {
     onFocus?:any;
     focus_item?:string;
     style? : CSSProperties;
-    year? : number
+    year? : number;
+    showObjectives?:boolean;
   }
 
 
@@ -32,7 +33,7 @@ const tooltipFormatter = (e:any) => `
     (${e.value[2].toLocaleString(undefined, {maximumFractionDigits: 0})} T)`
 
 
-export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({data, onFocus, focus_item, style, year} )  => {
+export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({data, onFocus, focus_item, style, year, showObjectives=false} )  => {
     const chartRef = useRef<any>()
     
     useChartEvents({chartRef:chartRef, onFocus:onFocus})
@@ -71,8 +72,28 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         },
     })).sort((a:any,b:any) => (chartBusinessProps(a.name).sort || 0) - (chartBusinessProps(b.name).sort || 0)   )
 
+    const objectifs:LineSeriesOption = {
+        name:"Objectif",
+        type:"line",
+        data:[],
+        markLine:{
+            symbol: 'none',
+            name:'toto',
+            label:{
+                 show:true,
+                 position:'end',
+                 color:'black',
+                 formatter:'{b}\n{c} kg/hab'
+            },
+            lineStyle:{
+                width:2,
+                color:"red"
+            },
+            data:[{yAxis:541, name:"Obj. 2031"}],
+        }
+    }
     const option:EChartsOption = {
-        series:series,
+        series:[...series, ...(showObjectives ? [objectifs] : [])],
         tooltip:{
             show:true,
             formatter: tooltipFormatter
