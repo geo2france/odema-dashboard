@@ -10,6 +10,7 @@ import { ChartEvolutionDechet } from "../chart_evolution_dechet";
 import { useApi } from "g2f-dashboard"
 import { ademe_opendataProvider, geo2franceProvider } from "../../App";
 import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti";
+import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif";
 
 const {Text} = Typography;
 const [maxYear, minYear, defaultYear] = [2023,2009,2021]
@@ -126,7 +127,7 @@ export const DmaComponent: React.FC = () => {
         <Row gutter={[8, 8]} style={{ margin: 16 }}>
           <Col xl={12} xs={24}>
             <DashboardElement
-              description= {note_methodo_gravats}
+              description= {note_methodo_gravats} 
               isFetching={isFetching}
               title={`Types et destination des déchets en ${year}`}
               attributions={[
@@ -178,6 +179,30 @@ export const DmaComponent: React.FC = () => {
                 />
               )}
             </DashboardElement>
+          </Col>
+
+          <Col xl={12} xs={24}>
+          <DashboardElement
+              isFetching={isFetching}
+              description= {<Text type="secondary">L'objectif régional est d'arriver à une production de <b>564 kg/hab en 2025</b> et{' '}
+              <b>541 kg/hab en 2030</b>. Les gravats et inertes ne sont pas pris en compte.</Text> }
+              title={`Production de DMA par habitant et objectif régional`}
+              attributions={[
+                {
+                  name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                },
+              ]}>
+            {data_typedechet_destination && <ChartEvolutionObjectifs 
+                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
+                    annee: e.ANNEE,
+                    ratio: e.TONNAGE_DMA/e.VA_POPANNEE_REG,
+                    population: e.VA_POPANNEE_REG,
+                  }))}
+                  dataObjectifs={[{annee:2009, ratio:577}, {annee:2025, ratio:564}, {annee:2031, ratio:541}]}
+                  year={Number(year)}
+                /> }
+              </DashboardElement>
           </Col>
 
           <Col xl={12} xs={24}>
