@@ -2,6 +2,7 @@ import React, { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { chartBusinessProps, wrappe } from "../../utils";
 import { useDashboardElement, useChartActionHightlight, useChartEvents, SimpleRecord } from "g2f-dashboard";
+import { useChartData } from "g2f-dashboard/src/components/DashboardElement/hooks";
 
 export interface ChartSankeyDestinationDMAProps {
     data: any[] | SimpleRecord[]; 
@@ -16,9 +17,10 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
     useChartEvents({chartRef:chartRef, onFocus:onFocus})
     useChartActionHightlight({chartRef:chartRef, target:{name:focus_item}})
     useDashboardElement({chartRef})
+    useChartData({data:data, dependencies:[data]}) //Renommer les champs
+
 
     const links = data;
-   
     const data_echart = [... new Set([
         ...data.map((d) => (d.source) ), 
         ...data.map((d) => (d.target) ) 
@@ -40,6 +42,9 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
         {
             name: 'Access From',
             type: 'sankey',
+            itemStyle:{
+                borderRadius:2,
+            },
             layoutIterations: 0,
             emphasis: {
                 itemStyle: {

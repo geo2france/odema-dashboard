@@ -18,6 +18,7 @@ import { RepTlcPage } from "./components/pages/rep_tlc";
 import { RepMnuPage } from "./components/pages/rep_mnu";
 import { RepDispmedPage } from "./components/pages/rep_dispmed";
 import { DmaPageEPCI } from "./components/pages/dma_epci";
+import { HomePage } from "./components/pages/home";
 
 
 const myTheme:ThemeConfig = {
@@ -27,15 +28,11 @@ const myTheme:ThemeConfig = {
     colorLink:'#FF6A48',
     colorLinkHover:'#9D7156',
     borderRadius:4,
+   fontFamily:'Inter'
     },
   components:{
     Timeline:{
       itemPaddingBottom:40
-    },
-    Card:{
-      headerHeight:35,
-      headerFontSize:14,
-      paddingLG:0,
     },
     Form:{
       labelColor:'rgba(0,0,0,0.7)'
@@ -60,7 +57,7 @@ const App: React.FC = () => {
                 <Layout>
                   <Layout>
                     <AppSider />
-                    <div style={{padding:24}}>
+                    <div style={{width:"100%"}}>
                       <Outlet />
                     </div>
                   </Layout>
@@ -68,7 +65,7 @@ const App: React.FC = () => {
                 </Layout>
               }
             >
-              <Route index element={<Navigate to="/dma/region" />} />
+              <Route index element={<HomePage />} />
               <Route path="DMA">
                 <Route index element={<Navigate to="/dma/region" />} />
                 <Route path="epci" element={<DmaPageEPCI />} />

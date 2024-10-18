@@ -1,8 +1,8 @@
 import { CSSProperties, useState } from "react";
-import { Row, Col, Card, Drawer, Tooltip, Select, Form } from "antd"
+import { Row, Col, Drawer, Tooltip, Select, Form } from "antd"
 import alasql from "alasql";
 
-import { DashboardElement, NextPrevSelect, SimpleRecord, useApi } from "g2f-dashboard";
+import { Control, DashboardElement, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "g2f-dashboard";
 
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
@@ -20,7 +20,7 @@ export const EnfouissementPage: React.FC = () => {
 
     const chartStyle:CSSProperties = {height:'350px'}
 
-    const [aiot, setAiot] = useState<string>('0007003529')
+    const [aiot, setAiot] = useSearchParamsState('aiot','0007003529')
     const [year, setYear] = useState<number>(2022)
 
     const [drawerIsOpen, setdrawerIsOpen] = useState(false);
@@ -63,29 +63,26 @@ export const EnfouissementPage: React.FC = () => {
     })
 
       return (<>
-      <Row gutter={[14, 14]} align="stretch">
-                <Col span={24}>
-                    <Card style={{height:'100%', alignContent:'center', display:'grid'}}>
-                        <Form  layout="inline" style={{padding:18}}>
-                            <Form.Item label="Installation">
-                                <Select showSearch
-                                    optionFilterProp="label"
-                                    defaultValue={aiot} value={aiot}
-                                    onSelect={setAiot}
-                                    options={select_options}
-                                    style={{width:'100%'}}/>
-                            </Form.Item>
-                            <Form.Item label="Année">
-
-                            <NextPrevSelect reverse={true}
-                                options={select_options_annees}
-                                style={{width:'100%'}}
-                                value={year} defaultValue={year}
-                                onChange={(e) => setYear(Number(e))} />
-                            </Form.Item>
-                        </Form>
-                    </Card>
-                </Col>
+      <Control>
+            <Form layout="inline">
+                <Form.Item label="Année">
+                    <NextPrevSelect reverse={true}
+                        options={select_options_annees}
+                        style={{width:'100%'}}
+                        value={year} defaultValue={year}
+                        onChange={(e) => setYear(Number(e))} />
+                </Form.Item>
+                <Form.Item label="Installation">
+                    <Select showSearch
+                        optionFilterProp="label"
+                        defaultValue={aiot} value={aiot}
+                        onSelect={setAiot}
+                        options={select_options}
+                        style={{width:'100%'}}/>
+                </Form.Item>
+            </Form>
+      </Control>
+      <Row gutter={[14, 14]} style={{ margin: 16 }}>
                 <Col xl={12} xs={24}>
                    <DashboardElement isFetching={isFetchingIsdnd || isFetchingCapacite} title={`Capacité régionale`}  attributions={[{name : 'GT ISDND', url:'https://www.geo2france.fr/datahub/dataset/1a1480b4-8c8b-492d-9cd0-a91b49576017'},{name: 'Odema'}]}>
                    { data_capacite && data_isdnd && <ChartIsdndGlobal style={chartStyle} data={data_isdnd.data} data_capacite={data_capacite.data} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> }

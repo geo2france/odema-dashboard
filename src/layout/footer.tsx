@@ -2,18 +2,18 @@ import { Layout, Divider } from "antd";
 import { CSSProperties } from "react";
 import { grey } from '@ant-design/colors';
 
-import Ademe from "/img/Logo_ADEME.svg";
-import Prefet from "/img/Préfet_de_la_région_Hauts-de-France.svg";
+import Ademe from "/img/Logo_ADEME.svg?url";
+import Prefet from "/img/Préfet_de_la_région_Hauts-de-France.svg?url";
 import Region from "/img/Logo Région HDF.png";
-import Cerc from "/img/Logo_CERC_Hauts-de-Fce_sans-sign.svg";
-import Cerdd from "/img/Logo_cerdd.svg";
-import Geo2France from "/img/geo2france.svg";
+import Cerc from "/img/Logo_CERC_Hauts-de-Fce_sans-sign.svg?url";
+import Cerdd from "/img/Logo_cerdd.svg?url";
+import Geo2France from "/img/geo2france.svg?url";
 import Odema from "/img/logo_odema.png";
 
 export const AppFooter: React.FC = () => {
 
   const style_img:CSSProperties = { 
-    height:'70px',
+    height:'40px',
     marginRight: '20px'
   }
 
@@ -32,13 +32,17 @@ export const AppFooter: React.FC = () => {
             textAlign: "center",
             color: "#fff",
             backgroundColor: "#fff",
+            position:"sticky",
+            bottom:0,
+            right:"0px",
+            width:"100%"
           }}
         >
             <div>
             <a href="/">
               <img style={style_img} src={Odema} alt="Odema"/>
             </a>
-            <Divider type="vertical" style={{ height: "70px", backgroundColor: grey[2] }} />
+            <Divider type="vertical" style={{ height: "30px", backgroundColor: grey[2] }} />
             { logos.map((l) => 
               <a href={l.url} key={l.name}> 
                 <img style={style_img}

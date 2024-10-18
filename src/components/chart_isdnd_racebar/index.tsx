@@ -1,7 +1,7 @@
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
-import { CSSProperties, useRef } from "react";
+import { CSSProperties, useMemo, useRef } from "react";
 import { useChartData, useDashboardElement, useChartEvents, SimpleRecord } from "g2f-dashboard";
 
 export interface IChartRaceBarISDND {
@@ -33,18 +33,21 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
             fontWeight: e.aiot == aiot ? 700 : 400,
         }}))
 
-    const data_chart = alasql(`
+
+    const data_chart = useMemo( () => alasql(`
         SELECT [departement], [name] as nom, [aiot] , tonnage, [capacite]
         FROM ?
         WHERE annee=${year} AND tonnage > 0
         ORDER BY tonnage ASC
-    `,[data])
+    `,[data]), [data,year]
+    )
 
-    useChartData({data:data_chart, dependencies:[year]})
+    useChartData({data:data_chart, dependencies:[data_chart]})
 
     const myserie:BarSeriesOption={
         type:'bar',
         name:'ISDND',
+        animation:false,
         tooltip:{
             valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         },
