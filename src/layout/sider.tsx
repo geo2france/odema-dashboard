@@ -30,6 +30,7 @@ export const AppSider: React.FC = () => {
     },
     {
       key: "#/rep",
+      disabled:true,
       label: <>REP</>,
       icon: <RollbackOutlined />,
       children: [
