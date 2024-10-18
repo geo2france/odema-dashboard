@@ -33,13 +33,13 @@ const formatter_currentyear = (value:number, year?:number) => {
 
 export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = ({data, dataObjectifs, onFocus, focus_item, style, year} )  => {
     const chartRef = useRef<any>()
-    useChartData({data:data, dependencies:[data]})
     const data_chart = data && useMemo(() => alasql(`
         SELECT [annee], SUM([ratio]) as ratio
         FROM ?
         GROUP BY [annee]
         `,[data]) , [data]
     )
+    useChartData({data:data_chart, dependencies:[data]})
 
     const serie:LineSeriesOption = {
         name: "Déchet",
