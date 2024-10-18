@@ -196,7 +196,7 @@ export const DmaComponent: React.FC = () => {
             {data_typedechet_destination && <ChartEvolutionObjectifs 
                   data={data_typedechet_destination.map((e: SimpleRecord) => ({
                     annee: e.ANNEE,
-                    ratio: e.TONNAGE_DMA/e.VA_POPANNEE_REG,
+                    ratio: (e.TONNAGE_DMA/e.VA_POPANNEE_REG)*1000,
                     population: e.VA_POPANNEE_REG,
                   }))}
                   dataObjectifs={[{annee:2009, ratio:577}, {annee:2025, ratio:564}, {annee:2031, ratio:541}]}

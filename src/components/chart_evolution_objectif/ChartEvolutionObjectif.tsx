@@ -1,4 +1,4 @@
-import { SimpleRecord, useDashboardElement } from "g2f-dashboard";
+import { SimpleRecord, useChartData, useDashboardElement } from "g2f-dashboard";
 import { CSSProperties, useMemo, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from "echarts";
@@ -33,9 +33,9 @@ const formatter_currentyear = (value:number, year?:number) => {
 
 export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = ({data, dataObjectifs, onFocus, focus_item, style, year} )  => {
     const chartRef = useRef<any>()
-
+    useChartData({data:data, dependencies:[data]})
     const data_chart = data && useMemo(() => alasql(`
-        SELECT [annee], SUM([ratio]*1000) as ratio
+        SELECT [annee], SUM([ratio]) as ratio
         FROM ?
         GROUP BY [annee]
         `,[data]) , [data]
