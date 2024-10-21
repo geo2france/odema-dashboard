@@ -1,5 +1,5 @@
 import React, { CSSProperties, useState } from "react";
-import { Col, Form, Row, Typography } from 'antd';
+import { Col, Flex, Form, Radio, Row, Tabs, Typography } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
@@ -17,10 +17,13 @@ const [maxYear, minYear, defaultYear] = [2023,2009,2021]
 
 const note_methodo_gravats = <Text type="secondary">L'analyse n'inclue pas les <b>gravats et inertes</b></Text>
 
+
 export const DmaComponent: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
     const [cregion, _setcregion] = useSearchParamsState('region','32')
     const [focus, setFocus] = useState<string | undefined>(undefined) 
+    const [activeTab, setActiveTab] = useSearchParamsState('tab','gisement')
+
 
     const chartStyle:CSSProperties = {height:'350px'}
 
@@ -105,27 +108,9 @@ export const DmaComponent: React.FC = () => {
         `, [ data?.data, data_chiffre_cle?.data, pop_region]) // Ajoute la population departementale et régionale
  
 
-    return (
+    const TabGisement = 
       <>
-        <Control>
-          <Form layout="inline">
-            <Form.Item label="Année">
-                  <NextPrevSelect
-                    onChange={(e: any) => (e ? setYear(e) : undefined)}
-                    reverse={true}
-                    value={year}
-                    options={
-                      Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
-                      .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
-                      .reverse()
-                      .map((i) => ({ label: i, value: i }))}
-                  />
-            </Form.Item>
-          </Form>
-        </Control>
-
-        <Row gutter={[8, 8]} style={{ margin: 16 }}>
-          <Col xl={12} xs={24}>
+        <Col xl={12} xs={24}>
             <DashboardElement
               description= {note_methodo_gravats} 
               isFetching={isFetching}
@@ -181,53 +166,26 @@ export const DmaComponent: React.FC = () => {
             </DashboardElement>
           </Col>
 
-          <Col xl={12} xs={24}>
-          <DashboardElement
-              isFetching={isFetching}
-              description= {<Text type="secondary">L'objectif régional est d'arriver à une production de <b>564 kg/hab en 2025</b> et{' '}
-              <b>541 kg/hab en 2030</b>. Les gravats et inertes ne sont pas pris en compte.</Text> }
-              title={`Production de DMA par habitant et objectif régional`}
-              attributions={[
-                {
-                  name: "Ademe",
-                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-                },
-              ]}>
-            {data_typedechet_destination && <ChartEvolutionObjectifs 
-                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                    annee: e.ANNEE,
-                    ratio: (e.TONNAGE_DMA/e.VA_POPANNEE_REG)*1000,
-                    population: e.VA_POPANNEE_REG,
-                  }))}
-                  dataObjectifs={[{annee:2009, ratio:577}, {annee:2025, ratio:564}, {annee:2031, ratio:541}]}
-                  year={Number(year)}
-                /> }
-              </DashboardElement>
-          </Col>
 
-          <Col xl={12} xs={24}>
+
+          <Col xl={24 / 2} xs={24}>
             <DashboardElement
-              isFetching={isFetching}
-              title={`Destination des déchets`}
-              description= {note_methodo_gravats}
+              title="Ratio régionaux"
+              isFetching={isFetching_chiffre_cle && isFetching_performance}
               attributions={[
                 {
                   name: "Ademe",
-                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                  url: "https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017",
                 },
               ]}
             >
-              {data_typedechet_destination && (
-                <ChartEvolutionDechet
-                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                    tonnage: e.TONNAGE_DMA,
-                    annee: e.ANNEE,
-                    type: e.L_TYP_REG_SERVICE,
-                    population: e.VA_POPANNEE_REG,
-                  }))}
-                  onFocus={(e: any) => setFocus(e?.seriesName)}
-                  focus_item={focus}
-                  year={Number(year)}
+              {data_chiffre_cle && (
+                <ChartRaceBareDMA
+                  style={chartStyle}
+                  data={data_chiffre_cle.data.filter(
+                    (e: any) => e.Annee == year
+                  )}
+                  highlight_region={cregion}
                 />
               )}
             </DashboardElement>
@@ -255,29 +213,40 @@ export const DmaComponent: React.FC = () => {
               )}
             </DashboardElement>
           </Col>
-          <Col xl={24 / 2} xs={24}>
+      </>
+
+    const TabValorisation = 
+       <>
+          <Col xl={12} xs={24}>
             <DashboardElement
-              title="Ratio régionaux"
-              isFetching={isFetching_chiffre_cle && isFetching_performance}
+              isFetching={isFetching}
+              title={`Destination des déchets`}
+              description= {note_methodo_gravats}
               attributions={[
                 {
                   name: "Ademe",
-                  url: "https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017",
+                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
                 },
               ]}
             >
-              {data_chiffre_cle && (
-                <ChartRaceBareDMA
-                  style={chartStyle}
-                  data={data_chiffre_cle.data.filter(
-                    (e: any) => e.Annee == year
-                  )}
-                  highlight_region={cregion}
+              {data_typedechet_destination && (
+                <ChartEvolutionDechet
+                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
+                    tonnage: e.TONNAGE_DMA,
+                    annee: e.ANNEE,
+                    type: e.L_TYP_REG_SERVICE,
+                    population: e.VA_POPANNEE_REG,
+                  }))}
+                  onFocus={(e: any) => setFocus(e?.seriesName)}
+                  focus_item={focus}
+                  year={Number(year)}
                 />
               )}
             </DashboardElement>
           </Col>
-
+      </>
+    const TabPrevention =
+      <>
           <Col xl={24 / 2} xs={24}>
             <DashboardElement
               title="Tarification incitative"
@@ -300,7 +269,74 @@ export const DmaComponent: React.FC = () => {
               )}
             </DashboardElement>
           </Col>
-        </Row>
+
+          <Col xl={12} xs={24}>
+          <DashboardElement
+              isFetching={isFetching}
+              description= {<Text type="secondary">L'objectif régional est d'arriver à une production de <b>564 kg/hab en 2025</b> et{' '}
+              <b>541 kg/hab en 2030</b>. Les gravats et inertes ne sont pas pris en compte.</Text> }
+              title={`Production de DMA par habitant et objectif régional`}
+              attributions={[
+                {
+                  name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                },
+              ]}>
+            {data_typedechet_destination && <ChartEvolutionObjectifs 
+                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
+                    annee: e.ANNEE,
+                    ratio: (e.TONNAGE_DMA/e.VA_POPANNEE_REG)*1000,
+                    population: e.VA_POPANNEE_REG,
+                  }))}
+                  dataObjectifs={[{annee:2009, ratio:577}, {annee:2025, ratio:564}, {annee:2031, ratio:541}]}
+                  year={Number(year)}
+                /> }
+              </DashboardElement>
+          </Col>
+      </>
+    
+    return (
+      <>
+        <Control>
+            <Form layout="inline">
+              <Form.Item label="Année">
+                    <NextPrevSelect
+                      onChange={(e: any) => (e ? setYear(e) : undefined)}
+                      reverse={true}
+                      value={year}
+                      options={
+                        Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
+                        .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
+                        .reverse()
+                        .map((i) => ({ label: i, value: i }))}
+                    />
+              </Form.Item>
+              <Form.Item>
+                <Radio.Group defaultValue="a" onChange={(e) => setActiveTab(e.target.value)} value={activeTab}>
+                  <Radio.Button value="gisement">Gisement</Radio.Button>
+                  <Radio.Button value="prevention">Prévention</Radio.Button>
+                  <Radio.Button value="valorisation">Valorisation</Radio.Button>
+                </Radio.Group>
+              </Form.Item>
+            </Form>
+        </Control>
+
+        <Row gutter={[8, 8]} style={{ margin: 16 }}>
+
+        {(() => {
+            switch (activeTab) {
+              case 'gisement':
+                return TabGisement;
+              case 'valorisation':
+                return TabValorisation;
+              case 'prevention':
+                return TabPrevention
+              default:
+                return TabGisement;
+            }
+          })()}
+          </Row>
+
       </>
     );
 };
