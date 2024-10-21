@@ -1,5 +1,5 @@
 import React, { CSSProperties, useState } from "react";
-import { Col, Flex, Form, Radio, Row, Tabs, Typography } from 'antd';
+import { Col, Form, Radio, Row, Typography } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
