@@ -11,6 +11,7 @@ import { useApi } from "g2f-dashboard"
 import { ademe_opendataProvider, geo2franceProvider } from "../../App";
 import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti";
 import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif";
+import { ChartTauxValo } from "../chart_taux_valo/ChartTauxValo";
 
 const {Text} = Typography;
 const [maxYear, minYear, defaultYear] = [2023,2009,2021]
@@ -240,6 +241,35 @@ export const DmaComponent: React.FC = () => {
                   onFocus={(e: any) => setFocus(e?.seriesName)}
                   focus_item={focus}
                   year={Number(year)}
+                />
+              )}
+            </DashboardElement>
+          </Col>
+
+          <Col xl={12} xs={24}>
+            <DashboardElement
+              isFetching={isFetching}
+              title={`Taux de valorisation matière des DMA`}
+              description= {undefined}
+              attributions={[
+                {
+                  name: "Ademe",
+                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                },
+              ]}
+            >
+              {data_typedechet_destination && (
+                <ChartTauxValo
+                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
+                    tonnage: e.TONNAGE_DMA,
+                    annee: e.ANNEE,
+                    type: e.L_TYP_REG_SERVICE,
+                    population: e.VA_POPANNEE_REG,
+                  }))}
+                  onFocus={(e: any) => setFocus(e?.seriesName)}
+                  focus_item={focus}
+                  year={Number(year)}
+                  showObjectives
                 />
               )}
             </DashboardElement>
