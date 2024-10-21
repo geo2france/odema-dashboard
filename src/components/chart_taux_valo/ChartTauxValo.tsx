@@ -122,7 +122,7 @@ export const ChartTauxValo: React.FC<ChartTauxValoProps> = ({data, onFocus, focu
                 name:'Valorisation\nmatière (%)',
                 max:1,
                 axisLabel:{
-                    formatter: (value) => `${(Number(value)*100).toLocaleString(undefined, {maximumFractionDigits:1})}`
+                    formatter: (value:any) => `${(Number(value)*100).toLocaleString(undefined, {maximumFractionDigits:1})}`
                 }
             }
         ]
