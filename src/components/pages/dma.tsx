@@ -1,11 +1,11 @@
 import React, { CSSProperties, useState } from "react";
-import { Col, Form, Radio, Row, Typography } from 'antd';
+import { Form, Typography } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
 
 import alasql from "alasql";
-import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord, Control } from "g2f-dashboard";
+import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord, DashboardLayout } from "g2f-dashboard";
 import { ChartEvolutionDechet } from "../chart_evolution_dechet";
 import { useApi } from "g2f-dashboard"
 import { ademe_opendataProvider, geo2franceProvider } from "../../App";
@@ -23,8 +23,6 @@ export const DmaComponent: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
     const [cregion, _setcregion] = useSearchParamsState('region','32')
     const [focus, setFocus] = useState<string | undefined>(undefined) 
-    const [activeTab, setActiveTab] = useSearchParamsState('tab','gisement')
-
 
     const chartStyle:CSSProperties = {height:'350px'}
 
@@ -108,265 +106,221 @@ export const DmaComponent: React.FC = () => {
         JOIN ? p ON p.[annee] = d.[ANNEE] AND d.[C_REGION] = '${cregion}'
         `, [ data?.data, data_chiffre_cle?.data, pop_region]) // Ajoute la population departementale et régionale
  
-
-    const TabGisement = 
-      <>
-        <Col xl={12} xs={24}>
-            <DashboardElement
-              description= {note_methodo_gravats} 
-              isFetching={isFetching}
-              title={`Types et destination des déchets en ${year}`}
-              attributions={[
-                {
-                  name: "Ademe",
-                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-                },
-              ]}
-            >
-              {datasankey && (
-                <ChartSankeyDestinationDMA
-                  style={chartStyle}
-                  onFocus={(e: any) => setFocus(e?.name)}
-                  focus_item={focus}
-                  data={datasankey.map((i: SimpleRecord) => ({
-                    value: Math.max(i.TONNAGE_DMA_sum, 1),
-                    source: i.L_TYP_REG_DECHET,
-                    target: i.L_TYP_REG_SERVICE,
-                  }))}
-                />
-              )}
-            </DashboardElement>
-          </Col>
-
-          <Col xl={12} xs={24}>
-            <DashboardElement
-              isFetching={isFetching}
-              description= {note_methodo_gravats}
-              title={`Type de déchets collectés`}
-              attributions={[
-                {
-                  name: "Ademe",
-                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-                },
-              ]}
-            >
-              {data_typedechet_destination && (
-                <ChartEvolutionDechet
-                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                    tonnage: e.TONNAGE_DMA,
-                    annee: e.ANNEE,
-                    type: e.L_TYP_REG_DECHET,
-                    population: e.VA_POPANNEE_REG,
-                  }))}
-                  onFocus={(e: any) => setFocus(e?.seriesName)}
-                  focus_item={focus}
-                  year={Number(year)}
-                  showObjectives
-                />
-              )}
-            </DashboardElement>
-          </Col>
-
-
-
-          <Col xl={24 / 2} xs={24}>
-            <DashboardElement
-              title="Ratio régionaux"
-              isFetching={isFetching_chiffre_cle && isFetching_performance}
-              attributions={[
-                {
-                  name: "Ademe",
-                  url: "https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017",
-                },
-              ]}
-            >
-              {data_chiffre_cle && (
-                <ChartRaceBareDMA
-                  style={chartStyle}
-                  data={data_chiffre_cle.data.filter(
-                    (e: any) => e.Annee == year
-                  )}
-                  highlight_region={cregion}
-                />
-              )}
-            </DashboardElement>
-          </Col>
-
-          <Col xl={24 / 2} xs={24}>
-            <DashboardElement
-              title="Performances de collecte"
-              isFetching={isFetching_chiffre_cle && isFetching_performance}
-              attributions={[
-                {
-                  name: "Ademe",
-                  url: "https://data.ademe.fr/datasets/sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte",
-                },
-              ]}
-            >
-              {data_performance && data_chiffre_cle && (
-                <ChartCollectePerformance
-                  style={chartStyle}
-                  data={data_performance.data}
-                  data_territoire={data_chiffre_cle.data.filter(
-                    (e: any) => e.Annee == year
-                  )}
-                />
-              )}
-            </DashboardElement>
-          </Col>
-      </>
-
-    const TabValorisation = 
-       <>
-          <Col xl={12} xs={24}>
-            <DashboardElement
-              isFetching={isFetching}
-              title={`Destination des déchets`}
-              description= {note_methodo_gravats}
-              attributions={[
-                {
-                  name: "Ademe",
-                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-                },
-              ]}
-            >
-              {data_typedechet_destination && (
-                <ChartEvolutionDechet
-                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                    tonnage: e.TONNAGE_DMA,
-                    annee: e.ANNEE,
-                    type: e.L_TYP_REG_SERVICE,
-                    population: e.VA_POPANNEE_REG,
-                  }))}
-                  onFocus={(e: any) => setFocus(e?.seriesName)}
-                  focus_item={focus}
-                  year={Number(year)}
-                />
-              )}
-            </DashboardElement>
-          </Col>
-
-          <Col xl={12} xs={24}>
-            <DashboardElement
-              isFetching={isFetching}
-              title={`Taux de valorisation matière des DMA`}
-              description= {undefined}
-              attributions={[
-                {
-                  name: "Ademe",
-                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-                },
-              ]}
-            >
-              {data_typedechet_destination && (
-                <ChartTauxValo
-                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                    tonnage: e.TONNAGE_DMA,
-                    annee: e.ANNEE,
-                    type: e.L_TYP_REG_SERVICE,
-                    population: e.VA_POPANNEE_REG,
-                  }))}
-                  onFocus={(e: any) => setFocus(e?.seriesName)}
-                  focus_item={focus}
-                  year={Number(year)}
-                  showObjectives
-                />
-              )}
-            </DashboardElement>
-          </Col>
-      </>
-    const TabPrevention =
-      <>
-          <Col xl={24 / 2} xs={24}>
-            <DashboardElement
-              title="Tarification incitative"
-              description="Tarification incitative : mode de tarification qui comprend une part incitative sur les OMR.
-              Cette part peut concerner le volume de déchets et/ou le nombre de levées."
-              isFetching={isFetching_ti}
-              attributions={[
-                {
-                  name: "Odema",
-                  url: "https://www.geo2france.fr/datahub/dataset/891b801c-6196-42bc-99fd-e84663eaaa2f",
-                },
-              ]}
-            >
-              {data_ti && (
-                <ChartEvolutionPopTi
-                  style={chartStyle}
-                  data={data_ti.data}
-                  year={Number(year)}
-                />
-              )}
-            </DashboardElement>
-          </Col>
-
-          <Col xl={12} xs={24}>
-          <DashboardElement
-              isFetching={isFetching}
-              description= {<Text type="secondary">L'objectif régional est d'arriver à une production de <b>564 kg/hab en 2025</b> et{' '}
-              <b>541 kg/hab en 2030</b>. Les gravats et inertes ne sont pas pris en compte.</Text> }
-              title={`Production de DMA par habitant et objectif régional`}
-              attributions={[
-                {
-                  name: "Ademe",
-                  url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-                },
-              ]}>
-            {data_typedechet_destination && <ChartEvolutionObjectifs 
-                  data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                    annee: e.ANNEE,
-                    ratio: (e.TONNAGE_DMA/e.VA_POPANNEE_REG)*1000,
-                    population: e.VA_POPANNEE_REG,
-                  }))}
-                  dataObjectifs={[{annee:2009, ratio:577}, {annee:2025, ratio:564}, {annee:2031, ratio:541}]}
-                  year={Number(year)}
-                /> }
-              </DashboardElement>
-          </Col>
-      </>
     
     return (
-      <>
-        <Control>
-            <Form layout="inline">
-              <Form.Item label="Année">
-                    <NextPrevSelect
-                      onChange={(e: any) => (e ? setYear(e) : undefined)}
-                      reverse={true}
-                      value={year}
-                      options={
-                        Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
-                        .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
-                        .reverse()
-                        .map((i) => ({ label: i, value: i }))}
-                    />
-              </Form.Item>
-              <Form.Item>
-                <Radio.Group defaultValue="a" onChange={(e) => setActiveTab(e.target.value)} value={activeTab}>
-                  <Radio.Button value="gisement">Gisement</Radio.Button>
-                  <Radio.Button value="prevention">Prévention</Radio.Button>
-                  <Radio.Button value="valorisation">Valorisation</Radio.Button>
-                </Radio.Group>
-              </Form.Item>
-            </Form>
-        </Control>
+      <DashboardLayout
+        control={
+          <Form layout="inline">
+            <Form.Item label="Année">
+                  <NextPrevSelect
+                    onChange={(e: any) => (e ? setYear(e) : undefined)}
+                    reverse={true}
+                    value={year}
+                    options={
+                      Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
+                      .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
+                      .reverse()
+                      .map((i) => ({ label: i, value: i }))}
+                  />
+            </Form.Item>
+          </Form>
+        }
+      
+      >
 
-        <Row gutter={[8, 8]} style={{ margin: 16 }}>
+          <DashboardElement
+            description= {note_methodo_gravats} 
+            isFetching={isFetching}
+            title={`Types et destination des déchets en ${year}`} section="Gisement"
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+              },
+            ]}
+          >
+            {datasankey && (
+              <ChartSankeyDestinationDMA
+                style={chartStyle}
+                onFocus={(e: any) => setFocus(e?.name)}
+                focus_item={focus}
+                data={datasankey.map((i: SimpleRecord) => ({
+                  value: Math.max(i.TONNAGE_DMA_sum, 1),
+                  source: i.L_TYP_REG_DECHET,
+                  target: i.L_TYP_REG_SERVICE,
+                }))}
+              />
+            )}
+          </DashboardElement>
 
-        {(() => {
-            switch (activeTab) {
-              case 'gisement':
-                return TabGisement;
-              case 'valorisation':
-                return TabValorisation;
-              case 'prevention':
-                return TabPrevention
-              default:
-                return TabGisement;
-            }
-          })()}
-          </Row>
+          <DashboardElement
+            isFetching={isFetching}
+            description= {note_methodo_gravats}
+            title={`Type de déchets collectés`} section="Gisement"
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+              },
+            ]}
+          >
+            {data_typedechet_destination && (
+              <ChartEvolutionDechet
+                data={data_typedechet_destination.map((e: SimpleRecord) => ({
+                  tonnage: e.TONNAGE_DMA,
+                  annee: e.ANNEE,
+                  type: e.L_TYP_REG_DECHET,
+                  population: e.VA_POPANNEE_REG,
+                }))}
+                onFocus={(e: any) => setFocus(e?.seriesName)}
+                focus_item={focus}
+                year={Number(year)}
+                showObjectives
+              />
+            )}
+        </DashboardElement>
 
-      </>
+        <DashboardElement
+            title="Performances de collecte" section="Gisement"
+            isFetching={isFetching_chiffre_cle && isFetching_performance}
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte",
+              },
+            ]}
+          >
+          
+            {data_performance && data_chiffre_cle && (
+              <ChartCollectePerformance
+                style={chartStyle}
+                data={data_performance.data}
+                data_territoire={data_chiffre_cle.data.filter(
+                  (e: any) => e.Annee == year
+                )}
+              />
+            )}
+        </DashboardElement>
+
+        <DashboardElement
+            title="Ratio régionaux" section="Gisement"
+            isFetching={isFetching_chiffre_cle && isFetching_performance}
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017",
+              },
+            ]}
+          >
+            {data_chiffre_cle && (
+              <ChartRaceBareDMA
+                style={chartStyle}
+                data={data_chiffre_cle.data.filter(
+                  (e: any) => e.Annee == year
+                )}
+                highlight_region={cregion}
+              />
+            )}
+        </DashboardElement>
+
+
+        <DashboardElement
+            title="Tarification incitative"
+            description="Tarification incitative : mode de tarification qui comprend une part incitative sur les OMR.
+            Cette part peut concerner le volume de déchets et/ou le nombre de levées."
+            isFetching={isFetching_ti}  section="Prévention"
+            attributions={[
+              {
+                name: "Odema",
+                url: "https://www.geo2france.fr/datahub/dataset/891b801c-6196-42bc-99fd-e84663eaaa2f",
+              },
+            ]}
+          >
+            {data_ti && (
+              <ChartEvolutionPopTi
+                style={chartStyle}
+                data={data_ti.data}
+                year={Number(year)}
+              />
+            )}
+        </DashboardElement>
+
+        <DashboardElement
+            isFetching={isFetching}
+            description= {<Text type="secondary">L'objectif régional est d'arriver à une production de <b>564 kg/hab en 2025</b> et{' '}
+            <b>541 kg/hab en 2030</b>. Les gravats et inertes ne sont pas pris en compte.</Text> }
+            title={`Production de DMA par habitant et objectif régional`} section="Prévention"
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+              },
+            ]}>
+          {data_typedechet_destination && <ChartEvolutionObjectifs 
+                data={data_typedechet_destination.map((e: SimpleRecord) => ({
+                  annee: e.ANNEE,
+                  ratio: (e.TONNAGE_DMA/e.VA_POPANNEE_REG)*1000,
+                  population: e.VA_POPANNEE_REG,
+                }))}
+                dataObjectifs={[{annee:2009, ratio:577}, {annee:2025, ratio:564}, {annee:2031, ratio:541}]}
+                year={Number(year)}
+              /> }
+          </DashboardElement>
+
+          <DashboardElement
+            isFetching={isFetching}
+            title={`Destination des déchets`} section="Valorisation"
+            description= {note_methodo_gravats}
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+              },
+            ]}
+          >
+            {data_typedechet_destination && (
+              <ChartEvolutionDechet
+                data={data_typedechet_destination.map((e: SimpleRecord) => ({
+                  tonnage: e.TONNAGE_DMA,
+                  annee: e.ANNEE,
+                  type: e.L_TYP_REG_SERVICE,
+                  population: e.VA_POPANNEE_REG,
+                }))}
+                onFocus={(e: any) => setFocus(e?.seriesName)}
+                focus_item={focus}
+                year={Number(year)}
+              />
+            )}
+          </DashboardElement>
+
+          <DashboardElement
+            isFetching={isFetching}
+            title={`Taux de valorisation matière des DMA`} section="Valorisation"
+            description= {undefined}
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+              },
+            ]}
+          >
+            {data_typedechet_destination && (
+              <ChartTauxValo
+                data={data_typedechet_destination.map((e: SimpleRecord) => ({
+                  tonnage: e.TONNAGE_DMA,
+                  annee: e.ANNEE,
+                  type: e.L_TYP_REG_SERVICE,
+                  population: e.VA_POPANNEE_REG,
+                }))}
+                onFocus={(e: any) => setFocus(e?.seriesName)}
+                focus_item={focus}
+                year={Number(year)}
+                showObjectives
+              />
+            )}
+          </DashboardElement>
+
+      </DashboardLayout>
+
     );
 };
