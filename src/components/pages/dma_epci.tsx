@@ -3,7 +3,7 @@ import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { FilePdfOutlined } from "@ant-design/icons"
 import alasql from "alasql"
 import { BsRecycle } from "react-icons/bs";
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { TbReportMoney } from "react-icons/tb";
 import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, cardStyles, Control } from "g2f-dashboard"
@@ -92,9 +92,27 @@ export const DmaPageEPCI: React.FC = () => {
         }
     })
 
-    const options_territories = data_ecpci_collecte?.data.map((e:any) => ({label:e.epci_nom, value:e.epci_siren}))
+    const {data:data_ecpci_traitement} = useApi({
+      resource:"odema:territoires_traitement ",
+      dataProvider:geo2franceProvider,
+      pagination:{
+          mode:"off"
+      },
+      meta:{
+          properties:["epci_siren", "epci_nom","population","nombre_communes"]
+      }
+  })
 
-    const current_epci = data_ecpci_collecte?.data.find((e:any) => (e.epci_siren == siren_epci) )
+   const options_territories = useMemo( () => data_ecpci_collecte?.data && data_ecpci_traitement?.data && alasql(`
+        SELECT [epci_nom] AS [label], [epci_siren] AS [value]
+        FROM ?
+        UNION
+          SELECT [epci_nom] AS [label], [epci_siren] AS [value]
+        FROM ?`, [data_ecpci_collecte?.data, data_ecpci_traitement?.data]),
+        [data_ecpci_collecte?.data, data_ecpci_traitement?.data]
+   )
+
+   const current_epci = data_ecpci_collecte?.data.find((e:any) => (e.epci_siren == siren_epci) ) || data_ecpci_traitement?.data.find((e:any) => (e.epci_siren == siren_epci) )
 
 
     const territoire_descritpion_item : DescriptionsProps['items'] = [
