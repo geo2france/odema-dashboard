@@ -34,3 +34,29 @@ export const default_app_palette = [
     "#ea7ccc"
 ]
 
+type DataPoint = [number, number];
+export const interpolate = (data:DataPoint[], _type='linear'):DataPoint[] => {
+
+    const result: DataPoint[] = [];
+
+    for (let i = 0; i < data.length - 1; i++) {
+        const [x1, y1] = data[i];
+        const [x2, y2] = data[i + 1];
+
+        // Ajoute le point de départ
+        result.push(data[i]);
+
+        // Calcule les points intermédiaires
+        const steps = x2 - x1;
+        for (let j = 1; j < steps; j++) {
+            const x = x1 + j;
+            const y = y1 + ((y2 - y1) / steps) * j;
+            result.push([x, y]);
+        }
+    }
+
+    // Ajoute le dernier point
+    result.push(data[data.length - 1]);
+
+    return result; 
+}

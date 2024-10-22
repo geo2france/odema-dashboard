@@ -3,6 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import { SimpleRecord, useChartData } from "g2f-dashboard";
+import { interpolate } from "../../utils";
 
 const formatter_currentyear = (value:number, year?:number) => {
     const value_year:number = new Date(value).getFullYear()
@@ -87,11 +88,12 @@ export const ChartTauxValo: React.FC<ChartTauxValoProps> = ({data, onFocus, focu
     const serie_obj:LineSeriesOption = {
         type:'line',
         name:'Objectif régional',
-        data: data_obj.map((e:SimpleRecord)=> [e.annee.toString(), e.value]),
+        data: interpolate(data_obj.map((e:SimpleRecord)=> [e.annee, e.value])).map((e) => [e[0].toString(), e[1]]),
         lineStyle:{
             type:"dashed",
             width:2
         },
+        symbolSize:(value) => data_obj.map((e) => e.annee.toString()).includes(value[0]) ? 4 : 0,
         color:"#91cc75"
     }
 
