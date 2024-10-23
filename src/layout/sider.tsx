@@ -1,7 +1,7 @@
 import {
   CloseSquareOutlined,
   HomeOutlined,
-  RollbackOutlined,
+  //RollbackOutlined,
 } from "@ant-design/icons";
 import Odema from "/img/logo_odema.png";
 
@@ -28,7 +28,7 @@ export const AppSider: React.FC = () => {
 
       ]
     },
-    {
+  /*  {
       key: "#/rep",
       disabled:true,
       label: <>REP</>,
@@ -54,7 +54,7 @@ export const AppSider: React.FC = () => {
         },
         { key: "/rep", label: <NavLink to="/rep/">Vrac</NavLink> },
       ],
-    },
+    },*/
     {
       key: "/isdnd",
       label: <NavLink to="/isdnd"> Exutoires</NavLink>,
