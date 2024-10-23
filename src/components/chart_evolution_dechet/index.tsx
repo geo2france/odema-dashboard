@@ -133,7 +133,10 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         yAxis: [
             {
                 type: 'value',
-                name:normalize ? '% de déchets':'Quantité (kg/hab)',
+                name:normalize ? 'Quantité de\ndéchets (%)':'Quantité (kg/hab)',
+                axisLabel:{
+                    formatter :  (value) =>  normalize ? `${value*100}` : `${value}`,
+                },
                 max: normalize ? 1 : undefined,
             }
         ]
