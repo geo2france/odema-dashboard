@@ -12,6 +12,7 @@ import { ademe_opendataProvider, geo2franceProvider } from "../../App";
 import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti";
 import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif";
 import { ChartTauxValo } from "../chart_taux_valo/ChartTauxValo";
+import { ChartDmaStockage } from "../chart_dma_stockage/ChartDmaStockage";
 
 const {Text} = Typography;
 const [maxYear, minYear, defaultYear] = [2023,2009,2021]
@@ -307,6 +308,33 @@ export const DmaComponent: React.FC = () => {
           >
             {data_typedechet_destination && (
               <ChartTauxValo
+                data={data_typedechet_destination.map((e: SimpleRecord) => ({
+                  tonnage: e.TONNAGE_DMA,
+                  annee: e.ANNEE,
+                  type: e.L_TYP_REG_SERVICE,
+                  population: e.VA_POPANNEE_REG,
+                }))}
+                onFocus={(e: any) => setFocus(e?.seriesName)}
+                focus_item={focus}
+                year={Number(year)}
+                showObjectives
+              />
+            )}
+          </DashboardElement>
+
+          <DashboardElement
+            isFetching={isFetching}
+            title={`Part de DMA admis en stockage`} section="Valorisation"
+            description= {"Objectif : Limiter à 10% des DMA admis en installations de stockage d’ici à 2035"}
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+              },
+            ]}
+          >
+            {data_typedechet_destination && (
+              <ChartDmaStockage
                 data={data_typedechet_destination.map((e: SimpleRecord) => ({
                   tonnage: e.TONNAGE_DMA,
                   annee: e.ANNEE,
