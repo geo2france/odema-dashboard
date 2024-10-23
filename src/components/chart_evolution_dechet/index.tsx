@@ -115,6 +115,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
     }
     const option:EChartsOption = {
         series:[...series, ...(showObjectives ? [objectifs] : [])],
+        legend:{show:true, bottom:0},
         tooltip:{
             show:true,
             formatter: tooltipFormatter
@@ -135,7 +136,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
                 type: 'value',
                 name:normalize ? 'Quantité de\ndéchets (%)':'Quantité (kg/hab)',
                 axisLabel:{
-                    formatter :  (value) =>  normalize ? `${value*100}` : `${value}`,
+                    formatter :  (value:number) =>  normalize ? `${value*100}` : `${value}`,
                 },
                 max: normalize ? 1 : undefined,
             }
