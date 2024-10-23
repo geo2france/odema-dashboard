@@ -1,5 +1,5 @@
 import alasql from "alasql";
-import { CSSProperties, useRef } from "react";
+import { CSSProperties, useMemo, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, BarSeriesOption, LineSeriesOption } from "echarts";
 import { SimpleRecord, useChartActionHightlight, useChartData, useChartEvents, useDashboardElement } from "g2f-dashboard"
@@ -21,47 +21,65 @@ export interface ChartEvolutionTypeDechetProps {
     style? : CSSProperties;
     year? : number;
     showObjectives?:boolean;
+    normalize?:boolean
   }
 
 
 
-const tooltipFormatter = (e:any) => `
-    ${e.seriesName} <br>
-    ${e.marker}
-    ${e.name} :
-    <b>${e.value[1].toLocaleString(undefined, {maximumFractionDigits: 0})} kg/hab</b> 
-    (${e.value[2].toLocaleString(undefined, {maximumFractionDigits: 0})} T)`
 
 
-export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({data, onFocus, focus_item, style, year, showObjectives=false} )  => {
+
+export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({data, onFocus, focus_item, style, year, showObjectives=false, normalize=false} )  => {
     const chartRef = useRef<any>()
     
+    const tooltipFormatter = (e:any) => `
+        ${e.seriesName} <br>
+        ${e.marker}
+        ${e.name} :
+        <b>${normalize ? 
+            (e.value[3]*100).toLocaleString(undefined, {maximumFractionDigits: 1})+' %' :
+            e.value[1].toLocaleString(undefined, {maximumFractionDigits: 0})+' kb/hab' 
+        } 
+        </b> 
+        (${ normalize ? 
+            e.value[1].toLocaleString(undefined, {maximumFractionDigits: 0})+' kg /hab' :
+            e.value[2].toLocaleString(undefined, {maximumFractionDigits: 0})+' T'
+        })`
+
     useChartEvents({chartRef:chartRef, onFocus:onFocus})
     useChartActionHightlight({chartRef:chartRef, target:{seriesName:focus_item}})
     useDashboardElement({chartRef})
 
-    const data_chart = alasql(`SELECT 
-        [annee], 
-        [type], 
-        SUM([tonnage]) as tonnage, 
-        SUM(([tonnage]/[population])*1000) as ratio
-    FROM ?
-    GROUP BY [annee], [type]
-    `,[data]) //Somme par type de traitement
-    
+    const data_chart = useMemo(() =>alasql(`SELECT 
+        d.[annee], 
+        d.[type], 
+        SUM(d.[tonnage]) as tonnage, 
+        SUM((d.[tonnage]/d.[population])*1000) as ratio,
+        t.[ratio_annee_total]
+    FROM ? d
+    JOIN (
+        SELECT x.[annee], SUM(x.[tonnage]/x.[population]*1000) as ratio_annee_total
+        FROM ? x
+        GROUP BY x.[annee]
+    ) t ON d.[annee] = t.[annee]
+    GROUP BY d.[annee], d.[type], t.[ratio_annee_total]
+    `,[data, data]), //Somme par type de traitement
+    [data])
+
     useChartData({data:data_chart})
 
-    const data_chart2 = alasql(`
-    SELECT [type], ARRAY(ARRAY[[annee], [tonnage], [ratio]]) as data
+    const data_chart2 = useMemo(() =>alasql(`
+    SELECT [type], ARRAY(ARRAY[[annee], [tonnage], [ratio], [ratio]/[ratio_annee_total] ]) as data
     FROM ?
     GROUP BY [type]
-    `,[data_chart]) //Regroupement par type de traitement (= série pour echarts bar)
+    `,[data_chart]), //Regroupement par type de traitement (= série pour echarts bar)
+    [data_chart])
 
-    const categories = alasql(`SELECT ARRAY(DISTINCT [annee]) as annees FROM ?`, [data])[0].annees.sort().map((e:number) => e.toString())
+    const categories = useMemo(() =>alasql(`SELECT ARRAY(DISTINCT [annee]) as annees FROM ?`, [data])[0].annees.sort().map((e:number) => e.toString()), [data])
 
     const series:BarSeriesOption[] = data_chart2.map((e:SimpleRecord) => ({
          name:e.type,
-         data:e.data.map((e:number[]) => ([e[0].toString(), e[2], e[1] ])),
+         data:e.data.map((e:number[]) => ([e[0].toString(), e[2], e[1], e[3] ])),
          type:'bar',
          stack:'total',
          itemStyle:{
@@ -70,6 +88,9 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
          emphasis:{
             focus:'series'
         },
+        encode:{
+            y: normalize ? [3] : undefined
+        }
     })).sort((a:any,b:any) => (chartBusinessProps(a.name).sort || 0) - (chartBusinessProps(b.name).sort || 0)   )
 
     const objectifs:LineSeriesOption = {
@@ -112,7 +133,8 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         yAxis: [
             {
                 type: 'value',
-                name:'Quantité (kg/hab)'
+                name:normalize ? '% de déchets':'Quantité (kg/hab)',
+                max: normalize ? 1 : undefined,
             }
         ]
 
