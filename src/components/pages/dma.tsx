@@ -224,28 +224,6 @@ export const DmaComponent: React.FC = () => {
             )}
         </DashboardElement>
 
-
-        <DashboardElement
-            title="Tarification incitative"
-            description="Tarification incitative : mode de tarification qui comprend une part incitative sur les OMR.
-            Cette part peut concerner le volume de déchets et/ou le nombre de levées."
-            isFetching={isFetching_ti}  section="Prévention"
-            attributions={[
-              {
-                name: "Odema",
-                url: "https://www.geo2france.fr/datahub/dataset/891b801c-6196-42bc-99fd-e84663eaaa2f",
-              },
-            ]}
-          >
-            {data_ti && (
-              <ChartEvolutionPopTi
-                style={chartStyle}
-                data={data_ti.data}
-                year={Number(year)}
-              />
-            )}
-        </DashboardElement>
-
         <DashboardElement
             isFetching={isFetching}
             description= {<Text type="secondary">L'objectif régional est d'arriver à une production de <b>564 kg/hab en 2025</b> et{' '}
@@ -267,6 +245,28 @@ export const DmaComponent: React.FC = () => {
                 year={Number(year)}
               /> }
           </DashboardElement>
+
+        <DashboardElement
+            title="Tarification incitative"
+            description="Tarification incitative : mode de tarification qui comprend une part incitative sur les OMR.
+            Cette part peut concerner le volume de déchets et/ou le nombre de levées."
+            isFetching={isFetching_ti}  section="Prévention"
+            attributions={[
+              {
+                name: "Odema",
+                url: "https://www.geo2france.fr/datahub/dataset/891b801c-6196-42bc-99fd-e84663eaaa2f",
+              },
+            ]}
+          >
+            {data_ti && (
+              <ChartEvolutionPopTi
+                style={chartStyle}
+                data={data_ti.data}
+                year={Number(year)}
+              />
+            )}
+             <p style={{marginLeft:16}}>La région contribue à l'<b>objectif national</b> de <b>25 millions d'habitants couverts en 20205</b>.</p>
+        </DashboardElement>
 
           <DashboardElement
             isFetching={isFetching}
