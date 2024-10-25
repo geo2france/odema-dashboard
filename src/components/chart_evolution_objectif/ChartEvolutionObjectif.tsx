@@ -59,6 +59,7 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
     }
     const option:EChartsOption={
         series:[serie, serie_obj],
+        legend:{show:true, bottom:0},
         tooltip:{
             show:true,
             trigger: 'axis',
