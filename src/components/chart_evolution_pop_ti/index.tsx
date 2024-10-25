@@ -31,6 +31,11 @@ const formatter_currentyear = (value:number, year?:number) => {
   return value_year == year ? `{currentDate|${value_year} }` : value_year.toString()
 }
 
+const tooltipFormatter = (e:any) => `
+${e.marker}
+${e.seriesName} <br>
+<b>${e.value[1].toLocaleString()} hab.</b> (${(Math.round(e.value[2]*1000)/10).toLocaleString()} %)`
+
 export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, onFocus, focus_item, style, year} )  => {
     const chartRef = useRef<any>()
     const threshold_proj = 2023 ; // Année après laquelle démarre la projection
@@ -50,9 +55,9 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
     });
 
     const serie: LineSeriesOption = {
-      name: "Part de la population en TI",
+      name: "Population en TI",
       data: data.filter((e) => e.annee <= threshold_proj).map((e) => ({ 
-        value:[e.annee.toString(), Math.round( (e.pop_ti / e.pop_totale) * 100 *10)/10]
+        value:[e.annee.toString(), e.pop_ti, e.pop_ti/e.pop_totale]
             } )),
       type: "line",
       color:"#d1956a",
@@ -60,9 +65,9 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
     };
 
     const serie_proj: LineSeriesOption = {
-        name: "Part de la population en TI (Projection)",
+        name: "Population en TI (Projection)",
         data: data.filter((e) => e.annee >= threshold_proj).map((e) => ({ 
-          value:[e.annee.toString(), Math.round( (e.pop_ti / e.pop_totale) * 100 *10)/10],
+          value:[e.annee.toString(), e.pop_ti, e.pop_ti/e.pop_totale],
           symbol: e.annee == threshold_proj ? 'none' : undefined
           } )),
         type: "line",
@@ -82,8 +87,10 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
         },
         tooltip:{
             show:true,
-            trigger: 'axis',
-            valueFormatter: (value) => ( `${value} %` )
+            //trigger: 'axis',
+            formatter : tooltipFormatter
+            /*valueFormatter: (value,di) => ( `${(Number(value)/1e6).toLocaleString(undefined, {maximumFractionDigits:1})} millions 
+                                            ( )` )*/
         },
         xAxis: [
             {
@@ -108,11 +115,11 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
         yAxis: [
             {
                 type: 'value',
-                name:'Part de la population en TI (%)',
+                name:'Population en TI',
                 nameLocation: 'middle',
                 nameGap: 50,
                 axisLabel : {
-                    formatter: '{value} %'
+                    formatter: (value) =>`${(value/1e6).toLocaleString()} M`
                   },
             }
         ]
