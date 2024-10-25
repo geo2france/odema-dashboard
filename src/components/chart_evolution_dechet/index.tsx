@@ -42,7 +42,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         } 
         </b> 
         (${ normalize ? 
-            e.value[1].toLocaleString(undefined, {maximumFractionDigits: 0})+' kg /hab' :
+            e.value[1].toLocaleString(undefined, {maximumFractionDigits: 0})+' kg /hab - ' + e.value[2].toLocaleString(undefined, {maximumFractionDigits: 0})+' T':
             e.value[2].toLocaleString(undefined, {maximumFractionDigits: 0})+' T'
         })`
 
