@@ -87,7 +87,7 @@ export const ChartTauxValo: React.FC<ChartTauxValoProps> = ({data, onFocus, focu
 
     const serie_obj:LineSeriesOption = {
         type:'line',
-        name:'Objectif régional',
+        name:'Objectif régional SRADDET',
         data: interpolate(data_obj.map((e:SimpleRecord)=> [e.annee, e.value])).map((e) => [e[0].toString(), e[1]]),
         lineStyle:{
             type:"dashed",

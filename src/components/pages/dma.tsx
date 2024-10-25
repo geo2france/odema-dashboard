@@ -132,7 +132,7 @@ export const DmaComponent: React.FC = () => {
           <DashboardElement
             description= {note_methodo_gravats} 
             isFetching={isFetching}
-            title={`Types et destination des déchets en ${year}`} section="Gisement"
+            title={`Types et destination des déchets en ${year}`} section="Panorama"
             attributions={[
               {
                 name: "Ademe",
@@ -157,7 +157,7 @@ export const DmaComponent: React.FC = () => {
           <DashboardElement
             isFetching={isFetching}
             description= {note_methodo_gravats}
-            title={`Type de déchets collectés`} section="Gisement"
+            title={`Type de déchets collectés`} section="Panorama"
             attributions={[
               {
                 name: "Ademe",
@@ -182,7 +182,7 @@ export const DmaComponent: React.FC = () => {
         </DashboardElement>
 
         <DashboardElement
-            title="Performances de collecte" section="Gisement"
+            title="Performances de collecte" section="Panorama"
             isFetching={isFetching_chiffre_cle && isFetching_performance}
             attributions={[
               {
@@ -204,7 +204,7 @@ export const DmaComponent: React.FC = () => {
         </DashboardElement>
 
         <DashboardElement
-            title="Ratio régionaux" section="Gisement"
+            title="Ratio régionaux" section="Panorama"
             isFetching={isFetching_chiffre_cle && isFetching_performance}
             attributions={[
               {
@@ -324,7 +324,7 @@ export const DmaComponent: React.FC = () => {
 
           <DashboardElement
             isFetching={isFetching}
-            title={`Part de DMA admis en stockage`} section="Valorisation"
+            title={`Part de DMA admis en stockage`} section="Stockage"
             description= {"Objectif : Limiter à 10% des DMA admis en installations de stockage d’ici à 2035"}
             attributions={[
               {
