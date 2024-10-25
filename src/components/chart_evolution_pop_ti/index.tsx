@@ -39,12 +39,6 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
     useChartActionHightlight({chartRef:chartRef, target:{seriesName:focus_item}}) // Optionnel, pour déclencher des Hightlight sur le graphique
     useDashboardElement({chartRef})  // Nécessaire pour DashboardElement
 
-    const data_objectif = [
-        [2015, 0.041],
-        [2025, 0.3],
-        [2029, 0.3]
-    ]
-
     useChartData({
       data: data.map((e: any) => ({
         annee: e.annee,
@@ -79,21 +73,9 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
         }
       };
 
-      const serie_obj: LineSeriesOption = {
-        name: "Objectif régional",
-        data: data_objectif.map((e) => ({ 
-          value:[e[0].toString(), e[1] * 100],
-          } )),
-        type: "line",
-        color:"#91cc75",
-        emphasis: { focus: "none" },
-        lineStyle:{
-            type:"dashed",
-        }
-      };
 
     const option:EChartsOption = {
-        series:[serie, serie_proj, serie_obj],
+        series:[serie, serie_proj],
         legend : {
             show:true,
             bottom:"0px"
