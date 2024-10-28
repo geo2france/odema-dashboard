@@ -153,31 +153,13 @@ export const DmaPageEPCI: React.FC = () => {
         },
     ]
 
-
-    /* TODO : Prévoir un bloc de logique permettant de pré-traiter certaines données pour éviter de répéter 
-    les mêmes requêtes dans différents composants dataviz */
-    const tonnage_dma = data_traitement && alasql(`
-    SELECT 
-    [annee],
-    SUM( [tonnage_dma] ) as tonnage
-    FROM ?
-    GROUP BY [annee]
-     `,[data_traitement.data])
-
-    const tonnage_valo = data_traitement && alasql(`
-    SELECT 
-    [annee],
-    SUM( [tonnage_dma] ) as tonnage
-    FROM ?
-    WHERE [l_typ_reg_service] in ('Valorisation matière','Valorisation organique')
-    GROUP BY [annee]
-     `,[data_traitement.data])
+    const indicateur_curent_year = indicateurs?.data?.data.find((e) => e.annee == year);
 
     const key_figures:any[] = [
         {id:"valo_dma", 
         name:"Taux de valorisation des DMA",
         description:"Part des DMA orientés vers les filières de valorisation matière ou organique (hors déblais et gravats).",
-        value:(tonnage_valo?.find((e:SimpleRecord) => e.annee == year)?.tonnage / tonnage_dma?.find((e:SimpleRecord) => e.annee == year)?.tonnage)*100,
+        value:((indicateur_curent_year?.tonnage_valo_org + indicateur_curent_year?.tonnage_valo_mat) / indicateur_curent_year?.tonnage_dma)*100,
         sub_value:"Obj. régional : 65 %",
         digits:1,
         icon: <BsRecycle />,
@@ -185,7 +167,7 @@ export const DmaPageEPCI: React.FC = () => {
         {id:"prod_dma", 
         name:"Production de DMA",
         description:"Production globale annuelle de DMA (hors déblais et gravats).",
-        value: (tonnage_dma?.find((e:SimpleRecord) => e.annee == year)?.tonnage  / current_epci?.population) * 1e3,
+        value: (indicateur_curent_year?.tonnage_dma  / indicateur_curent_year?.pop_dma) * 1e3,
         sub_value:"Obj. régional : 553 kg/hab",
         icon: <FaTrashCan />,
         unit:'kg/hab'},
