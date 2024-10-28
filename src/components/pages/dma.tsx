@@ -127,6 +127,7 @@ export const DmaComponent: React.FC = () => {
           </Form>
         }
       
+        sections={['Panorama', 'Prévention', 'Valorisation', 'Stockage']}
       >
 
           <DashboardElement
