@@ -23,7 +23,8 @@ export interface ChartEvolutionTypeDechetProps {
     style? : CSSProperties;
     year? : number;
     showObjectives?:boolean;
-    normalize?:boolean
+    normalize?:boolean;
+    showNormalizeButton?:boolean;
   }
 
 
@@ -31,7 +32,7 @@ export interface ChartEvolutionTypeDechetProps {
 
 
 
-export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({data, onFocus, focus_item, style, year, showObjectives=false, normalize=false} )  => {
+export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({data, onFocus, focus_item, style, year, showObjectives=false, normalize=false, showNormalizeButton=true} )  => {
     const chartRef = useRef<any>()
     
     const [normalizeState, setNormalizeState] = useState(normalize)
@@ -149,11 +150,12 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
     }
     return (
         <>
-        <Button 
+        {showNormalizeButton && <Button 
             type={normalizeState ? "primary" : undefined} 
             icon={<FaPercent />} 
             style={{position:'absolute', right:16, top:32+16, zIndex:1}}
             onClick={() => setNormalizeState(!normalizeState)} />
+        }
         <ReactECharts option={option} ref={chartRef} style={ style} />
         </>
     )
