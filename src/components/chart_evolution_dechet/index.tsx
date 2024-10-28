@@ -1,9 +1,11 @@
 import alasql from "alasql";
-import { CSSProperties, useMemo, useRef } from "react";
+import { CSSProperties, useMemo, useRef, useState } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, BarSeriesOption, LineSeriesOption } from "echarts";
 import { SimpleRecord, useChartActionHightlight, useChartData, useChartEvents, useDashboardElement } from "g2f-dashboard"
 import { chartBusinessProps  } from "../../utils";
+import { Button } from "antd";
+import { FaPercent } from "react-icons/fa";
 
 interface DataProps {
     annee:number
@@ -32,16 +34,18 @@ export interface ChartEvolutionTypeDechetProps {
 export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({data, onFocus, focus_item, style, year, showObjectives=false, normalize=false} )  => {
     const chartRef = useRef<any>()
     
+    const [normalizeState, setNormalizeState] = useState(normalize)
+
     const tooltipFormatter = (e:any) => `
         ${e.seriesName} <br>
         ${e.marker}
         ${e.name} :
-        <b>${normalize ? 
+        <b>${normalizeState ? 
             (e.value[3]*100).toLocaleString(undefined, {maximumFractionDigits: 1})+' %' :
             e.value[1].toLocaleString(undefined, {maximumFractionDigits: 0})+' kb/hab' 
         } 
         </b> 
-        (${ normalize ? 
+        (${ normalizeState ? 
             e.value[1].toLocaleString(undefined, {maximumFractionDigits: 0})+' kg /hab - ' + e.value[2].toLocaleString(undefined, {maximumFractionDigits: 0})+' T':
             e.value[2].toLocaleString(undefined, {maximumFractionDigits: 0})+' T'
         })`
@@ -89,7 +93,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
             focus:'series'
         },
         encode:{
-            y: normalize ? [3] : undefined
+            y: normalizeState ? [3] : undefined
         }
     })).sort((a:any,b:any) => (chartBusinessProps(a.name).sort || 0) - (chartBusinessProps(b.name).sort || 0)   )
 
@@ -134,16 +138,23 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         yAxis: [
             {
                 type: 'value',
-                name:normalize ? 'Quantité de\ndéchets (%)':'Quantité (kg/hab)',
+                name:normalizeState ? 'Quantité de\ndéchets (%)':'Quantité (kg/hab)',
                 axisLabel:{
-                    formatter :  (value:number) =>  normalize ? `${value*100}` : `${value}`,
+                    formatter :  (value:number) =>  normalizeState ? `${value*100}` : `${value}`,
                 },
-                max: normalize ? 1 : undefined,
+                max: normalizeState ? 1 : undefined,
             }
         ]
 
     }
     return (
+        <>
+        <Button 
+            type={normalizeState ? "primary" : undefined} 
+            icon={<FaPercent />} 
+            style={{position:'absolute', right:16, top:32+16, zIndex:1}}
+            onClick={() => setNormalizeState(!normalizeState)} />
         <ReactECharts option={option} ref={chartRef} style={ style} />
+        </>
     )
 }
