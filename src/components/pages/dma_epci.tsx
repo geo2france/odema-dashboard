@@ -298,7 +298,7 @@ export const DmaPageEPCI: React.FC = () => {
               },
             ]}
           >
-            {data_traitement && current_epci && indicateur_type_dechet && (
+            {indicateur_type_dechet && (
               <ChartEvolutionDechet
                 data = {indicateur_type_dechet}
                 onFocus={(e: any) => setFocus(e?.seriesName)}
@@ -320,7 +320,7 @@ export const DmaPageEPCI: React.FC = () => {
               },
             ]}
           >
-            {data_traitement && current_epci && indicateurs_destination_dechet && (
+            {indicateurs_destination_dechet && (
               <ChartEvolutionDechet
                 data={indicateurs_destination_dechet}
                 onFocus={(e: any) => setFocus(e?.seriesName)}
