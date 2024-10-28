@@ -87,10 +87,7 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
         },
         tooltip:{
             show:true,
-            //trigger: 'axis',
             formatter : tooltipFormatter
-            /*valueFormatter: (value,di) => ( `${(Number(value)/1e6).toLocaleString(undefined, {maximumFractionDigits:1})} millions 
-                                            ( )` )*/
         },
         xAxis: [
             {
@@ -102,15 +99,8 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
                         fontWeight: 'bold'
                     }
                 },
-
               }
-                /*data:categories.map((annee:number) => ({
-                    value:annee,
-                    textStyle: {
-                        fontWeight: annee == year ? 700 : undefined,
-                        fontSize: annee == year ? 14 : undefined
-                    }
-                })),*/
+
             }],
         yAxis: [
             {
@@ -119,7 +109,7 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
                 nameLocation: 'middle',
                 nameGap: 50,
                 axisLabel : {
-                    formatter: (value) =>`${(value/1e6).toLocaleString()} M`
+                    formatter: (value:number) =>`${(value/1e6).toLocaleString()} M`
                   },
             }
         ]
