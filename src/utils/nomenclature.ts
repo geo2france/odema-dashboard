@@ -9,31 +9,56 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
         case "Stockage pour inertes":
         case "Incinération sans récupération d'énergie":
             return {color:"#ED1C24", sort:1, label:item}
+        case "tonnage_stock":
+            return chartBusinessProps("Stockage")
+        case "tonnage_inc":
+            return chartBusinessProps("Incinération sans récupération d'énergie")
         case "Incinération avec récupération d'énergie":
             return {color:'#FFB800', sort:2, label:item}
+        case "tonnage_valo_enr":
+            return chartBusinessProps("Incinération avec récupération d'énergie")
         case "Valorisation matière":
             return {color:'#ABCB54', sort:3, label:item}
+        case "tonnage_valo_mat":
+            return chartBusinessProps("Valorisation matière")
         case "Valorisation organique":
             return {color:'#6C8033', sort:4, label:item}
+        case "tonnage_valo_org":
+            return chartBusinessProps("Valorisation organique")
         case "Biodéchets":
         case "Déchets verts et biodéchets":
         case "Déchets de produits alimentaires":
             return {color:'#7A4443', sort:4, label:item}
+        case "tonnage_bio":
+            return chartBusinessProps("Biodéchets")
         case "Verre":
             return {color:'#008F29', sort:3, label:item}
         case "Ordures ménagères résiduelles":
         case "Collecte OMR":
             return {color:'#919191', sort:1, label:item}
+        case "tonnage_omr":
+            return chartBusinessProps("Ordures ménagères résiduelles")
         case "Emballages et papier":
         case "Emballages, journaux-magazines":
         case "Matériaux recyclables":
         case "Collecte séparées":
             return {color:'#FEFA54',sort:2, label:item}
+        case "tonnage_ejm":
+            return chartBusinessProps("Emballages, journaux-magazines")
+        case "tonnage_verre":
+            return {color:'#0387E8',sort:2, label:"Verre"}
         case "Encombrants":
         case "Déchèterie":
+        case "Déchets dangereux":
         case "Déchets dangereux (y.c. DEEE)":
         case "Collectes séparées hors gravats":
-            return {color:'#FF8001',sort:5, label:item}
+            return {color:'#FF8001',sort:5, label:item} 
+        case "tonnage_dechet":
+            return chartBusinessProps("Déchèterie")
+        case "tonnage_dang":
+            return chartBusinessProps("Déchets dangereux")
+        case "tonnage_enc":
+            return chartBusinessProps("Encombrants")
         case "Non précisé":
             return {color:'#5D5D5D', sort:5, label:item}
         case "Autres":
@@ -42,7 +67,8 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
         case "Autre":
         case "AUTR":
         case "AUT":
-            return {color:'#5D5D5D', sort:5, label:'Autres'}
+        case "tonnage_autre":
+            return {color:'#5D5D5D', sort:99, label:'Autres'}
         case "GEMF": //REP
             return { label: "GEM froid" }
         case "GEMHF":

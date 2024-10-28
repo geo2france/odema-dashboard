@@ -78,7 +78,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
     const categories = useMemo(() =>alasql(`SELECT ARRAY(DISTINCT [annee]) as annees FROM ?`, [data])[0].annees.sort().map((e:number) => e.toString()), [data])
 
     const series:BarSeriesOption[] = data_chart2.map((e:SimpleRecord) => ({
-         name:e.type,
+         name:chartBusinessProps(e.type).label,
          data:e.data.map((e:number[]) => ([e[0].toString(), e[2], e[1], e[3] ])),
          type:'bar',
          stack:'total',

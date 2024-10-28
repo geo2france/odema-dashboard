@@ -10,16 +10,17 @@ import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, Flip
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { useApi } from "g2f-dashboard"
-import { geo2franceProvider } from "../../App"
+import { ademe_opendataProvider, geo2franceProvider } from "../../App"
 
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2021]
+//['tonnage_omr','tonnage_enc','tonnage_dang','tonnage_ejm','tonnage_bio', 'tonnage_verre','tonnage_autre']
+
 
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
     const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
     const [focus, setFocus] = useState<string | undefined>(undefined)
-
 
 
     const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useApi({ 
@@ -88,7 +89,7 @@ export const DmaPageEPCI: React.FC = () => {
             mode:"off"
         },
         meta:{
-            properties:["epci_siren", "epci_nom","population","nombre_communes"]
+            properties:["epci_siren", "epci_nom","population","nombre_communes","c_acteur_sinoe"]
         }
     })
 
@@ -99,7 +100,7 @@ export const DmaPageEPCI: React.FC = () => {
           mode:"off"
       },
       meta:{
-          properties:["epci_siren", "epci_nom","population","nombre_communes"]
+          properties:["epci_siren", "epci_nom","population","nombre_communes","c_acteur_sinoe"]
       }
   })
 
@@ -113,6 +114,20 @@ export const DmaPageEPCI: React.FC = () => {
    )
 
    const current_epci = data_ecpci_collecte?.data.find((e:any) => (e.epci_siren == siren_epci) ) || data_ecpci_traitement?.data.find((e:any) => (e.epci_siren == siren_epci) )
+
+   const indicateurs = useApi({
+    resource:"sinoe59-indic-synth-acteur/lines",
+    dataProvider:ademe_opendataProvider,
+    pagination: {
+      pageSize: 2000,
+    },
+    filters:[
+      {field:"c_acteur",
+        operator:"eq",
+        value:current_epci?.c_acteur_sinoe
+      }
+    ]
+  })
 
 
     const territoire_descritpion_item : DescriptionsProps['items'] = [
@@ -186,6 +201,29 @@ export const DmaPageEPCI: React.FC = () => {
     ]
 
 
+    const indicateur_type_dechet = useMemo(() => indicateurs?.data?.data.flatMap(({ annee,pop_dma, ...cols }) =>
+        Object.entries(cols)
+        .filter(([key]) => ['tonnage_omr','tonnage_enc','tonnage_dang','tonnage_ejm','tonnage_bio', 'tonnage_verre','tonnage_autre', 'tonnage_dechet'].includes(key))
+        .map(([key, value]) => ({
+          annee:Number(annee),
+          type: String(key),
+          tonnage:Number(value),
+          population:Number(pop_dma)
+        }))
+      ), [indicateurs.data?.data]
+    )
+    
+    const indicateurs_destination_dechet = useMemo( () => indicateurs?.data?.data.flatMap(({ annee,pop_dma, ...cols }) =>
+      Object.entries(cols)
+      .filter(([key]) => ['tonnage_valo_mat','tonnage_valo_enr','tonnage_inc','tonnage_stock','tonnage_valo_org'].includes(key))
+      .map(([key, value]) => ({
+        annee:Number(annee),
+        type: String(key),
+        tonnage:Number(value),
+        population:Number(pop_dma)
+      }))
+    ), [indicateurs.data?.data]
+  )
 
     return (
       <>
@@ -278,14 +316,9 @@ export const DmaPageEPCI: React.FC = () => {
               },
             ]}
           >
-            {data_traitement && current_epci && (
+            {data_traitement && current_epci && indicateur_type_dechet && (
               <ChartEvolutionDechet
-                data={data_traitement?.data.map((e: any) => ({
-                  annee: e.annee,
-                  type: e.l_typ_reg_dechet,
-                  tonnage: e.tonnage_dma,
-                  population: current_epci.population,
-                }))}
+                data = {indicateur_type_dechet}
                 onFocus={(e: any) => setFocus(e?.seriesName)}
                 focus_item={focus}
                 year={Number(year)}
@@ -305,14 +338,9 @@ export const DmaPageEPCI: React.FC = () => {
               },
             ]}
           >
-            {data_traitement && current_epci && (
+            {data_traitement && current_epci && indicateurs_destination_dechet && (
               <ChartEvolutionDechet
-                data={data_traitement?.data.map((e: any) => ({
-                  annee: e.annee,
-                  type: e.l_typ_reg_service,
-                  tonnage: e.tonnage_dma,
-                  population: current_epci.population,
-                }))}
+                data={indicateurs_destination_dechet}
                 onFocus={(e: any) => setFocus(e?.seriesName)}
                 focus_item={focus}
                 year={Number(year)}
