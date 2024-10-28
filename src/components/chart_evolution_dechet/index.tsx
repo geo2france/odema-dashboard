@@ -66,7 +66,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
     `,[data, data]), //Somme par type de traitement
     [data])
 
-    useChartData({data:data_chart})
+    useChartData({data:data_chart.map((e:SimpleRecord) => ({"Année":e.annee, "Type":chartBusinessProps(e.type).label, "Tonnage (T)":e.tonnage, "Ratio (kg/hab)":e.ratio}))})
 
     const data_chart2 = useMemo(() =>alasql(`
     SELECT [type], ARRAY(ARRAY[[annee], [tonnage], [ratio], [ratio]/[ratio_annee_total] ]) as data
