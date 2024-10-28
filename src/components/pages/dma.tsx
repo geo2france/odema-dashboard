@@ -176,7 +176,7 @@ export const DmaComponent: React.FC = () => {
                 onFocus={(e: any) => setFocus(e?.seriesName)}
                 focus_item={focus}
                 year={Number(year)}
-                showObjectives
+                showObjectives={false}
               />
             )}
         </DashboardElement>
