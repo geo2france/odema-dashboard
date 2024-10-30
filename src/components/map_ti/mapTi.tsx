@@ -15,15 +15,33 @@ interface IMapTIProps{
 }
 
 
+const colors = {incitative:"#7EDB69", classique:"#C479DC"}
+
 const MapLegend:React.FC = () => {
+    const legendItems = [
+        { color: colors.classique, label: 'Tarification classique' },
+        { color: colors.incitative, label: 'Tarification incitative' }
+    ];
     return (
         <div style={{ 
                 backgroundColor: 'rgba(256,256,256,0.8)',
                 padding: '10px',
                 borderRadius: '4px',
-                border:'1px solid grey'
+                border:'1px solid grey', 
+                margin:8
             }}>
-            <b>Salut. MA LEGENDE ICI</b>
+            {legendItems.map((item, index) => (
+                <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
+                    <div style={{
+                        width: '16px',
+                        height: '16px',
+                        backgroundColor: item.color,
+                        borderRadius: '2px',
+                        marginRight: '8px'
+                    }}></div>
+                    <span>{item.label}</span>
+                </div>
+            ))}
         </div>
     )
 }
@@ -56,12 +74,12 @@ export const MapTI: React.FC<IMapTIProps> = ({ style }) => {
         'paint': {
             'fill-color': [
                 'match',
-                ['get', 'type_tarification'], // Récupère la valeur de l'attribut "typeTI"
-                'Classique', '#DECBE4', // Rouge pour 'typeA'
-                'Incitative', '#CCEBC5', // Vert pour 'typeB'
-                /* Couleur par défaut si aucune correspondance n'est trouvée */ '#ffffff'
+                ['get', 'type_tarification'],
+                'Classique', colors.classique, 
+                'Incitative', colors.incitative, 
+                /* Couleur par défaut*/ '#ffffff'
             ],
-            'fill-outline-color': 'black'
+            'fill-outline-color': 'white',
         }
     };
 
@@ -124,9 +142,9 @@ export const MapTI: React.FC<IMapTIProps> = ({ style }) => {
         
         <>
             <p><span>{clickedFeature.properties.epci_nom}</span></p>
-            <p><b>Tarification : {clickedFeature.properties.type_tarification}</b></p>
+            <p><b>Tarification : {clickedFeature.properties.type_tarification}</b> - {clickedFeature.properties.population?.toLocaleString()} hab.</p>
             <p><NavLink to={`/dma/epci?siren=${clickedFeature.properties.epci_siren}`}>Fiche territoire</NavLink></p>
-            </>
+        </>
         
     </Popup> }
 
