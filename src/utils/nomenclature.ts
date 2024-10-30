@@ -11,20 +11,26 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
         case "Stockage pour inertes":
             return {color:"#ED1C24", sort:1, label:item}
         case "tonnage_stock":
+        case "tonnage_stock_dg":
+        case "tonnage_stock_inerte_dg":
             return chartBusinessProps("Stockage")
         case "tonnage_inc":
+        case "tonnage_inc_dg":
             return chartBusinessProps("Incinération sans récupération d'énergie")
         case "Incinération avec récupération d'énergie":
             return {color:'#FFB800', sort:2, label:item}
         case "tonnage_valo_enr":
+        case "tonnage_valo_enr_dg":
             return chartBusinessProps("Incinération avec récupération d'énergie")
         case "Valorisation matière":
             return {color:'#FEFA54', sort:3, label:item}
         case "tonnage_valo_mat":
+        case "tonnage_valo_mat_dg":
             return chartBusinessProps("Valorisation matière")
         case "Valorisation organique":
             return {color:'#6C8033', sort:4, label:item}
         case "tonnage_valo_org":
+        case "tonnage_valo_org_dg":
             return chartBusinessProps("Valorisation organique")
         case "Déblais et gravats":
             return {color:'rgba(178, 34, 34, 1)', sort:6, label:item}
@@ -57,11 +63,15 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
         case "Collectes séparées hors gravats":
             return {color:'#FF8001',sort:5, label:item} 
         case "tonnage_dechet":
+        case "tonnage_dechet_dg":
             return chartBusinessProps("Déchèterie")
         case "tonnage_dang":
             return chartBusinessProps("Déchets dangereux")
         case "tonnage_enc":
             return chartBusinessProps("Encombrants")
+        case "tonnage_np_dg":
+        case "tonnage_np":
+            return chartBusinessProps("Non précisé")
         case "Non précisé":
             return {color:'#5D5D5D', sort:5, label:item}
         case "Autres":

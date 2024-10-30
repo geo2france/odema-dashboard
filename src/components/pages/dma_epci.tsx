@@ -34,16 +34,6 @@ export const DmaPageEPCI: React.FC = () => {
                 field:"siren_epci",
                 operator:"eq",
                 value:siren_epci
-            },
-            {
-                field:"l_typ_reg_dechet",
-                operator:"ne",
-                value:'Déblais et gravats'
-            },
-            {
-                field:"l_typ_reg_service",
-                operator:"ne",
-                value:'Stockage pour inertes'
             }
         ]
     })
@@ -185,7 +175,7 @@ export const DmaPageEPCI: React.FC = () => {
 
     const indicateur_type_dechet = useMemo(() => indicateurs?.data?.data.flatMap(({ annee,pop_dma, ...cols }) =>
         Object.entries(cols)
-        .filter(([key]) => ['tonnage_omr','tonnage_enc','tonnage_dang','tonnage_ejm','tonnage_bio', 'tonnage_verre','tonnage_autre', 'tonnage_dechet'].includes(key))
+        .filter(([key]) => ['tonnage_omr','tonnage_enc','tonnage_dang','tonnage_ejm','tonnage_bio', 'tonnage_verre','tonnage_autre', 'tonnage_dechet_dg'].includes(key))
         .map(([key, value]) => ({
           annee:Number(annee),
           type: String(key),
@@ -197,10 +187,10 @@ export const DmaPageEPCI: React.FC = () => {
     
     const indicateurs_destination_dechet = useMemo( () => indicateurs?.data?.data.flatMap(({ annee,pop_dma, ...cols }) =>
       Object.entries(cols)
-      .filter(([key]) => ['tonnage_valo_mat','tonnage_valo_enr','tonnage_inc','tonnage_stock','tonnage_valo_org'].includes(key))
+      .filter(([key]) => ['tonnage_valo_mat_dg','tonnage_valo_enr_dg','tonnage_inc_dg','tonnage_stock_dg','tonnage_valo_org_dg', 'tonnage_stock_inerte_dg', 'tonnage_np_dg'].includes(key))
       .map(([key, value]) => ({
         annee:Number(annee),
-        type: String(key),
+        type: String(key === 'tonnage_stock_inerte_dg' ? 'tonnage_stock_dg' : key ), // Stockage inerte -> stockage
         tonnage:Number(value),
         population:Number(pop_dma)
       }))
@@ -278,7 +268,7 @@ export const DmaPageEPCI: React.FC = () => {
                   .map((i: SimpleRecord) => ({
                     value: Math.max(i.tonnage_dma, 1),
                     source: i.l_typ_reg_dechet,
-                    target: i.l_typ_reg_service,
+                    target: i.l_typ_reg_service === 'Stockage pour inertes' ? 'Stockage' : i.l_typ_reg_service,
                   }))}
                 onFocus={(e: any) => setFocus(e?.name)}
                 focus_item={focus}
