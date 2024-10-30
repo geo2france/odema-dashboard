@@ -271,7 +271,7 @@ export const DmaComponent: React.FC = () => {
         </DashboardElement>
 
         <DashboardElement
-        title = "Carto TI - EN CONSTRUCTION" section="Prévention">
+        title = "Territoires en tarification incitative" section="Prévention">
           <MapTI></MapTI>
         </DashboardElement>
 
