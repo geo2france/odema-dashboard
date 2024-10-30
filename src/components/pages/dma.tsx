@@ -13,6 +13,7 @@ import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti";
 import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif";
 import { ChartTauxValo } from "../chart_taux_valo/ChartTauxValo";
 import { ChartDmaStockage } from "../chart_dma_stockage/ChartDmaStockage";
+import { MapTI } from "../map_ti/mapTi";
 
 const {Text} = Typography;
 const [maxYear, minYear, defaultYear] = [2023,2009,2021]
@@ -267,6 +268,11 @@ export const DmaComponent: React.FC = () => {
               />
             )}
              <p style={{marginLeft:16}}>La région contribue à l'<b>objectif national</b> de <b>25 millions d'habitants couverts en 20205</b>.</p>
+        </DashboardElement>
+
+        <DashboardElement
+        title = "Carto TI - EN CONSTRUCTION" section="Prévention">
+          <MapTI></MapTI>
         </DashboardElement>
 
           <DashboardElement
