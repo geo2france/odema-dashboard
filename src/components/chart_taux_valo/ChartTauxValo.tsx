@@ -31,7 +31,7 @@ export const ChartTauxValo: React.FC<ChartTauxValoProps> = ({data, onFocus, focu
     
 
     const data_obj = [
-        {annee:2009, value:0.415},
+        {annee:2009, value:0.429},
         {annee:2025, value:0.55},
         {annee:2030, value:0.6},
         {annee:2035, value:0.65},

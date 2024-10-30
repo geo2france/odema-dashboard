@@ -34,7 +34,10 @@ const formatter_currentyear = (value:number, year?:number) => {
 export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = ({data, dataObjectifs, onFocus, focus_item, style, year} )  => {
     const chartRef = useRef<any>()
     const data_chart = data && useMemo(() => alasql(`
-        SELECT [annee], SUM([ratio]) as ratio
+        SELECT 
+            [annee], 
+            SUM([ratio]) as ratio,
+            SUM([ratio_hg]) as ratio_hg
         FROM ?
         GROUP BY [annee]
         `,[data]) , [data]
@@ -47,6 +50,7 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
         color:"#FF8282",
         data: data_chart.map((e:SimpleRecord) => [e.annee.toString(), Math.round(e.ratio)])
     }
+
     const serie_obj:LineSeriesOption = {
         name: "Objectif régional",
         type:'line',
@@ -82,8 +86,8 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
             {
                 type: 'value',
                 name:'Quantité (kg/hab)',
-                min:450,
-                max:650
+                min:500,
+                max:undefined
             }
         ]
     }

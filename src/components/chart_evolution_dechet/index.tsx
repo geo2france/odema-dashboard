@@ -98,7 +98,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         }
     })).sort((a:any,b:any) => (chartBusinessProps(a.name).sort || 0) - (chartBusinessProps(b.name).sort || 0)   )
 
-    const objectifs:LineSeriesOption = {
+    const objectifs:LineSeriesOption = { //A supprimer
         name:"Objectif",
         type:"line",
         data:[],

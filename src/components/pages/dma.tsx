@@ -18,8 +18,6 @@ import { MapTI } from "../map_ti/mapTi";
 const {Text} = Typography;
 const [maxYear, minYear, defaultYear] = [2023,2009,2021]
 
-const note_methodo_gravats = <Text type="secondary">L'analyse n'inclue pas les <b>gravats et inertes</b></Text>
-
 
 export const DmaComponent: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
@@ -39,21 +37,6 @@ export const DmaComponent: React.FC = () => {
                     field:"C_REGION",
                     operator:"eq",
                     value:cregion
-                },
-                {
-                    field:"L_TYP_REG_DECHET",
-                    operator:"ne",
-                    value:'Déblais et gravats'
-                },
-                {
-                    field:"L_TYP_REG_SERVICE",
-                    operator:"ne",
-                    value:"Incinération sans récupération d'énergie"
-                },
-                {
-                    field:"L_TYP_REG_SERVICE",
-                    operator:"ne",
-                    value:'Stockage pour inertes'
                 }
             ]
     })
@@ -132,7 +115,6 @@ export const DmaComponent: React.FC = () => {
       >
 
           <DashboardElement
-            description= {note_methodo_gravats} 
             isFetching={isFetching}
             title={`Types et destination des déchets en ${year}`} section="Panorama"
             attributions={[
@@ -150,7 +132,7 @@ export const DmaComponent: React.FC = () => {
                 data={datasankey.map((i: SimpleRecord) => ({
                   value: Math.max(i.TONNAGE_DMA_sum, 1),
                   source: i.L_TYP_REG_DECHET,
-                  target: i.L_TYP_REG_SERVICE,
+                  target: i.L_TYP_REG_SERVICE === 'Stockage pour inertes' ? 'Stockage' : i.L_TYP_REG_SERVICE,
                 }))}
               />
             )}
@@ -158,7 +140,6 @@ export const DmaComponent: React.FC = () => {
 
           <DashboardElement
             isFetching={isFetching}
-            description= {note_methodo_gravats}
             title={`Type de déchets collectés`} section="Panorama"
             attributions={[
               {
@@ -229,7 +210,7 @@ export const DmaComponent: React.FC = () => {
         <DashboardElement
             isFetching={isFetching}
             description= {<Text type="secondary">L'objectif régional est d'arriver à une production de <b>564 kg/hab en 2025</b> et{' '}
-            <b>541 kg/hab en 2030</b>. Les gravats et inertes ne sont pas pris en compte.</Text> }
+            <b>541 kg/hab en 2030</b>.</Text> }
             title={`Production de DMA par habitant et objectif régional`} section="Prévention"
             attributions={[
               {
@@ -243,7 +224,7 @@ export const DmaComponent: React.FC = () => {
                   ratio: (e.TONNAGE_DMA/e.VA_POPANNEE_REG)*1000,
                   population: e.VA_POPANNEE_REG,
                 }))}
-                dataObjectifs={[{annee:2009, ratio:577}, {annee:2025, ratio:564}, {annee:2031, ratio:541}]}
+                dataObjectifs={[{annee:2009, ratio:632}, {annee:2025, ratio:564}, {annee:2031, ratio:541}]}
                 year={Number(year)}
               /> }
           </DashboardElement>
@@ -278,7 +259,6 @@ export const DmaComponent: React.FC = () => {
           <DashboardElement
             isFetching={isFetching}
             title={`Destination des déchets`} section="Valorisation"
-            description= {note_methodo_gravats}
             attributions={[
               {
                 name: "Ademe",
@@ -291,7 +271,7 @@ export const DmaComponent: React.FC = () => {
                 data={data_typedechet_destination.map((e: SimpleRecord) => ({
                   tonnage: e.TONNAGE_DMA,
                   annee: e.ANNEE,
-                  type: e.L_TYP_REG_SERVICE,
+                  type: e.C_TYP_REG_SERVICE === '02F' ? 'Stockage' : e.L_TYP_REG_SERVICE, // Stockage inertes -> Stockage
                   population: e.VA_POPANNEE_REG,
                 }))}
                 onFocus={(e: any) => setFocus(e?.seriesName)}

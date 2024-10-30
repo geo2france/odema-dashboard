@@ -20,10 +20,10 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
     useChartData({data:data, dependencies:[data]}) //Renommer les champs
 
 
-    const links = data;
+    const links = data.filter((e) => e.target !== `Incinération sans récupération d'énergie`); // Pas assez de tonnage
     const data_echart = [... new Set([
-        ...data.map((d) => (d.source) ), 
-        ...data.map((d) => (d.target) ) 
+        ...links.map((d) => (d.source) ), 
+        ...links.map((d) => (d.target) ) 
     ] ) ].map((e) => ({
         name:e,
         itemStyle: {
@@ -31,7 +31,7 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
         label:{formatter:(x:any) => wrappe(x.name,20)}
         }
         )).sort((a,b) => (chartBusinessProps(b.name).sort || 0) - (chartBusinessProps(a.name).sort || 0)   )
-
+        console.log(links)
     const option = {
         tooltip: {
             trigger: 'item',

@@ -5,9 +5,10 @@
  */
 export const chartBusinessProps = (item:string) : {label:string, color?:string, sort?:number} => {
     switch(item){
+        case "Incinération sans récupération d'énergie":
+            return {color:"#CD0298", sort:0, label:item}
         case "Stockage":
         case "Stockage pour inertes":
-        case "Incinération sans récupération d'énergie":
             return {color:"#ED1C24", sort:1, label:item}
         case "tonnage_stock":
             return chartBusinessProps("Stockage")
@@ -18,13 +19,15 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
         case "tonnage_valo_enr":
             return chartBusinessProps("Incinération avec récupération d'énergie")
         case "Valorisation matière":
-            return {color:'#ABCB54', sort:3, label:item}
+            return {color:'#FEFA54', sort:3, label:item}
         case "tonnage_valo_mat":
             return chartBusinessProps("Valorisation matière")
         case "Valorisation organique":
             return {color:'#6C8033', sort:4, label:item}
         case "tonnage_valo_org":
             return chartBusinessProps("Valorisation organique")
+        case "Déblais et gravats":
+            return {color:'rgba(178, 34, 34, 1)', sort:6, label:item}
         case "Biodéchets":
         case "Déchets verts et biodéchets":
         case "Déchets de produits alimentaires":
