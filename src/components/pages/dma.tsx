@@ -267,7 +267,7 @@ export const DmaComponent: React.FC = () => {
                 year={Number(year)}
               />
             )}
-             <p style={{marginLeft:16}}>La région contribue à l'<b>objectif national</b> de <b>25 millions d'habitants couverts en 20205</b>.</p>
+             <p style={{marginLeft:16}}>La région contribue à l'<b>objectif national</b> de <b>25 millions d'habitants couverts en 2025</b>.</p>
         </DashboardElement>
 
         <DashboardElement
