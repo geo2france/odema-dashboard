@@ -31,6 +31,11 @@ const formatter_currentyear = (value:number, year?:number) => {
   return value_year == year ? `{currentDate|${value_year} }` : value_year.toString()
 }
 
+const tooltipFormatter = (e:any) => `
+${e.marker}
+${e.seriesName} <br>
+<b>${e.value[1].toLocaleString()} hab.</b> (${(Math.round(e.value[2]*1000)/10).toLocaleString()} %)`
+
 export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, onFocus, focus_item, style, year} )  => {
     const chartRef = useRef<any>()
     const threshold_proj = 2023 ; // Année après laquelle démarre la projection
@@ -38,12 +43,6 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
     useChartEvents({chartRef:chartRef, onFocus:onFocus}) // Optionnel, récupérer des évenements (click ou focus) vers le parents
     useChartActionHightlight({chartRef:chartRef, target:{seriesName:focus_item}}) // Optionnel, pour déclencher des Hightlight sur le graphique
     useDashboardElement({chartRef})  // Nécessaire pour DashboardElement
-
-    const data_objectif = [
-        [2015, 0.041],
-        [2025, 0.3],
-        [2029, 0.3]
-    ]
 
     useChartData({
       data: data.map((e: any) => ({
@@ -56,9 +55,9 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
     });
 
     const serie: LineSeriesOption = {
-      name: "Part de la population en TI",
+      name: "Population en TI",
       data: data.filter((e) => e.annee <= threshold_proj).map((e) => ({ 
-        value:[e.annee.toString(), Math.round( (e.pop_ti / e.pop_totale) * 100 *10)/10]
+        value:[e.annee.toString(), e.pop_ti, e.pop_ti/e.pop_totale]
             } )),
       type: "line",
       color:"#d1956a",
@@ -66,9 +65,9 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
     };
 
     const serie_proj: LineSeriesOption = {
-        name: "Part de la population en TI (Projection)",
+        name: "Population en TI (Projection)",
         data: data.filter((e) => e.annee >= threshold_proj).map((e) => ({ 
-          value:[e.annee.toString(), Math.round( (e.pop_ti / e.pop_totale) * 100 *10)/10],
+          value:[e.annee.toString(), e.pop_ti, e.pop_ti/e.pop_totale],
           symbol: e.annee == threshold_proj ? 'none' : undefined
           } )),
         type: "line",
@@ -79,29 +78,16 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
         }
       };
 
-      const serie_obj: LineSeriesOption = {
-        name: "Objectif régional",
-        data: data_objectif.map((e) => ({ 
-          value:[e[0].toString(), e[1] * 100],
-          } )),
-        type: "line",
-        color:"#91cc75",
-        emphasis: { focus: "none" },
-        lineStyle:{
-            type:"dashed",
-        }
-      };
 
     const option:EChartsOption = {
-        series:[serie, serie_proj, serie_obj],
+        series:[serie, serie_proj],
         legend : {
             show:true,
             bottom:"0px"
         },
         tooltip:{
             show:true,
-            trigger: 'axis',
-            valueFormatter: (value) => ( `${value} %` )
+            formatter : tooltipFormatter
         },
         xAxis: [
             {
@@ -113,24 +99,17 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
                         fontWeight: 'bold'
                     }
                 },
-
               }
-                /*data:categories.map((annee:number) => ({
-                    value:annee,
-                    textStyle: {
-                        fontWeight: annee == year ? 700 : undefined,
-                        fontSize: annee == year ? 14 : undefined
-                    }
-                })),*/
+
             }],
         yAxis: [
             {
                 type: 'value',
-                name:'Part de la population en TI (%)',
+                name:'Population en TI',
                 nameLocation: 'middle',
                 nameGap: 50,
                 axisLabel : {
-                    formatter: '{value} %'
+                    formatter: (value:number) =>`${(value/1e6).toLocaleString()} M`
                   },
             }
         ]

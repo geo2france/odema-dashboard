@@ -1,6 +1,6 @@
 import { Card, Col, Divider, Row, Typography } from "antd"
 import { FaCreativeCommons, FaCreativeCommonsBy, FaDatabase, FaEnvelope, FaGithub, FaMapMarked } from "react-icons/fa";
-import { BsPersonWorkspace } from "react-icons/bs";
+//import { BsPersonWorkspace } from "react-icons/bs";
 import { List } from 'antd';
 import { FaHome } from "react-icons/fa";
 import Odema from "/img/logo_odema.png";
@@ -29,11 +29,11 @@ const ListRelated:React.FC = () => {
       url:"https://www.geo2france.fr/mviewer/?config=apps/obs_dechet.xml",
       picto:<FaMapMarked />
     },
-    {
+   /* {
       title: "Groupe projet et accès aux données sensibles",
       description:"Accès membres de l'Odema",
       picto:<BsPersonWorkspace />
-    }
+    }*/
   ]
 
   return (
@@ -74,6 +74,8 @@ export const HomePage:React.FC = () => {
                   Vous trouverez ici les{" "}
                   <Text strong>tableaux de bord thématiques</Text> élaborés par
                   l'Observatoire déchets-matières des Hauts-de-France (Odema).
+                </p>
+                <p>Pour commencer, sélectionnez une thématique dans le menu de gauche.
                 </p>
                 <p>
                   Pour toute sollicitation, contactez-nous à{" "}
