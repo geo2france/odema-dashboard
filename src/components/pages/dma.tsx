@@ -230,7 +230,7 @@ export const DmaComponent: React.FC = () => {
           </DashboardElement>
 
         <DashboardElement
-            title="Tarification incitative"
+            title="Tarification incitative sur la collecte des OMR"
             description="Tarification incitative : mode de tarification qui comprend une part incitative sur les OMR.
             Cette part peut concerner le volume de déchets et/ou le nombre de levées."
             isFetching={isFetching_ti}  section="Prévention"
@@ -252,7 +252,7 @@ export const DmaComponent: React.FC = () => {
         </DashboardElement>
 
         <DashboardElement
-        title = "Territoires en tarification incitative" section="Prévention">
+        title = "Territoires en tarification incitative sur la collecte des OMR" section="Prévention">
           <MapTI></MapTI>
         </DashboardElement>
 
