@@ -120,7 +120,14 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
     }
     const option:EChartsOption = {
         series:[...series, ...(showObjectives ? [objectifs] : [])],
-        legend:{show:true, bottom:0},
+        //@ts-ignore see https://github.com/apache/echarts/issues/19886
+        legend:{
+            show:true, 
+            bottom:0, 
+            type:'scroll',
+            height:40,
+            width:'90%',
+            orient:'none'},
         tooltip:{
             show:true,
             formatter: tooltipFormatter
