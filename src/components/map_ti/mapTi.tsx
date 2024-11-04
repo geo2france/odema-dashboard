@@ -1,10 +1,9 @@
-import { SimpleRecord, useApi, useDashboardElement } from "g2f-dashboard"
-import { CSSProperties, useEffect, useRef, useState } from "react"
+import { SimpleRecord, useApi, useDashboardElement, useMapControl, LegendItem, MapLegend } from "g2f-dashboard"
+import { CSSProperties, useRef, useState } from "react"
 import Map, { Layer, LayerProps, Source, SourceProps, Popup} from 'react-map-gl/maplibre';
 import { BaseLayer } from '../map_baselayer';
 import { geo2franceProvider } from "../../App";
 
-import { createRoot } from 'react-dom/client';
 import { NavLink } from "react-router-dom";
 
 
@@ -15,42 +14,20 @@ interface IMapTIProps{
 }
 
 
+
 const colors = {incitative:"#7EDB69", classique:"#C479DC"}
 
-const MapLegend:React.FC = () => {
-    const legendItems = [
-        { color: colors.classique, label: 'Tarification classique' },
-        { color: colors.incitative, label: 'Tarification incitative' }
-    ];
-    return (
-        <div style={{ 
-                backgroundColor: 'rgba(256,256,256,0.8)',
-                padding: '10px',
-                borderRadius: '4px',
-                border:'1px solid grey', 
-                margin:8
-            }}>
-            {legendItems.map((item, index) => (
-                <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
-                    <div style={{
-                        width: '16px',
-                        height: '16px',
-                        backgroundColor: item.color,
-                        borderRadius: '2px',
-                        marginRight: '8px'
-                    }}></div>
-                    <span>{item.label}</span>
-                </div>
-            ))}
-        </div>
-    )
-}
+const legendItems:LegendItem[] = [
+    { color: colors.classique, label: 'Tarification classique' },
+    { color: colors.incitative, label: 'Tarification incitative' }
+];
 
 export const MapTI: React.FC<IMapTIProps> = ({ style }) => {
     const [clickedFeature, setClickedFeature] = useState<any>(undefined);
 
     const mapRef = useRef<any>(null);
     useDashboardElement({chartRef:mapRef});
+    useMapControl({mapRef, legendElement:<MapLegend items={legendItems}/>})
 
     const onClickMap = (evt:any) => {
        setClickedFeature({...evt.features[0], ...{lngLat:evt.lngLat}})
@@ -82,34 +59,6 @@ export const MapTI: React.FC<IMapTIProps> = ({ style }) => {
             'fill-outline-color': 'white',
         }
     };
-
-   useEffect(() => {
-        if (mapRef?.current) {
-
-            const controlDiv = document.createElement('div');
-            const root = createRoot(controlDiv);
-
-
-            const customControl = {
-                onAdd: () => {
-                    root.render(<MapLegend />);
-                    return controlDiv;
-                },
-                onRemove: () => {
-                    //root.unmount(); 
-                    controlDiv.parentNode?.removeChild(controlDiv);
-                }
-            };
-
-            mapRef?.current?.getMap().addControl(customControl, 'top-right');
-
-            return () => {
-                customControl.onRemove(); 
-            };
-        }
-
-    }, [ mapRef?.current]);
-
     
     return (
         <>           
