@@ -68,7 +68,7 @@ export const AppFooter: React.FC = () => {
         color: "#fff",
         backgroundColor: "#fff",
         bottom: isVisible ? "0" : "-300px", 
-        position: "fixed", 
+        position: "sticky", 
         right: "0px",
         transition: "bottom 0.5s ease-in-out", 
         width: "100%",
