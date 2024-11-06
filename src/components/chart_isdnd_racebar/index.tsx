@@ -3,6 +3,7 @@ import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useMemo, useRef } from "react";
 import { useChartData, useDashboardElement, useChartEvents, SimpleRecord } from "g2f-dashboard";
+import { ChartTerritoriesProps } from "../../utils/nomenclature";
 
 export interface IChartRaceBarISDND {
     data : SimpleRecord[],
@@ -53,7 +54,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         },
         data:data_chart.map((e:SimpleRecord) => ({
             value:e.tonnage, name:e.nom, key:e.aiot,
-            itemStyle:{color:dptement_props.find(i => i.code==e.departement)?.color}
+            itemStyle:{color:ChartTerritoriesProps( e.departement )?.color}
         }
         ))
     }

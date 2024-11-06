@@ -141,19 +141,19 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
 export const ChartTerritoriesProps = (item:string) => {
     switch(item){
         case "02":
-        case "Aine":
-            return { code: '02', color: '#038B4F', libel: "Aisne" }
+        case "Aisne":
+            return { code: '02', color: '#CE73CA', libel: "Aisne" }
         case "80":
         case "Somme":
-            return { code: '80', color: '#a90000', libel: "Somme" }
+            return { code: '80', color: '#DEAD8F', libel: "Somme" }
         case "60":
         case "Oise":
-            return { code: '60', color: "#C2CB00", libel: "Oise" }
-        case "Nord":
+            return { code: '60', color: "#C16C39", libel: "Oise" }
         case "59":
-            return { code: '59', color: "#25409A", libel: "Nord" }
-        case "Pas-de-Calais":
+        case "Nord":
+            return { code: '59', color: "#80218D", libel: "Nord" }
         case "62":
-            return { code: '62', color: "#38A13F", libel: "Pas-de-Calais" }
+        case "Pas-de-Calais":
+            return { code: '62', color: "#EFD9CB", libel: "Pas-de-Calais" }
     }
 }
