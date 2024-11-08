@@ -1,4 +1,4 @@
-import { Layout, Divider } from "antd";
+import { Layout, Divider, Typography } from "antd";
 import { CSSProperties, useState, useEffect } from "react";
 import { grey } from "@ant-design/colors";
 
@@ -11,6 +11,8 @@ import Geo2France from "/img/geo2france.svg";
 import Odema from "/img/logo_odema.png";
 
 import { UpOutlined, DownOutlined } from "@ant-design/icons";
+
+const { Text, Link } = Typography;
 
 export const AppFooter: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -82,11 +84,11 @@ export const AppFooter: React.FC = () => {
         <div style={{
           color: "#000",
           fontSize: "14px",
-          position: "absolute", 
-          top: "15px", 
-          left: "50%", 
+          marginTop:-15,
         }}>
-          © ODEMA
+          <Link href="https://odema-hautsdefrance.org" target="_blank">
+            <Text>Observatoire déchets et matières des Hauts-de-France</Text>
+          </Link>
         </div>
       )}
 
