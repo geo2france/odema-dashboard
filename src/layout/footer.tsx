@@ -15,27 +15,12 @@ import { UpOutlined, DownOutlined } from "@ant-design/icons";
 const { Text, Link } = Typography;
 
 export const AppFooter: React.FC = () => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 768 ? true : false);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsCollapsed(true);
-      } else {
-        setIsCollapsed(false);
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   const style_img: CSSProperties = {
     height: "60px",
