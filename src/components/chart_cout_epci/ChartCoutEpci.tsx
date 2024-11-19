@@ -53,11 +53,14 @@ export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => 
     const series:BarSeriesOption[] = mapSeries.map((s) =>
         ({
             type:'bar',
-            label:{show:true, formatter:(p) => {
+            label:{show:true, 
+                formatter:(p) => {
                 const data = p.data as OptionDataValue[]; 
-                return data[1].toLocaleString(undefined, {maximumFractionDigits:0}) + '€' }}, // Entier sur le label
-            data:data.map((e:CoutEpciRecord) => [String(e.annee), e[s.key+suffix as CoutEpciKeys]]),
-            name: s.name
+                return data[unit === 'hab' ? 1 : 2].toLocaleString(undefined, {maximumFractionDigits:0}) + '€' }
+            }, // Entier sur le label
+            data:data.map((e:CoutEpciRecord) => [String(e.annee), e[s.key+'_hab' as CoutEpciKeys], e[s.key+'_t' as CoutEpciKeys]]),
+            name: s.name,
+            encode: { y: unit === 'hab' ? 1 : 2}
         })
     )
 
