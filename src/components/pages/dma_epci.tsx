@@ -11,6 +11,7 @@ import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { useApi } from "g2f-dashboard"
 import { ademe_opendataProvider, geo2franceProvider } from "../../App"
+import { ChartCoutEpci } from "../chart_cout_epci/ChartCoutEpci";
 
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2021]
@@ -56,6 +57,19 @@ export const DmaPageEPCI: React.FC = () => {
         ]
     });
 
+    const {data:data_cout} = useApi({
+      resource:"odema:couts_epci",
+      dataProvider:geo2franceProvider,
+      pagination:{ mode: "off" },
+      filters:[
+          {
+              field:"epci_siren",
+              operator:"eq",
+              value:siren_epci
+          }
+      ]
+  });
+  console.log(data_cout)
 
     const {data:data_rpqs} =  useApi({ 
         resource:"odema:rqps ",
@@ -319,6 +333,22 @@ export const DmaPageEPCI: React.FC = () => {
               />
             )}
           </DashboardElement>
+        </Col>
+
+        <Col xs={24} xl={24 / 2}>
+            {data_cout && 
+            <DashboardElement 
+            title="Cout"
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://www.sinoe.org/",
+              },
+            ]}
+            >
+              <ChartCoutEpci data={data_cout?.data}/>
+            </DashboardElement>
+            }
         </Col>
 
         <Col xs={24} xl={24 / 2}>
