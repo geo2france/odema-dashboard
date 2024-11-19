@@ -60,13 +60,18 @@ export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => 
             }, // Entier sur le label
             data:data.map((e:CoutEpciRecord) => [String(e.annee), e[s.key+'_hab' as CoutEpciKeys], e[s.key+'_t' as CoutEpciKeys]]),
             name: s.name,
-            encode: { y: unit === 'hab' ? 1 : 2}
+            encode: { y: unit === 'hab' ? 1 : 2},
+            tooltip: {
+                show: true,
+                valueFormatter: (v) => v?.toLocaleString()+' € / ' + unit 
+            }
         })
     )
 
 
     const option:EChartsOption = {
         series:series,
+        tooltip:{show:true},
         legend:{show:true, bottom:0},
         xAxis: [{
             type: 'time',
