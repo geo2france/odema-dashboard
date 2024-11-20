@@ -2,7 +2,7 @@ import { Radio, Typography } from 'antd';
 import { registerTheme, BarSeriesOption, EChartsOption} from 'echarts';
 import ReactECharts from 'echarts-for-react';
 import { useChartData, useDashboardElement, useSearchParamsState } from 'g2f-dashboard';
-import { CSSProperties, ReactElement, useRef, useState } from 'react';
+import { CSSProperties, ReactElement, useRef } from 'react';
 
 const { Text, Link } = Typography;
 
@@ -37,8 +37,23 @@ interface ChartCoutEpciProps {
 export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => {
     const chartRef = useRef<any>();
     const [unit, setUnit] = useSearchParamsState('cout_epci_unit','hab')
-    const chartData = data.map((e:CoutEpciRecord) => [String(e.annee), e.cout_aide_hab])
-    useChartData({data:chartData, dependencies:[data]})
+
+    useChartData({
+        data:data.map((e:CoutEpciRecord) =>
+        ({
+            annee: e.annee,
+            cout_complet_hab: e.cout_complet_hab,
+            cout_complet_t: e.cout_complet_t,
+            cout_technique_hab: e.cout_technique_hab,
+            cout_technique_t: e.cout_technique_t,
+            cout_partage_hab: e.cout_partage_hab,
+            cout_partage_t: e.cout_partage_t,
+            cout_aide_hab: e.cout_aide_hab,
+            cout_aide_t: e.cout_aide_t,
+        }
+        )),
+        dependencies:[data]})
+
     useDashboardElement({chartRef})
 
     const mapSeries = [
