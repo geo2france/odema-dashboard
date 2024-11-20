@@ -3,6 +3,7 @@ import { registerTheme, BarSeriesOption, EChartsOption} from 'echarts';
 import ReactECharts from 'echarts-for-react';
 import { useChartData, useDashboardElement, useSearchParamsState } from 'g2f-dashboard';
 import { CSSProperties, ReactElement, useRef } from 'react';
+import { GiPerson, GiSwapBag } from "react-icons/gi";
 
 const { Text, Link } = Typography;
 
@@ -105,18 +106,32 @@ export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => 
         }],
         yAxis: [{
             type:'value',
-            name: `€ / ${unit}`,
+            name: `€ / ${unit === 'hab' ? 'habitant' : 'tonne'}`,
         }]
     };
 
     return (
         <>
-            <Radio.Group block options={[{label:"€ / habitant", value:"hab"},{label:"€ / tonne", value:"t"}]} 
-                    onChange={(e) => setUnit(e.target.value)}
-                    defaultValue="hab" 
-                    value={unit}
-                    optionType="button" 
-                    buttonStyle="solid" style={{marginLeft:56,marginRight:56, marginTop:16}}/>
+            <Radio.Group block
+                onChange={(e) => setUnit(e.target.value)}
+                defaultValue="hab"
+                value={unit}
+                optionType="button"
+                buttonStyle="solid"
+                style={{marginTop:16, position:'absolute', right:16, top:32, zIndex: 1}}>
+
+                <Radio.Button value="hab" style={{ display: "flex", justifyContent: "center" }}>
+                    <span aria-label="euro par habitant" title="€ / habitant">
+                        <GiPerson />
+                    </span>
+                </Radio.Button>
+                <Radio.Button value="t" style={{ display: "flex", justifyContent: "center" }}>
+                    <span aria-label="euro par tonne" title="€ / tonne">
+                        <GiSwapBag />
+                    </span>
+                </Radio.Button>
+
+            </Radio.Group>
             <ReactECharts option={option} ref={chartRef} style={style} theme={"odema"}/>
         </>
 
