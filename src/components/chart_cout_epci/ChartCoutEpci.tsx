@@ -1,8 +1,19 @@
 import { Radio } from 'antd';
-import { BarSeriesOption, EChartsOption} from 'echarts';
+import { registerTheme, BarSeriesOption, EChartsOption} from 'echarts';
 import ReactECharts from 'echarts-for-react';
 import { useChartData } from 'g2f-dashboard';
 import { CSSProperties, useRef, useState } from 'react';
+
+registerTheme('odema', { // A remonter au niveau global pour utilisation dans d'autres graphiques
+    "color": [
+        "#8FB7DE",
+        "#DE8F92",
+        "#9FDE8F",
+        "#F0D86E",
+        "#AF8FDE",
+        "#DE8FC4",
+        ],
+ })
 
 interface CoutEpciRecord {
     annee:number
@@ -71,6 +82,7 @@ export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => 
 
     const option:EChartsOption = {
         series:series,
+        textStyle:{ fontFamily:'"Ubuntu", sans-serif'},
         tooltip:{show:true},
         legend:{show:true, bottom:0},
         xAxis: [{
@@ -79,7 +91,7 @@ export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => 
         }],
         yAxis: [{
             type:'value',
-            name: `€ / ${unit}`
+            name: `€ / ${unit}`,
         }]
     };
 
@@ -91,7 +103,7 @@ export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => 
                     value={unit}
                     optionType="button" 
                     buttonStyle="solid"/>
-        <ReactECharts option={option} ref={chartRef} style={style} />
+        <ReactECharts option={option} ref={chartRef} style={style} theme={"odema"}/>
         </>
 
     )
