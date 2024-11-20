@@ -78,7 +78,8 @@ export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => 
             minInterval:365 * 24 * 60 * 60 * 1000,
         }],
         yAxis: [{
-            type:'value'
+            type:'value',
+            name: `€ / ${unit}`
         }]
     };
 

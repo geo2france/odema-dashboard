@@ -338,7 +338,7 @@ export const DmaPageEPCI: React.FC = () => {
         <Col xs={24} xl={24 / 2}>
             {data_cout && 
             <DashboardElement 
-            title="Cout"
+            title="Coûts de gestion des déchets"
             attributions={[
               {
                 name: "Ademe",
