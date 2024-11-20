@@ -1,7 +1,7 @@
 import { Radio, Typography } from 'antd';
 import { registerTheme, BarSeriesOption, EChartsOption} from 'echarts';
 import ReactECharts from 'echarts-for-react';
-import { useChartData } from 'g2f-dashboard';
+import { useChartData, useDashboardElement, useSearchParamsState } from 'g2f-dashboard';
 import { CSSProperties, ReactElement, useRef, useState } from 'react';
 
 const { Text, Link } = Typography;
@@ -36,7 +36,7 @@ interface ChartCoutEpciProps {
 
 export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => {
     const chartRef = useRef<any>();
-    const [unit, setUnit] = useState<string>('hab')
+    const [unit, setUnit] = useSearchParamsState('cout_epci_unit','hab')
     const chartData = data.map((e:CoutEpciRecord) => [String(e.annee), e.cout_aide_hab])
     useChartData({data:chartData, dependencies:[data]})
 
