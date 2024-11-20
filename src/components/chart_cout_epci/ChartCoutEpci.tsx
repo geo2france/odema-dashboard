@@ -1,8 +1,10 @@
-import { Radio } from 'antd';
+import { Radio, Typography } from 'antd';
 import { registerTheme, BarSeriesOption, EChartsOption} from 'echarts';
 import ReactECharts from 'echarts-for-react';
 import { useChartData } from 'g2f-dashboard';
-import { CSSProperties, useRef, useState } from 'react';
+import { CSSProperties, ReactElement, useRef, useState } from 'react';
+
+const { Text, Link } = Typography;
 
 registerTheme('odema', { // A remonter au niveau global pour utilisation dans d'autres graphiques
     "color": [
@@ -105,3 +107,13 @@ export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => 
     )
 
 }
+
+export const ChartCoutEpciDescription:ReactElement = 
+    <Text>
+        <p><Text strong>Coût complet</Text> : totalité des charges hors TVA. Ce coût permet de rendre compte du niveau des charges liées au service rendu par les collectivités sans tenir compte par exemple des produits industriels qui peuvent fluctuer d’une année sur l’autre.</p>
+        <p><Text strong>Coût technique</Text> : coût complet moins les produits à caractère industriel (ventes de matériaux, d'énergie…).</p>
+        <p><Text strong>Coût partagé</Text> : coût technique moins les soutiens apportés par les éco-organismes (filières papiers/emballages, DEEE, déchets dangereux, etc.). La comparaison des coûts technique et partagé permet de mesurer l’impact des soutiens versés par les éco-organismes sur les coûts engagés par les collectivités.</p>
+        <p><Text strong>Coût aidé</Text> : coût partagé moins les aides reçues.</p>
+        <p><Text type="secondary">Source : <Link href='https://www.sinoe.org/indicateur/fiche-indicateur/id/61' target="_blank">Ademe</Link></Text> </p>
+    </Text>
+

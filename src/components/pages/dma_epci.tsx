@@ -11,7 +11,7 @@ import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { useApi } from "g2f-dashboard"
 import { ademe_opendataProvider, geo2franceProvider } from "../../App"
-import { ChartCoutEpci } from "../chart_cout_epci/ChartCoutEpci";
+import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci";
 
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2021]
@@ -339,6 +339,7 @@ export const DmaPageEPCI: React.FC = () => {
             {data_cout && 
             <DashboardElement 
             title="Coûts de gestion des déchets"
+            description={ChartCoutEpciDescription}
             attributions={[
               {
                 name: "Ademe",
