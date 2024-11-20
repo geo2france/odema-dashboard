@@ -98,7 +98,7 @@ export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => 
                     defaultValue="hab" 
                     value={unit}
                     optionType="button" 
-                    buttonStyle="solid"/>
+                    buttonStyle="solid" style={{marginLeft:56,marginRight:56, marginTop:16}}/>
             <ReactECharts option={option} ref={chartRef} style={style} theme={"odema"}/>
         </>
 
