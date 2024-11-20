@@ -38,10 +38,6 @@ export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => 
     const chartData = data.map((e:CoutEpciRecord) => [String(e.annee), e.cout_aide_hab])
     useChartData({data:chartData, dependencies:[data]})
 
-    console.log(chartData)
-
-    const suffix = unit === 'hab' ? '_hab' : '_t';
-
     const mapSeries = [
         {key: 'cout_complet', name:'Coût complet' },
         {key: 'cout_technique', name:'Coût technique' },
@@ -103,7 +99,7 @@ export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => 
                     value={unit}
                     optionType="button" 
                     buttonStyle="solid"/>
-        <ReactECharts option={option} ref={chartRef} style={style} theme={"odema"}/>
+            <ReactECharts option={option} ref={chartRef} style={style} theme={"odema"}/>
         </>
 
     )
