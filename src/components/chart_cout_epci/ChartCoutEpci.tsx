@@ -39,6 +39,7 @@ export const ChartCoutEpci: React.FC<ChartCoutEpciProps> = ({data, style} )  => 
     const [unit, setUnit] = useSearchParamsState('cout_epci_unit','hab')
     const chartData = data.map((e:CoutEpciRecord) => [String(e.annee), e.cout_aide_hab])
     useChartData({data:chartData, dependencies:[data]})
+    useDashboardElement({chartRef})
 
     const mapSeries = [
         {key: 'cout_complet', name:'Coût complet' },
