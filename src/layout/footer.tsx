@@ -1,5 +1,5 @@
 import { Layout, Divider, Typography } from "antd";
-import { CSSProperties, useState, useEffect } from "react";
+import { CSSProperties, useState } from "react";
 import { grey } from "@ant-design/colors";
 
 import Ademe from "/img/Logo_ADEME.svg?url";
