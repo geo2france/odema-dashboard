@@ -6,7 +6,7 @@ import { BsRecycle } from "react-icons/bs";
 import { useMemo, useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { TbReportMoney } from "react-icons/tb";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, cardStyles, Control } from "g2f-dashboard"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, cardStyles, DashboardLayout } from "g2f-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { useApi } from "g2f-dashboard"
@@ -211,45 +211,44 @@ export const DmaPageEPCI: React.FC = () => {
   )
 
     return (
-      <>
-      <Control>
-        <Form layout="inline">
-            <Form.Item label="Année">
-                <NextPrevSelect
-                  onChange={(e: any) => (e ? setYear(e) : undefined)}
-                  reverse={true}
-                  value={year}
-                  options={
-                    Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
-                    .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
-                    .reverse()
-                    .map((i) => ({ label: i, value: i }))}
-                />
-            </Form.Item>
-            <Form.Item label="EPCI">
-                <Select
-                  value={siren_epci}
-                  showSearch
-                  optionFilterProp="label"
-                  onSelect={setSiren_epci}
-                  options={options_territories}
-                  style={{ width: 450 }}
-                />
-            </Form.Item>
-          </Form>
-      </Control>
-      <Row gutter={[8, 8]} style={{margin:16}}>
-        <Col xs={24} xl={24 / 2}>
-          <Card title="Territoire" styles={{...cardStyles, body:{padding:10}}}>
-            <Descriptions
-              items={territoire_descritpion_item}
-              style={{ marginTop: 5 }}
-            />
-          </Card>
-        </Col>
+      <DashboardLayout
+        control={
+            <Form layout="inline">
+                <Form.Item label="Année">
+                    <NextPrevSelect
+                      onChange={(e: any) => (e ? setYear(e) : undefined)}
+                      reverse={true}
+                      value={year}
+                      options={
+                        Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
+                        .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
+                        .reverse()
+                        .map((i) => ({ label: i, value: i }))}
+                    />
+                </Form.Item>
+                <Form.Item label="EPCI">
+                    <Select
+                      value={siren_epci}
+                      showSearch
+                      optionFilterProp="label"
+                      onSelect={setSiren_epci}
+                      options={options_territories}
+                      style={{ width: 450 }}
+                    />
+                </Form.Item>
+              </Form>
+          }
+      >
 
-        {key_figures.map((f, idx) => (
-          <Col xl={4} md={12} xs={24} key={idx}>
+        <Card title="Territoire" styles={{...cardStyles, body:{padding:10}}}>
+          <Descriptions
+            items={territoire_descritpion_item}
+            style={{ marginTop: 5 }}
+          />
+        </Card>
+
+        <Row>{key_figures.map((f, idx) => (
+          <Col xl={24/3} md={24/3} xs={24} key={idx}>
             <KeyFigure
               value={f.value}
               unit={f.unit}
@@ -260,10 +259,8 @@ export const DmaPageEPCI: React.FC = () => {
               description={f.description}
             />
           </Col>
-        ))}
+        ))}</Row>
 
-        <Col span={24 - 6}></Col>
-        <Col xs={24} xl={24 / 2}>
           <DashboardElement
             isFetching={data_traitement_isFecthing}
             title={`Destination des DMA par type de déchet en ${year}`}
@@ -288,9 +285,7 @@ export const DmaPageEPCI: React.FC = () => {
               />
             )}
           </DashboardElement>
-        </Col>
 
-        <Col xs={24} xl={24 / 2}>
           <DashboardElement
             isFetching={data_traitement_isFecthing}
             title={`Type de déchets collectés`}
@@ -310,9 +305,7 @@ export const DmaPageEPCI: React.FC = () => {
               />
             )}
           </DashboardElement>
-        </Col>
 
-        <Col xs={24} xl={24 / 2}>
           <DashboardElement
             isFetching={data_traitement_isFecthing}
             title={`Destination des déchets`}
@@ -332,10 +325,8 @@ export const DmaPageEPCI: React.FC = () => {
               />
             )}
           </DashboardElement>
-        </Col>
 
-        <Col xs={24} xl={24 / 2}>
-            {data_cout && 
+            <div>{data_cout && 
             <DashboardElement 
             title="Coûts de gestion des déchets"
             description={ChartCoutEpciDescription}
@@ -348,10 +339,8 @@ export const DmaPageEPCI: React.FC = () => {
             >
               <ChartCoutEpci data={data_cout?.data}/>
             </DashboardElement>
-            }
-        </Col>
+            }</div>
 
-        <Col xs={24} xl={24 / 2}>
           <FlipCard
             information={
               <div style={{ padding: 5 }}>
@@ -410,8 +399,6 @@ export const DmaPageEPCI: React.FC = () => {
               </small>
             )}
           </FlipCard>
-        </Col>
-      </Row>
-      </>
+      </DashboardLayout>
     );
 }
