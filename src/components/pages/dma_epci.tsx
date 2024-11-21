@@ -69,7 +69,6 @@ export const DmaPageEPCI: React.FC = () => {
           }
       ]
   });
-  console.log(data_cout)
 
     const {data:data_rpqs} =  useApi({ 
         resource:"odema:rqps ",
