@@ -19,6 +19,7 @@ import { RepMnuPage } from "./components/pages/rep_mnu";
 import { RepDispmedPage } from "./components/pages/rep_dispmed";
 import { DmaPageEPCI } from "./components/pages/dma_epci";
 import { HomePage } from "./components/pages/home";
+import { ObjectifsPage } from "./components/pages/objectifs";
 
 
 const myTheme:ThemeConfig = {
@@ -85,6 +86,9 @@ const App: React.FC = () => {
               </Route>
               <Route path="cve">
                 <Route index element={<IncinerationtPage />} />
+              </Route>
+              <Route path="objectifs">
+                <Route index element={<ObjectifsPage />} />
               </Route>
               <Route path="*" element={<ErrorComponent />} />
             </Route>
