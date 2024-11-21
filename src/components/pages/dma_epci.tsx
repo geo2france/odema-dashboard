@@ -6,7 +6,7 @@ import { BsRecycle } from "react-icons/bs";
 import { useMemo, useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { TbReportMoney } from "react-icons/tb";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, cardStyles, DashboardLayout } from "g2f-dashboard"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, DashboardLayout } from "g2f-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { useApi } from "g2f-dashboard"
@@ -240,28 +240,34 @@ export const DmaPageEPCI: React.FC = () => {
           }
       >
 
-        <Card title="Territoire" styles={{...cardStyles, body:{padding:10}}}>
+      <DashboardElement title="Territoire" section="Panorama" toolbox={false}>
           <Descriptions
             items={territoire_descritpion_item}
             style={{ marginTop: 5 }}
           />
-        </Card>
+        </DashboardElement>
 
-        <Row>{key_figures.map((f, idx) => (
-          <Col xl={24/3} md={24/3} xs={24} key={idx}>
-            <KeyFigure
-              value={f.value}
-              unit={f.unit}
-              digits={f.digits || 0}
-              name={f.name}
-              icon={f.icon}
-              sub_value={f.sub_value}
-              description={f.description}
-            />
-          </Col>
-        ))}</Row>
+        <DashboardElement
+        virtual
+        title="Chiffre clés"
+        section="Panorama">
+          <Row>{key_figures.map((f, idx) => (
+            <Col xl={24/3} md={24/3} xs={24} key={idx}>
+              <KeyFigure
+                value={f.value}
+                unit={f.unit}
+                digits={f.digits || 0}
+                name={f.name}
+                icon={f.icon}
+                sub_value={f.sub_value}
+                description={f.description}
+              />
+            </Col>
+          ))}</Row>
+        </DashboardElement>
 
           <DashboardElement
+            section="Panorama"
             isFetching={data_traitement_isFecthing}
             title={`Destination des DMA par type de déchet en ${year}`}
             attributions={[
@@ -289,6 +295,7 @@ export const DmaPageEPCI: React.FC = () => {
           <DashboardElement
             isFetching={data_traitement_isFecthing}
             title={`Type de déchets collectés`}
+            section="Panorama"
             attributions={[
               {
                 name: "Ademe",
@@ -309,6 +316,7 @@ export const DmaPageEPCI: React.FC = () => {
           <DashboardElement
             isFetching={data_traitement_isFecthing}
             title={`Destination des déchets`}
+            section="Traitement"
             attributions={[
               {
                 name: "Ademe",
@@ -326,9 +334,9 @@ export const DmaPageEPCI: React.FC = () => {
             )}
           </DashboardElement>
 
-            <div>{data_cout && 
-            <DashboardElement 
+          <DashboardElement 
             title="Coûts de gestion des déchets"
+            section="Coûts"
             description={ChartCoutEpciDescription}
             attributions={[
               {
@@ -336,69 +344,73 @@ export const DmaPageEPCI: React.FC = () => {
                 url: "https://www.sinoe.org/",
               },
             ]}
+            >{data_cout && 
+              <ChartCoutEpci data={data_cout?.data}/> }
+          </DashboardElement>
+          
+          <DashboardElement
+            title="Rapports RPQS"
+            section="Panorama"
+            virtual>
+            <FlipCard
+              information={
+                <div style={{ padding: 5 }}>
+                  <p>
+                    L'article{" "}
+                    <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031840555/2021-09-21">
+                      L2224-1
+                    </a>{" "}
+                    du Code général des collectivités territoriales impose aux
+                    collectivités ayant la compétence collecte ou traitement de
+                    déchets de publier annuellement un RPQS de gestion et
+                    prévention des déchets.
+                  </p>
+                  <p>
+                    <strong>Un travail de centralisation</strong> par l'Odema est
+                    en cours. Si vous avez en votre possession des documents
+                    identifiés comme manquants, merci de bien vouloir nous les
+                    transmettre.
+                  </p>
+                </div>
+              }
+              title={<span style={{ marginLeft: 5 }}>Bilans RPQS</span>}
             >
-              <ChartCoutEpci data={data_cout?.data}/>
-            </DashboardElement>
-            }</div>
-
-          <FlipCard
-            information={
-              <div style={{ padding: 5 }}>
-                <p>
-                  L'article{" "}
-                  <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031840555/2021-09-21">
-                    L2224-1
-                  </a>{" "}
-                  du Code général des collectivités territoriales impose aux
-                  collectivités ayant la compétence collecte ou traitement de
-                  déchets de publier annuellement un RPQS de gestion et
-                  prévention des déchets.
-                </p>
-                <p>
-                  <strong>Un travail de centralisation</strong> par l'Odema est
-                  en cours. Si vous avez en votre possession des documents
-                  identifiés comme manquants, merci de bien vouloir nous les
-                  transmettre.
-                </p>
-              </div>
-            }
-            title={<span style={{ marginLeft: 5 }}>Bilans RPQS</span>}
-          >
-            {data_rpqs?.data &&
-            data_rpqs?.data?.filter((e: any) => e.url).length > 0 ? (
-              data_rpqs?.data
-                .sort((a: any, b: any) => b.annee_exercice - a.annee_exercice)
-                .map((d: any) => (
-                  <Card.Grid
-                    key={d.annee_exercice}
-                    hoverable={d.url}
-                    style={{ width: "20%", paddingTop: 5, textAlign: "center" }}
-                  >
-                    {d.url ? (
-                      <a href={d.url}>
-                        <FilePdfOutlined style={{ fontSize: 25 }} />{" "}
-                      </a>
-                    ) : (
-                      <FilePdfOutlined
-                        style={{ color: grey[1], fontSize: 25 }}
-                      />
-                    )}
-                    <br />
-                    {d.annee_exercice == year ? (
-                      <strong>{d.annee_exercice}</strong>
-                    ) : d.url ? (
-                      <span>{d.annee_exercice}</span>
-                    ) : (
-                      <span style={{ color: grey[1] }}>{d.annee_exercice}</span>
-                    )}
-                  </Card.Grid>
-                ))
-            ) : (
-              <small style={{ margin: 5 }}>
-                🙁 Aucun rapport n'est disponible.
-              </small>
-            )}
-          </FlipCard>
+              {data_rpqs?.data &&
+              data_rpqs?.data?.filter((e: any) => e.url).length > 0 ? (
+                data_rpqs?.data
+                  .sort((a: any, b: any) => b.annee_exercice - a.annee_exercice)
+                  .map((d: any) => (
+                    <Card.Grid
+                      key={d.annee_exercice}
+                      hoverable={d.url}
+                      style={{ width: "20%", paddingTop: 5, textAlign: "center" }}
+                    >
+                      {d.url ? (
+                        <a href={d.url}>
+                          <FilePdfOutlined style={{ fontSize: 25 }} />{" "}
+                        </a>
+                      ) : (
+                        <FilePdfOutlined
+                          style={{ color: grey[1], fontSize: 25 }}
+                        />
+                      )}
+                      <br />
+                      {d.annee_exercice == year ? (
+                        <strong>{d.annee_exercice}</strong>
+                      ) : d.url ? (
+                        <span>{d.annee_exercice}</span>
+                      ) : (
+                        <span style={{ color: grey[1] }}>{d.annee_exercice}</span>
+                      )}
+                    </Card.Grid>
+                  ))
+              ) : (
+                <small style={{ margin: 5 }}>
+                  🙁 Aucun rapport n'est disponible.
+                </small>
+              )}
+            </FlipCard>
+          </DashboardElement>
       </DashboardLayout>
     );
 }
