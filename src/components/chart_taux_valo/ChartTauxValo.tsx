@@ -2,7 +2,7 @@ import { CSSProperties, useMemo, useRef } from "react"
 import ReactECharts from 'echarts-for-react';
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
-import { SimpleRecord, useChartData } from "g2f-dashboard";
+import { SimpleRecord, useChartData, useDashboardElement } from "g2f-dashboard";
 import { interpolate } from "../../utils";
 
 const formatter_currentyear = (value:number, year?:number) => {
@@ -28,7 +28,8 @@ interface ChartTauxValoProps {
 
 export const ChartTauxValo: React.FC<ChartTauxValoProps> = ({data, onFocus, focus_item, style, year, showObjectives=false} )  => {
     const chartRef = useRef<any>()
-    
+    useDashboardElement({chartRef});
+
 
     const data_obj = [
         {annee:2009, value:0.429},
