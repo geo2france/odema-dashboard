@@ -20,7 +20,7 @@ export const AppSider: React.FC = () => {
   const items = [
     {
       key: "/dma",
-      label: <>DMA</>,
+      label: <>Déchets ménagers</>,
       icon: <HomeOutlined />,
       children: [
         { key: "/dma/region", label: <NavLink to="/dma/region">Hauts-de-France </NavLink> },
@@ -92,7 +92,7 @@ export const AppSider: React.FC = () => {
       collapsed={collapsed}
       onCollapse={toggleCollapsed}
       style={siderStyle}
-      width={isMobile ? '80%' : undefined}
+      width={isMobile ? '80%' : 220}
     >
       <Row justify="center">
         <Col span={24}>
