@@ -12,6 +12,7 @@ import { grey } from '@ant-design/colors';
 import { useApi } from "g2f-dashboard"
 import { ademe_opendataProvider, geo2franceProvider } from "../../App"
 import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci";
+import { ChartCoutEpciCompare } from "../chart_cout_epci_compare/ChartCoutEpciCompare";
 
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2021]
@@ -55,7 +56,7 @@ export const DmaPageEPCI: React.FC = () => {
         ]
     });
 
-    const {data:data_cout} = useApi({
+    const {data:data_cout, isFetching:data_cout_isfectching} = useApi({
       resource:"odema:couts_epci",
       dataProvider:geo2franceProvider,
       pagination:{ mode: "off" },
@@ -337,6 +338,21 @@ export const DmaPageEPCI: React.FC = () => {
             ]}
             >{data_cout && 
               <ChartCoutEpci data={data_cout?.data.filter((e:SimpleRecord) => e.epci_siren == siren_epci)}/> }
+          </DashboardElement>
+
+          <DashboardElement 
+            title="Coûts de gestion des déchets - comparatif"
+            isFetching={data_cout_isfectching}
+            section="Coûts"
+            description={ChartCoutEpciDescription}
+            attributions={[
+              {
+                name: "Ademe",
+                url: "https://www.sinoe.org/",
+              },
+            ]}
+            >{data_cout && 
+              <ChartCoutEpciCompare data={data_cout?.data} siren={siren_epci}/> }
           </DashboardElement>
           
           <DashboardElement
