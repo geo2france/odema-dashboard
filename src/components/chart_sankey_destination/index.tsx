@@ -31,7 +31,6 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
         label:{formatter:(x:any) => wrappe(x.name,20)}
         }
         )).sort((a,b) => (chartBusinessProps(b.name).sort || 0) - (chartBusinessProps(a.name).sort || 0)   )
-        console.log(links)
     const option = {
         tooltip: {
             trigger: 'item',

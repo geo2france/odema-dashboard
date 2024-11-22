@@ -15,8 +15,6 @@ import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/Char
 
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2021]
-//['tonnage_omr','tonnage_enc','tonnage_dang','tonnage_ejm','tonnage_bio', 'tonnage_verre','tonnage_autre']
-
 
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
