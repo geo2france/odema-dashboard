@@ -59,13 +59,6 @@ export const DmaPageEPCI: React.FC = () => {
       resource:"odema:couts_epci",
       dataProvider:geo2franceProvider,
       pagination:{ mode: "off" },
-      filters:[
-          {
-              field:"epci_siren",
-              operator:"eq",
-              value:siren_epci
-          }
-      ]
   });
 
     const {data:data_rpqs} =  useApi({ 
@@ -343,7 +336,7 @@ export const DmaPageEPCI: React.FC = () => {
               },
             ]}
             >{data_cout && 
-              <ChartCoutEpci data={data_cout?.data}/> }
+              <ChartCoutEpci data={data_cout?.data.filter((e:SimpleRecord) => e.epci_siren == siren_epci)}/> }
           </DashboardElement>
           
           <DashboardElement
