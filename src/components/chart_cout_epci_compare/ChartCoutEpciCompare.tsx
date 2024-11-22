@@ -1,5 +1,12 @@
+/*
+TODO : 
+- Switch entre €/hab et €/T
+- Switch entre les types de couts (Complet à aidé) ? Ou seulement le cout aidé ?
+- Switch entre la moyenne régionale et la moyenne par EPCI de même typo ? 
+*/
+
 import alasql from 'alasql';
-import { registerTheme, BarSeriesOption, EChartsOption, ScatterSeriesOption, BoxplotSeriesOption} from 'echarts';
+import { EChartsOption, ScatterSeriesOption, BoxplotSeriesOption} from 'echarts';
 import ReactECharts from 'echarts-for-react';
 import { SimpleRecord, useSearchParamsState } from 'g2f-dashboard';
 import { useMemo, useRef } from 'react';
@@ -48,6 +55,27 @@ export const ChartCoutEpciCompare: React.FC<ChartCoutEpciCompareProps> = ({data,
         data: data.filter((e:CoutEpciRecord) => e.epci_siren === siren).map((e:CoutEpciRecord) => [String(e.annee), e.cout_aide_hab])
     }
 
+    const tooltipFormater = (params:any) => {
+        const x = params.reverse().map((s:any) => 
+        {
+            let str = s.marker + s.seriesName
+            if (s.componentSubType === 'boxplot') {
+                const content = `<ul style='list-style-type: none;'>
+                <li>Mini : <b>${s.data[1]} €</b> </li>
+                <li>Q1 : <b>${s.data[2]} €</b> </li>
+                <li>Médiane : <b>${s.data[3]} €</b> </li>
+                <li>Q3 : <b>${s.data[4]} €</b> </li>
+                <li>Maxi : <b>${s.data[5]} €</b> </li>
+                </ul>
+                `
+                return str + '<br/>' + content
+            }else {
+                return `${str} : <b>${s.data[1]} €</b>`
+            }
+        })
+        return x.join('<br/>')
+    }
+
     const others_serie:BoxplotSeriesOption = {
         type:'boxplot',
         color:'#9FDE8F',
@@ -56,8 +84,8 @@ export const ChartCoutEpciCompare: React.FC<ChartCoutEpciCompareProps> = ({data,
         data: data_avg.map((e:SimpleRecord) =>  [String(e.annee), e.min, e.q1, e.q2, e.q3, e.max])
     }
     const option:EChartsOption = {
-        legend:{show:true},
-        tooltip:{trigger:"axis"},
+        legend:{show:true, bottom:0},
+        tooltip:{trigger:"axis", formatter:tooltipFormater},
         series : [others_serie, current_epci_serie],
         xAxis: [{
             type: 'time',

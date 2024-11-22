@@ -344,7 +344,7 @@ export const DmaPageEPCI: React.FC = () => {
             title="Coûts de gestion des déchets - comparatif"
             isFetching={data_cout_isfectching}
             section="Coûts"
-            description={ChartCoutEpciDescription}
+            description={"TODO : expliquer la lecture des boxplot"}
             attributions={[
               {
                 name: "Ademe",
