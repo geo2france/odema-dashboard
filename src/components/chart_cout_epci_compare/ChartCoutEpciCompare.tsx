@@ -56,7 +56,13 @@ export const ChartCoutEpciCompare: React.FC<ChartCoutEpciCompareProps> = ({data,
         color:'#DE8F92',
         symbol:'diamond',
         name: epci_nom,
-        data: data.filter((e:CoutEpciRecord) => e.epci_siren === siren).map((e:CoutEpciRecord) => [String(e.annee), e.cout_aide_hab])
+        data: data.filter((e:CoutEpciRecord) => e.epci_siren === siren).map((e:CoutEpciRecord) => [String(e.annee), e.cout_aide_hab]),
+        label: {
+            show:true,
+            position:[12,5],
+            formatter: (params:any) => `${(params.value[1]).toLocaleString()} €`,
+            fontWeight:'bold',
+        },
     }
 
     const tooltipFormater = (params:any) => {
@@ -87,6 +93,7 @@ export const ChartCoutEpciCompare: React.FC<ChartCoutEpciCompareProps> = ({data,
         itemStyle: {borderWidth:2},
         data: data_avg.map((e:SimpleRecord) =>  [String(e.annee), e.min, e.q1, e.q2, e.q3, e.max])
     }
+
     const option:EChartsOption = {
         legend:{show:true, bottom:0},
         tooltip:{trigger:"axis", formatter:tooltipFormater},
