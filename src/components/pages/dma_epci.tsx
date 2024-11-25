@@ -352,7 +352,7 @@ export const DmaPageEPCI: React.FC = () => {
               },
             ]}
             >{data_cout && 
-              <ChartCoutEpciCompare data={data_cout?.data} siren={siren_epci}/> }
+              <ChartCoutEpciCompare data={data_cout?.data} siren={siren_epci} annee={Number(year)}/> }
           </DashboardElement>
           
           <DashboardElement
