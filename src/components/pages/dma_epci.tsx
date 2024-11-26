@@ -270,8 +270,8 @@ export const DmaPageEPCI: React.FC = () => {
             title={`Destination des DMA par type de déchet en ${year}`}
             attributions={[
               {
-                name: "Ademe",
-                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                name: "Ademe/Odema",
+                url: "https://www.geo2france.fr/datahub/dataset/0b11b7e9-86e9-42c1-80da-f27fd58355bd",
               },
             ]}
           >
@@ -296,8 +296,8 @@ export const DmaPageEPCI: React.FC = () => {
             section="Panorama"
             attributions={[
               {
-                name: "Ademe",
-                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                name: "Ademe/Odema",
+                url: "https://www.geo2france.fr/datahub/dataset/0b11b7e9-86e9-42c1-80da-f27fd58355bd",
               },
             ]}
           >
@@ -317,8 +317,8 @@ export const DmaPageEPCI: React.FC = () => {
             section="Traitement"
             attributions={[
               {
-                name: "Ademe",
-                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                name: "Ademe/Odema",
+                url: "https://www.geo2france.fr/datahub/dataset/0b11b7e9-86e9-42c1-80da-f27fd58355bd",
               },
             ]}
           >
