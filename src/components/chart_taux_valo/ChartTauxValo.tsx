@@ -2,7 +2,7 @@ import { CSSProperties, useMemo, useRef } from "react"
 import ReactECharts from 'echarts-for-react';
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
-import { SimpleRecord, useChartData, useDashboardElement } from "g2f-dashboard";
+import { SimpleRecord, useChartData, useDashboardElement } from "api-dashboard";
 import { interpolate } from "../../utils";
 
 const formatter_currentyear = (value:number, year?:number) => {

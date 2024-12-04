@@ -2,7 +2,7 @@ import { EChartsOption, PieSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { chartBusinessProps } from "../../utils";
 import { CSSProperties, useRef } from "react";
-import { SimpleRecord, useChartActionHightlight, useChartEvents } from "g2f-dashboard";
+import { SimpleRecord, useChartActionHightlight, useChartEvents } from "api-dashboard";
 
 export interface ChartPieRepCollecteProps {
     data: any[] | SimpleRecord[];

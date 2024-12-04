@@ -2,8 +2,7 @@ import React, { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from "echarts";
 
-import { useChartData, useDashboardElement } from "g2f-dashboard";
-import { useChartActionHightlight, useChartEvents } from "g2f-dashboard";
+import { useChartActionHightlight, useChartEvents, useChartData, useDashboardElement } from "api-dashboard";
 
 /**
  * La structures des données attendues.

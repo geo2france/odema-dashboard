@@ -2,7 +2,7 @@ import { CSSProperties, useState } from "react";
 import { Row, Col, Drawer, Tooltip, Select, Form } from "antd"
 import alasql from "alasql";
 
-import { Control, DashboardElement, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "g2f-dashboard";
+import { Control, DashboardElement, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "api-dashboard";
 
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";

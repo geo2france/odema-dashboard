@@ -2,7 +2,7 @@ import React, { CSSProperties, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
 import { BaseLayer } from '../map_baselayer';
-import { useDashboardElement, BaseRecordToGeojsonPoint, useApi, SimpleRecord } from 'g2f-dashboard';
+import { useDashboardElement, BaseRecordToGeojsonPoint, useApi, SimpleRecord } from 'api-dashboard';
 import { geo2franceProvider } from '../../App';
 
 export interface IMapProps{

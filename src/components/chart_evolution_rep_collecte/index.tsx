@@ -3,7 +3,7 @@ import { BarSeriesOption, EChartsOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import alasql from "alasql";
 import { CSSProperties, useRef } from "react";
-import { SimpleRecord, useChartActionHightlight, useChartEvents } from "g2f-dashboard";
+import { SimpleRecord, useChartActionHightlight, useChartEvents } from "api-dashboard";
 
 export interface ChartEvolutionRepCollecteProps{
     data:SimpleRecord[],

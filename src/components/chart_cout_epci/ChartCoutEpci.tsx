@@ -1,7 +1,7 @@
 import { Radio, Typography } from 'antd';
 import { registerTheme, BarSeriesOption, EChartsOption} from 'echarts';
 import ReactECharts from 'echarts-for-react';
-import { useChartData, useDashboardElement, useSearchParamsState } from 'g2f-dashboard';
+import { useChartData, useDashboardElement, useSearchParamsState } from 'api-dashboard';
 import { CSSProperties, ReactElement, useRef } from 'react';
 import { GiPerson, GiSwapBag } from "react-icons/gi";
 

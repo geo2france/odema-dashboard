@@ -1,7 +1,7 @@
 import { InfoCircleOutlined } from "@ant-design/icons"
 import alasql from "alasql"
 import { Timeline, Tooltip } from "antd"
-import { SimpleRecord } from "g2f-dashboard"
+import { SimpleRecord } from "api-dashboard"
 
 export interface ITimelineIsdndCapaciteProps {
     data : SimpleRecord[]
