@@ -38,7 +38,7 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
     'type': 'circle',
     'paint': {
       'circle-radius': ["interpolate", ["linear"], ['get', 'tonnage'],0,0,1000000,60], 
-      'circle-color': ['case', ['==', ['get', 'aiot'], aiot] ,'#3887be', "#828282"],
+      'circle-color': ['case', ['==', ['get', 'aiot'], aiot] ,'#C3885E', "#828282"],
       'circle-opacity': ['case', ['==', ['get', 'aiot'], aiot] ,0.8, 0.5]
 
     }

@@ -120,7 +120,14 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
     }
     const option:EChartsOption = {
         series:[...series, ...(showObjectives ? [objectifs] : [])],
-        legend:{show:true, bottom:0},
+        //@ts-ignore see https://github.com/apache/echarts/issues/19886
+        legend:{
+            show:true, 
+            bottom:0, 
+            type:'scroll',
+            height:40,
+            width:'90%',
+            orient:'none'},
         tooltip:{
             show:true,
             formatter: tooltipFormatter
@@ -156,7 +163,8 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
             style={{position:'absolute', right:16, top:32+16, zIndex:1}}
             onClick={() => setNormalizeState(!normalizeState)} />
         }
-        <ReactECharts option={option} ref={chartRef} style={ style} />
+        <ReactECharts option={option} notMerge={true} ref={chartRef} style={ style} /> 
+        {/* notMerge est nécessaire en cas de suppression d'une série https://github.com/geo2france/odema-dashboard/issues/33 */}
         </>
     )
 }

@@ -35,10 +35,11 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, data
     const myseries: BarSeriesOption = 
         {
             name:`Entrants`,
+            color:'#DDB090',
             data:data_chart.map((f:SimpleRecord) => ({
                 value:[f.annee.toString(), f.tonnage],
                 itemStyle: {
-                    color: f.annee == year ? '#C1232B' : undefined
+                    color: f.annee == year ? '#C3885E' : undefined
                 } 
 
              })),

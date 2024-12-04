@@ -14,7 +14,7 @@ const ListRelated:React.FC = () => {
     {
       title: "Site web de l'Odema",
       description:"Site public de l'observatoire",
-      url:"https://www.cerdd.org/L-Odema-Observatoire-dechets-matieres-des-Hauts-de-France",
+      url:"https://odema-hautsdefrance.org",
       picto:<FaHome/>
     },
     {
@@ -24,7 +24,7 @@ const ListRelated:React.FC = () => {
       picto:<FaDatabase />
     },
     {
-      title: "Cartographie intéractive",
+      title: "Cartographie interactive",
       description: "Visionneuse cartographique mViewer",
       url:"https://www.geo2france.fr/mviewer/?config=apps/obs_dechet.xml",
       picto:<FaMapMarked />
@@ -40,7 +40,7 @@ const ListRelated:React.FC = () => {
     <List 
       itemLayout="horizontal"
       dataSource={data}
-      renderItem={ (item, index) => (
+      renderItem={ (item, _index) => (
         <List.Item>
           <List.Item.Meta 
             title={<a href={item.url}>{item.title}</a>}
@@ -88,15 +88,15 @@ export const HomePage:React.FC = () => {
             <Divider/>
             <Row gutter={[16, 16]}>
               <Col md={12} style={{ width: "100%" }}>
-                <Card title="A voir aussi">
+                <Card title="À voir aussi">
                   <ListRelated />
                 </Card>
               </Col>
               <Col md={12}>
-                <Card title="A propos" style={{ height: "100%" }}>
+                <Card title="À propos" style={{ height: "100%" }}>
                   <p>
-                    Le code source de ce tableau de bord est libre et peut-être
-                    consulter sur le{" "}
+                    Le code source de ce tableau de bord est libre et peut être
+                    consulté sur le{" "}
                     <Link href="https://github.com/geo2france/odema-dashboard">
                       dépot de code <FaGithub />
                     </Link>

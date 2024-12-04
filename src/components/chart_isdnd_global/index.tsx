@@ -36,6 +36,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, data_
     const serie_tonnage: BarSeriesOption = {
         type: 'bar',
         name: 'Tonnages enfouis',
+        color:'#DDB090',
         tooltip:{
             valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         },
@@ -43,7 +44,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, data_
             {
                 value: [e.annee.toString(), e.tonnage],
                 itemStyle: {
-                    color: e.annee == year ? '#C1232B' : undefined
+                    color: e.annee == year ? '#C3885E' : undefined
                 }
             }
         )),
@@ -70,6 +71,7 @@ const serie_objectif:LineSeriesOption = {
     name: 'Objectif -50%', 
     showSymbol: true,
     data: data_objectif,
+    color:'#91cc75',
     areaStyle:{opacity:0.1}
 }
 

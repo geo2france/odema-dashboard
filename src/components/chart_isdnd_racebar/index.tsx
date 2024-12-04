@@ -3,6 +3,7 @@ import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useMemo, useRef } from "react";
 import { useChartData, useDashboardElement, useChartEvents, SimpleRecord } from "g2f-dashboard";
+import { ChartTerritoriesProps } from "../../utils/nomenclature";
 
 export interface IChartRaceBarISDND {
     data : SimpleRecord[],
@@ -17,14 +18,6 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
 
     useChartEvents({chartRef:chartRef, onClick:onClick})
     useDashboardElement({chartRef})
-
-    const dptement_props = [
-        {code:'02', color:'#038B4F'},
-        {code:'80',color:'#a90000' },
-        {code:'60', color:"#C2CB00"},
-        {code:'59', color:"#25409A"},
-        {code:'62', color:"#38A13F"},
-    ]
 
     const axie_category = alasql(`SELECT DISTINCT [name], [aiot] FROM ? WHERE annee=${year} AND tonnage > 0 ORDER BY tonnage ASC
     `, [data]).map((e:SimpleRecord) => ( {
@@ -53,7 +46,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         },
         data:data_chart.map((e:SimpleRecord) => ({
             value:e.tonnage, name:e.nom, key:e.aiot,
-            itemStyle:{color:dptement_props.find(i => i.code==e.departement)?.color}
+            itemStyle:{color:ChartTerritoriesProps( e.departement )?.color}
         }
         ))
     }
