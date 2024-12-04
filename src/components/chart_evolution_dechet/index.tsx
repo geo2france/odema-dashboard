@@ -163,7 +163,8 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
             style={{position:'absolute', right:16, top:32+16, zIndex:1}}
             onClick={() => setNormalizeState(!normalizeState)} />
         }
-        <ReactECharts option={option} ref={chartRef} style={ style} />
+        <ReactECharts option={option} notMerge={true} ref={chartRef} style={ style} /> 
+        {/* notMerge est nécessaire en cas de suppression d'une série https://github.com/geo2france/odema-dashboard/issues/33 */}
         </>
     )
 }
