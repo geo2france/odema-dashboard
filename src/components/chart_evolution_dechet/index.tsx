@@ -80,7 +80,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
     `,[data_chart]), //Regroupement par type de traitement (= série pour echarts bar)
     [data_chart])
 
-    const categories = useMemo(() =>alasql(`SELECT ARRAY(DISTINCT [annee]) as annees FROM ?`, [data])[0].annees.sort().map((e:number) => e.toString()), [data])
+    const categories = useMemo(() =>alasql(`SELECT ARRAY(DISTINCT [annee]) as annees FROM ?`, [data])[0].annees?.sort().map((e:number) => e.toString()), [data])
 
     const series:BarSeriesOption[] = data_chart2.map((e:SimpleRecord) => ({
          name:chartBusinessProps(e.type).label,
@@ -135,7 +135,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         xAxis: [
             {
                 type: 'category',
-                data:categories.map((annee:number) => ({
+                data:categories?.map((annee:number) => ({
                     value:annee,
                     textStyle: {
                         fontWeight: annee == year ? 700 : undefined,
