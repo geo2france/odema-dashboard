@@ -26,7 +26,7 @@ const ListRelated:React.FC = () => {
     {
       title: "Cartographie interactive",
       description: "Visionneuse cartographique mViewer",
-      url:"https://www.geo2france.fr/mviewer/?config=apps/obs_dechet.xml",
+      url:"https://www.geo2france.fr/mviewer/?config=apps/odema/obs_dechet.xml",
       picto:<FaMapMarked />
     },
    /* {
