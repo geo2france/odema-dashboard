@@ -13,7 +13,7 @@ import { ademe_opendataProvider, geo2franceProvider } from "../../App"
 import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci";
 
 
-const [maxYear, minYear, defaultYear] = [2023,2009,2021]
+const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
