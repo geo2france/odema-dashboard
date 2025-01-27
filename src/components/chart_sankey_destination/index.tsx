@@ -1,8 +1,7 @@
 import React, { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
 import { chartBusinessProps, wrappe } from "../../utils";
-import { useDashboardElement, useChartActionHightlight, useChartEvents, SimpleRecord } from "g2f-dashboard";
-import { useChartData } from "g2f-dashboard/src/components/DashboardElement/hooks";
+import { useDashboardElement, useChartActionHightlight, useChartEvents, SimpleRecord, useChartData } from "api-dashboard";
 
 export interface ChartSankeyDestinationDMAProps {
     data: any[] | SimpleRecord[]; 

@@ -5,9 +5,8 @@ import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
 
 import alasql from "alasql";
-import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord, DashboardLayout } from "g2f-dashboard";
+import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord, DashboardLayout, useApi } from "api-dashboard";
 import { ChartEvolutionDechet } from "../chart_evolution_dechet";
-import { useApi } from "g2f-dashboard"
 import { ademe_opendataProvider, geo2franceProvider } from "../../App";
 import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti";
 import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif";

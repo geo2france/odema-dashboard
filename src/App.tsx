@@ -1,4 +1,4 @@
-import { WfsProvider, DatafairProvider } from "g2f-dashboard";
+import { WfsProvider, DatafairProvider } from "api-dashboard";
 import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { QueryClient,  QueryClientProvider } from '@tanstack/react-query'
 
@@ -40,7 +40,6 @@ const myTheme:ThemeConfig = {
   }
 }
 
-//Cf https://github.com/geo2france/g2f-dashboard/issues/5
 export const geo2franceProvider = WfsProvider("https://www.geo2france.fr/geoserver/ows")
 export const ademe_opendataProvider = DatafairProvider("https://data.ademe.fr/data-fair/api/v1/datasets") 
 

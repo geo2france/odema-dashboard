@@ -1,4 +1,4 @@
-import { useSearchParamsState, LoadingContainer, Attribution, SimpleRecord } from "g2f-dashboard"
+import { useSearchParamsState, LoadingContainer, Attribution, SimpleRecord, useApi } from "api-dashboard"
 import { Row, Col, Card } from "antd"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { RepTopbar } from "../rep_topbar"
@@ -6,7 +6,6 @@ import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"
 import { useState } from "react"
 import { AppareilsElectriques, GrosElectromenagers, PetitsAppareilsElectriques } from "../../utils/picto"
 import alasql from "alasql"
-import { useApi } from "g2f-dashboard"
 
 import { ademe_opendataProvider } from "../../App"
 

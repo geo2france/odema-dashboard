@@ -6,15 +6,14 @@ import { BsRecycle } from "react-icons/bs";
 import { useMemo, useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { TbReportMoney } from "react-icons/tb";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, DashboardLayout } from "g2f-dashboard"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, DashboardLayout, useApi } from "api-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
-import { useApi } from "g2f-dashboard"
 import { ademe_opendataProvider, geo2franceProvider } from "../../App"
 import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci";
 
 
-const [maxYear, minYear, defaultYear] = [2023,2009,2021]
+const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
@@ -159,16 +158,16 @@ export const DmaPageEPCI: React.FC = () => {
     const key_figures:any[] = [
         {id:"valo_dma", 
         name:"Taux de valorisation des DMA",
-        description:"Part des DMA orientés vers les filières de valorisation matière ou organique (hors déblais et gravats).",
-        value:((indicateur_curent_year?.tonnage_valo_org + indicateur_curent_year?.tonnage_valo_mat) / indicateur_curent_year?.tonnage_dma)*100,
+        description:"Part des DMA orientés vers les filières de valorisation matière ou organique.",
+        value:((indicateur_curent_year?.tonnage_valo_org + indicateur_curent_year?.tonnage_valo_mat_dg) / indicateur_curent_year?.tonnage_dma_dg)*100,
         sub_value:"Obj. régional : 65 %",
         digits:1,
         icon: <BsRecycle />,
         unit:'%'},
         {id:"prod_dma", 
         name:"Production de DMA",
-        description:"Production globale annuelle de DMA (hors déblais et gravats).",
-        value: (indicateur_curent_year?.tonnage_dma  / indicateur_curent_year?.pop_dma) * 1e3,
+        description:"Production globale annuelle de DMA.",
+        value: (indicateur_curent_year?.tonnage_dma_dg  / indicateur_curent_year?.pop_dma) * 1e3,
         sub_value:"Obj. régional : 553 kg/hab",
         icon: <FaTrashCan />,
         unit:'kg/hab'},
@@ -291,13 +290,13 @@ export const DmaPageEPCI: React.FC = () => {
           </DashboardElement>
 
           <DashboardElement
-            isFetching={data_traitement_isFecthing}
+            isFetching={indicateurs.isFetching}
             title={`Type de déchets collectés`}
             section="Panorama"
             attributions={[
               {
-                name: "Ademe/Odema",
-                url: "https://www.geo2france.fr/datahub/dataset/0b11b7e9-86e9-42c1-80da-f27fd58355bd",
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe59-indic-synth-acteur",
               },
             ]}
           >

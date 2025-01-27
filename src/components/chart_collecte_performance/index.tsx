@@ -1,10 +1,9 @@
 import React, { CSSProperties, useMemo, useRef } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
-import {SimpleRecord, useChartData} from "g2f-dashboard"
+import {SimpleRecord, useChartData, useDashboardElement} from "api-dashboard"
 import type {EChartsOption, PieSeriesOption} from "echarts"
 import alasql from "alasql";
 import { chartBusinessProps } from "../../utils";
-import { useDashboardElement } from "g2f-dashboard";
 
 export interface ChartCollectePerformanceProps {
     data: any[] | SimpleRecord[]; // Spécifier les champs au niveau de la ressource

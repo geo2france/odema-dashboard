@@ -2,7 +2,7 @@ import React, { CSSProperties, useMemo, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption } from "echarts";
 import alasql from "alasql";
-import { SimpleRecord, useChartData, useDashboardElement } from "g2f-dashboard";
+import { SimpleRecord, useChartData, useDashboardElement } from "api-dashboard";
 
 export interface ChartRaceBareDMAProps {
     data: any[] | SimpleRecord[];

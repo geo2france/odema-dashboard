@@ -1,4 +1,4 @@
-import { useSearchParamsState, Attribution, LoadingContainer, useApi, SimpleRecord } from "g2f-dashboard"
+import { useSearchParamsState, Attribution, LoadingContainer, useApi, SimpleRecord } from "api-dashboard"
 import { Row, Col, Card } from "antd"
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte"
 import { RepTopbar } from "../rep_topbar"

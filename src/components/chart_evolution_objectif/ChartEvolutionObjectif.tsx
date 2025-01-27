@@ -1,4 +1,4 @@
-import { SimpleRecord, useChartData, useDashboardElement } from "g2f-dashboard";
+import { SimpleRecord, useChartData, useDashboardElement } from "api-dashboard";
 import { CSSProperties, useMemo, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from "echarts";
