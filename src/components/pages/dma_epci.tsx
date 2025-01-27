@@ -290,13 +290,13 @@ export const DmaPageEPCI: React.FC = () => {
           </DashboardElement>
 
           <DashboardElement
-            isFetching={data_traitement_isFecthing}
+            isFetching={indicateurs.isFetching}
             title={`Type de déchets collectés`}
             section="Panorama"
             attributions={[
               {
-                name: "Ademe/Odema",
-                url: "https://www.geo2france.fr/datahub/dataset/0b11b7e9-86e9-42c1-80da-f27fd58355bd",
+                name: "Ademe",
+                url: "https://data.ademe.fr/datasets/sinoe59-indic-synth-acteur",
               },
             ]}
           >
