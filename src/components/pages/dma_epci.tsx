@@ -104,16 +104,38 @@ export const DmaPageEPCI: React.FC = () => {
       }
   })
 
-   const options_territories = useMemo( () => data_ecpci_collecte?.data && data_ecpci_traitement?.data && alasql(`
-        SELECT [epci_nom] AS [label], [epci_siren] AS [value]
+  const {data:data_ecpci_dechetterie} = useApi({
+    resource:"odema:territoires_dechetterie",
+    dataProvider:geo2franceProvider,
+    pagination:{
+        mode:"off"
+    },
+    meta:{
+        properties:["epci_siren", "epci_nom","population","nombre_communes","c_acteur_sinoe"]
+    }
+})
+
+  
+
+   const territories = useMemo( () => data_ecpci_collecte?.data && data_ecpci_traitement?.data && data_ecpci_dechetterie?.data && alasql(`
+    SELECT epci_siren, epci_nom,MAX(population) AS [population],MAX([nombre_communes]) AS [nombre_communes],c_acteur_sinoe, ARRAY([competence]) as [competence]
+    FROM (
+        SELECT epci_siren, epci_nom,population,nombre_communes,c_acteur_sinoe, 'collecte' AS [competence]
         FROM ?
         UNION
-          SELECT [epci_nom] AS [label], [epci_siren] AS [value]
-        FROM ?`, [data_ecpci_collecte?.data, data_ecpci_traitement?.data]),
-        [data_ecpci_collecte?.data, data_ecpci_traitement?.data]
-   )
+          SELECT epci_siren, epci_nom,population,nombre_communes,c_acteur_sinoe, 'traitement' AS [competence]
+        FROM ?
+        UNION
+          SELECT epci_siren, epci_nom,population,nombre_communes,c_acteur_sinoe, 'dechetterie' AS [competence]
+        FROM ?
+        )
+    GROUP BY epci_siren, epci_nom,c_acteur_sinoe `, [data_ecpci_collecte?.data, data_ecpci_traitement?.data, data_ecpci_dechetterie?.data]),
+        [data_ecpci_collecte?.data, data_ecpci_traitement?.data, data_ecpci_dechetterie?.data]
+   );
 
-   const current_epci = data_ecpci_collecte?.data.find((e:any) => (e.epci_siren == siren_epci) ) || data_ecpci_traitement?.data.find((e:any) => (e.epci_siren == siren_epci) )
+   const options_territories = territories?.map((t:any) => ({label: t.epci_nom, value: t.epci_siren})); // Pour le select
+   console.log(territories)
+   const current_epci = territories?.find((e:any) => (e.epci_siren == siren_epci) ) 
 
    const indicateurs = useApi({
     resource:"sinoe59-indic-synth-acteur/lines",
@@ -151,6 +173,11 @@ export const DmaPageEPCI: React.FC = () => {
             label:'Communes',
             children:<> {current_epci?.nombre_communes && (current_epci?.nombre_communes).toLocaleString()} &nbsp;<FaHouseFlag /></>
         },
+        {
+          key:'competences',
+          label:'Compétences',
+          children: current_epci?.competence.join()
+        }
     ]
 
     const indicateur_curent_year = indicateurs?.data?.data.find((e) => e.annee == year);
