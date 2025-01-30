@@ -11,6 +11,8 @@ import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { ademe_opendataProvider, geo2franceProvider } from "../../App"
 import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci";
+import { Dechetterie, Factory, TrashCollector } from "../../utils/picto";
+import { CompetenceBadge } from "../competence_badge/CompetenceBadge";
 
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
@@ -176,7 +178,7 @@ export const DmaPageEPCI: React.FC = () => {
         {
           key:'competences',
           label:'Compétences',
-          children: current_epci?.competence.join()
+          children: <CompetenceBadge competences={current_epci?.competence} />
         }
     ]
 

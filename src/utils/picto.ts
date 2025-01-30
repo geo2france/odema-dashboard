@@ -42,3 +42,14 @@ export const EnginsPyrotechniques = pyro
 /* Région HDF */
 import map_hdf from "../assets/map_hauts-de-france_dep.svg?react";
 export const MapHDF = map_hdf
+
+
+/* Competences */
+import dechetterie from "../assets/picto_dechet/Picto-Decheterie_2405_Decheterie_sans_texte.svg?react"
+export const Dechetterie = dechetterie
+
+import trash_collector from "../assets/trash-collector.svg?react"
+export const TrashCollector = trash_collector
+
+import factory from "../assets/factory.svg?react"
+export const Factory = factory
