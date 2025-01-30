@@ -136,7 +136,6 @@ export const DmaPageEPCI: React.FC = () => {
    );
 
    const options_territories = territories?.map((t:any) => ({label: t.epci_nom, value: t.epci_siren})); // Pour le select
-   console.log(territories)
    const current_epci = territories?.find((e:any) => (e.epci_siren == siren_epci) ) 
 
    const indicateurs = useApi({
