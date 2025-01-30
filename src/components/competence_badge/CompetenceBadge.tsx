@@ -18,7 +18,7 @@ const colors = { enabled: "#6A7F2B", disabled: "#E7E7E7" };
 export const CompetenceBadge: React.FC<CompetenceBadgePros> = ({ competences }) => {
     return (
         <Flex style={{ height: '50px' }} gap={'middle'}>
-            {competenceData.map(({ name, icon: Icon, title }) => {
+            {competences && competenceData.map(({ name, icon: Icon, title }) => {
                 const isActive = competences.includes(name);
                 const color = isActive ? colors.enabled : colors.disabled
                 return (
