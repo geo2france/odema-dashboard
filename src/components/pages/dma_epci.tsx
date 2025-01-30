@@ -11,7 +11,6 @@ import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { ademe_opendataProvider, geo2franceProvider } from "../../App"
 import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci";
-import { Dechetterie, Factory, TrashCollector } from "../../utils/picto";
 import { CompetenceBadge } from "../competence_badge/CompetenceBadge";
 
 
