@@ -134,7 +134,9 @@ export const DmaPageEPCI: React.FC = () => {
         [data_ecpci_collecte?.data, data_ecpci_traitement?.data, data_ecpci_dechetterie?.data]
    );
 
-   const options_territories = territories?.map((t:any) => ({label: t.epci_nom, value: t.epci_siren})); // Pour le select
+   const options_territories = territories?.map((t:any) => ({label: t.epci_nom, value: t.epci_siren}))
+    .filter((option:any) => !/syndicat/i.test(option.label)); // Fix temporaire, masquer les syndicats
+    
    const current_epci = territories?.find((e:any) => (e.epci_siren == siren_epci) ) 
 
    const indicateurs = useApi({
