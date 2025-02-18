@@ -90,7 +90,7 @@ export const DmaPageEPCI: React.FC = () => {
             mode:"off"
         },
         meta:{
-            properties:["epci_siren", "epci_nom","population","nombre_communes","c_acteur_sinoe"]
+            properties:["epci_siren", "epci_nom", "population", "nombre_communes", "population_epci", "c_acteur_sinoe"]
         }
     })
 
@@ -101,7 +101,7 @@ export const DmaPageEPCI: React.FC = () => {
           mode:"off"
       },
       meta:{
-          properties:["epci_siren", "epci_nom","population","nombre_communes","c_acteur_sinoe"]
+          properties:["epci_siren", "epci_nom", "population", "nombre_communes", "population_epci", "c_acteur_sinoe"]
       }
   })
 
@@ -112,7 +112,7 @@ export const DmaPageEPCI: React.FC = () => {
         mode:"off"
     },
     meta:{
-        properties:["epci_siren", "epci_nom","population","nombre_communes","c_acteur_sinoe"]
+        properties:["epci_siren", "epci_nom", "population","nombre_communes", "population_epci", "c_acteur_sinoe"]
     }
 })
 
