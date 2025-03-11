@@ -76,6 +76,7 @@ export const MapTI: React.FC<IMapTIProps> = ({ style }) => {
       onClick={onClickMap}
       attributionControl={true}
       interactiveLayerIds={['ti']}
+      cooperativeGestures
     >
 
       <BaseLayer layer="osm"/>

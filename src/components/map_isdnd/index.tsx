@@ -101,6 +101,7 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
       onMouseMove={onMouseMoveMap}
       attributionControl={true}
       interactiveLayerIds={['isdnd_entrant','isdnd_capacite']}
+      cooperativeGestures
     >
 
       <BaseLayer layer="osm"/>
