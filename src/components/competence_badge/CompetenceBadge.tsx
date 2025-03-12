@@ -25,7 +25,7 @@ export const CompetenceBadge: React.FC<CompetenceBadgePros> = ({ competences }) 
                     <Tooltip key={name} title={title}  color={color}>
                         <Icon
                             height={35}
-                            color={color}
+                            fill={color}
                             aria-label={title}
                         />
                     </Tooltip>
