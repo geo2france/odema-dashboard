@@ -5,6 +5,7 @@ import { BaseLayer } from '../map_baselayer';
 import { geo2franceProvider } from "../../App";
 
 import { NavLink } from "react-router-dom";
+import { map_locale } from "../../utils";
 
 
 interface IMapTIProps{
@@ -77,6 +78,7 @@ export const MapTI: React.FC<IMapTIProps> = ({ style }) => {
       attributionControl={true}
       interactiveLayerIds={['ti']}
       cooperativeGestures
+      locale={map_locale}
     >
 
       <BaseLayer layer="osm"/>
