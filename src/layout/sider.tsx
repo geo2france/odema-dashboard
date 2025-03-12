@@ -6,8 +6,11 @@ import {
 import Odema from "/img/logo_odema.png";
 
 import React, { CSSProperties, useState } from "react";
-import { Layout, Menu, theme, Row, Col } from "antd";
+import { Layout, Menu, theme, Row, Col, Button, Divider } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
+
+import { MdOutlineKeyboardDoubleArrowLeft, MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
+
 import "./sider.css";
 
 
@@ -64,8 +67,8 @@ export const AppSider: React.FC = () => {
   
   const { token } = theme.useToken();
   const { pathname:selectedKey } = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [collapsed, setCollapsed] = useState(isMobile ? true : false);
 
   window.addEventListener("resize", () => {
     setIsMobile(window.innerWidth < 768);
@@ -79,8 +82,9 @@ export const AppSider: React.FC = () => {
     height: "100vh",
     width : '100%',
     backgroundColor: token.colorBgContainer,
+    //backgroundColor: 'gainsboro',
     zIndex: 2, 
-    position: isMobile ? 'fixed' : 'relative', 
+    //position: isMobile ? 'fixed' : 'relative', 
   };
 
   return (
@@ -88,26 +92,49 @@ export const AppSider: React.FC = () => {
     <Layout.Sider //TODO remplacer le Sider par un drawer
       theme="light"
       collapsible
-      collapsedWidth={isMobile ? 0 : 80} //Utiliser la propriété breakpoint ?
+      collapsedWidth={isMobile ? 40 : 80} //Utiliser la propriété breakpoint ?
       collapsed={collapsed}
       onCollapse={toggleCollapsed}
       style={siderStyle}
       width={isMobile ? '80%' : 220}
+      trigger={null}
     >
       <Row justify="center">
         <Col span={24}>
           <div
             style={{
-              padding: "16px",
+              margin: 4,
+              //padding: "8px",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              //width:"80%",
               backgroundColor: token.colorBgElevated,
             }}
           >
-            <NavLink to={""}>
+
+
+            <NavLink to={""} style={{
+                display:collapsed ? 'none' : undefined,
+                marginTop:8, marginLeft:8
+                }}>
               <img style={style_img} src={Odema} alt="Logo Odema" /> {/* TODO : utiliser une version mini du logo en affichage mobile */}
             </NavLink>
+            <Divider style={{display:collapsed ? 'none' : undefined}} type="vertical" />
+            <Button 
+              type="text"
+              onClick={() => setCollapsed(!collapsed)}
+              icon={collapsed ? <MdOutlineKeyboardDoubleArrowRight/> : <MdOutlineKeyboardDoubleArrowLeft/>}
+              style={{
+                fontSize: '28px',
+                width: 32,
+                height: 32,
+                //backgroundColor: token.colorFillSecondary,
+                marginTop:8
+              }}
+              />
+
+
           </div>
         </Col>
         <Col span={24}>
@@ -120,7 +147,7 @@ export const AppSider: React.FC = () => {
         </Col>
       </Row>
     </Layout.Sider>
-    { isMobile  && !collapsed &&
+   {/* { && isMobile  && !collapsed &&
 
             <div
             style={{
@@ -132,7 +159,7 @@ export const AppSider: React.FC = () => {
               backgroundColor: 'rgba(0, 0, 0, 0.1)',
               zIndex: 1,
             }} ></div>
-          }
+          } */}
             </>
   );
 };
