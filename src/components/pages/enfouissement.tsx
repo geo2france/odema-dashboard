@@ -1,5 +1,5 @@
 import { CSSProperties, useState } from "react";
-import { Row, Col, Drawer, Tooltip, Select, Form, Flex } from "antd"
+import { Row, Col, Drawer, Tooltip, Select, Flex } from "antd"
 import alasql from "alasql";
 
 import { Control, DashboardElement, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "api-dashboard";
