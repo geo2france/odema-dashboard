@@ -13,7 +13,7 @@
     "@tanstack/react-query": "^5.51.14",
     "@types/geojson": "^7946.0.14",
     "alasql": "^4.5.0",
-    "antd": "^5.19.2",
+    "antd": "^5.24.3",
     "api-dashboard": "https://github.com/geo2france/api-dashboard/tarball/dev",
     "axios": "^1.7.4",
     "date-fns": "^3.6.0",

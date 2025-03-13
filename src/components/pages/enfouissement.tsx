@@ -1,5 +1,5 @@
 import { CSSProperties, useState } from "react";
-import { Row, Col, Drawer, Tooltip, Select, Form } from "antd"
+import { Row, Col, Drawer, Tooltip, Select, Form, Flex } from "antd"
 import alasql from "alasql";
 
 import { Control, DashboardElement, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "api-dashboard";
@@ -64,23 +64,18 @@ export const EnfouissementPage: React.FC = () => {
 
       return (<>
       <Control>
-            <Form layout="inline">
-                <Form.Item label="Année">
-                    <NextPrevSelect reverse={true}
-                        options={select_options_annees}
-                        style={{width:'100%'}}
-                        value={year} defaultValue={year}
-                        onChange={(e) => setYear(Number(e))} />
-                </Form.Item>
-                <Form.Item label="Installation">
-                    <Select showSearch
-                        optionFilterProp="label"
-                        defaultValue={aiot} value={aiot}
-                        onSelect={setAiot}
-                        options={select_options}
-                        style={{width:'100%'}}/>
-                </Form.Item>
-            </Form>
+         <Flex wrap justify="flex-start" align="flex-start" gap="small">
+            <NextPrevSelect reverse={true}
+                options={select_options_annees}
+                value={year} defaultValue={year}
+                onChange={(e) => setYear(Number(e))} />
+            <Select showSearch
+                optionFilterProp="label"
+                defaultValue={aiot} value={aiot}
+                onSelect={setAiot}
+                options={select_options}
+                style={{ maxWidth:"80vw" }} />
+        </Flex>
       </Control>
       <Row gutter={[14, 14]} style={{ margin: 16 }}>
                 <Col xl={12} xs={24}>

@@ -239,9 +239,8 @@ export const DmaPageEPCI: React.FC = () => {
     return (
       <DashboardLayout
         control={
-            <Form layout="inline">
-                <Form.Item label="Année">
-                    <NextPrevSelect
+            [
+                <NextPrevSelect key="A"
                       onChange={(e: any) => (e ? setYear(e) : undefined)}
                       reverse={true}
                       value={year}
@@ -250,19 +249,17 @@ export const DmaPageEPCI: React.FC = () => {
                         .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
                         .reverse()
                         .map((i) => ({ label: i, value: i }))}
-                    />
-                </Form.Item>
-                <Form.Item label="EPCI">
-                    <Select
+                    />,
+                <Select key="B"
+                      className='select-fixed' 
                       value={siren_epci}
                       showSearch
                       optionFilterProp="label"
                       onSelect={setSiren_epci}
                       options={options_territories}
-                      style={{ width: 450 }}
-                    />
-                </Form.Item>
-              </Form>
+                      style={{ maxWidth:"80vw" }}
+                />
+            ]
           }
       >
 

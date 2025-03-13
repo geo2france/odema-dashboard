@@ -94,20 +94,16 @@ export const DmaComponent: React.FC = () => {
     return (
       <DashboardLayout
         control={
-          <Form layout="inline">
-            <Form.Item label="Année">
-                  <NextPrevSelect
-                    onChange={(e: any) => (e ? setYear(e) : undefined)}
-                    reverse={true}
-                    value={year}
-                    options={
-                      Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
-                      .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
-                      .reverse()
-                      .map((i) => ({ label: i, value: i }))}
-                  />
-            </Form.Item>
-          </Form>
+              <NextPrevSelect
+                onChange={(e: any) => (e ? setYear(e) : undefined)}
+                reverse={true}
+                value={year}
+                options={
+                  Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
+                  .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
+                  .reverse()
+                  .map((i) => ({ label: i, value: i }))}
+              />
         }
       
         sections={['Panorama', 'Prévention', 'Valorisation', 'Stockage']}
