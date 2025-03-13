@@ -257,7 +257,7 @@ export const DmaPageEPCI: React.FC = () => {
                       optionFilterProp="label"
                       onSelect={setSiren_epci}
                       options={options_territories}
-                      style={{ maxWidth:"80vw" }}
+                      style={{ maxWidth:"100%" }}
                 />
             ]
           }

@@ -18,7 +18,11 @@ const style_img: CSSProperties = {
   width: "100%",
 };
 
-export const AppSider: React.FC = () => {
+interface AppSiderProps {
+  style?:CSSProperties
+}
+
+export const AppSider: React.FC<AppSiderProps> = ({style}) => {
 
   const items = [
     {
@@ -80,11 +84,9 @@ export const AppSider: React.FC = () => {
 
   const siderStyle: CSSProperties = {
     height: "100vh",
-    width : '100%',
     backgroundColor: token.colorBgContainer,
-    //backgroundColor: 'gainsboro',
     zIndex: 2, 
-    //position: isMobile ? 'fixed' : 'relative', 
+    ...style
   };
 
   return (

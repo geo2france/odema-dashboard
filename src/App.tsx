@@ -19,6 +19,7 @@ import { RepMnuPage } from "./components/pages/rep_mnu";
 import { RepDispmedPage } from "./components/pages/rep_dispmed";
 import { DmaPageEPCI } from "./components/pages/dma_epci";
 import { HomePage } from "./components/pages/home";
+import { Content } from "antd/es/layout/layout";
 
 
 const myTheme:ThemeConfig = {
@@ -55,10 +56,10 @@ const App: React.FC = () => {
               element={
                 <Layout>
                   <Layout>
-                    <AppSider />
-                    <div style={{width:"100%"}}>
+                    <AppSider style={{width:"15%"}}/>
+                    <Content style={{width:"85%"}}>
                       <Outlet />
-                    </div>
+                    </Content>
                   </Layout>
                   <AppFooter />
                 </Layout>
