@@ -150,7 +150,8 @@ export const DmaPageEPCI: React.FC = () => {
         operator:"eq",
         value:current_epci?.c_acteur_sinoe
       }
-    ]
+    ],
+    enabled: current_epci?.c_acteur_sinoe !== undefined
   })
 
 
