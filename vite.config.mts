@@ -5,7 +5,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
   plugins: [react(), svgr(),
-    visualizer({ open: true }) // ouvrir automatiquement dans le navigateur
+    visualizer({ open: false }) 
   ],
   base: './',
   build: {
