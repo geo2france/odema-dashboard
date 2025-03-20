@@ -1,5 +1,5 @@
 import { CSSProperties, useState } from "react";
-import { Row, Col, Drawer, Tooltip, Select, Flex } from "antd"
+import { Row, Col, Drawer, Tooltip, Select, Flex, Typography } from "antd"
 import alasql from "alasql";
 
 import { Control, DashboardElement, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "api-dashboard";
@@ -105,7 +105,7 @@ export const EnfouissementPage: React.FC = () => {
                       }
                         <div  style={{float:'right'}}>
                           <Tooltip title="Historique des arrêtés">
-                              <a onClick={() => setdrawerIsOpen(true)}><HistoryOutlined /></a>
+                              <Typography.Link onClick={() => setdrawerIsOpen(true)}><HistoryOutlined /></Typography.Link>
                           </Tooltip>
                         </div> 
 
