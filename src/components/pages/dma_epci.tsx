@@ -6,7 +6,7 @@ import { BsRecycle } from "react-icons/bs";
 import { useMemo, useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { TbReportMoney } from "react-icons/tb";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, DashboardLayout, useApi } from "api-dashboard"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, DashboardPage, useApi } from "api-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { ademe_opendataProvider, geo2franceProvider } from "../../App"
@@ -238,7 +238,7 @@ export const DmaPageEPCI: React.FC = () => {
   )
 
     return (
-      <DashboardLayout
+      <DashboardPage
         control={
             [
                 <NextPrevSelect key="A"
@@ -435,6 +435,6 @@ export const DmaPageEPCI: React.FC = () => {
               )}
             </FlipCard>
           </DashboardElement>
-      </DashboardLayout>
+      </DashboardPage>
     );
 }
