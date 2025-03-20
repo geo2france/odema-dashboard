@@ -59,14 +59,13 @@ const ListRelated:React.FC = () => {
 export const HomePage:React.FC = () => {
     return (
       <Row gutter={[16, 16]} style={{ margin: 16 }}>
-        <Col xs={24}>
-          <Card style={{ width: "100%", padding: 15 }}>
+        <Col span={24}>
+          <Card>
             <Row gutter={32} align={"middle"}>
               <Col md={24 - 18}>
                 <img
                   src={Odema}
-                  style={{ marginRight: 25, maxWidth: "100%", width: "auto" }}
-                ></img>
+                  style={{ marginRight: 25, maxWidth: "100%", width: "auto" }}/>
               </Col>
               <Col md={18}>
                 <Title level={1}>Tableaux de bords de l'Odema</Title>
@@ -85,45 +84,42 @@ export const HomePage:React.FC = () => {
                 </p>
               </Col>
             </Row>
-            <Divider/>
-            <Row gutter={[16, 16]}>
-              <Col md={12} style={{ width: "100%" }}>
-                <Card title="À voir aussi">
-                  <ListRelated />
-                </Card>
-              </Col>
-              <Col md={12}>
-                <Card title="À propos" style={{ height: "100%" }}>
-                  <p>
-                    Le code source de ce tableau de bord est libre et peut être
-                    consulté sur le{" "}
-                    <Link href="https://github.com/geo2france/odema-dashboard">
-                      dépot de code <FaGithub />
-                    </Link>
-                    .
-                  </p>
-                  <p>
-                    Cette application est alimentée simultanément par des
-                    données hébergées par{" "}
-                    <Link href="https://www.geo2france.fr/">Géo2France</Link> et
-                    par l'<Link href="https://data.ademe.fr/">Ademe</Link>. La
-                    source est indiquée sous chaque graphique. La plupart des
-                    données sont sous licence libre et peuvent être réutilisées.
-                  </p>
-                  <p>
-                    Sauf mention contraire, les graphiques présentés ici sont
-                    sous licence{" "}
-                    <Link href="https://creativecommons.org/licenses/by/2.0/fr/deed.fr">
-                      {" "}
-                      CC BY <FaCreativeCommons /> <FaCreativeCommonsBy />
-                    </Link>{" "}
-                    et peuvent donc également être librement ré-utilisés sous
-                    réserve de citation de l'auteur (Observatoire
-                    déchets-matières des Hauts-de-France).{" "}
-                  </p>
-                </Card>
-              </Col>
-            </Row>
+          </Card>  
+        </Col>
+        <Col md={12} style={{ width: "100%" }}>
+          <Card title="À voir aussi">
+            <ListRelated />
+          </Card>
+        </Col>
+        <Col md={12}>
+          <Card title="À propos" style={{ height: "100%" }}>
+            <p>
+              Le code source de ce tableau de bord est libre et peut être
+              consulté sur le{" "}
+              <Link href="https://github.com/geo2france/odema-dashboard">
+                dépot de code <FaGithub />
+              </Link>
+              .
+            </p>
+            <p>
+              Cette application est alimentée simultanément par des
+              données hébergées par{" "}
+              <Link href="https://www.geo2france.fr/">Géo2France</Link> et
+              par l'<Link href="https://data.ademe.fr/">Ademe</Link>. La
+              source est indiquée sous chaque graphique. La plupart des
+              données sont sous licence libre et peuvent être réutilisées.
+            </p>
+            <p>
+              Sauf mention contraire, les graphiques présentés ici sont
+              sous licence{" "}
+              <Link href="https://creativecommons.org/licenses/by/2.0/fr/deed.fr">
+                {" "}
+                CC BY <FaCreativeCommons /> <FaCreativeCommonsBy />
+              </Link>{" "}
+              et peuvent donc également être librement ré-utilisés sous
+              réserve de citation de l'auteur (Observatoire
+              déchets-matières des Hauts-de-France).{" "}
+            </p>
           </Card>
         </Col>
       </Row>
