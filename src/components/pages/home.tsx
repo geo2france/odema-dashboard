@@ -1,4 +1,4 @@
-import { Card, Col, Divider, Row, Typography } from "antd"
+import { Card, Col, Row, Typography } from "antd"
 import { FaCreativeCommons, FaCreativeCommonsBy, FaDatabase, FaEnvelope, FaGithub, FaMapMarked } from "react-icons/fa";
 //import { BsPersonWorkspace } from "react-icons/bs";
 import { List } from 'antd';
