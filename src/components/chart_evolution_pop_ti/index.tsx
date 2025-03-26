@@ -55,9 +55,11 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
 
     const serie: LineSeriesOption = {
       name: "Population en TI",
-      data: data.filter((e) => e.annee <= threshold_proj).map((e) => ({ 
-        value:[e.annee.toString(), e.pop_ti, e.pop_ti/e.pop_totale]
-            } )),
+      data: data.filter((e) => e.annee <= threshold_proj)
+        .sort((a,b) => a.annee - b.annee)
+        .map((e) => ({ 
+          value:[e.annee.toString(), e.pop_ti, e.pop_ti/e.pop_totale]
+              } )),
       type: "line",
       color:"#d1956a",
       emphasis: { focus: "none" },
@@ -65,10 +67,12 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
 
     const serie_proj: LineSeriesOption = {
         name: "Population en TI (Projection)",
-        data: data.filter((e) => e.annee >= threshold_proj).map((e) => ({ 
-          value:[e.annee.toString(), e.pop_ti, e.pop_ti/e.pop_totale],
-          symbol: e.annee == threshold_proj ? 'none' : undefined
-          } )),
+        data: data.filter((e) => e.annee >= threshold_proj)
+          .sort((a,b) => a.annee - b.annee)
+          .map((e) => ({ 
+            value:[e.annee.toString(), e.pop_ti, e.pop_ti/e.pop_totale],
+            symbol: e.annee == threshold_proj ? 'none' : undefined
+            } )),
         type: "line",
         color:"#d1956a",
         emphasis: { focus: "none" },

@@ -60,3 +60,10 @@ export const interpolate = (data:DataPoint[], _type='linear'):DataPoint[] => {
 
     return result; 
 }
+
+// Utilisé dans la property locale du composant Map de React-Map-Gl (si CooperativeGesture est True)
+export const map_locale = {
+    'CooperativeGesturesHandler.WindowsHelpText': 'Utilisez Ctrl + molette pour zommer sur la carte.',
+    'CooperativeGesturesHandler.MacHelpText': 'Utilisez ⌘ + molette pour zommer sur la carte.',
+    'CooperativeGesturesHandler.MobileHelpText': 'Utilisez deux doights pour déplacer la carte.',
+}

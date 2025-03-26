@@ -1,4 +1,4 @@
-import { Card, Col, Descriptions, DescriptionsProps, Form, Row, Select } from "antd"
+import { Card, Col, Descriptions, DescriptionsProps, Row, Select } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { FilePdfOutlined } from "@ant-design/icons"
 import alasql from "alasql"
@@ -6,11 +6,12 @@ import { BsRecycle } from "react-icons/bs";
 import { useMemo, useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { TbReportMoney } from "react-icons/tb";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, DashboardLayout, useApi } from "api-dashboard"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, DashboardPage, useApi } from "api-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { ademe_opendataProvider, geo2franceProvider } from "../../App"
 import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci";
+import { CompetenceBadge } from "../competence_badge/CompetenceBadge";
 
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
@@ -89,7 +90,7 @@ export const DmaPageEPCI: React.FC = () => {
             mode:"off"
         },
         meta:{
-            properties:["epci_siren", "epci_nom","population","nombre_communes","c_acteur_sinoe"]
+            properties:["epci_siren", "epci_nom", "population", "nombre_communes", "population_epci", "c_acteur_sinoe"]
         }
     })
 
@@ -100,20 +101,43 @@ export const DmaPageEPCI: React.FC = () => {
           mode:"off"
       },
       meta:{
-          properties:["epci_siren", "epci_nom","population","nombre_communes","c_acteur_sinoe"]
+          properties:["epci_siren", "epci_nom", "population", "nombre_communes", "population_epci", "c_acteur_sinoe"]
       }
   })
 
-   const options_territories = useMemo( () => data_ecpci_collecte?.data && data_ecpci_traitement?.data && alasql(`
-        SELECT [epci_nom] AS [label], [epci_siren] AS [value]
+  const {data:data_ecpci_dechetterie} = useApi({
+    resource:"odema:territoires_dechetterie",
+    dataProvider:geo2franceProvider,
+    pagination:{
+        mode:"off"
+    },
+    meta:{
+        properties:["epci_siren", "epci_nom", "population","nombre_communes", "population_epci", "c_acteur_sinoe"]
+    }
+})
+
+  
+
+   const territories = useMemo( () => data_ecpci_collecte?.data && data_ecpci_traitement?.data && data_ecpci_dechetterie?.data && alasql(`
+    SELECT epci_siren, epci_nom,MAX(population) AS [population],MAX([nombre_communes]) AS [nombre_communes],c_acteur_sinoe, ARRAY([competence]) as [competence]
+    FROM (
+        SELECT epci_siren, epci_nom,population,nombre_communes,c_acteur_sinoe, 'collecte' AS [competence]
         FROM ?
         UNION
-          SELECT [epci_nom] AS [label], [epci_siren] AS [value]
-        FROM ?`, [data_ecpci_collecte?.data, data_ecpci_traitement?.data]),
-        [data_ecpci_collecte?.data, data_ecpci_traitement?.data]
-   )
+          SELECT epci_siren, epci_nom,population,nombre_communes,c_acteur_sinoe, 'traitement' AS [competence]
+        FROM ?
+        UNION
+          SELECT epci_siren, epci_nom,population,nombre_communes,c_acteur_sinoe, 'dechetterie' AS [competence]
+        FROM ?
+        )
+    GROUP BY epci_siren, epci_nom,c_acteur_sinoe `, [data_ecpci_collecte?.data, data_ecpci_traitement?.data, data_ecpci_dechetterie?.data]),
+        [data_ecpci_collecte?.data, data_ecpci_traitement?.data, data_ecpci_dechetterie?.data]
+   );
 
-   const current_epci = data_ecpci_collecte?.data.find((e:any) => (e.epci_siren == siren_epci) ) || data_ecpci_traitement?.data.find((e:any) => (e.epci_siren == siren_epci) )
+   const options_territories = territories?.map((t:any) => ({label: t.epci_nom, value: t.epci_siren}))
+    .filter((option:any) => !/syndicat/i.test(option.label)); // Fix temporaire, masquer les syndicats
+    
+   const current_epci = territories?.find((e:any) => (e.epci_siren == siren_epci) ) 
 
    const indicateurs = useApi({
     resource:"sinoe59-indic-synth-acteur/lines",
@@ -126,7 +150,8 @@ export const DmaPageEPCI: React.FC = () => {
         operator:"eq",
         value:current_epci?.c_acteur_sinoe
       }
-    ]
+    ],
+    enabled: current_epci?.c_acteur_sinoe !== undefined
   })
 
 
@@ -151,6 +176,11 @@ export const DmaPageEPCI: React.FC = () => {
             label:'Communes',
             children:<> {current_epci?.nombre_communes && (current_epci?.nombre_communes).toLocaleString()} &nbsp;<FaHouseFlag /></>
         },
+        {
+          key:'competences',
+          label:'Compétences',
+          children: <CompetenceBadge competences={current_epci?.competence} />
+        }
     ]
 
     const indicateur_curent_year = indicateurs?.data?.data.find((e) => e.annee == year);
@@ -208,11 +238,10 @@ export const DmaPageEPCI: React.FC = () => {
   )
 
     return (
-      <DashboardLayout
+      <DashboardPage
         control={
-            <Form layout="inline">
-                <Form.Item label="Année">
-                    <NextPrevSelect
+            [
+                <NextPrevSelect key="A"
                       onChange={(e: any) => (e ? setYear(e) : undefined)}
                       reverse={true}
                       value={year}
@@ -221,19 +250,17 @@ export const DmaPageEPCI: React.FC = () => {
                         .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
                         .reverse()
                         .map((i) => ({ label: i, value: i }))}
-                    />
-                </Form.Item>
-                <Form.Item label="EPCI">
-                    <Select
+                    />,
+                <Select key="B"
+                      className='select-fixed' 
                       value={siren_epci}
                       showSearch
                       optionFilterProp="label"
                       onSelect={setSiren_epci}
                       options={options_territories}
-                      style={{ width: 450 }}
-                    />
-                </Form.Item>
-              </Form>
+                      style={{ maxWidth:"100%" }}
+                />
+            ]
           }
       >
 
@@ -408,6 +435,6 @@ export const DmaPageEPCI: React.FC = () => {
               )}
             </FlipCard>
           </DashboardElement>
-      </DashboardLayout>
+      </DashboardPage>
     );
 }

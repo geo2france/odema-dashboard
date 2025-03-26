@@ -1,27 +1,23 @@
-import { WfsProvider, DatafairProvider } from "api-dashboard";
-import { HashRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
-import { QueryClient,  QueryClientProvider } from '@tanstack/react-query'
-
-import { ConfigProvider, Layout, ThemeConfig } from "antd";
 import './index.css';
 
+import { WfsProvider, DatafairProvider, DashboardApp } from "api-dashboard";
+import { Partner, RouteConfig } from "api-dashboard/src/types";
+
 import { DmaComponent } from "./components/pages/dma";
-import { AppFooter, AppSider } from "./layout";
-import { ErrorComponent } from "./components/pages/error";
-import { RepPage } from "./components/pages/rep";
 import { EnfouissementPage } from "./components/pages/enfouissement";
-import { IncinerationtPage } from "./components/pages/incineration";
-import { RepDeeePage } from "./components/pages/rep_deee";
-import { RepPaPage } from "./components/pages/rep_pa";
-import { RepPchimPage } from "./components/pages/rep_pchim";
-import { RepTlcPage } from "./components/pages/rep_tlc";
-import { RepMnuPage } from "./components/pages/rep_mnu";
-import { RepDispmedPage } from "./components/pages/rep_dispmed";
 import { DmaPageEPCI } from "./components/pages/dma_epci";
 import { HomePage } from "./components/pages/home";
+import { CloseSquareOutlined, HomeOutlined } from "@ant-design/icons";
 
+import Odema_logo from "/img/logo_odema.png";
+import Ademe from "/img/Logo_ADEME.svg?url";
+import Prefet from "/img/Préfet_de_la_région_Hauts-de-France.svg?url";
+import Region from "/img/Logo Région HDF.png";
+import Cerc from "/img/Logo_CERC_Hauts-de-Fce_sans-sign.svg?url";
+import Cerdd from "/img/Logo_cerdd.svg?url";
+import Geo2France from "/img/geo2france.svg?url";
 
-const myTheme:ThemeConfig = {
+const myTheme = {
   token: {
     colorPrimary: "#DEAD8F",
     linkHoverDecoration:'underline',
@@ -40,58 +36,74 @@ const myTheme:ThemeConfig = {
   }
 }
 
+
+/** Data provider **/
 export const geo2franceProvider = WfsProvider("https://www.geo2france.fr/geoserver/ows")
 export const ademe_opendataProvider = DatafairProvider("https://data.ademe.fr/data-fair/api/v1/datasets") 
 
-const queryClient = new QueryClient()
+
+
+/** Logo et partenaires du projets **/
+const partenaires:Partner[] = [
+  { logo: Odema_logo, name:"Odema", url:"https://odema-hautsdefrance.org/"},
+  { logo: Ademe, name: "Ademe", url: "https://www.ademe.fr/" },
+  {
+    logo: Prefet,
+    name: "Préfecture Hauts-de-France",
+    url: "https://www.hauts-de-france.developpement-durable.gouv.fr/",
+  },
+  {
+    logo: Region,
+    name: "Région Hauts-de-France",
+    url: "https://www.hautsdefrance.fr/",
+  },
+  {
+    logo: Cerc,
+    name: "CERC Hauts-de-France",
+    url: "https://www.cerc-hautsdefrance.fr/",
+  },
+  { logo: Cerdd, name: "CERDD", url: "https://www.cerdd.org/" },
+  { logo: Geo2France, name: "Géo2France", url: "https://www.geo2france.fr/" },
+];
+
+
+/*** Renseigner ici les différentes pages du projets **/
+const route_config:RouteConfig[] = [
+  { 
+    path:"",
+    element:<HomePage />,
+    hidden:true,
+  },
+  {
+    path: "dma",
+    label: "DMA",
+    icon: <HomeOutlined />,
+    element: <DmaComponent />,
+    children: [
+      { path: "region", label: "Hauts-de-France", element: <DmaComponent /> },
+      { path: "epci", label: "EPCI", element: <DmaPageEPCI /> },
+    ],
+  },
+  { 
+    path: "isdnd", 
+    label: "ISDND", 
+    element: <EnfouissementPage /> ,
+    icon: <CloseSquareOutlined />,
+  },
+];
 
 const App: React.FC = () => {
-  return (
-  <QueryClientProvider client={queryClient}>
-    <HashRouter>
-      <ConfigProvider theme={myTheme}>
-          <Routes>
-            <Route
-              element={
-                <Layout>
-                  <Layout>
-                    <AppSider />
-                    <div style={{width:"100%"}}>
-                      <Outlet />
-                    </div>
-                  </Layout>
-                  <AppFooter />
-                </Layout>
-              }
-            >
-              <Route index element={<HomePage />} />
-              <Route path="DMA">
-                <Route index element={<Navigate to="/dma/region" />} />
-                <Route path="epci" element={<DmaPageEPCI />} />
-                <Route path="region" element={<DmaComponent />} />
-              </Route>
-              <Route path="REP">
-                <Route index element={<RepPage />} />
-                <Route path="deee" element={<RepDeeePage />} />
-                <Route path="pa" element={<RepPaPage />} />
-                <Route path="pchim" element={<RepPchimPage />} />
-                <Route path="tlc" element={<RepTlcPage />} />
-                <Route path="mnu" element={<RepMnuPage />} />
-                <Route path="disp_med" element={<RepDispmedPage />} />
-              </Route>
-              <Route path="isdnd">
-                <Route index element={<EnfouissementPage />} />
-              </Route>
-              <Route path="cve">
-                <Route index element={<IncinerationtPage />} />
-              </Route>
-              <Route path="*" element={<ErrorComponent />} />
-            </Route>
-          </Routes>
-      </ConfigProvider>
-    </HashRouter>
-  </QueryClientProvider>
-  );
+
+  return(
+    <DashboardApp
+      title="Odema"
+      subtitle="Observatoire déchets-matières des Hauts-de-France"
+      route_config={route_config}
+      logo={Odema_logo}
+      theme={myTheme}
+      brands={partenaires}
+     />
+  )
 };
 
 export default App;

@@ -4,6 +4,7 @@ import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplib
 import { BaseLayer } from '../map_baselayer';
 import { useDashboardElement, BaseRecordToGeojsonPoint, useApi, SimpleRecord } from 'api-dashboard';
 import { geo2franceProvider } from '../../App';
+import { map_locale } from '../../utils';
 
 export interface IMapProps{
     data:SimpleRecord[],
@@ -101,6 +102,8 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
       onMouseMove={onMouseMoveMap}
       attributionControl={true}
       interactiveLayerIds={['isdnd_entrant','isdnd_capacite']}
+      cooperativeGestures
+      locale={map_locale}
     >
 
       <BaseLayer layer="osm"/>

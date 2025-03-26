@@ -1,11 +1,11 @@
 import React, { CSSProperties, useState } from "react";
-import { Form, Typography } from 'antd';
+import { Typography } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
 import { ChartRaceBareDMA } from "../chart_racebar_dma";
 
 import alasql from "alasql";
-import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord, DashboardLayout, useApi } from "api-dashboard";
+import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord, DashboardPage, useApi } from "api-dashboard";
 import { ChartEvolutionDechet } from "../chart_evolution_dechet";
 import { ademe_opendataProvider, geo2franceProvider } from "../../App";
 import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti";
@@ -92,22 +92,18 @@ export const DmaComponent: React.FC = () => {
  
     
     return (
-      <DashboardLayout
+      <DashboardPage
         control={
-          <Form layout="inline">
-            <Form.Item label="Année">
-                  <NextPrevSelect
-                    onChange={(e: any) => (e ? setYear(e) : undefined)}
-                    reverse={true}
-                    value={year}
-                    options={
-                      Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
-                      .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
-                      .reverse()
-                      .map((i) => ({ label: i, value: i }))}
-                  />
-            </Form.Item>
-          </Form>
+              <NextPrevSelect
+                onChange={(e: any) => (e ? setYear(e) : undefined)}
+                reverse={true}
+                value={year}
+                options={
+                  Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
+                  .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
+                  .reverse()
+                  .map((i) => ({ label: i, value: i }))}
+              />
         }
       
         sections={['Panorama', 'Prévention', 'Valorisation', 'Stockage']}
@@ -335,7 +331,7 @@ export const DmaComponent: React.FC = () => {
             )}
           </DashboardElement>
 
-      </DashboardLayout>
+      </DashboardPage>
 
     );
 };
