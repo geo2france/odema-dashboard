@@ -35,7 +35,7 @@ export const RepPage: React.FC = () => {
         }
     )
 
-    const data_standardized_pu = collecte_pu?.data ? alasql(`
+    const data_standardized_pu = collecte_pu?.data ? (alasql(`
     SELECT d.[Code_Région], d.[Année_des_données] AS annee, 'Cyclomoteurs_et_véhicules_légers' AS type, sum(d.[Cyclomoteurs_et_véhicules_légers]) AS tonnage
     FROM ? d
     GROUP BY d.[Code_Région], d.[Année_des_données]
@@ -51,7 +51,7 @@ export const RepPage: React.FC = () => {
     SELECT d4.[Code_Région], d4.[Année_des_données] AS annee, 'Agraire_-_Génie_civil_1_et_agraire_-_Génie_civil_2' AS type, sum(d4.[Agraire_-_Génie_civil_1_et_agraire_-_Génie_civil_2]) AS tonnage
     FROM ? d4
     GROUP BY d4.[Code_Région], d4.[Année_des_données]
-    `, [collecte_pu.data.data,collecte_pu.data.data,collecte_pu.data.data,collecte_pu.data.data])
+    `, [collecte_pu.data.data,collecte_pu.data.data,collecte_pu.data.data,collecte_pu.data.data]) as SimpleRecord[])
     .map((e:SimpleRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
     :undefined
 
@@ -83,7 +83,7 @@ export const RepPage: React.FC = () => {
         'Garages_indépendants_et_autres_professionnels_de_l_entretien':e["Garages_indépendants_et_autres_professionnels_de_l'entretien"],
     })) // Fix name with quote...
 
-    const data_standardized_vhu = data_vhu2 ? alasql(`
+    const data_standardized_vhu = data_vhu2 ? (alasql(`
     SELECT d.[Code_Région], d.[Années] as annee, "Particuliers" AS type, sum(d.[Particuliers]::NUMBER) AS tonnage
     FROM ? d
     GROUP BY d.[Code_Région], d.[Années]
@@ -107,7 +107,8 @@ export const RepPage: React.FC = () => {
     SELECT d6.[Code_Région], d6.[Années] as annee, "Garages_indépendants_et_autres_professionnels_de_l'entretien" AS type, sum(d6.[Garages_indépendants_et_autres_professionnels_de_l_entretien]::NUMBER) AS tonnage
     FROM ? d6
     GROUP BY d6.[Code_Région], d6.[Années]
-    `, [data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2]).map((e:SimpleRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
+    `, [data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2]) as SimpleRecord[])
+    .map((e:SimpleRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
     :undefined
 
     return(
@@ -121,7 +122,7 @@ export const RepPage: React.FC = () => {
                     <Card>
                         pu
                         <LoadingContainer isFetching={collecte_pu.isFetching}>
-                            {collecte_pu.data ? <ChartPieRepCollecte filiere='pu' data={data_standardized_pu} year={Number(year)} /> : <b>...</b>}
+                            {data_standardized_pu ? <ChartPieRepCollecte filiere='pu' data={data_standardized_pu} year={Number(year)} /> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pu-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingContainer>
                     </Card>
@@ -130,7 +131,7 @@ export const RepPage: React.FC = () => {
                     <Card>
                         vhu
                         <LoadingContainer isFetching={collecte_vhu.isFetching}>
-                            {collecte_vhu.data ? <ChartPieRepCollecte filiere='vhu' data={data_standardized_vhu} year={Number(year)} /> : <b>...</b>}
+                            {data_standardized_vhu ? <ChartPieRepCollecte filiere='vhu' data={data_standardized_vhu} year={Number(year)} /> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-vhu-tonnages-collectes-cvhu-en-2018' }]}></Attribution>
                         </LoadingContainer>
                     </Card>

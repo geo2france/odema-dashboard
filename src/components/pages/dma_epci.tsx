@@ -132,7 +132,7 @@ export const DmaPageEPCI: React.FC = () => {
         )
     GROUP BY epci_siren, epci_nom,c_acteur_sinoe `, [data_ecpci_collecte?.data, data_ecpci_traitement?.data, data_ecpci_dechetterie?.data]),
         [data_ecpci_collecte?.data, data_ecpci_traitement?.data, data_ecpci_dechetterie?.data]
-   );
+   ) as SimpleRecord[];
 
    const options_territories = territories?.map((t:any) => ({label: t.epci_nom, value: t.epci_siren}))
     .filter((option:any) => !/syndicat/i.test(option.label)); // Fix temporaire, masquer les syndicats

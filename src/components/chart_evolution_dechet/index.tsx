@@ -69,7 +69,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
     ) t ON d.[annee] = t.[annee]
     GROUP BY d.[annee], d.[type], t.[ratio_annee_total]
     `,[data, data]), //Somme par type de traitement
-    [data])
+    [data]) as SimpleRecord[];
 
     useChartData({data:data_chart.map((e:SimpleRecord) => ({"Année":e.annee, "Type":chartBusinessProps(e.type).label, "Tonnage (T)":e.tonnage, "Ratio (kg/hab)":e.ratio}))})
 
@@ -78,11 +78,16 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
     FROM ?
     GROUP BY [type]
     `,[data_chart]), //Regroupement par type de traitement (= série pour echarts bar)
-    [data_chart])
+    [data_chart]) as SimpleRecord[]
 
-    const categories = useMemo(() =>alasql(`SELECT ARRAY(DISTINCT [annee]) as annees FROM ?`, [data])[0].annees?.sort().map((e:number) => e.toString()), [data])
+    const categories = useMemo(() => {
+        const r = alasql(`SELECT ARRAY(DISTINCT [annee]) as annees FROM ?`, [data]) as { annees?: number[] }[]; 
 
-    const series:BarSeriesOption[] = data_chart2.map((e:SimpleRecord) => ({
+        return r && r?.at(0)?.annees?.sort().map((e) => e)
+    
+    }, [data])
+
+    const series = (data_chart2.map((e:SimpleRecord) => ({
          name:chartBusinessProps(e.type).label,
          data:e.data.map((e:number[]) => ([e[0].toString(), e[2], e[1], e[3] ])),
          type:'bar',
@@ -96,7 +101,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         encode:{
             y: normalizeState ? [3] : undefined
         }
-    })).sort((a:any,b:any) => (chartBusinessProps(a.name).sort || 0) - (chartBusinessProps(b.name).sort || 0)   )
+    }))as BarSeriesOption[]).sort((a:any,b:any) => (chartBusinessProps(a.name).sort || 0) - (chartBusinessProps(b.name).sort || 0)   )
 
     const objectifs:LineSeriesOption = { //A supprimer
         name:"Objectif",
@@ -135,8 +140,8 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         xAxis: [
             {
                 type: 'category',
-                data:categories?.map((annee:number) => ({
-                    value:annee,
+                data:categories?.map((annee) => ({
+                    value:annee.toString(),
                     textStyle: {
                         fontWeight: annee == year ? 700 : undefined,
                         fontSize: annee == year ? 14 : undefined

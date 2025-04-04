@@ -32,7 +32,7 @@ export const RepPaPage: React.FC = () => {
         }
     )
 
-    const data_standardized = collecte_pa?.data ? alasql(`
+    const data_standardized = collecte_pa?.data ? (alasql(`
     SELECT d.[Code_Région], d.[Année_des_données] AS annee, 'Collectivités' AS type, sum(d.[Collectivités]) AS tonnage
     FROM ? d
     GROUP BY d.[Code_Région], d.[Année_des_données]
@@ -44,7 +44,7 @@ export const RepPaPage: React.FC = () => {
     SELECT d3.[Code_Région], d3.[Année_des_données] AS annee,  'Autre' AS type, sum(d3.[Autre]) AS tonnage
     FROM ? d3
     GROUP BY d3.[Code_Région], d3.[Année_des_données]
-    `, [collecte_pa.data.data,collecte_pa.data.data,collecte_pa.data.data]).map((e:SimpleRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) : undefined
+    `, [collecte_pa.data.data,collecte_pa.data.data,collecte_pa.data.data]) as SimpleRecord[]).map((e:SimpleRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) : undefined
 
     return (<>
 
@@ -61,7 +61,7 @@ export const RepPaPage: React.FC = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés par origine en ${year}`}>
                         <LoadingContainer isFetching={collecte_pa.isFetching}>
-                            {collecte_pa.data ? <ChartPieRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
+                            {data_standardized ? <ChartPieRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pa-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingContainer>
                     </Card>
@@ -70,7 +70,7 @@ export const RepPaPage: React.FC = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title="Evolution des tonnages collectés">
                         <LoadingContainer isFetching={collecte_pa.isFetching}>
-                            {collecte_pa.data ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
+                            {data_standardized ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingContainer>
                     </Card>

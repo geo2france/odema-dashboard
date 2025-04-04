@@ -25,7 +25,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, data
     WHERE c.[aiot]='${aiot}'
     GROUP BY c.[annee]
     ORDER BY c.[annee]
-    `, [data, data_capacite])
+    `, [data, data_capacite]) as SimpleRecord[];
 
     useChartData({
         data:data_chart, 

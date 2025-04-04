@@ -22,7 +22,7 @@ export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> =
                         WHERE C_REGION='${c_region}'
                         GROUP BY TYP_COLLECTE`, [data, data_territoire]),
         [data, data_territoire, c_region]               
-    )
+    ) as SimpleRecord[]
 
     useChartData({data:data_pie, dependencies:[data_pie]})
 

@@ -10,7 +10,7 @@ export interface ITimelineIsdndCapaciteProps {
 
 export const TimelineIsdndCapacite: React.FC<ITimelineIsdndCapaciteProps> = ({ data, aiot }) => {
 
-    const data_timeline = alasql(`
+    const data_timeline = (alasql(`
         SELECT [arrete_date_signature] AS signature,
             [arrete_nom] AS nom,
             [arrete_url] AS url,
@@ -20,7 +20,7 @@ export const TimelineIsdndCapacite: React.FC<ITimelineIsdndCapaciteProps> = ({ d
         FROM ?
         GROUP BY [arrete_date_signature], [arrete_url], [arrete_nom],[capacite]
         ORDER BY [annee]
-    `,[data.filter((e:SimpleRecord) => e.aiot == aiot)]).map((e:SimpleRecord) => ({...e, signature:new Date(e.signature) }))
+    `,[data.filter((e:SimpleRecord) => e.aiot == aiot)]) as SimpleRecord[]).map((e:SimpleRecord) => ({...e, signature:new Date(e.signature) }))
 
     const nom_isdnd = data.find((e:any) => e.aiot == aiot)?.nom_isdnd
 

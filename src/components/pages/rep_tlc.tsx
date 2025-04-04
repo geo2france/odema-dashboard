@@ -29,10 +29,10 @@ export const RepTlcPage: React.FC = () => {
         }
     )
 
-    const data_standardized = collecte?.data ? alasql(`SELECT [Année_des_données] AS annee, [origine], sum([tonnage]) AS tonnage
+    const data_standardized = collecte?.data ? (alasql(`SELECT [Année_des_données] AS annee, [origine], sum([tonnage]) AS tonnage
     FROM ? d
     GROUP BY [Année_des_données], [origine]
-    `, [collecte.data.data]).map((e:SimpleRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
+    `, [collecte.data.data]) as SimpleRecord[]).map((e:SimpleRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
     :undefined
 
 
@@ -51,7 +51,7 @@ export const RepTlcPage: React.FC = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
                         <LoadingContainer isFetching={collecte.isFetching}>
-                            {collecte.data ? <ChartPieRepCollecte filiere='tlc' data={data_standardized} year={Number(year)} focus_item={focus}  onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
+                            {data_standardized ? <ChartPieRepCollecte filiere='tlc' data={data_standardized} year={Number(year)} focus_item={focus}  onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-tlc-tonnages-collectes-en-2021' }]}></Attribution>
                         </LoadingContainer>
                     </Card>

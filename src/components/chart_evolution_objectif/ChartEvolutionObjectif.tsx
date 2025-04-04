@@ -41,7 +41,8 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
         FROM ?
         GROUP BY [annee]
         `,[data]) , [data]
-    )
+    ) as SimpleRecord[];
+    
     useChartData({data:data_chart, dependencies:[data]})
 
     const serie:LineSeriesOption = {

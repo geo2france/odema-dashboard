@@ -31,10 +31,10 @@ export const RepMnuPage: React.FC = () => {
         }
     )
 
-    const data_standardized = collecte?.data ? alasql(`SELECT [Code_Région], [Année_des_données] AS annee, sum([tonnage]) AS tonnage
+    const data_standardized = collecte?.data ? (alasql(`SELECT [Code_Région], [Année_des_données] AS annee, sum([tonnage]) AS tonnage
     FROM ? d
     GROUP BY [Code_Région], [Année_des_données]
-    `, [collecte.data.data]).map((e:SimpleRecord) => ({annee:e.annee, name: 'MNU', value: e.tonnage} )) 
+    `, [collecte.data.data]) as SimpleRecord[]).map((e:SimpleRecord) => ({annee:e.annee, name: 'MNU', value: e.tonnage} )) 
     :undefined
 
     return (<>
@@ -53,7 +53,7 @@ export const RepMnuPage: React.FC = () => {
                 <Card title={`Tonnages collectés en ${year}`}>
 
                     <LoadingContainer isFetching={collecte.isFetching}>
-                        {collecte.data ? <b>{data_standardized.filter((e:SimpleRecord) => (e.annee == Number(year)))[0]?.value}</b> : <b>...</b>}
+                        {data_standardized ? <b>{data_standardized.filter((e:SimpleRecord) => (e.annee == Number(year)))[0]?.value}</b> : <b>...</b>}
                         <br /><small> Seul le tonnage 2021 est disponible. Type de déchet unique.</small><br />
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-mnu-tonnages-collectes-en-2021' }]}></Attribution>
                     </LoadingContainer>
@@ -64,7 +64,7 @@ export const RepMnuPage: React.FC = () => {
                 <Card title="Evolution des tonnages collectés">
                     <LoadingContainer isFetching={collecte.isFetching}>
                         <small>Pas de données disponibles avant 2021</small> <br/>
-                        {collecte.data ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
+                        {data_standardized ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
                         <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                     </LoadingContainer>
                 </Card>

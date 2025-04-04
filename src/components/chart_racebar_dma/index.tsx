@@ -19,7 +19,7 @@ export const ChartRaceBareDMA: React.FC<ChartRaceBareDMAProps> = ( {data, highli
             FROM ? d
             GROUP BY d.[L_REGION], d.[C_REGION]
             ORDER BY SUM(d.[TONNAGE__DMA]) / SUM(d.[VA_POPANNEE])
-            `,[data]),
+            `,[data]) as SimpleRecord[],
             [data]
     );
 

@@ -24,7 +24,7 @@ const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ({data, da
 
     //TODO : Ajouter un onglet avec l'évolution des type de traitement par an (avec surbrillance de l'année en cours)
     //TODO : Ajouter des chiffres clé (Taux de recylage : valo matière + valo organique)
-    const data_pie = alasql(`SELECT 
+    const data_pie = (alasql(`SELECT 
     t.C_REGION, t.ANNEE, t.L_TYP_REG_SERVICE, sum(t.TONNAGE_DMA) as TONNAGE_DMA, a.pop_region
     FROM (
         SELECT c.Annee AS ANNEE, c.C_REGION, sum(c.VA_POPANNEE) as pop_region 
@@ -34,7 +34,7 @@ const ChartPieTypeTraitement: React.FC<ChartPieTypeTraitementProps> = ({data, da
     JOIN ? t ON a.ANNEE = t.ANNEE AND t.C_REGION = a.C_REGION
     WHERE t.C_REGION = '${c_region}'
     GROUP BY t.C_REGION, t.ANNEE, t.L_TYP_REG_SERVICE, a.pop_region
-    `, [data_territoire, data]).map((e:SimpleRecord) => ({ratio_kg_hab:(e.TONNAGE_DMA*1000) / e.pop_region, ...e}))
+    `, [data_territoire, data]) as SimpleRecord[]).map((e:SimpleRecord) => ({ratio_kg_hab:(e.TONNAGE_DMA*1000) / e.pop_region, ...e}))
     
 
    

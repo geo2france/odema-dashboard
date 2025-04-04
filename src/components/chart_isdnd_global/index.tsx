@@ -23,7 +23,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, data_
         RIGHT JOIN ? c ON c.[annee]=t.[annee] AND c.[aiot]=t.[aiot]
         GROUP BY c.[annee]
         ORDER BY c.[annee]
-    `, [data, data_capacite])
+    `, [data, data_capacite]) as SimpleRecord[];
     
     useChartData({data:data_chart}) //Pas de  dependencies : les données du graphique ne change pas
 

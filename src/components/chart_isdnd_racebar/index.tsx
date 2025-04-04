@@ -19,8 +19,8 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
     useChartEvents({chartRef:chartRef, onClick:onClick})
     useDashboardElement({chartRef})
 
-    const axie_category = alasql(`SELECT DISTINCT [name], [aiot] FROM ? WHERE annee=${year} AND tonnage > 0 ORDER BY tonnage ASC
-    `, [data]).map((e:SimpleRecord) => ( {
+    const axie_category = (alasql(`SELECT DISTINCT [name], [aiot] FROM ? WHERE annee=${year} AND tonnage > 0 ORDER BY tonnage ASC
+    `, [data]) as SimpleRecord[] ).map((e:SimpleRecord) => ( {
         value:e.name,
         textStyle: {
             fontWeight: e.aiot == aiot ? 700 : 400,
@@ -32,7 +32,7 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         FROM ?
         WHERE annee=${year} AND tonnage > 0
         ORDER BY tonnage ASC
-    `,[data]), [data,year]
+    `,[data]) as SimpleRecord[], [data,year]
     )
 
     useChartData({data:data_chart, dependencies:[data_chart]})
