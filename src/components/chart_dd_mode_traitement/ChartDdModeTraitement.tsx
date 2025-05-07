@@ -4,14 +4,10 @@ import { useRef } from 'react';
 
 
 interface ChartDdModeTraitementProps {
-    year: number
-    data: SimpleRecord[]
+    data?: SimpleRecord[]
 }
 
-export const ChartDdModeTraitement: React.FC<ChartDdModeTraitementProps> = ({year, data} )  => {
-
-    console.log(data)
-    const current_year_data = data.filter((e) => (e.annee == year))
+export const ChartDdModeTraitement: React.FC<ChartDdModeTraitementProps> = ({data} )  => {
 
     const chartRef = useRef<any>();
     const option = {
@@ -21,7 +17,7 @@ export const ChartDdModeTraitement: React.FC<ChartDdModeTraitementProps> = ({yea
         },
         series:[{
             type:'pie',
-            data: current_year_data?.map((e:SimpleRecord) => (
+            data: data?.map((e:SimpleRecord) => (
                 { name:`${e.hierachie} - ${e.detail}`, 
                 value:e.quantite,
                 itemStyle:{
@@ -39,7 +35,7 @@ export const ChartDdModeTraitement: React.FC<ChartDdModeTraitementProps> = ({yea
             left: 'center',
             top: 'center',
             style: {
-                text: `${current_year_data?.reduce((acc, obj) => acc + obj.quantite, 0).toLocaleString()} t`,
+                text: `${data?.reduce((acc, obj) => acc + obj.quantite, 0).toLocaleString()} t`,
                 fill: '#666',
                 fontSize: 16,
                 fontWeight: 'bold'
