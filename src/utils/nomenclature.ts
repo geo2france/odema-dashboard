@@ -6,6 +6,7 @@
 export const chartBusinessProps = (item:string) : {label:string, color?:string, sort?:number} => {
     switch(item){
         case "Incinération sans récupération d'énergie":
+        case "Elimination - Incinération":
             return {color:"#CD0298", sort:0, label:item}
         case "Stockage":
         case "Stockage pour inertes":
@@ -18,11 +19,13 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
         case "tonnage_inc_dg":
             return chartBusinessProps("Incinération sans récupération d'énergie")
         case "Incinération avec récupération d'énergie":
+        case "Valorisation - Energie":
             return {color:'#FFB800', sort:2, label:item}
         case "tonnage_valo_enr":
         case "tonnage_valo_enr_dg":
             return chartBusinessProps("Incinération avec récupération d'énergie")
         case "Valorisation matière":
+        case "Valorisation - Recyclage":
             return {color:'#FEFA54', sort:3, label:item}
         case "tonnage_valo_mat":
         case "tonnage_valo_mat_dg":
