@@ -218,7 +218,7 @@ export const DmaPageEPCI: React.FC = () => {
       data_traitement?.data.flatMap((e) => ({
         annee: e.annee,
         type: e.type_dechet,
-        population: Math.floor((1e3 * e.tonnage) / e.ratio_hab), // Prevoir de rajouter la pop dans le JDD
+        population: e.population, // Prevoir de rajouter la pop dans le JDD
         tonnage: e.tonnage,
       })) , [data_traitement]);
     
@@ -229,7 +229,7 @@ export const DmaPageEPCI: React.FC = () => {
         type: e.traitement_destination === 'Stockage pour inertes'
           ? 'Stockage'
           : e.traitement_destination,
-        population: Math.floor((1e3 * e.tonnage) / e.ratio_hab), // Prevoir de rajouter la pop dans le JDD
+        population: e.population, // Prevoir de rajouter la pop dans le JDD
         tonnage: e.tonnage,
       })), [data_traitement]);
 
