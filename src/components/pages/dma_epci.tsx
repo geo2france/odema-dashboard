@@ -136,35 +136,7 @@ export const DmaPageEPCI: React.FC = () => {
 
    const options_territories = territories?.map((t:any) => ({label: t.epci_nom, value: t.epci_siren}))
     
-   const current_epci = territories?.find((e:any) => (e.epci_siren == siren_epci) ) 
-
-    const territoire_descritpion_item : DescriptionsProps['items'] = [
-        {
-            key:'name',
-            label:'Nom',
-            children:current_epci?.epci_nom
-        },
-        {
-            key:'siret',
-            label:'SIREN',
-            children:siren_epci
-        },
-        {
-            key:'population',
-            label:'Pop.',
-            children:<> {current_epci?.population && (current_epci?.population).toLocaleString()} &nbsp;<FaPeopleGroup /></>
-        },
-        {
-            key:'nb_communes',
-            label:'Communes',
-            children:<> {current_epci?.nombre_communes && (current_epci?.nombre_communes).toLocaleString()} &nbsp;<FaHouseFlag /></>
-        },
-        {
-          key:'competences',
-          label:'Compétences',
-          children: <CompetenceBadge competences={current_epci?.competence} />
-        }
-    ]
+  
 
     const indicateurs_cles = data_traitement?.data && alasql<SimpleRecord[]>(`
       SELECT 
@@ -181,11 +153,41 @@ export const DmaPageEPCI: React.FC = () => {
     const current_indicateurs_cles = indicateurs_cles?.filter((e) => e.annee == year )
 
     const dma_total = current_indicateurs_cles?.reduce((sum, val) => sum + val.tonnage, 0)
-    const pop = current_indicateurs_cles && current_indicateurs_cles[0].population
+    const pop = current_indicateurs_cles && current_indicateurs_cles[0] &&  current_indicateurs_cles[0].population
     const part_valo_matiere = dma_total && 100 * (current_indicateurs_cles?.find((e) => e.traitement_destination ==  "Valorisation organique")?.tonnage 
                               + current_indicateurs_cles?.find((e) => e.traitement_destination ==  "Valorisation matière")?.tonnage ) 
                               / dma_total
 
+
+    const current_epci = territories?.find((e:any) => (e.epci_siren == siren_epci) ) 
+
+    const territoire_descritpion_item : DescriptionsProps['items'] = [
+        {
+            key:'name',
+            label:'Nom',
+            children:current_epci?.epci_nom
+        },
+        {
+            key:'siret',
+            label:'SIREN',
+            children:siren_epci
+        },
+        {
+            key:'population',
+            label:'Pop.',
+            children:<> {pop?.toLocaleString()} &nbsp;<FaPeopleGroup /></>
+        },
+        {
+            key:'nb_communes',
+            label:'Communes',
+            children:<> {current_epci?.nombre_communes && (current_epci?.nombre_communes).toLocaleString()} &nbsp;<FaHouseFlag /></>
+        },
+        {
+          key:'competences',
+          label:'Compétences',
+          children: <CompetenceBadge competences={current_epci?.competence} />
+        }
+    ]
 
     const key_figures:any[] = [
         {id:"valo_dma", 
@@ -218,18 +220,16 @@ export const DmaPageEPCI: React.FC = () => {
       data_traitement?.data.flatMap((e) => ({
         annee: e.annee,
         type: e.type_dechet,
-        population: e.population, // Prevoir de rajouter la pop dans le JDD
+        population: e.population,
         tonnage: e.tonnage,
       })) , [data_traitement]);
     
 
     const indicateurs_destination_dechet = useMemo(() => 
-      data_traitement?.data.flatMap((e) => ({
+      data_traitement?.data.map((e) => ({
         annee: e.annee,
-        type: e.traitement_destination === 'Stockage pour inertes'
-          ? 'Stockage'
-          : e.traitement_destination,
-        population: e.population, // Prevoir de rajouter la pop dans le JDD
+        type: e.traitement_destination === 'Stockage pour inertes' ? 'Stockage' : e.traitement_destination,
+        population: e.population,
         tonnage: e.tonnage,
       })), [data_traitement]);
 
