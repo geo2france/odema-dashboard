@@ -314,8 +314,8 @@ export const DmaPageEPCI: React.FC = () => {
             title={`Destination des DMA par type de déchet en ${year}`}
             attributions={[
               {
-                name: "Ademe/Odema",
-                url: "https://www.geo2france.fr/datahub/dataset/0b11b7e9-86e9-42c1-80da-f27fd58355bd",
+                name: "Odema",
+                url: "https://www.geo2france.fr/datahub/dataset/c60bd751-b4e3-4eb0-bbf0-d2252d705105",
               },
             ]}
           >
@@ -340,8 +340,8 @@ export const DmaPageEPCI: React.FC = () => {
             section="Panorama"
             attributions={[
               {
-                name: "Ademe",
-                url: "https://data.ademe.fr/datasets/sinoe59-indic-synth-acteur",
+                name: "Odema",
+                url: "https://www.geo2france.fr/datahub/dataset/c60bd751-b4e3-4eb0-bbf0-d2252d705105",
               },
             ]}
           >
@@ -355,10 +355,16 @@ export const DmaPageEPCI: React.FC = () => {
             )}
           </DashboardElement>
 
-          <DashboardElement title="Modes de collecte"
+          <DashboardElement 
+              title={`Répartition des modes de collecte en ${year}`}
               isFetching={data_traitement_isFecthing}
-              section="Panorama"
-          >
+              section="Panorama" 
+              attributions={[
+                {
+                  name: "Odema",
+                  url: "https://www.geo2france.fr/datahub/dataset/c60bd751-b4e3-4eb0-bbf0-d2252d705105",
+                },
+              ]}>
             {data_traitement && <ChartePieCollecte data={data_traitement?.data?.filter((e) => Number(e.annee) == Number(year))} /> }
           </DashboardElement>
 
@@ -368,8 +374,8 @@ export const DmaPageEPCI: React.FC = () => {
             section="Traitement"
             attributions={[
               {
-                name: "Ademe/Odema",
-                url: "https://www.geo2france.fr/datahub/dataset/0b11b7e9-86e9-42c1-80da-f27fd58355bd",
+                name: "Odema",
+                url: "https://www.geo2france.fr/datahub/dataset/c60bd751-b4e3-4eb0-bbf0-d2252d705105",
               },
             ]}
           >
