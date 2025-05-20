@@ -23,11 +23,12 @@ export const CompetenceBadge: React.FC<CompetenceBadgePros> = ({ competences }) 
                 const color = isActive ? colors.enabled : colors.disabled
                 return (
                     <Tooltip key={name} title={title}  color={color}>
-                        <Icon
+                        <span>
+                            <Icon
                             height={35}
                             fill={color}
-                            aria-label={title}
-                        />
+                            aria-label={title} />
+                        </span>
                     </Tooltip>
                 );
             })}
