@@ -12,6 +12,7 @@ import { grey } from '@ant-design/colors';
 import { geo2franceProvider } from "../../App"
 import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci";
 import { CompetenceBadge } from "../competence_badge/CompetenceBadge";
+import ChartePieCollecte from "../chart_pie_collecte/ChartPieCollecte";
 
 const { Link } = Typography;
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
@@ -352,6 +353,13 @@ export const DmaPageEPCI: React.FC = () => {
                 year={Number(year)}
               />
             )}
+          </DashboardElement>
+
+          <DashboardElement title="Modes de collecte"
+              isFetching={data_traitement_isFecthing}
+              section="Panorama"
+          >
+            {data_traitement && <ChartePieCollecte data={data_traitement?.data?.filter((e) => Number(e.annee) == Number(year))} /> }
           </DashboardElement>
 
           <DashboardElement
