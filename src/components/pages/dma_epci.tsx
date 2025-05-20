@@ -1,6 +1,6 @@
-import { Card, Col, Descriptions, DescriptionsProps, Row, Select } from "antd"
+import { Card, Col, Descriptions, DescriptionsProps, FloatButton, Modal, Row, Select, Typography } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
-import { FilePdfOutlined } from "@ant-design/icons"
+import { FilePdfOutlined, InfoCircleOutlined } from "@ant-design/icons"
 import alasql from "alasql"
 import { BsRecycle } from "react-icons/bs";
 import { useMemo, useState } from "react"
@@ -13,14 +13,14 @@ import { geo2franceProvider } from "../../App"
 import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci";
 import { CompetenceBadge } from "../competence_badge/CompetenceBadge";
 
-
+const { Link } = Typography;
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
 export const DmaPageEPCI: React.FC = () => {
     const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
     const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
     const [focus, setFocus] = useState<string | undefined>(undefined)
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useApi({ 
         resource:"odema:destination_dma_epci_harmonise",
@@ -233,7 +233,28 @@ export const DmaPageEPCI: React.FC = () => {
         tonnage: e.tonnage,
       })), [data_traitement]);
 
-    return (
+    return (<>
+      <FloatButton 
+        style={{'top':5, 'right':28, 'height':40}}
+        icon={<InfoCircleOutlined />}
+        type='primary'
+        shape='square'
+        onClick={() => setIsModalOpen(true)}
+        />
+
+      <Modal
+        title="Tableau de bord EPCI"
+        closable={{ 'aria-label': 'Custom Close Button' }}
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        style={{width:undefined}}
+        footer={null}
+      >
+        <p>Les tonnages présentés ici sont issus de l'enquête collecte de de <Link href="https://www.sinoe.org/" target="_blank">Sinoe</Link>,
+        mais distribués sur des périmètres différents au prorata de la population. Il peut donc s'agir de tonnages estimés.</p>
+        <p>Retrouvez ici le <Link href="https://www.geo2france.fr/portal/download-document/d46bc35bac12000f2c2fa4b794a36194" target="_blank">détail de la méthode</Link> utilisée.</p>
+      </Modal>
+
       <DashboardPage
         control={
             [
@@ -432,5 +453,6 @@ export const DmaPageEPCI: React.FC = () => {
             </FlipCard>
           </DashboardElement>
       </DashboardPage>
+    </>
     );
 }
