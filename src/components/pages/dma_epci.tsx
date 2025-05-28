@@ -251,7 +251,7 @@ export const DmaPageEPCI: React.FC = () => {
         style={{width:undefined}}
         footer={null}
       >
-        <p>Les tonnages présentés ici sont issus de l'enquête collecte de de <Link href="https://www.sinoe.org/" target="_blank">Sinoe</Link>,
+        <p>Les tonnages présentés ici sont issus de l'enquête collecte de <Link href="https://www.sinoe.org/" target="_blank">Sinoe</Link>,
         mais distribués sur des périmètres différents au prorata de la population. Il peut donc s'agir de tonnages estimés.</p>
         <p>Retrouvez ici le <Link href="https://www.geo2france.fr/portal/download-document/d46bc35bac12000f2c2fa4b794a36194" target="_blank">détail de la méthode</Link> utilisée.</p>
       </Modal>
