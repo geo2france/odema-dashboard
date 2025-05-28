@@ -11,7 +11,6 @@ import { TimelineIsdndCapacite } from "../timeline_isdnd_capacite";
 import { ChartIsdndGlobal } from "../chart_isdnd_global";
 import { HistoryOutlined } from "@ant-design/icons";
 import { ChartDonutIsdndCapacite } from "../chat_donut_isdnd_capacite";
-import { BaseOptionType } from "antd/lib/select";
 import { geo2franceProvider } from "../../App";
 
 
@@ -36,17 +35,17 @@ export const EnfouissementPage: React.FC = () => {
         }
     })
 
-    const select_options:BaseOptionType[] = data_isdnd && alasql(`
+    const select_options = data_isdnd && (alasql(`
         SELECT DISTINCT aiot AS [value], name AS label
         FROM ?
-    `, [data_isdnd.data]).map((e:SimpleRecord) => ({value:e.value, label:`${e.label} (${e.value})`})) // Liste des différentes installations
+    `, [data_isdnd.data]) as SimpleRecord[]).map((e:SimpleRecord) => ({value:e.value, label:`${e.label} (${e.value})`})) // Liste des différentes installations
 
-    const select_options_annees:BaseOptionType[] = data_isdnd && alasql(`
+    const select_options_annees = data_isdnd && (alasql(`
     SELECT DISTINCT annee
     FROM ?
     WHERE tonnage > 0
     ORDER BY annee DESC
-`, [data_isdnd.data]).map((e:SimpleRecord) => ({value:Number(e.annee), label:e.annee}))
+`, [data_isdnd.data]) as SimpleRecord[]).map((e:SimpleRecord) => ({value:Number(e.annee), label:e.annee}))
 
 
     const {data:data_capacite, isFetching:isFetchingCapacite} = useApi({ // Historique des arrếtés

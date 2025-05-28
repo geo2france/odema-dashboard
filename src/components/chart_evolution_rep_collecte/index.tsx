@@ -34,11 +34,11 @@ export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps>
             }
         }));
 
-    const myseries: BarSeriesOption[] = alasql(`
+    const myseries = (alasql(`
         SELECT d.[serie_name] AS name, ARRAY(d.[value]) AS data
         FROM ? d
         GROUP BY d.[serie_name]
-    `, [data_chart]).map((e: SimpleRecord) => (
+    `, [data_chart]) as SimpleRecord[]).map((e: SimpleRecord) => (
             {
                 name:e.name,
                 data:e.data,
@@ -50,7 +50,7 @@ export const ChartEvolutionRepCollecte: React.FC<ChartEvolutionRepCollecteProps>
                     valueFormatter: (value:number) => (`${Math.round(Number(value)).toLocaleString()} t` )
                 }
             }
-        ))
+        )) as BarSeriesOption[];
 
     const option: EChartsOption = {
         series: myseries,

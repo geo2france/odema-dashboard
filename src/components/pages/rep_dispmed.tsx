@@ -32,10 +32,10 @@ export const RepDispmedPage: React.FC = () => {
         }
     )
 
-    const data_standardized = collecte?.data ? alasql(`SELECT [Année_des_données] AS annee, [origine], sum([tonnage]) AS tonnage
+    const data_standardized = collecte?.data ? (alasql(`SELECT [Année_des_données] AS annee, [origine], sum([tonnage]) AS tonnage
     FROM ? d
     GROUP BY [origine], [Année_des_données] 
-    `, [collecte.data.data]).map((e:SimpleRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
+    `, [collecte.data.data]) as SimpleRecord[]).map((e:SimpleRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
     :undefined
 
     return (<>
@@ -53,7 +53,7 @@ export const RepDispmedPage: React.FC = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
                         <LoadingContainer isFetching={collecte.isFetching}>
-                            {collecte.data ? <ChartPieRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
+                            {data_standardized ? <ChartPieRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-disp-med-tonnages-collectes-en-2021' }]}></Attribution>
                         </LoadingContainer>
                     </Card>
@@ -63,7 +63,7 @@ export const RepDispmedPage: React.FC = () => {
                     <Card title="Evolution des tonnages collectés">
                         <LoadingContainer isFetching={collecte.isFetching}>
                             <small>Pas de données disponibles avant 2021</small> <br/>
-                            {collecte.data ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
+                            {data_standardized ? <ChartEvolutionRepCollecte filiere={filiere} data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-disp-med-tonnages-collectes-en-2021' }]}></Attribution>
                         </LoadingContainer>
                     </Card>

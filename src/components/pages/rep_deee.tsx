@@ -32,21 +32,21 @@ export const RepDeeePage: React.FC = () => {
         }
     )
 
-    const data_standardized = collecte_d3e?.data ? 
-        alasql(`SELECT [Code_région], [Année_des_données] AS annee, d.Flux, sum([Total]) AS tonnage
+    const data_standardized = collecte_d3e?.data &&
+        (alasql(`SELECT [Code_région], [Année_des_données] AS annee, d.Flux, sum([Total]) AS tonnage
             FROM ? d
             GROUP BY [Code_région], [Année_des_données], d.Flux
-            `, [collecte_d3e.data.data])
+            `, [collecte_d3e.data.data]) as SimpleRecord[])
             .map((e:SimpleRecord) => ({annee:e.annee, name: e.Flux, value: e.tonnage} )) 
-        : undefined
+        
 
-    const data_standardized_origine = collecte_d3e?.data ? //Tonnage par origine de collecte
-        alasql(`SELECT [Code_région], [Année_des_données] AS annee, d.[Origine], sum([Total]) AS tonnage
+    const data_standardized_origine = collecte_d3e?.data && //Tonnage par origine de collecte
+        (alasql(`SELECT [Code_région], [Année_des_données] AS annee, d.[Origine], sum([Total]) AS tonnage
             FROM ? d
             GROUP BY [Code_région], [Année_des_données], d.[Origine]
-            `, [collecte_d3e.data.data])
+            `, [collecte_d3e.data.data]) as SimpleRecord[])
             .map((e:SimpleRecord) => ({annee:e.annee, name: e.Origine, value: e.tonnage} )) 
-        : undefined
+        
 
     return (<>
 
@@ -64,7 +64,7 @@ export const RepDeeePage: React.FC = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés par flux en ${year}`}>
                         <LoadingContainer isFetching={collecte_d3e.isFetching}>
-                            {collecte_d3e.data ? <ChartPieRepCollecte filiere='d3e' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
+                            {data_standardized ? <ChartPieRepCollecte filiere='d3e' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingContainer>
                     </Card>
@@ -73,7 +73,7 @@ export const RepDeeePage: React.FC = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title="Evolution des tonnages collectés">
                         <LoadingContainer isFetching={collecte_d3e.isFetching}>
-                            {collecte_d3e.data ? <ChartEvolutionRepCollecte filiere='d3e' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
+                            {data_standardized ? <ChartEvolutionRepCollecte filiere='d3e' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.seriesName)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingContainer>
                     </Card>
@@ -82,7 +82,7 @@ export const RepDeeePage: React.FC = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés par origine en ${year}`}>
                         <LoadingContainer isFetching={collecte_d3e.isFetching}>
-                            {collecte_d3e.data ? <ChartPieRepCollecte filiere='d3e' data={data_standardized_origine} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
+                            {data_standardized_origine ? <ChartPieRepCollecte filiere='d3e' data={data_standardized_origine} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-deee-tonnages-collectes-en-2018' }]}></Attribution>
                         </LoadingContainer>
                     </Card>

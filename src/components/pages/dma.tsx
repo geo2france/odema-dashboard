@@ -40,11 +40,11 @@ export const DmaComponent: React.FC = () => {
             ]
     })
    
-    const datasankey = data?.data ? alasql(`
+    const datasankey = (data?.data && alasql(`
         SELECT L_TYP_REG_DECHET, L_TYP_REG_SERVICE, sum(TONNAGE_DMA) as TONNAGE_DMA_sum
         FROM ?
         GROUP BY L_TYP_REG_DECHET, L_TYP_REG_SERVICE
-    `, [data.data.filter((e:any) => e.ANNEE == Number(year))]) : undefined
+    `, [data.data.filter((e:any) => e.ANNEE == Number(year))])) as SimpleRecord[]
 
 
     const {data:data_performance, isFetching: isFetching_performance} = useApi({
@@ -83,12 +83,12 @@ export const DmaComponent: React.FC = () => {
         GROUP BY [Annee]
     `, [data_chiffre_cle.data])
 
-    const data_typedechet_destination = data_chiffre_cle?.data && data?.data && pop_region && alasql(
+    const data_typedechet_destination = (data_chiffre_cle?.data && data?.data && pop_region && alasql(
         `SELECT d.*, dc.[VA_POPANNEE], p.[population] AS [VA_POPANNEE_REG]
         FROM ? d
         JOIN ? dc ON dc.[Annee] = d.[ANNEE] AND dc.[C_DEPT]=d.[C_DEPT]
         JOIN ? p ON p.[annee] = d.[ANNEE] AND d.[C_REGION] = '${cregion}'
-        `, [ data?.data, data_chiffre_cle?.data, pop_region]) // Ajoute la population departementale et régionale
+        `, [ data?.data, data_chiffre_cle?.data, pop_region])) as SimpleRecord[]// Ajoute la population departementale et régionale
  
     
     return (

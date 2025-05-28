@@ -46,7 +46,7 @@ export const ChartTauxValo: React.FC<ChartTauxValoProps> = ({data, onFocus, focu
                 SUM([tonnage]) as tout_mode
             FROM ?
             GROUP BY [annee]
-        `, [data]), [data])
+        `, [data]) as SimpleRecord[], [data])
 
     useChartData({data:dataChart, dependencies:data})
     const serie_valo:BarSeriesOption = {

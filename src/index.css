@@ -4,7 +4,8 @@
     padding-left: 12px;
 }
 
-.modal-fullscreen > .ant-modal, .ant-modal-content  {
+.modal-fullscreen > .ant-modal,
+.modal-fullscreen .ant-modal-content {
     height: 95vh;
     width: 95vw;
     margin: 2.5vh;

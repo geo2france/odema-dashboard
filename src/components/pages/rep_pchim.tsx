@@ -30,16 +30,16 @@ export const RepPchimPage: React.FC = () => {
         }
     )
 
-    const data_standardized = collecte_pchim?.data ? alasql(`SELECT [Année_des_données] AS annee, [equip_declare], sum([Somme_de_masse]) AS tonnage
+    const data_standardized = collecte_pchim?.data ? (alasql(`SELECT [Année_des_données] AS annee, [equip_declare], sum([Somme_de_masse]) AS tonnage
     FROM ? d
     GROUP BY [Année_des_données], [equip_declare]
-    `, [collecte_pchim.data.data]).map((e:SimpleRecord) => ({annee:e.annee, name: e.equip_declare, value: e.tonnage} )) 
+    `, [collecte_pchim.data.data]) as SimpleRecord[]).map((e:SimpleRecord) => ({annee:e.annee, name: e.equip_declare, value: e.tonnage} )) 
     :undefined
 
-    const data_standardized_origine = collecte_pchim?.data ? alasql(`SELECT [Année_des_données] AS annee, COALESCE([origine],'AUTR') as origine, sum([Somme_de_masse]) AS tonnage
+    const data_standardized_origine = collecte_pchim?.data ? (alasql(`SELECT [Année_des_données] AS annee, COALESCE([origine],'AUTR') as origine, sum([Somme_de_masse]) AS tonnage
     FROM ? d
     GROUP BY [Année_des_données], COALESCE([origine],'AUTR')
-    `, [collecte_pchim.data.data]).map((e:SimpleRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
+    `, [collecte_pchim.data.data])as SimpleRecord[] ).map((e:SimpleRecord) => ({annee:e.annee, name: e.origine, value: e.tonnage} )) 
     :undefined
 
     return (<>
@@ -58,7 +58,7 @@ export const RepPchimPage: React.FC = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés en ${year}`}>
                         <LoadingContainer isFetching={collecte_pchim.isFetching}>
-                            {collecte_pchim.data ? <ChartPieRepCollecte filiere='pchim' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
+                            {data_standardized ? <ChartPieRepCollecte filiere='pchim' data={data_standardized} year={Number(year)} focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pchim-tonnages-collectes-2021' }]}></Attribution>
                         </LoadingContainer>
                     </Card>
@@ -76,7 +76,7 @@ export const RepPchimPage: React.FC = () => {
                 <Col xl={24/2} xs={24}>
                     <Card title={`Tonnages collectés par origine en ${year}`}>
                         <LoadingContainer isFetching={collecte_pchim.isFetching}>
-                            {collecte_pchim.data ? <ChartPieRepCollecte filiere='pchim' data={data_standardized_origine} year={Number(year)}  focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
+                            {data_standardized_origine ? <ChartPieRepCollecte filiere='pchim' data={data_standardized_origine} year={Number(year)}  focus_item={focus} onFocus={(e:any) => setFocus(e?.name)}/> : <b>...</b>}
                             <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pchim-tonnages-collectes-2021' }]}></Attribution>
                         </LoadingContainer>
                     </Card>

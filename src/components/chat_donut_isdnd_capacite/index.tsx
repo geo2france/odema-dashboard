@@ -25,7 +25,7 @@ export const ChartDonutIsdndCapacite: React.FC<IChartDonutIsdndCapacitePros> = (
     FROM ? d
     WHERE [annee] = ${year}
     GROUP BY [departement]
-    `, [data])
+    `, [data]) as SimpleRecord[];
 
     useChartData({data:data.filter((e) => e.annee == year) , dependencies:[year]})
 
