@@ -44,10 +44,12 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
                 borderRadius:2,
             },
             layoutIterations: 0,
-            emphasis: {
+            emphasis:{
                 itemStyle: {
-                    focus: 'adjacency'
-                }
+                    borderColor: '#383838',
+                    borderType: 'solid',
+                    borderWidth: 2,
+                  },
             },
             lineStyle: {
                 color: 'gradient',
