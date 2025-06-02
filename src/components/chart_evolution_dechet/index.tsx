@@ -33,7 +33,6 @@ export interface ChartEvolutionTypeDechetProps {
 
 
 export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({data, onFocus, focus_item, style, year, showObjectives=false, normalize=false, showNormalizeButton=true} )  => {
-    console.log(focus_item)
     const chartRef = useRef<any>()
     
     const [normalizeState, setNormalizeState] = useState(normalize)
