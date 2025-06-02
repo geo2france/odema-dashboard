@@ -19,12 +19,12 @@ import { GiResize } from "react-icons/gi";
 
 
 export const EnfouissementPage: React.FC = () => {
-
+    const default_year:number = 2023 ;
 
     const chartStyle:CSSProperties = {height:'350px'}
 
     const [aiot, setAiot] = useSearchParamsState('aiot','0007003529')
-    const [year, setYear] = useState<number>(2022)
+    const [year, setYear] = useSearchParamsState('year', default_year.toString())
 
     const [drawerIsOpen, setdrawerIsOpen] = useState(false);
 
@@ -84,7 +84,7 @@ export const EnfouissementPage: React.FC = () => {
             <NextPrevSelect reverse={true}
                 options={select_options_annees}
                 value={year} defaultValue={year}
-                onChange={(e) => setYear(Number(e))} />
+                onChange={(e) => setYear(e.toString())} />
             <Select showSearch
                 optionFilterProp="label"
                 defaultValue={aiot} value={aiot}
@@ -96,7 +96,7 @@ export const EnfouissementPage: React.FC = () => {
       <Row gutter={[14, 14]} style={{ margin: 16 }}>
                 <Col xl={12} xs={24}>
                    <DashboardElement isFetching={isFetchingIsdnd || isFetchingCapacite} title={`Capacité régionale`}  attributions={[{name : 'GT ISDND', url:'https://www.geo2france.fr/datahub/dataset/1a1480b4-8c8b-492d-9cd0-a91b49576017'},{name: 'Odema'}]}>
-                   { data_capacite && data_isdnd && <ChartIsdndGlobal style={chartStyle} data={data_isdnd.data} data_capacite={data_capacite.data} onClick={(e:any) => setYear(Number(e.value[0]))} year={year}/> }
+                   { data_capacite && data_isdnd && <ChartIsdndGlobal style={chartStyle} data={data_isdnd.data} data_capacite={data_capacite.data} onClick={(e:any) => setYear(e.value[0])} year={Number(year)}/> }
                   </DashboardElement>
                </Col>
 
@@ -149,13 +149,13 @@ export const EnfouissementPage: React.FC = () => {
 
                 <Col xl={12} xs={24}>
                   <DashboardElement isFetching={isFetchingIsdnd} title={`Tonnage enfouis par installation en ${year}`} attributions={[{name : 'GT ISDND', url:'https://www.geo2france.fr/datahub/dataset/1a1480b4-8c8b-492d-9cd0-a91b49576017'},{name: 'Odema'}]}>
-                    { data_isdnd && <ChartRaceBarISDND style={chartStyle} data={data_isdnd.data} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> }
+                    { data_isdnd && <ChartRaceBarISDND style={chartStyle} data={data_isdnd.data} year={Number(year)} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> }
                   </DashboardElement>  
                 </Col>
 
                <Col xl={12} lg={12} xs={24}>
                  <DashboardElement isFetching={isFetchingIsdnd} title={`Repartition des capacités autorisées ${year}`} attributions={[{name : 'GT ISDND', url:'https://www.geo2france.fr/datahub/dataset/1a1480b4-8c8b-492d-9cd0-a91b49576017'},{name: 'Odema'}]}>
-                  { data_isdnd &&  <ChartDonutIsdndCapacite style={chartStyle} data={data_isdnd.data} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.data.aiot)} /> }
+                  { data_isdnd &&  <ChartDonutIsdndCapacite style={chartStyle} data={data_isdnd.data} year={Number(year)} aiot={aiot} onClick={(e:any) => setAiot(e.data.aiot)} /> }
                  </DashboardElement> 
                 </Col>
 
@@ -163,7 +163,7 @@ export const EnfouissementPage: React.FC = () => {
 
                      <DashboardElement isFetching={isFetchingIsdnd || isFetchingCapacite} title={`Tonnage enfouis : ${data_isdnd?.data.find((e:SimpleRecord) => e.aiot == aiot)?.name}`} attributions={[{name : 'GT ISDND', url:'https://www.geo2france.fr/datahub/dataset/1a1480b4-8c8b-492d-9cd0-a91b49576017'},{name: 'Odema'}]}>
                      { data_isdnd &&  data_capacite &&  
-                        <ChartEvolutionISDND style={chartStyle} data={data_isdnd.data} data_capacite={data_capacite.data} year={year} aiot={aiot} onClick={(e:any) => setYear(Number(e.value[0]))}></ChartEvolutionISDND>
+                        <ChartEvolutionISDND style={chartStyle} data={data_isdnd.data} data_capacite={data_capacite.data} year={Number(year)} aiot={aiot} onClick={(e:any) => setYear(e.value[0])}></ChartEvolutionISDND>
                       }
                         <div  style={{float:'right'}}>
                           <Tooltip title="Historique des arrêtés">
@@ -181,7 +181,7 @@ export const EnfouissementPage: React.FC = () => {
 
                <Col xl={12} lg={12} xs={24}>
                  <DashboardElement isFetching={isFetchingIsdnd} title={`Installations de stockage de déchets non dangereux (ISDND) ${year}`} >
-                     { data_isdnd &&  <MapIsdnd style={{height:376}} data={data_isdnd.data} year={year} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> }
+                     { data_isdnd &&  <MapIsdnd style={{height:376}} data={data_isdnd.data} year={Number(year)} aiot={aiot} onClick={(e:any) => setAiot(e.aiot)} /> }
                  </DashboardElement>
                </Col>
 
