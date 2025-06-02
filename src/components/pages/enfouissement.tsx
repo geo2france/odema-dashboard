@@ -117,7 +117,7 @@ export const EnfouissementPage: React.FC = () => {
                          value={current_key_figures?.tonnage}
                          unit="T"
                          digits={0}
-                         name="Quanités enfouies"
+                         name="Quantités enfouies"
                          icon={<MdFrontLoader />}
                         />
                     </Col>
