@@ -2,7 +2,7 @@ import React, { CSSProperties, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
 import { BaseLayer } from '../map_baselayer';
-import { useDashboardElement, BaseRecordToGeojsonPoint, useApi, SimpleRecord } from 'api-dashboard';
+import { useDashboardElement, BaseRecordToGeojsonPoint, useApi, SimpleRecord, useMapControl, MapLegend, LegendItem } from 'api-dashboard';
 import { geo2franceProvider } from '../../App';
 import { map_locale } from '../../utils';
 
@@ -14,10 +14,16 @@ export interface IMapProps{
     style?:CSSProperties
 }
 
+const legendItems:LegendItem[] = [
+  { color: "rgba(34, 139, 34, 0.5)", label: 'Zone de chalandise principale' },
+  { color: "rgba(144, 238, 144, 0.5)", label: 'Zone de chalandise secondaire' }
+];
+
 export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style }) => {
   const mapRef = useRef<any>(null);
   useDashboardElement({chartRef:mapRef})
 
+  useMapControl({mapRef, legendElement:<MapLegend items={legendItems}/>})
 
   const zoom = 6.4;
 
@@ -32,6 +38,18 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
     dataProvider:geo2franceProvider,
     pagination:{mode:"off"}
   })
+
+  const geojson_chalandise = useApi({
+    resource:"odema:isdnd_chalandise",
+    meta:{srsname:'EPSG:4326'},
+    dataProvider:geo2franceProvider,
+    pagination:{mode:"off"},
+    filters:[{
+      field:"aiot",
+      operator:"eq",
+      value:aiot
+    }]
+  });
 
 
   const layer_entrants:LayerProps = {
@@ -57,6 +75,26 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
     }
   }
 
+  const source_chalandise:SourceProps = {
+    type:'geojson',
+    data:geojson_chalandise.data?.geojson
+  }
+
+  const layer_chalandise:LayerProps = {
+      "id": "chalandise",
+      "type": "fill",
+      "paint": {
+        "fill-color": [
+          "match",
+          ["get", "type_chalandise"],
+          "Principal", legendItems[0].color || 'transparent',  
+          "Secondaire", legendItems[1].color || 'transparent', 
+          "grey"            
+        ],
+        "fill-outline-color": "black"
+      }
+  }
+
   const source_departements:SourceProps = {
     type:'geojson',
     data:geojson_dpt.data?.geojson
@@ -70,6 +108,7 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
       'fill-outline-color': 'black'
     }
   }
+
 
   const onClickMap =(evt:any) => { //Hook a faire ?
     const clicked = evt?.features[0]?.properties
@@ -114,10 +153,15 @@ export const MapIsdnd: React.FC<IMapProps> = ({ data, aiot, year, onClick, style
 
 
       <Source {...source_isdn}>
-        <Layer {...layer_entrants} id="isdnd_entrant" />
-        <Layer {...layer_capacite} id="isdnd_capacite"/>
+        <Layer {...layer_entrants} id="isdnd_entrant"  />
+        <Layer {...layer_capacite} id="isdnd_capacite" beforeId='isdnd_entrant' />
       </Source>
-
+      
+      {geojson_chalandise.data && geojson_chalandise.isFetching === false &&
+        <Source {...source_chalandise}>
+          <Layer {...layer_chalandise} beforeId="isdnd_capacite"/>
+        </Source>
+      }
 
     </Map>
   );
