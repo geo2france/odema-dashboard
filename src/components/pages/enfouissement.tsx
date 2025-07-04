@@ -118,6 +118,7 @@ export const EnfouissementPage: React.FC = () => {
                          unit="T"
                          digits={0}
                          name="Quantités enfouies"
+                         sub_value={'Obj. 2025 : 1 200 000 T'}
                          icon={<MdFrontLoader />}
                         />
                     </Col>
@@ -128,6 +129,7 @@ export const EnfouissementPage: React.FC = () => {
                          unit="%"
                          digits={2}
                          name={`Evolution 2010-${year}`}
+                         sub_value={'Obj. 2025 : -50%'}
                          description="Evolution des quantités enfouies depuis l'année de référence 2010"
                          icon={(current_key_figures?.tonnage - key_figures?.find((e) => e.annee==Number(2010))?.tonnage ) > 0 ? <AiOutlineRise /> : <AiOutlineFall />}
                         />
