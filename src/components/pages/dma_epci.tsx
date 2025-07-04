@@ -123,7 +123,7 @@ export const DmaPageEPCI: React.FC = () => {
     const current_indicateurs_cles = indicateurs_cles?.filter((e) => e.annee == year )
 
     const dma_total = current_indicateurs_cles?.reduce((sum, val) => sum + val.tonnage, 0)
-    const pop = current_indicateurs_cles && current_indicateurs_cles[0] &&  current_indicateurs_cles[0].population
+
     const part_valo_matiere = dma_total && 100 * (current_indicateurs_cles?.find((e) => e.traitement_destination ==  "Valorisation organique")?.tonnage 
                               + current_indicateurs_cles?.find((e) => e.traitement_destination ==  "Valorisation matière")?.tonnage ) 
                               / dma_total
