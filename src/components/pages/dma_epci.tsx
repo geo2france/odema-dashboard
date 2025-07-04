@@ -23,7 +23,7 @@ export const DmaPageEPCI: React.FC = () => {
     const [focus, setFocus] = useState<string | undefined>(undefined)
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const {data: data_territoire,  isFetching:data_territoire_isFecthing} = useApi({
+    const {data: data_territoire} = useApi({
         resource:"odema:territoire_epci",
         dataProvider:geo2franceProvider,
         pagination:{
@@ -41,7 +41,6 @@ export const DmaPageEPCI: React.FC = () => {
         }
     })
 
-    console.log(data_territoire)
 
     const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useApi({ 
         resource:"odema:destination_dma_epci_harmonise",
@@ -137,7 +136,7 @@ export const DmaPageEPCI: React.FC = () => {
       'traitement':current_epci?.population_traitement / current_epci?.population,
       'dechetterie':current_epci?.population_dechetterie / current_epci?.population,
     } //Exercice total (1), partiel ( 0 < X < 1) ou sans compétence (0)
-    console.log(competences)
+
     const territoire_descritpion_item : DescriptionsProps['items'] = [
         {
             key:'name',
@@ -165,7 +164,7 @@ export const DmaPageEPCI: React.FC = () => {
           children: <CompetenceBadge competences={competences} />
         }
     ]
-    console.log(pop)
+
     const key_figures:any[] = [
         {id:"valo_dma", 
         name:"Taux de valorisation des DMA",

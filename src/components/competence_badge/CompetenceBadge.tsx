@@ -15,7 +15,7 @@ const competenceData:{ name: Competence; icon: React.ElementType; title: string 
     { name: 'traitement', icon: Factory, title: 'Traitement' }
 ];
 
-const colors = { enabled: "#6A7F2B", disabled: "#E7E7E7", partial: "orange" };
+const colors = { enabled: "#6A7F2B", disabled: "#E7E7E7", partial: "#A8BC6A" };
 
 export const CompetenceBadge: React.FC<CompetenceBadgePros> = ({ competences }) => {
     return (
@@ -25,7 +25,7 @@ export const CompetenceBadge: React.FC<CompetenceBadgePros> = ({ competences }) 
                 const value = competences[name]
                 const color = value >= 1 ? colors.enabled : value <= 0 ? colors.disabled : colors.partial
                 return (
-                    <Tooltip key={name} title={`${title} - ${Math.round(value*100)}%`} color={color}>
+                    <Tooltip key={name} title={`${title} - ${Math.round(value*100)}% de la population`} color={color}>
                     <span style={{ position: 'relative', width: 35, height: 35, display: 'inline-block' }}>
                       {value >= 1 || value <= 0 ? (
                         <Icon height={35} fill={color} aria-label={title} />
