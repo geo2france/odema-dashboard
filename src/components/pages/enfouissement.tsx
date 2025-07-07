@@ -155,11 +155,11 @@ export const EnfouissementPage: React.FC = () => {
                   </DashboardElement>  
                 </Col>
 
-               <Col xl={12} lg={12} xs={24}>
+               {/*<Col xl={12} lg={12} xs={24}>
                  <DashboardElement isFetching={isFetchingIsdnd} title={`Repartition des capacités autorisées ${year}`} attributions={[{name : 'GT ISDND', url:'https://www.geo2france.fr/datahub/dataset/1a1480b4-8c8b-492d-9cd0-a91b49576017'},{name: 'Odema'}]}>
                   { data_isdnd &&  <ChartDonutIsdndCapacite style={chartStyle} data={data_isdnd.data} year={Number(year)} aiot={aiot} onClick={(e:any) => setAiot(e.data.aiot)} /> }
                  </DashboardElement> 
-                </Col>
+                </Col>*/}
 
                 <Col xl={12} lg={12} xs={24}>
 
