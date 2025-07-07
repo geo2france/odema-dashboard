@@ -1,7 +1,7 @@
 import './index.css';
 
 import { WfsProvider, DatafairProvider, DashboardApp } from "api-dashboard";
-import { Partner, RouteConfig } from "api-dashboard/src/types";
+import { Partner, RouteConfig } from "api-dashboard";
 
 import { DmaComponent } from "./components/pages/dma";
 import { EnfouissementPage } from "./components/pages/enfouissement";
