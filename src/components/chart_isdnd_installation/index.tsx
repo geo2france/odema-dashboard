@@ -67,7 +67,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, data
 
     const option: EChartsOption ={
         series:[myseries, myseries_capcite],
-        legend: {top:'top', show:true},
+        legend: {bottom:0, show:true},
         tooltip: {
             trigger: 'item'
         },

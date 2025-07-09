@@ -152,7 +152,7 @@ export const EnfouissementPage: React.FC = () => {
 
                 <Col xl={12} xs={24}>
                   <DashboardElement isFetching={isFetchingIsdnd} title={`Tonnage enfouis par installation en ${year}`} attributions={[{name : 'GT ISDND', url:'https://www.geo2france.fr/datahub/dataset/1a1480b4-8c8b-492d-9cd0-a91b49576017'},{name: 'Odema'}]}>
-                    { data_isdnd && <ChartRaceBarISDND style={chartStyle} data={data_isdnd.data} year={Number(year)} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> }
+                    { data_isdnd && <ChartRaceBarISDND style={chartStyle} data={data_isdnd.data} year={Number(year)} aiot={aiot} onClick={(e:any) => setAiot(e.data[2])} /> }
                   </DashboardElement>  
                 </Col>
 

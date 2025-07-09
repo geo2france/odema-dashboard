@@ -19,12 +19,9 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
     useChartEvents({chartRef:chartRef, onClick:onClick})
     useDashboardElement({chartRef})
 
-    const axie_category = (alasql(`SELECT DISTINCT [name], [aiot] FROM ? WHERE annee=${year} AND tonnage > 0 ORDER BY tonnage ASC
-    `, [data]) as SimpleRecord[] ).map((e:SimpleRecord) => ( {
-        value:e.name,
-        textStyle: {
-            fontWeight: e.aiot == aiot ? 700 : 400,
-        }}))
+    const DEPARTEMENTS = ['59','62','80','60','02']
+
+    const prettyInstalName = (name:string) => name.replace('ISDND','').trim()
 
 
     const data_chart = useMemo( () => alasql(`
@@ -44,11 +41,14 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         tooltip:{
             valueFormatter: (value) => (`${Math.round(Number(value)).toLocaleString()} t` )
         },
-        data:data_chart.map((e:SimpleRecord) => ({
-            value:e.tonnage, name:e.nom, key:e.aiot,
-            itemStyle:{color:ChartTerritoriesProps( e.departement )?.color}
-        }
-        ))
+        encode:{
+            x:1,
+            y:0
+        },
+        data:data_chart.map((e:SimpleRecord) => 
+           [prettyInstalName(e.nom), e.tonnage , e.aiot, '\u200B' +e.departement ] // '\u200B'  => avoid echarts parse DEP as int
+)
+
     }
 
     const serieCapacite:LineSeriesOption={
@@ -59,16 +59,19 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         },
         lineStyle:{opacity:0},
         itemStyle:{color:'#D44F4A'},
-        data:data_chart.map((e:SimpleRecord) => ({
-            value:e.capacite, name:e.name
-        }))
+        data:data_chart.map((e:SimpleRecord) => 
+            [prettyInstalName(e.nom), e.capacite ]
+        ),
+        encode:{
+            x:1,
+            y:0
+        },
     }
 
 
     const option: EChartsOption ={
         series:[myserie, serieCapacite],
         legend: {
-            top:'top', 
             show:false
         },
         tooltip: {
@@ -77,11 +80,19 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         yAxis: [
             {
                 type: 'category',
-                data: axie_category,
                 axisLabel: {
                     interval: 0,
                     fontSize: 10,
-                }
+                    formatter : (v) => { // Mettre en gras l'AIOT de l'installation sélectionné, retrouvée via le nom
+                        const current_aiot = data_chart.find((r) => prettyInstalName(r.nom) === v)?.aiot
+                        return current_aiot === aiot ? '{bold|' + v + '}' : v
+                    },
+                    rich: {
+                        bold: {
+                          fontWeight: 'bold',
+                        }
+                      }
+                },
             }
         ],
         xAxis: [
@@ -91,8 +102,24 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
             }
         ],
         grid:{
-            left:'250px',
+            left:'150px',
             top:'20px'
+        },
+        visualMap:{
+            seriesIndex:0,
+            type:"piecewise",
+            categories:DEPARTEMENTS.map((d) => '\u200B' +d), // '\u200B'  => avoid echarts parse DEP as int
+            inRange: {
+                color:DEPARTEMENTS.map((d) => ChartTerritoriesProps(d)?.color)
+            },
+            orient:'horizontal',
+            right:'center',
+            itemWidth: 20,
+            itemHeight: 20,
+            itemGap: 15,
+            textGap: 8,
+            text: ['', 'Département '],
+            showLabel:true
         },
     }
 
