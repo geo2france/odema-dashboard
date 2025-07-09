@@ -77,24 +77,22 @@ export const ChartRaceBarISDND: React.FC<IChartRaceBarISDND> = ({ data, onClick,
         tooltip: {
             trigger: 'item'
         },
-        yAxis: [
-            {
-                type: 'category',
-                axisLabel: {
-                    interval: 0,
-                    fontSize: 10,
-                    formatter : (v) => { // Mettre en gras l'AIOT de l'installation sélectionné, retrouvée via le nom
-                        const current_aiot = data_chart.find((r) => prettyInstalName(r.nom) === v)?.aiot
-                        return current_aiot === aiot ? '{bold|' + v + '}' : v
-                    },
-                    rich: {
-                        bold: {
-                          fontWeight: 'bold',
-                        }
-                      }
+        yAxis: [{
+            type: 'category',
+            axisLabel: {
+                interval: 0,
+                fontSize: 10,
+                formatter : (v:string) => { // Mettre en gras l'AIOT de l'installation sélectionné, retrouvée via le nom
+                    const current_aiot = data_chart.find((r) => prettyInstalName(r.nom) === v)?.aiot
+                    return current_aiot === aiot ? '{bold|' + v + '}' : v
                 },
-            }
-        ],
+                rich: {
+                    bold: {
+                        fontWeight: 'bold',
+                    }
+                    }
+                },
+            }],
         xAxis: [
             {
                 type: 'value',
