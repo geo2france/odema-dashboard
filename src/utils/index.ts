@@ -38,13 +38,19 @@ type DataPoint = [number, number];
 export const interpolate = (data:DataPoint[], _type='linear'):DataPoint[] => {
 
     const result: DataPoint[] = [];
+    const data_filtered = data.filter((r) => r[0] && r[1]).sort() // Sort and delete undefined
 
-    for (let i = 0; i < data.length - 1; i++) {
-        const [x1, y1] = data[i];
-        const [x2, y2] = data[i + 1];
+    if (data_filtered.length < 1){
+        return []
+    }
+
+    for (let i = 0; i < data_filtered.length - 1; i++) {
+
+        const [x1, y1] = data_filtered[i];
+        const [x2, y2] = data_filtered[i + 1];
 
         // Ajoute le point de départ
-        result.push(data[i]);
+        result.push(data_filtered[i]);
 
         // Calcule les points intermédiaires
         const steps = x2 - x1;
@@ -56,7 +62,7 @@ export const interpolate = (data:DataPoint[], _type='linear'):DataPoint[] => {
     }
 
     // Ajoute le dernier point
-    result.push(data[data.length - 1]);
+    result.push(data_filtered[data_filtered.length - 1]);
 
     return result; 
 }
