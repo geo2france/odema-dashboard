@@ -1,7 +1,6 @@
 import './index.css';
 
-import { WfsProvider, DatafairProvider, DashboardApp } from "api-dashboard";
-import { Partner, RouteConfig } from "api-dashboard/src/types";
+import { WfsProvider, DatafairProvider, DashboardApp, Partner, RouteConfig } from "api-dashboard";
 
 import { DmaComponent } from "./components/pages/dma";
 import { EnfouissementPage } from "./components/pages/enfouissement";
@@ -17,6 +16,7 @@ import Cerc from "/img/Logo_CERC_Hauts-de-Fce_sans-sign.svg?url";
 import Cerdd from "/img/Logo_cerdd.svg?url";
 import Geo2France from "/img/geo2france.svg?url";
 import { DdPage } from './components/pages/dd';
+import { PageTrajectoire } from './components/pages/trajectoires';
 
 const myTheme = {
   token: {
@@ -97,6 +97,12 @@ const route_config:RouteConfig[] = [
     label: "Dechets Dangeureux",
     element: <DdPage />,
     hidden: true,
+  },
+  {
+    path: "trajectoires",
+    label: "Trajectoire",
+    element: <PageTrajectoire />,
+    hidden: false,
   },
 ];
 
