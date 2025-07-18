@@ -111,6 +111,7 @@ export const PageTrajectoire = () => (
             unit="%"
             title="Valorisation matière"
             color='green'
+            target="above"
         />
                 
        <ChartTrajectoire
@@ -120,6 +121,8 @@ export const PageTrajectoire = () => (
             unit="%"
             title="Valorisation énergie"
             color='blue'
+            target="above"
+
         />
 
         <ChartTrajectoire
@@ -129,6 +132,8 @@ export const PageTrajectoire = () => (
             unit="%"
             title="Stockage"
             color='red'
+            target="above"
+
         />
 
         <ChartTrajectoire
@@ -138,6 +143,8 @@ export const PageTrajectoire = () => (
             unit="kg/hab"
             title="DMA par habitant"
             color='purple'
+            target="below"
+
         />
     </Dashboard>
 )

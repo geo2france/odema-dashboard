@@ -1,4 +1,4 @@
-import { useDataset, useDatasets } from "api-dashboard/dsl"
+import { useControl, useDataset, useDatasets } from "api-dashboard/dsl"
 import EChartsReact from "echarts-for-react"
 import { BarSeriesOption, EChartsOption, LineSeriesOption, SeriesOption } from "echarts";
 import { SimpleRecord } from "api-dashboard";
@@ -14,6 +14,7 @@ interface ITrajectoireProps {
     unit?:string
     title:string
     color?:string
+    target?: 'below' | 'above'
 }
 
 export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
@@ -26,6 +27,7 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
   color = "rgba(189, 217, 71, 1)",
   unit,
   title,
+  target
 }) => {
   const datasets_id = Array.isArray(dataset_id) ? dataset_id : [dataset_id];
   const objectifValueKey = objectifValueKey_in || valueKey ;
@@ -36,6 +38,9 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
   //const colors = usePalette({nColors:2})
 
   const data_obj = useDataset(dataset_obj_id);
+
+  const area_opacity:Number = 0.1
+
 
   const serie_obj: LineSeriesOption = {
     type: "line",
@@ -48,6 +53,10 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
     lineStyle: {
       type: "dashed",
       width: 2,
+    },
+    areaStyle:{
+      color: `rgba(255,0,0,${area_opacity})`,
+      origin: target === 'below' ? 'end' : 'start'
     },
     symbolSize: (value) =>
       data_obj?.data?.map((e) => e[objectifYearKey].toString()).includes(value[0]) ? 4 : 0,
@@ -62,9 +71,22 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
     },
   };
 
+  const serie_obj2: LineSeriesOption = {
+    ...serie_obj,
+    name: "Objectif régional SRADDET",
+    lineStyle: { opacity: 0 },
+    itemStyle: { opacity: 0 },
+    showSymbol: false,
+    areaStyle: {
+      color: `rgba(0,255,0,${area_opacity})`,
+      origin: target === "above" ? "end" : "start",
+    },
+    tooltip:{show:false}
+  };
+
   useDatasets(datasets_id)?.map((data, idx) => {
     const serie_territorie: BarSeriesOption = {
-      name: idx === 0 ? "Région" : `EPCI_${idx}`,
+      name: idx === 0 ? "Région" : `EPCI_${useControl('select_epci')}`,
       type: "bar",
       data: data?.data?.map((row: SimpleRecord) => [
         String(row[yearKey]),
@@ -91,7 +113,7 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
   });
 
   const option: EChartsOption = {
-    series: [...series, serie_obj],
+    series: [...series, serie_obj, serie_obj2],
     legend: {
       show: true,
       bottom: 0,
