@@ -3,6 +3,7 @@ import EChartsReact from "echarts-for-react"
 import { BarSeriesOption, EChartsOption, LineSeriesOption, SeriesOption } from "echarts";
 import { SimpleRecord } from "api-dashboard";
 import { interpolate } from "../../utils";
+import { Flex, Progress } from "antd";
 
 interface ITrajectoireProps {
     dataset_id:string | string[]
@@ -94,7 +95,7 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
       ]),
       //barWidth:idx === 0 ? "50%" : "100%",
       //barGap:idx === 0 ? 0 : undefined,
-      color: idx === 0 ? "#dbdbdb" : color,
+      color: idx !== 0 ? "slategray" : color,
       //showBackground: idx !== 0 ,
       backgroundStyle: {
         color: "rgba(180, 180, 180, 0.1)",
@@ -140,7 +141,35 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
       },
     ],
   };
-  return <EChartsReact option={option} />;
+
+  // @ts-ignore – ES2023: findLast()
+  const final_objective_raw = data_obj?.data?.sort((a,b) => a.annee - b.annee).findLast((r:any) => r[objectifValueKey] !== undefined)
+  const final_objective = {annee: final_objective_raw?.annee, value: final_objective_raw?.[objectifValueKey]}
+
+  // @ts-ignore – ES2023: findLast()
+  const start_objective_raw = data_obj?.data?.sort((a,b) => a.annee - b.annee).reverse().findLast((r:any) => r[objectifValueKey] !== undefined)
+  const start_objetive = {annee: start_objective_raw?.annee, value: start_objective_raw?.[objectifValueKey]}
+
+  const currents = useDatasets(datasets_id)?.map((data, idx) => {
+    const raw = data?.data?.filter(row => row.annee == '2021')?.[0]
+    return {annee: raw?.annee, value:raw?.[valueKey]}
+  })
+
+  const current_value_raw = useDataset(datasets_id[0])?.data?.filter(row => row.annee == '2021')?.[0]
+  const current_value = {annee:current_value_raw?.annee, value: current_value_raw?.[objectifValueKey]}
+
+  const progress_data = currents?.map((current, idx) => {
+    const percent = computeProgress(start_objetive.value, final_objective.value, current.value, target || 'above')
+    return {idx:idx, percent:percent}
+  })
+
+  return (<>
+    <EChartsReact option={option} />
+    { progress_data?.filter((_, idx) => idx===0).map((current, idx) =>  //Idx == 0 pour n'avoir que la région
+      <Flex key={idx}> {idx===0 ? 'Région' : 'EPCI'}<Progress strokeLinecap="square" strokeColor={{ from: '#108ee9', to: '#87d068' }} percent={current.percent} showInfo={current.percent == 100} type="line"/></Flex>
+    )}
+    <span>Valeur {current_value.annee} : {current_value.value?.toLocaleString()} {unit} - Objectif {final_objective.annee} : { Number(final_objective.value)?.toLocaleString() } {unit}</span>
+  </>)
 };
 
 
@@ -166,3 +195,21 @@ function wrapAxisLabel(name: string, maxLineLength = 10): string {
   
     return lines.join("\n");
   }
+
+
+
+function computeProgress(
+  start: number,
+  end: number,
+  current: number,
+  direction: 'below' | 'above'
+): number {
+  const totalDelta = end - start;
+  const currentDelta = current - start;
+
+  const ratio = direction === 'below'
+    ? currentDelta / totalDelta
+    : (start - current) / (start - end);
+
+    return Math.max(0, Math.min(ratio * 100, 100)); // clamp entre 0 et 100
+}

@@ -14,7 +14,7 @@ export const PageTrajectoire = () => (
         >
             <Filter field="L_REGION">Hauts-de-France</Filter>
             <Transform>SELECT [ANNEE] as annee,
-                        SUM(CASE WHEN [L_TYP_REG_SERVICE] = 'Valorisation matière' THEN [TONNAGE_DMA] END) as tonnage_valo_matiere ,
+                        SUM(CASE WHEN [L_TYP_REG_SERVICE] like 'Valorisation%' THEN [TONNAGE_DMA] END) as tonnage_valo_matiere ,
                         SUM(CASE WHEN [L_TYP_REG_SERVICE] = 'Incinération avec récupération d\'énergie' THEN [TONNAGE_DMA] END) as tonnage_valo_en ,
                         SUM(CASE WHEN [L_TYP_REG_SERVICE] like 'Stockage%' THEN [TONNAGE_DMA] END) as stockage ,
                         SUM([TONNAGE_DMA]) as tonnage_total
@@ -63,7 +63,7 @@ export const PageTrajectoire = () => (
             <Filter field="siren_epci">{useControl('select_epci')}</Filter>
             <Transform>SELECT 
                 [annee], 
-                    SUM(CASE WHEN [traitement_destination] = 'Valorisation matière' THEN [tonnage] END) as tonnage_valo_matiere ,
+                    SUM(CASE WHEN [traitement_destination] like 'Valorisation%' THEN [tonnage] END) as tonnage_valo_matiere ,
                     SUM(CASE WHEN [traitement_destination] = 'Incinération avec récupération d\'énergie' THEN [tonnage] END) as tonnage_valo_en ,
                     SUM(CASE WHEN [traitement_destination] like 'Stockage%' THEN [tonnage] END) as stockage ,
                     SUM(ratio_hab) as ratio_dma,
@@ -110,7 +110,7 @@ export const PageTrajectoire = () => (
             valueKey="tx_valo_matiere"
             unit="%"
             title="Valorisation matière"
-            color='green'
+            color='seagreen'
             target="above"
         />
                 
@@ -120,7 +120,7 @@ export const PageTrajectoire = () => (
             valueKey="tx_valo_en"
             unit="%"
             title="Valorisation énergie"
-            color='blue'
+            color='powderblue'
             target="above"
 
         />
@@ -131,8 +131,8 @@ export const PageTrajectoire = () => (
             valueKey="tx_stockage"
             unit="%"
             title="Stockage"
-            color='red'
-            target="above"
+            color='lightcoral'
+            target="below"
 
         />
 
@@ -142,7 +142,7 @@ export const PageTrajectoire = () => (
             valueKey="ratio_dma"
             unit="kg/hab"
             title="DMA par habitant"
-            color='purple'
+            color='rebeccapurple'
             target="below"
 
         />
