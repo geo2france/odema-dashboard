@@ -1,4 +1,4 @@
-import { Dashboard, Dataset, Filter, Transform, Debug, Select, Control, useControl} from "api-dashboard/dsl";
+import { Dashboard, Dataset, Filter, Transform, Debug, Select, Control, useControl, Producer} from "api-dashboard/dsl";
 import { ChartTrajectoire } from "../chart_trajectoire/ChartTrajectoire";
 import { from } from "arquero";
 
@@ -12,6 +12,7 @@ export const PageTrajectoire = () => (
             url="https://data.ademe.fr/data-fair/api/v1/datasets"
             pageSize={5000}
         >
+            <Producer url="https://www.sinoe.org/">Ademe</Producer>
             <Filter field="L_REGION">Hauts-de-France</Filter>
             <Transform>SELECT [ANNEE] as annee,
                         SUM(CASE WHEN [L_TYP_REG_SERVICE] like 'Valorisation%' THEN [TONNAGE_DMA] END) as tonnage_valo_matiere ,
@@ -38,6 +39,7 @@ export const PageTrajectoire = () => (
             url="https://data.ademe.fr/data-fair/api/v1/datasets"
             pageSize={5000}
         >
+            <Producer url="https://www.sinoe.org/">Ademe</Producer>
             <Filter field="C_REGION">32</Filter>
             <Transform>SELECT[Annee] as annee, (SUM([TONNAGE_DMA])/SUM([VA_POPANNEE]))*1000 as ratio_dma FROM ? GROUP BY [Annee]</Transform>
         </Dataset>
@@ -60,6 +62,8 @@ export const PageTrajectoire = () => (
             url="https://www.geo2france.fr/geoserver/odema/wfs"
             resource="odema:destination_dma_epci_harmonise"
         >
+            <Producer url="https://www.sinoe.org/">Ademe</Producer>
+            <Producer url="https://www.geo2france.fr/datahub/dataset/c60bd751-b4e3-4eb0-bbf0-d2252d705105">Odema</Producer>
             <Filter field="siren_epci">{useControl('select_epci')}</Filter>
             <Transform>SELECT 
                 [annee], 
@@ -105,7 +109,7 @@ export const PageTrajectoire = () => (
 
 
        <ChartTrajectoire
-            dataset_id={["dma_destination_region","dma_epci_harmonise_hierachie_traitement"]}
+            dataset={["dma_destination_region","dma_epci_harmonise_hierachie_traitement"]}
             dataset_obj_id="objectifs_tx_valo"
             valueKey="tx_valo_matiere"
             unit="%"
@@ -115,7 +119,7 @@ export const PageTrajectoire = () => (
         />
                 
        <ChartTrajectoire
-            dataset_id={["dma_destination_region","dma_epci_harmonise_hierachie_traitement"]}
+            dataset={["dma_destination_region","dma_epci_harmonise_hierachie_traitement"]}
             dataset_obj_id="objectifs_tx_valo"
             valueKey="tx_valo_en"
             unit="%"
@@ -126,7 +130,7 @@ export const PageTrajectoire = () => (
         />
 
         <ChartTrajectoire
-            dataset_id={["dma_destination_region","dma_epci_harmonise_hierachie_traitement"]}
+            dataset={["dma_destination_region","dma_epci_harmonise_hierachie_traitement"]}
             dataset_obj_id="objectifs_tx_valo"
             valueKey="tx_stockage"
             unit="%"
@@ -137,7 +141,7 @@ export const PageTrajectoire = () => (
         />
 
         <ChartTrajectoire
-            dataset_id={["dma_chiffres_cles_region","dma_epci_harmonise_hierachie_traitement"]}
+            dataset={["dma_chiffres_cles_region","dma_epci_harmonise_hierachie_traitement"]}
             dataset_obj_id="objectifs_tx_valo"
             valueKey="ratio_dma"
             unit="kg/hab"

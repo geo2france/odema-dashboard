@@ -3,10 +3,10 @@ import EChartsReact from "echarts-for-react"
 import { BarSeriesOption, EChartsOption, LineSeriesOption, SeriesOption } from "echarts";
 import { SimpleRecord } from "api-dashboard";
 import { interpolate } from "../../utils";
-import { Flex, Progress } from "antd";
+import { Divider, Flex, Progress } from "antd";
 
 interface ITrajectoireProps {
-    dataset_id:string | string[]
+    dataset:string | string[]
     dataset_obj_id:string 
     valueKey:string
     yearKey?:string
@@ -19,7 +19,7 @@ interface ITrajectoireProps {
 }
 
 export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
-  dataset_id,
+  dataset: dataset_id,
   dataset_obj_id,
   valueKey,
   yearKey = "annee",
@@ -165,10 +165,13 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
 
   return (<>
     <EChartsReact option={option} />
-    { progress_data?.filter((_, idx) => idx===0).map((current, idx) =>  //Idx == 0 pour n'avoir que la région
-      <Flex key={idx}> {idx===0 ? 'Région' : 'EPCI'}<Progress strokeLinecap="square" strokeColor={{ from: '#108ee9', to: '#87d068' }} percent={current.percent} showInfo={current.percent == 100} type="line"/></Flex>
-    )}
-    <span>Valeur {current_value.annee} : {current_value.value?.toLocaleString()} {unit} - Objectif {final_objective.annee} : { Number(final_objective.value)?.toLocaleString() } {unit}</span>
+    { final_objective.value && progress_data?.filter((_, idx) => idx===0).map((current, idx) =>  //Idx == 0 pour n'avoir que la région
+       <div key={idx}> 
+        <Divider/>
+        <Flex ><Progress strokeLinecap="square" strokeColor={{ from: '#108ee9', to: '#87d068' }} percent={current.percent} showInfo={current.percent == 100} type="line"/></Flex>
+        <span> {current_value.annee} : {current_value.value?.toLocaleString(undefined,{maximumFractionDigits:0})} {unit} /  { Number(final_objective.value)?.toLocaleString(undefined,{maximumFractionDigits:0}) } {unit}</span>
+     </div>
+   )}
   </>)
 };
 
