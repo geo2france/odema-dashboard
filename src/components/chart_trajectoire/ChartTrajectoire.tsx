@@ -3,7 +3,10 @@ import EChartsReact from "echarts-for-react"
 import { BarSeriesOption, EChartsOption, LineSeriesOption, SeriesOption } from "echarts";
 import { SimpleRecord } from "@geo2france/api-dashboard";
 import { interpolate } from "../../utils";
-import { Divider, Flex, Progress } from "antd";
+import { Divider, Flex, Progress, Radio } from "antd";
+import { useState } from "react";
+import CarbonChartAreaStepper from '~icons/carbon/chart-area-stepper'
+import CarbonChartArea from '~icons/carbon/chart-area'
 
 interface ITrajectoireProps {
     dataset:string | string[]
@@ -34,6 +37,8 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
   const objectifValueKey = objectifValueKey_in || valueKey ;
   const objectifYearKey = objectifYearKey_in || yearKey ;
 
+  const [objectif_interpolation, setObjectif_interpolation] = useState('line')
+
   const series: SeriesOption[] = [];
 
   //const colors = usePalette({nColors:2})
@@ -46,11 +51,16 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
   const serie_obj: LineSeriesOption = {
     type: "line",
     name: "Objectif régional SRADDET",
+    step: objectif_interpolation === 'line' ? false : 'start',
     data:
+    objectif_interpolation === 'line' ? 
       data_obj?.data &&
       interpolate(
         data_obj?.data?.map((e: SimpleRecord) => [e[objectifYearKey], e[objectifValueKey]])
-      ).map((e) => [e[0].toString(), e[1]]),
+      ).map((e) => [e[0].toString(), e[1]])
+      :
+      data_obj?.data?.map((e: SimpleRecord) => [e[objectifYearKey], e[objectifValueKey]]).map((e) => [e[0].toString(), e[1]]).filter(e => e[1] !== undefined)
+      ,
     lineStyle: {
       type: "dashed",
       width: 2,
@@ -164,6 +174,10 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
   })
 
   return (<>
+    <Radio.Group value={objectif_interpolation} onChange={e => setObjectif_interpolation(e.target.value)}>
+      <Radio.Button value="step"><CarbonChartAreaStepper /></Radio.Button>
+      <Radio.Button value="line"><CarbonChartArea /></Radio.Button>
+    </Radio.Group>
     <EChartsReact option={option} />
     { final_objective.value && progress_data?.filter((_, idx) => idx===0).map((current, idx) =>  //Idx == 0 pour n'avoir que la région
        <div key={idx}> 
