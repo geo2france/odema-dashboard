@@ -1,4 +1,4 @@
-import { DashboardElement, DashboardPage, NextPrevSelect, useApi, useSearchParamsState,  } from "api-dashboard"
+import { DashboardElement, DashboardPage, NextPrevSelect, useApi, useSearchParamsState,  } from "@geo2france/api-dashboard"
 import { ChartDdModeTraitement } from "../chart_dd_mode_traitement/ChartDdModeTraitement"
 import { Alert } from "antd"
 import { geo2franceProvider } from "../../App"

@@ -2,7 +2,7 @@ import React, { CSSProperties, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Map, { Layer, LayerProps, Source, SourceProps } from 'react-map-gl/maplibre';
 import { BaseLayer } from '../map_baselayer';
-import { useDashboardElement, BaseRecordToGeojsonPoint, useApi, SimpleRecord, useMapControl, MapLegend, LegendItem } from 'api-dashboard';
+import { useDashboardElement, BaseRecordToGeojsonPoint, useApi, SimpleRecord, useMapControl, MapLegend, LegendItem } from "@geo2france/api-dashboard"
 import { geo2franceProvider } from '../../App';
 import { map_locale } from '../../utils';
 

@@ -1,5 +1,5 @@
 import { Row, Col, Card, List } from "antd";
-import { useSearchParamsState, LoadingContainer, Attribution, useApi, SimpleRecord } from "api-dashboard";
+import { useSearchParamsState, LoadingContainer, Attribution, useApi, SimpleRecord } from "@geo2france/api-dashboard";
 import { ChartPieRepCollecte } from "../chart_pie_rep_collecte";
 import { RepTopbar } from "../rep_topbar";
 import alasql from "alasql";

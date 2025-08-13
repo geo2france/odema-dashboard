@@ -3,7 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import { EChartsOption, TreemapSeriesOption } from 'echarts';
 import alasql from 'alasql';
 import { ChartTerritoriesProps } from '../../utils/nomenclature';
-import { useChartData, useDashboardElement, useChartEvents, SimpleRecord } from 'api-dashboard';
+import { useChartData, useDashboardElement, useChartEvents, SimpleRecord } from "@geo2france/api-dashboard";
 
 export interface IChartDonutIsdndCapacitePros {
     data: SimpleRecord[];

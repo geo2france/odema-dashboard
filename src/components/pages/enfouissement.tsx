@@ -2,7 +2,7 @@ import { CSSProperties, useState } from "react";
 import { Row, Col, Drawer, Select, Flex, Typography } from "antd"
 import alasql from "alasql";
 import * as aq from 'arquero';
-import { Control, DashboardElement, KeyFigure, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "api-dashboard";
+import { Control, DashboardElement, KeyFigure, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "@geo2france/api-dashboard";
 
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";

@@ -10,11 +10,11 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
+    "@geo2france/api-dashboard": "^1.5.0",
     "@tanstack/react-query": "^5.51.14",
     "@types/geojson": "^7946.0.14",
     "alasql": "^4.5.0",
     "antd": "^5.24.3",
-    "api-dashboard": "https://github.com/geo2france/api-dashboard/releases/latest/download/api-dashboard.tgz",
     "arquero": "^8.0.2",
     "axios": "^1.7.4",
     "date-fns": "^3.6.0",
