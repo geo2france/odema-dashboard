@@ -1,7 +1,7 @@
-import { useControl, useDataset, useDatasets } from "api-dashboard/dsl"
+import { useControl, useDataset, useDatasets } from "@geo2france/api-dashboard/dsl"
 import EChartsReact from "echarts-for-react"
 import { BarSeriesOption, EChartsOption, LineSeriesOption, SeriesOption } from "echarts";
-import { SimpleRecord } from "api-dashboard";
+import { SimpleRecord } from "@geo2france/api-dashboard";
 import { interpolate } from "../../utils";
 import { Divider, Flex, Progress } from "antd";
 

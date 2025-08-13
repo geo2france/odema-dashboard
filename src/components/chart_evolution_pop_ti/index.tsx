@@ -2,7 +2,7 @@ import React, { CSSProperties, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from "echarts";
 
-import { useChartActionHightlight, useChartEvents, useChartData, useDashboardElement } from "api-dashboard";
+import { useChartActionHightlight, useChartEvents, useChartData, useDashboardElement } from "@geo2france/api-dashboard";
 
 /**
  * La structures des données attendues.

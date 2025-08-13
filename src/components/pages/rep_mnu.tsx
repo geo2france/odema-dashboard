@@ -1,4 +1,4 @@
-import { useSearchParamsState, Attribution, LoadingContainer, useApi, SimpleRecord  } from "api-dashboard"
+import { useSearchParamsState, Attribution, LoadingContainer, useApi, SimpleRecord  } from "@geo2france/api-dashboard"
 import { Row, Col, Card } from "antd"
 import { RepTopbar } from "../rep_topbar"
 import { ChartEvolutionRepCollecte } from "../chart_evolution_rep_collecte"

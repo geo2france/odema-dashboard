@@ -1,4 +1,4 @@
-import { SimpleRecord, useApi, useDashboardElement, useMapControl, LegendItem, MapLegend } from "api-dashboard"
+import { SimpleRecord, useApi, useDashboardElement, useMapControl, LegendItem, MapLegend } from "@geo2france/api-dashboard"
 import { CSSProperties, useRef, useState } from "react"
 import Map, { Layer, LayerProps, Source, SourceProps, Popup} from 'react-map-gl/maplibre';
 import { BaseLayer } from '../map_baselayer';

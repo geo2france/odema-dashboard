@@ -1,6 +1,7 @@
 import './index.css';
 
-import { WfsProvider, DatafairProvider, DashboardApp, Partner, RouteConfig } from "api-dashboard";
+import { WfsProvider, DatafairProvider, DashboardApp } from "@geo2france/api-dashboard";
+import { Partner, RouteConfig } from "@geo2france/api-dashboard";
 
 import { DmaComponent } from "./components/pages/dma";
 import { EnfouissementPage } from "./components/pages/enfouissement";

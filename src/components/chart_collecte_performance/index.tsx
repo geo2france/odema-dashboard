@@ -1,6 +1,6 @@
 import React, { CSSProperties, useMemo, useRef } from "react";
 import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
-import {SimpleRecord, useChartData, useDashboardElement} from "api-dashboard"
+import {SimpleRecord, useChartData, useDashboardElement} from "@geo2france/api-dashboard"
 import type {EChartsOption, PieSeriesOption} from "echarts"
 import alasql from "alasql";
 import { chartBusinessProps } from "../../utils";

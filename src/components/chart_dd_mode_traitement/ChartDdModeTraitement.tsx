@@ -1,4 +1,4 @@
-import { SimpleRecord } from 'api-dashboard';
+import { SimpleRecord } from "@geo2france/api-dashboard";
 import ReactECharts from 'echarts-for-react';
 import { useRef } from 'react';
 

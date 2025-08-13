@@ -1,4 +1,4 @@
-import { Dashboard, Dataset, Filter, Transform, Debug, Select, Control, useControl, Producer} from "api-dashboard/dsl";
+import { Dashboard, Dataset, Filter, Transform, Debug, Select, Control, useControl, Producer} from "@geo2france/api-dashboard/dsl";
 import { ChartTrajectoire } from "../chart_trajectoire/ChartTrajectoire";
 import { from } from "arquero";
 

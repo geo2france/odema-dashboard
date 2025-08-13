@@ -1,8 +1,8 @@
 import { CSSProperties, useState } from "react";
-import { Row, Col, Drawer, Tooltip, Select, Flex, Typography } from "antd"
+import { Row, Col, Drawer, Select, Flex, Typography } from "antd"
 import alasql from "alasql";
 import * as aq from 'arquero';
-import { Control, DashboardElement, KeyFigure, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "api-dashboard";
+import { Control, DashboardElement, KeyFigure, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "@geo2france/api-dashboard";
 
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
@@ -10,12 +10,13 @@ import { MapIsdnd } from "../map_isdnd";
 import { TimelineIsdndCapacite } from "../timeline_isdnd_capacite";
 import { ChartIsdndGlobal } from "../chart_isdnd_global";
 import { HistoryOutlined } from "@ant-design/icons";
-import { ChartDonutIsdndCapacite } from "../chat_donut_isdnd_capacite";
+//import { ChartDonutIsdndCapacite } from "../chat_donut_isdnd_capacite";
 import { geo2franceProvider } from "../../App";
 import { FaLocationPin } from "react-icons/fa6";
 import { MdFrontLoader } from "react-icons/md";
 import { AiOutlineFall, AiOutlineRise } from "react-icons/ai";
 import { GiResize } from "react-icons/gi";
+import Tag from "antd/es/tag";
 
 
 export const EnfouissementPage: React.FC = () => {
@@ -151,15 +152,15 @@ export const EnfouissementPage: React.FC = () => {
 
                 <Col xl={12} xs={24}>
                   <DashboardElement isFetching={isFetchingIsdnd} title={`Tonnage enfouis par installation en ${year}`} attributions={[{name : 'GT ISDND', url:'https://www.geo2france.fr/datahub/dataset/1a1480b4-8c8b-492d-9cd0-a91b49576017'},{name: 'Odema'}]}>
-                    { data_isdnd && <ChartRaceBarISDND style={chartStyle} data={data_isdnd.data} year={Number(year)} aiot={aiot} onClick={(e:any) => setAiot(e.data.key)} /> }
+                    { data_isdnd && <ChartRaceBarISDND style={chartStyle} data={data_isdnd.data} year={Number(year)} aiot={aiot} onClick={(e:any) => setAiot(e.data[2])} /> }
                   </DashboardElement>  
                 </Col>
 
-               <Col xl={12} lg={12} xs={24}>
+               {/*<Col xl={12} lg={12} xs={24}>
                  <DashboardElement isFetching={isFetchingIsdnd} title={`Repartition des capacités autorisées ${year}`} attributions={[{name : 'GT ISDND', url:'https://www.geo2france.fr/datahub/dataset/1a1480b4-8c8b-492d-9cd0-a91b49576017'},{name: 'Odema'}]}>
                   { data_isdnd &&  <ChartDonutIsdndCapacite style={chartStyle} data={data_isdnd.data} year={Number(year)} aiot={aiot} onClick={(e:any) => setAiot(e.data.aiot)} /> }
                  </DashboardElement> 
-                </Col>
+                </Col>*/}
 
                 <Col xl={12} lg={12} xs={24}>
 
@@ -167,10 +168,10 @@ export const EnfouissementPage: React.FC = () => {
                      { data_isdnd &&  data_capacite &&  
                         <ChartEvolutionISDND style={chartStyle} data={data_isdnd.data} data_capacite={data_capacite.data} year={Number(year)} aiot={aiot} onClick={(e:any) => setYear(e.value[0])}></ChartEvolutionISDND>
                       }
-                        <div  style={{float:'right'}}>
-                          <Tooltip title="Historique des arrêtés">
-                              <Typography.Link onClick={() => setdrawerIsOpen(true)}><HistoryOutlined /></Typography.Link>
-                          </Tooltip>
+                        <div  style={{marginLeft:5}}>
+                              <Typography.Link onClick={() => setdrawerIsOpen(true)}>
+                                <Tag><span> Historique des arrếtés <HistoryOutlined /></span></Tag>
+                                </Typography.Link>
                         </div> 
 
                         <Drawer title="Historique des arrêtés" onClose={() => setdrawerIsOpen(false)} open={drawerIsOpen}>
