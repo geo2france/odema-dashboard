@@ -51,7 +51,7 @@ export const PageTrajectoire = () => (
             resource="odema:territoire_epci"
             meta={{properties:['annee','name','name_short','siren','population','nb_communes']}}
         >
-            
+            <Filter field="annee">2025</Filter>
         </Dataset>
 
 
