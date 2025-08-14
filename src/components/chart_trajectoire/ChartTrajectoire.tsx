@@ -99,6 +99,7 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
     const serie_territorie: BarSeriesOption = {
       name: idx === 0 ? "Région" : `EPCI_${useControl('select_epci')}`,
       type: "bar",
+      barWidth: idx === 0 ? "60%" : "35%",
       data: data?.data?.map((row: SimpleRecord) => [
         String(row[yearKey]),
         row[valueKey],
