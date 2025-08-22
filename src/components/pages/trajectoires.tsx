@@ -3,7 +3,7 @@ import { ChartTrajectoire } from "../chart_trajectoire/ChartTrajectoire";
 import { from } from "arquero";
 
 export const PageTrajectoire = () => (
-    <Dashboard>
+    <Dashboard columns={3}>
         <Debug />
         <Dataset
             id="dma_destination_region"
@@ -146,7 +146,7 @@ export const PageTrajectoire = () => (
             valueKey="ratio_dma"
             unit="kg/hab"
             title="DMA par habitant"
-            color='rebeccapurple'
+            color='#663399'
             target="below"
 
         />
