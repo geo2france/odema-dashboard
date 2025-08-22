@@ -3,7 +3,7 @@ import EChartsReact from "echarts-for-react"
 import { BarSeriesOption, EChartsOption, LineSeriesOption, SeriesOption } from "echarts";
 import { SimpleRecord } from "@geo2france/api-dashboard";
 import { interpolate } from "../../utils";
-import { Divider, Flex, Progress, Radio } from "antd";
+import { ConfigProvider, Divider, Flex, Progress, Radio, Statistic } from "antd";
 import { useState } from "react";
 import CarbonChartAreaStepper from '~icons/carbon/chart-area-stepper'
 import CarbonChartArea from '~icons/carbon/chart-area'
@@ -174,6 +174,7 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
     return {idx:idx, percent:percent}
   })
 
+  const diplay_value = `${current_value.value?.toLocaleString(undefined,{maximumFractionDigits:0})} / ${ Number(final_objective.value)?.toLocaleString(undefined,{maximumFractionDigits:0}) }`
   return (<>
     <Radio.Group value={objectif_interpolation} onChange={e => setObjectif_interpolation(e.target.value)}>
       <Radio.Button value="step"><CarbonChartAreaStepper /></Radio.Button>
@@ -183,8 +184,21 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
     { final_objective.value && progress_data?.filter((_, idx) => idx===0).map((current, idx) =>  //Idx == 0 pour n'avoir que la région
        <div key={idx}> 
         <Divider/>
-        <Flex ><Progress strokeLinecap="square" strokeColor={{ from: '#108ee9', to: '#87d068' }} percent={current.percent} showInfo={current.percent == 100} type="line"/></Flex>
-        <span> {current_value.annee} : {current_value.value?.toLocaleString(undefined,{maximumFractionDigits:0})} {unit} /  { Number(final_objective.value)?.toLocaleString(undefined,{maximumFractionDigits:0}) } {unit}</span>
+        <Flex align="center" justify="space-around">
+        <Statistic title={`${title} - ${current_value?.annee}`} value={diplay_value} groupSeparator=" " precision={0} suffix={unit} />
+        <ConfigProvider theme={{ components: { Progress:{circleTextFontSize:'0.5em'} } }}> {/* Calculer dynmiquement en fonction de la longeur de texte ? */}
+          <Progress 
+            strokeLinecap="square" 
+            //strokeColor={{ from: '#108ee9', to: '#87d068' }} 
+            strokeColor={color}
+            percent={current.percent} 
+            //showInfo={current.percent == 100} 
+            //size={["100%", 20]} 
+            format={percent => diplay_value + unit} 
+            //percentPosition={{ align: 'center', type: 'inner' }}
+            type="dashboard" />
+          </ConfigProvider>
+      </Flex>
      </div>
    )}
   </>)
