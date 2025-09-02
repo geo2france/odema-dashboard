@@ -31,7 +31,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, data
         data:data_chart, 
         dependencies:[aiot]})
 
-
+    console.log()
     const myseries: BarSeriesOption = 
         {
             name:`Entrants`,
@@ -76,7 +76,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, data
                 type: 'time',
                axisLabel:{rotate:-50},
                maxInterval:1000*60*60*24*365, //1 year max interval
-               max:'2023'
+               max: Math.max(...data.map(item => item.annee)).toString()
             }
         ],
         yAxis: [
