@@ -106,7 +106,7 @@ const App: React.FC = () => {
     <DashboardApp
       title="Odema"
       subtitle="Observatoire déchets-matières des Hauts-de-France"
-      route_config={route_config}
+      routes={route_config}
       logo={Odema_logo}
       theme={myTheme}
       brands={partenaires}
