@@ -136,6 +136,40 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
             return { label: "Distributeur", color:"#d7504b" }
         case "ESS":
             return { label: "Acteur de l'éco. sociale et solidaire", color:"#9bca63"}
+        case "ABJ":
+            return { label: "Article de bricolage et de jardinage"}
+        case "ASL":
+            return { label: "Articles de sport et loisirs"}
+        case "BPS":
+            return { label: "Bateaux de plaisance ou de sport"}
+        case "DISP_MED":
+            return { label: "Dispositifs Médicaux perforants des patients en auto-traitement"}
+        case "EA":
+            return { label: "Eléments d’ameublement"}
+        case "EEE":
+            return { label: "Equipements électriques et électroniques"}
+        case "EMPAP":
+            return { label: "Emballages ménagers et papiers graphiques "}
+        case "EPRO":
+            return { label: "Emballages professionnels"}
+        case "LUB":
+            return { label: "Huiles lubrifiantes ou industrielles"}
+        case "JOUET":
+            return { label: "Jouets"}
+        case "MNU":
+            return { label: "Médicaments non utilisés"}
+        case "PA":
+            return { label: "Piles et accumulateurs"}
+        case "PNEU":
+            return { label: "Pneumatiques"}
+        case "PCHIM":
+            return { label: "Produits chimiques"}
+        case "PMCB":
+            return { label: "Produits ou matériaux de construction du secteur du bâtiment"}
+        case "TABAC":
+            return { label: "Produits du tabac"}
+        case "TLC":
+            return { label: "Textiles d’habillement, linge de maison et chaussures"}
         default :
             return {color:undefined, sort:undefined, label:item}
     }

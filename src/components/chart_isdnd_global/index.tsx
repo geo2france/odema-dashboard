@@ -21,9 +21,13 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, data_
         SELECT c.[annee], SUM(c.[capacite]) as capacite, SUM(t.[tonnage]) as tonnage 
         FROM ? t
         RIGHT JOIN ? c ON c.[annee]=t.[annee] AND c.[aiot]=t.[aiot]
+        WHERE c.[code_departement] in ('59','62','80','60','02')
         GROUP BY c.[annee]
         ORDER BY c.[annee]
     `, [data, data_capacite]) as SimpleRecord[];
+
+
+    console.log(data_capacite.filter((row) => row.annee===2024))
     
     useChartData({data:data_chart}) //Pas de  dependencies : les données du graphique ne change pas
 

@@ -20,7 +20,7 @@ import Tag from "antd/es/tag";
 
 
 export const EnfouissementPage: React.FC = () => {
-    const default_year:number = 2023 ;
+    const default_year:number = 2024 ;
 
     const chartStyle:CSSProperties = {height:'350px'}
 

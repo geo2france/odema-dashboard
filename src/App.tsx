@@ -17,6 +17,7 @@ import Cerc from "/img/Logo_CERC_Hauts-de-Fce_sans-sign.svg?url";
 import Cerdd from "/img/Logo_cerdd.svg?url";
 import Geo2France from "/img/geo2france.svg?url";
 import { DdPage } from './components/pages/dd';
+import { RepPage } from './components/pages/rep';
 
 const myTheme = {
   token: {
@@ -96,6 +97,12 @@ const route_config:RouteConfig[] = [
     path: "dd",
     label: "Dechets Dangeureux",
     element: <DdPage />,
+    hidden: true,
+  },
+    {
+    path: "rep",
+    label: "REP",
+    element: <RepPage />,
     hidden: true,
   },
 ];
