@@ -1,7 +1,7 @@
 import { InfoCircleOutlined } from "@ant-design/icons"
 import alasql from "alasql"
 import { Timeline, Tooltip } from "antd"
-import { SimpleRecord } from "api-dashboard"
+import { SimpleRecord } from "@geo2france/api-dashboard"
 
 export interface ITimelineIsdndCapaciteProps {
     data : SimpleRecord[]

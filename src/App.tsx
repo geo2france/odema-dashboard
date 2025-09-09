@@ -1,7 +1,7 @@
 import './index.css';
 
-import { WfsProvider, DatafairProvider, DashboardApp } from "api-dashboard";
-import { Partner, RouteConfig } from "api-dashboard/src/types";
+import { WfsProvider, DatafairProvider, DashboardApp } from "@geo2france/api-dashboard";
+import { Partner, RouteConfig } from "@geo2france/api-dashboard";
 
 import { DmaComponent } from "./components/pages/dma";
 import { EnfouissementPage } from "./components/pages/enfouissement";
@@ -17,6 +17,7 @@ import Cerc from "/img/Logo_CERC_Hauts-de-Fce_sans-sign.svg?url";
 import Cerdd from "/img/Logo_cerdd.svg?url";
 import Geo2France from "/img/geo2france.svg?url";
 import { DdPage } from './components/pages/dd';
+import { RepPage } from './components/pages/rep';
 
 const myTheme = {
   token: {
@@ -98,6 +99,12 @@ const route_config:RouteConfig[] = [
     element: <DdPage />,
     hidden: true,
   },
+    {
+    path: "rep",
+    label: "REP",
+    element: <RepPage />,
+    hidden: true,
+  },
 ];
 
 const App: React.FC = () => {
@@ -106,7 +113,7 @@ const App: React.FC = () => {
     <DashboardApp
       title="Odema"
       subtitle="Observatoire déchets-matières des Hauts-de-France"
-      route_config={route_config}
+      routes={route_config}
       logo={Odema_logo}
       theme={myTheme}
       brands={partenaires}

@@ -2,7 +2,7 @@ import alasql from "alasql";
 import { CSSProperties, useMemo, useRef, useState } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, BarSeriesOption, LineSeriesOption } from "echarts";
-import { SimpleRecord, useChartActionHightlight, useChartData, useChartEvents, useDashboardElement } from "api-dashboard"
+import { SimpleRecord, useChartActionHightlight, useChartData, useChartEvents, useDashboardElement } from "@geo2france/api-dashboard"
 import { chartBusinessProps  } from "../../utils";
 import { Button } from "antd";
 import { FaPercent } from "react-icons/fa";
@@ -43,11 +43,11 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         ${e.name} :
         <b>${normalizeState ? 
             (e.value[3]*100).toLocaleString(undefined, {maximumFractionDigits: 1})+' %' :
-            e.value[1].toLocaleString(undefined, {maximumFractionDigits: 0})+' kb/hab' 
+            e.value[1].toLocaleString(undefined, {maximumFractionDigits: 0})+' kg/hab' 
         } 
         </b> 
         (${ normalizeState ? 
-            e.value[1].toLocaleString(undefined, {maximumFractionDigits: 0})+' kg /hab - ' + e.value[2].toLocaleString(undefined, {maximumFractionDigits: 0})+' T':
+            e.value[1].toLocaleString(undefined, {maximumFractionDigits: 0})+' kg/hab - ' + e.value[2].toLocaleString(undefined, {maximumFractionDigits: 0})+' T':
             e.value[2].toLocaleString(undefined, {maximumFractionDigits: 0})+' T'
         })`
 

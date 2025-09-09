@@ -2,7 +2,7 @@ import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import ReactECharts from 'echarts-for-react'; 
 import { CSSProperties, useRef } from "react";
-import { useChartData, useDashboardElement, useChartEvents, SimpleRecord } from "api-dashboard";
+import { useChartData, useDashboardElement, useChartEvents, SimpleRecord } from "@geo2france/api-dashboard";
 
 export interface IChartEvolutionISDND {
     data : SimpleRecord[]
@@ -31,7 +31,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, data
         data:data_chart, 
         dependencies:[aiot]})
 
-
+    console.log()
     const myseries: BarSeriesOption = 
         {
             name:`Entrants`,
@@ -67,7 +67,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, data
 
     const option: EChartsOption ={
         series:[myseries, myseries_capcite],
-        legend: {top:'top', show:true},
+        legend: {bottom:0, show:true},
         tooltip: {
             trigger: 'item'
         },
@@ -76,7 +76,7 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, data
                 type: 'time',
                axisLabel:{rotate:-50},
                maxInterval:1000*60*60*24*365, //1 year max interval
-               max:'2023'
+               max: Math.max(...data.map(item => item.annee)).toString()
             }
         ],
         yAxis: [

@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import ReactECharts from 'echarts-for-react'; 
-import { SimpleRecord, useDashboardElement } from 'api-dashboard';
+import { SimpleRecord, useDashboardElement } from "@geo2france/api-dashboard";
 import { EChartsOption } from 'echarts';
 import alasql from 'alasql';
 import { chartBusinessProps } from '../../utils';

@@ -2,7 +2,7 @@ import React from 'react'
 import { ChartGaugeTarget } from '../chart_gauge_targets'
 import { Col, Collapse, Descriptions, DescriptionsProps, Row, Tag } from 'antd';
 import { ChartTargetEvolution } from '../chart_target_evolution';
-import { SimpleRecord } from 'api-dashboard';
+import { SimpleRecord } from "@geo2france/api-dashboard";
 
 export interface ITargetCardProps {
     objectif_name:string,

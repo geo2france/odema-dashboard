@@ -1,164 +1,116 @@
-import { Row, Col, Card, List } from "antd";
-import { useSearchParamsState, LoadingContainer, Attribution, useApi, SimpleRecord } from "api-dashboard";
-import { ChartPieRepCollecte } from "../chart_pie_rep_collecte";
-import { RepTopbar } from "../rep_topbar";
-import alasql from "alasql";
-import { ademe_opendataProvider } from "../../App";
+import { Producer, Transform } from "@geo2france/api-dashboard/dsl";
+import { ChartPie } from "@geo2france/api-dashboard/dsl";
+import { Dashboard, Dataset, Debug, Filter, Control } from "@geo2france/api-dashboard/dsl";
+import { chartBusinessProps } from "../../utils";
+import { NextPrevSelect } from "@geo2france/api-dashboard";
+import { useControl } from "@geo2france/api-dashboard/dsl";
+import { Palette } from "@geo2france/api-dashboard/dsl";
 
 //TODO splitter cette page pour chaque filière (rep_mnu.tsx, rep_vhu.tsx...). Ici mettre un Tab pour chaque filière.
 
 export const RepPage: React.FC = () => {
-    const [year, setYear] = useSearchParamsState('year','2021')
-
-    const [cregion, _setcregion] = useSearchParamsState('region','32')
-    
-    const collecte_pu = useApi(
-        {
-            resource: "rep-pu-tonnages-collectes-en-2018/lines",
-            dataProvider: ademe_opendataProvider,
-            pagination: {
-                pageSize: 150,
-            },
-            filters: [
-                {
-                    field: "Code_Région",
-                    operator: "eq",
-                    value: cregion
-                },
-                {
-                    field: "Année_des_données",
-                    operator: "eq",
-                    value: year
-                },
-
-            ]
-        }
-    )
-
-    const data_standardized_pu = collecte_pu?.data ? (alasql(`
-    SELECT d.[Code_Région], d.[Année_des_données] AS annee, 'Cyclomoteurs_et_véhicules_légers' AS type, sum(d.[Cyclomoteurs_et_véhicules_légers]) AS tonnage
-    FROM ? d
-    GROUP BY d.[Code_Région], d.[Année_des_données]
-    UNION ALL CORRESPONDING
-    SELECT d2.[Code_Région], d2.[Année_des_données] AS annee, 'Poids_lourd' AS type, sum(d2.[Poids_lourd]) AS tonnage
-    FROM ? d2
-    GROUP BY d2.[Code_Région], d2.[Année_des_données]
-    UNION ALL CORRESPONDING
-    SELECT d3.[Code_Région], d3.[Année_des_données] AS annee, 'Avions_-_Hélicoptères' AS type, sum(d3.[Avions_-_Hélicoptères]) AS tonnage
-    FROM ? d3
-    GROUP BY d3.[Code_Région], d3.[Année_des_données]
-    UNION ALL CORRESPONDING
-    SELECT d4.[Code_Région], d4.[Année_des_données] AS annee, 'Agraire_-_Génie_civil_1_et_agraire_-_Génie_civil_2' AS type, sum(d4.[Agraire_-_Génie_civil_1_et_agraire_-_Génie_civil_2]) AS tonnage
-    FROM ? d4
-    GROUP BY d4.[Code_Région], d4.[Année_des_données]
-    `, [collecte_pu.data.data,collecte_pu.data.data,collecte_pu.data.data,collecte_pu.data.data]) as SimpleRecord[])
-    .map((e:SimpleRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
-    :undefined
-
-    const collecte_vhu = useApi(
-        {
-            resource: "rep-vhu-tonnages-collectes-cvhu-en-2018/lines",
-            dataProvider: ademe_opendataProvider,
-            pagination: {
-                pageSize: 150,
-            },
-            filters: [
-                {
-                    field: "Code_Région",
-                    operator: "eq",
-                    value: cregion
-                },
-                {
-                    field: "Années",
-                    operator: "eq",
-                    value: year
-                },
-
-            ]
-        }
-    )
-
-    const data_vhu2 = collecte_vhu.data?.data.map((e:any) => ({...e,
-        'Compagnies_et_mutuelles_d_assurances':e["Compagnies_et_mutuelles_d'assurances"],
-        'Garages_indépendants_et_autres_professionnels_de_l_entretien':e["Garages_indépendants_et_autres_professionnels_de_l'entretien"],
-    })) // Fix name with quote...
-
-    const data_standardized_vhu = data_vhu2 ? (alasql(`
-    SELECT d.[Code_Région], d.[Années] as annee, "Particuliers" AS type, sum(d.[Particuliers]::NUMBER) AS tonnage
-    FROM ? d
-    GROUP BY d.[Code_Région], d.[Années]
-    UNION ALL CORRESPONDING
-    SELECT d2.[Code_Région], d2.[Années] as annee, "Compagnies_et_mutuelles_d'assurances" AS type, sum(d2.[Compagnies_et_mutuelles_d_assurances]::NUMBER) AS tonnage
-    FROM ? d2
-    GROUP BY d2.[Code_Région], d2.[Années]
-    UNION ALL CORRESPONDING
-    SELECT d3.[Code_Région], d3.[Années] as annee, 'Autres' AS type, sum(d3.[Autres]::NUMBER) AS tonnage
-    FROM ? d3
-    GROUP BY d3.[Code_Région], d3.[Années]
-    UNION ALL CORRESPONDING
-    SELECT d4.[Code_Région], d4.[Années] as annee,  'Concessionnaires_et_professionnels_des_réseaux_des_constructeurs' AS type, sum(d4.[Concessionnaires_et_professionnels_des_réseaux_des_constructeurs]::NUMBER) AS tonnage
-    FROM ? d4
-    GROUP BY d4.[Code_Région], d4.[Années]
-    UNION ALL CORRESPONDING
-    SELECT d5.[Code_Région], d5.[Années] as annee, 'Fourrières' AS type, sum(d5.[Fourrières]::NUMBER) AS tonnage
-    FROM ? d5
-    GROUP BY d5.[Code_Région], d5.[Années]
-    UNION ALL CORRESPONDING
-    SELECT d6.[Code_Région], d6.[Années] as annee, "Garages_indépendants_et_autres_professionnels_de_l'entretien" AS type, sum(d6.[Garages_indépendants_et_autres_professionnels_de_l_entretien]::NUMBER) AS tonnage
-    FROM ? d6
-    GROUP BY d6.[Code_Région], d6.[Années]
-    `, [data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2,data_vhu2]) as SimpleRecord[])
-    .map((e:SimpleRecord) => ({annee:e.annee, name: e.type, value: e.tonnage} )) 
-    :undefined
 
     return(
-        <>
-            <Row gutter={[16, 16]}>
-                <Col span={24}>
-                    <RepTopbar year={Number(year)} onChangeYear={setYear}/>
-                </Col>
+        <Dashboard>
+          <Debug />
+          <Palette steps={['#264653','#2a9d8f', '#e9c46a','#f4a261','#e76f51']}/>
+          <Control>
+            <NextPrevSelect name='annee' options={[2022,2023]} defaultValue={2023}/>
+          </Control>
+          <Dataset
+            id='traitement_rep'
+            type='datafair'
+            resource="rep-tonnages-de-dechets-traites-des-filieres-rep/lines"
+            url="https://data.ademe.fr/data-fair/api/v1/datasets"
+            pageSize={5000}
+          >
+            <Filter field="dep_site_trt" operator="in">{['59','62','80','02','60']}</Filter>
+            <Filter field="annee">{useControl('annee')}</Filter>
+            <Transform>{
+                (data) => data.map(row => ({...row, 
+                    'filiere_libel':chartBusinessProps(row.filiere).label,
+                    'tonnage': row.masse
+                } ))}
+            </Transform>
+            <Producer url="https://data.ademe.fr/datasets/rep-tonnages-de-dechets-traites-des-filieres-rep">Ademe, Eco-organismes</Producer>
+        </Dataset>  
 
-                <Col xl={24/2} xs={24}>
-                    <Card>
-                        pu
-                        <LoadingContainer isFetching={collecte_pu.isFetching}>
-                            {data_standardized_pu ? <ChartPieRepCollecte filiere='pu' data={data_standardized_pu} year={Number(year)} /> : <b>...</b>}
-                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-pu-tonnages-collectes-en-2018' }]}></Attribution>
-                        </LoadingContainer>
-                    </Card>
-                </Col>
-                <Col xl={24/2} xs={24}>
-                    <Card>
-                        vhu
-                        <LoadingContainer isFetching={collecte_vhu.isFetching}>
-                            {data_standardized_vhu ? <ChartPieRepCollecte filiere='vhu' data={data_standardized_vhu} year={Number(year)} /> : <b>...</b>}
-                            <Attribution data={[{ name: 'Ademe', url: 'https://data.ademe.fr/datasets/rep-vhu-tonnages-collectes-cvhu-en-2018' }]}></Attribution>
-                        </LoadingContainer>
-                    </Card>
-                </Col>
-                <Col xl={24 / 2} xs={24}>
-                    <Card>
-                        <List
-                            size="small"
-                            header={<div><b>Autres données</b></div>}
-                            bordered
-                            dataSource={[
-                                'Quantité mise sur le marché : niveau national seulemnet',
-                                'DEA : données 2017-2020 seulement',
-                                'VHU : Taux de recyclage et de valorisation (par département et par an) seulement'
-                            ]}
-                            renderItem={(item) => <List.Item>{item}</List.Item>}
-                        />
+        <Dataset
+            id='collecte_rep'
+            type='datafair'
+            resource="rep-tonnages-issus-des-lieux-de-collecte-ou-de-reprise-des-dechets-des-filieres-rep/lines"
+            url="https://data.ademe.fr/data-fair/api/v1/datasets"
+            pageSize={5000}
+          >
+            <Filter field="dep_site_coll" operator="in">{['59','62','80','02','60']}</Filter>
+            <Filter field="annee">{useControl('annee')}</Filter>
+            <Transform>{
+                (data) => data.map(row => ({...row, 
+                    'filiere_libel':chartBusinessProps(row.filiere).label,
+                    'tonnage': row.masse
+                } ))}
+            </Transform>
+            <Producer url="https://data.ademe.fr/datasets/rep-tonnages-issus-des-lieux-de-collecte-ou-de-reprise-des-dechets-des-filieres-rep">Ademe, Eco-organismes</Producer>
+        </Dataset>  
 
-                    </Card>
-                </Col>
+        <Dataset
+            id='reemploi_rep'
+            type='datafair'
+            resource="rep-tonnages-des-produits-usages-reemployes-reutilises/lines"
+            url="https://data.ademe.fr/data-fair/api/v1/datasets"
+            pageSize={5000}
+          >
+            <Filter field="dep_rr" operator="in">{['59','62','80','02','60']}</Filter>
+            <Filter field="annee">{useControl('annee')}</Filter>
+            <Transform>{
+                (data) => data.map(row => ({...row, 
+                    'filiere_libel':chartBusinessProps(row.filiere).label,
+                    'tonnage': row.masse
+                } ))}
+            </Transform>
+            <Producer url="https://data.ademe.fr/datasets/rep-tonnages-issus-des-lieux-de-collecte-ou-de-reprise-des-dechets-des-filieres-rep">Ademe, Eco-organismes</Producer>
+        </Dataset>  
+        
+        
+        <ChartPie
+            title="REP - Traitement en HdF"
+            dataset="traitement_rep"
+            dataKey="tonnage"
+            nameKey="filiere_libel"
+            unit="T"
+            donut
+        />
+        <div>
+            <ChartPie
+                title="REP - Collecte en HDF"
+                dataset="collecte_rep"
+                dataKey="tonnage"
+                nameKey="filiere_libel"
+                unit="T"
+                donut
+            />
+        <small>* Les filière "Emballage" et TLC ne sont pas concernées</small>
+        </div>
 
+        <ChartPie
+            title="REP - Ré-emploi en HDF"
+            dataset="reemploi_rep"
+            dataKey="tonnage"
+            nameKey="filiere_libel"
+            unit="T"
+            donut
+        />
 
-
-
-
-            </Row>
-        </>
+      {/*  <ChartYearSerie
+            title="REP -"
+            dataset="collecte_rep"
+            valueKey="tonnage"
+            yearKey="annee"
+            yearMark={useControl('annee')}
+            type="area"
+            categoryKey="filiere_libel"
+        /> */}
+      </Dashboard>
     )
 }
 

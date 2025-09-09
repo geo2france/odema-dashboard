@@ -2,7 +2,7 @@ import React from 'react';
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from 'echarts';
 import { CSSProperties, useRef } from 'react';
-import { SimpleRecord } from 'api-dashboard';
+import { SimpleRecord } from "@geo2france/api-dashboard";
 
 
 interface IChartTargetEvolutionProps {

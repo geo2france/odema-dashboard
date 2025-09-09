@@ -6,12 +6,12 @@ import { BsRecycle } from "react-icons/bs";
 import { useMemo, useState } from "react"
 import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
 import { TbReportMoney } from "react-icons/tb";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, DashboardPage, useApi } from "api-dashboard"
+import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, DashboardPage, useApi } from "@geo2france/api-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { grey } from '@ant-design/colors';
 import { geo2franceProvider } from "../../App"
 import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci";
-import { CompetenceBadge } from "../competence_badge/CompetenceBadge";
+import { CompetenceBadge, CompetencesExercees } from "../competence_badge/CompetenceBadge";
 import ChartePieCollecte from "../chart_pie_collecte/ChartPieCollecte";
 
 const { Link } = Typography;
@@ -22,6 +22,25 @@ export const DmaPageEPCI: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
     const [focus, setFocus] = useState<string | undefined>(undefined)
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const {data: data_territoire} = useApi({
+        resource:"odema:territoire_epci",
+        dataProvider:geo2franceProvider,
+        pagination:{
+          mode:"off"
+        },
+        filters:[
+          {
+            field:"annee",
+            operator:"eq",
+            value:year
+          }
+        ],
+        meta:{
+          properties:["annee", "name", "name_short", "siren", "population", "nb_communes", "population_collecte", "population_traitement", "population_dechetterie"]
+        }
+    })
+
 
     const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useApi({ 
         resource:"odema:destination_dma_epci_harmonise",
@@ -83,59 +102,10 @@ export const DmaPageEPCI: React.FC = () => {
             }
         ]
     });
+ 
+   const territories = data_territoire?.data;
+   const options_territories = territories?.map((t:any) => ({label: t.name, value: t.siren})) 
 
-    const {data:data_ecpci_collecte} = useApi({
-        resource:"odema:territoires_collecte ",
-        dataProvider:geo2franceProvider,
-        pagination:{
-            mode:"off"
-        },
-        meta:{
-            properties:["epci_siren", "epci_nom", "population", "nombre_communes", "population_epci", "c_acteur_sinoe"]
-        }
-    })
-
-    const {data:data_ecpci_traitement} = useApi({
-      resource:"odema:territoires_traitement ",
-      dataProvider:geo2franceProvider,
-      pagination:{
-          mode:"off"
-      },
-      meta:{
-          properties:["epci_siren", "epci_nom", "population", "nombre_communes", "population_epci", "c_acteur_sinoe"]
-      }
-  })
-
-  const {data:data_ecpci_dechetterie} = useApi({
-    resource:"odema:territoires_dechetterie",
-    dataProvider:geo2franceProvider,
-    pagination:{
-        mode:"off"
-    },
-    meta:{
-        properties:["epci_siren", "epci_nom", "population","nombre_communes", "population_epci", "c_acteur_sinoe"]
-    }
-})
-
-  
-
-   const territories = useMemo( () => data_ecpci_collecte?.data && data_ecpci_traitement?.data && data_ecpci_dechetterie?.data && alasql(`
-    SELECT epci_siren, epci_nom,MAX(population) AS [population],MAX([nombre_communes]) AS [nombre_communes],c_acteur_sinoe, ARRAY([competence]) as [competence]
-    FROM (
-        SELECT epci_siren, epci_nom,population,nombre_communes,c_acteur_sinoe, 'collecte' AS [competence]
-        FROM ?
-        UNION
-          SELECT epci_siren, epci_nom,population,nombre_communes,c_acteur_sinoe, 'traitement' AS [competence]
-        FROM ?
-        UNION
-          SELECT epci_siren, epci_nom,population,nombre_communes,c_acteur_sinoe, 'dechetterie' AS [competence]
-        FROM ?
-        )
-    GROUP BY epci_siren, epci_nom,c_acteur_sinoe `, [data_ecpci_collecte?.data, data_ecpci_traitement?.data, data_ecpci_dechetterie?.data]),
-        [data_ecpci_collecte?.data, data_ecpci_traitement?.data, data_ecpci_dechetterie?.data]
-   ) as SimpleRecord[];
-
-   const options_territories = territories?.map((t:any) => ({label: t.epci_nom, value: t.epci_siren}))
     
   
 
@@ -143,30 +113,35 @@ export const DmaPageEPCI: React.FC = () => {
       SELECT 
         [annee],
         [traitement_destination], 
-        SUM([tonnage]) as tonnage,
-        MAX([population]) as population
+        SUM([tonnage]) as tonnage
       FROM ? 
       GROUP BY [annee], [traitement_destination]
-    `,[data_traitement?.data])// chiffres clés pour les cards
+    `,[data_traitement?.data])// chiffres clés pour les cards TODO
   
 
 
     const current_indicateurs_cles = indicateurs_cles?.filter((e) => e.annee == year )
 
     const dma_total = current_indicateurs_cles?.reduce((sum, val) => sum + val.tonnage, 0)
-    const pop = current_indicateurs_cles && current_indicateurs_cles[0] &&  current_indicateurs_cles[0].population
+
     const part_valo_matiere = dma_total && 100 * (current_indicateurs_cles?.find((e) => e.traitement_destination ==  "Valorisation organique")?.tonnage 
                               + current_indicateurs_cles?.find((e) => e.traitement_destination ==  "Valorisation matière")?.tonnage ) 
                               / dma_total
 
 
-    const current_epci = territories?.find((e:any) => (e.epci_siren == siren_epci) ) 
+    const current_epci = territories?.find((e:any) => (e.siren == siren_epci) ) 
+
+    const competences:CompetencesExercees={
+      'collecte':current_epci?.population_collecte / current_epci?.population,
+      'traitement':current_epci?.population_traitement / current_epci?.population,
+      'dechetterie':current_epci?.population_dechetterie / current_epci?.population,
+    } //Exercice total (1), partiel ( 0 < X < 1) ou sans compétence (0)
 
     const territoire_descritpion_item : DescriptionsProps['items'] = [
         {
             key:'name',
             label:'Nom',
-            children:current_epci?.epci_nom
+            children:current_epci?.name
         },
         {
             key:'siret',
@@ -176,17 +151,17 @@ export const DmaPageEPCI: React.FC = () => {
         {
             key:'population',
             label:'Pop.',
-            children:<> {pop?.toLocaleString()} &nbsp;<FaPeopleGroup /></>
+            children:<> {current_epci?.population?.toLocaleString()} &nbsp;<FaPeopleGroup /></>
         },
         {
             key:'nb_communes',
             label:'Communes',
-            children:<> {current_epci?.nombre_communes && (current_epci?.nombre_communes).toLocaleString()} &nbsp;<FaHouseFlag /></>
+            children:<> {current_epci?.nb_communes.toLocaleString()} &nbsp;<FaHouseFlag /></>
         },
         {
           key:'competences',
           label:'Compétences',
-          children: <CompetenceBadge competences={current_epci?.competence} />
+          children: <CompetenceBadge competences={competences} />
         }
     ]
 
@@ -202,7 +177,7 @@ export const DmaPageEPCI: React.FC = () => {
         {id:"prod_dma", 
         name:"Production de DMA",
         description:"Production globale annuelle de DMA.",
-        value: ( (dma_total || NaN) / pop) * 1e3,
+        value: ( (dma_total || NaN) / current_epci?.population) * 1e3,
         sub_value:"Obj. régional : 553 kg/hab",
         icon: <FaTrashCan />,
         unit:'kg/hab'},
