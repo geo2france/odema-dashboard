@@ -2,7 +2,7 @@ import { CSSProperties, useState } from "react";
 import { Row, Col, Drawer, Select, Flex, Typography } from "antd"
 import alasql from "alasql";
 import * as aq from 'arquero';
-import { Control, DashboardElement, KeyFigure, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "@geo2france/api-dashboard";
+import { Control, DashboardElement, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "@geo2france/api-dashboard";
 
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
@@ -14,9 +14,9 @@ import { HistoryOutlined } from "@ant-design/icons";
 import { geo2franceProvider } from "../../App";
 import { FaLocationPin } from "react-icons/fa6";
 import { MdFrontLoader } from "react-icons/md";
-import { AiOutlineFall, AiOutlineRise } from "react-icons/ai";
 import { GiResize } from "react-icons/gi";
 import Tag from "antd/es/tag";
+import { StatisticIsdnd } from "../statistic_isdnd/StatiticIsdnd";
 
 
 export const EnfouissementPage: React.FC = () => {
@@ -105,47 +105,27 @@ export const EnfouissementPage: React.FC = () => {
                    <DashboardElement isFetching={isFetchingIsdnd || isFetchingCapacite} title={`Chiffres-clé ${year}`}  attributions={[{name : 'GT ISDND', url:'https://www.geo2france.fr/datahub/dataset/1a1480b4-8c8b-492d-9cd0-a91b49576017'},{name: 'Odema'}]}>
                     <Row gutter={[8,8]} style={{margin:8}}>
                     <Col xl={24/3} md={24/3} xs={24}> 
-                        <KeyFigure 
-                         value={current_key_figures?.n_installation}
-                         digits={0}
-                         name="Installations en service"
-                         icon={<FaLocationPin />}
-                         description={`Installations ayant enfoui des déchets en ${year}`}
-                        />
+                       <StatisticIsdnd title={`Installations en service`} icon={<FaLocationPin />}
+                        value={current_key_figures?.n_installation} 
+                        help={`Installations ayant enfoui des déchets en ${year}`}/>
                     </Col>
                     <Col xl={24/3} md={24/3} xs={24}> 
-                        <KeyFigure 
-                         value={current_key_figures?.tonnage}
-                         unit="T"
-                         digits={0}
-                         name="Quantités enfouies"
-                         sub_value={'Obj. 2025 : 1 200 000 T'}
-                         icon={<MdFrontLoader />}
-                        />
+                       <StatisticIsdnd color="#ddb090" title={`Enfouissement`} icon={<MdFrontLoader />}
+                        value={current_key_figures?.tonnage} unit="t"
+                        evolution={Math.round( 100 * (current_key_figures?.tonnage - key_figures?.find((e) => e.annee==Number(2010))?.tonnage )
+                                    / key_figures?.find((e) => e.annee==Number(2010))?.tonnage ) }  
+                        evolutionUnit="%" evolutionSuffix="depuis 2010" invertColor 
+                        help="Quantité de déchets enfouis en ISDND" />
                     </Col>
                     <Col xl={24/3} md={24/3} xs={24}> 
-                        <KeyFigure 
-                         value={ ( 100 * (current_key_figures?.tonnage - key_figures?.find((e) => e.annee==Number(2010))?.tonnage )
-                                    / key_figures?.find((e) => e.annee==Number(2010))?.tonnage )  }
-                         unit="%"
-                         digits={2}
-                         name={`Evolution 2010-${year}`}
-                         sub_value={'Obj. 2025 : -50%'}
-                         description="Evolution des quantités enfouies depuis l'année de référence 2010"
-                         icon={(current_key_figures?.tonnage - key_figures?.find((e) => e.annee==Number(2010))?.tonnage ) > 0 ? <AiOutlineRise /> : <AiOutlineFall />}
+                       <StatisticIsdnd color="#d44f4a"  title={`Capacité autorisée`}  icon={<GiResize />}
+                        value={current_key_figures?.capacite} unit="t"
+                        evolution={Math.round( 100 * (current_key_figures?.capacite - key_figures?.find((e) => e.annee==Number(2010))?.capacite )
+                                    / key_figures?.find((e) => e.annee==Number(2010))?.capacite ) }  
+                        evolutionUnit="%" evolutionSuffix="depuis 2010" invertColor
+                        help="Capacitée régionale autorisée par les arrếtés d'autorisation"
                         />
                     </Col>
-
-                    <Col xl={24/3} md={24/3} xs={24}> 
-                        <KeyFigure 
-                         value={current_key_figures?.capacite}
-                         unit="T"
-                         digits={0}
-                         name="Capacité réglementaire"
-                         icon={<GiResize />}
-                        />
-                    </Col>
-
                     </Row>
                    </DashboardElement>
                </Col>
