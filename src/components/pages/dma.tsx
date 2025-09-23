@@ -17,6 +17,16 @@ import { MapTI } from "../map_ti/mapTi";
 const {Text} = Typography;
 const [maxYear, minYear, defaultYear] = [2023,2009,2021]
 
+const attribution_odema_ademe = [
+              {
+                name: "Ademe (Sinoe)",
+                url: "https://www.sinoe.org/",
+              },
+              {
+                name: "Odema",
+                url: "https://odema-hautsdefrance.org/",
+              },
+            ]
 
 export const DmaComponent: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
@@ -104,12 +114,7 @@ export const DmaComponent: React.FC = () => {
           <DashboardElement
             isFetching={isFetching}
             title={`Types et destination des déchets en ${year}`} section="Panorama"
-            attributions={[
-              {
-                name: "Ademe",
-                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-              },
-            ]}
+            attributions={attribution_odema_ademe}
           >
             {datasankey && (
               <ChartSankeyDestinationDMA
@@ -128,12 +133,7 @@ export const DmaComponent: React.FC = () => {
           <DashboardElement
             isFetching={isFetching}
             title={`Type de déchets collectés`} section="Panorama"
-            attributions={[
-              {
-                name: "Ademe",
-                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-              },
-            ]}
+            attributions={attribution_odema_ademe}
           >
             {data_typedechet_destination && (
               <ChartEvolutionDechet
@@ -154,12 +154,7 @@ export const DmaComponent: React.FC = () => {
         <DashboardElement
             title="Performances de collecte" section="Panorama"
             isFetching={isFetching_chiffre_cle }
-            attributions={[
-              {
-                name: "Ademe",
-                url: "https://data.ademe.fr/datasets/sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte",
-              },
-            ]}
+            attributions={attribution_odema_ademe}
           >
           
             {data_performance && data_chiffre_cle && (
@@ -196,16 +191,7 @@ export const DmaComponent: React.FC = () => {
             description= {<Text type="secondary">L'objectif régional est d'arriver à une production de <b>564 kg/hab en 2025</b> et{' '}
             <b>541 kg/hab en 2030</b>.</Text> }
             title={`Production de DMA par habitant et objectif régional`} section="Prévention"
-            attributions={[
-              {
-                name: "Ademe (Sinoe)",
-                url: "https://www.sinoe.org/",
-              },
-              {
-                name: "Odema",
-                url: "https://odema-hautsdefrance.org/",
-              },
-            ]}>
+            attributions={ attribution_odema_ademe } >
           {data_tonnage_dma && <ChartEvolutionObjectifs 
                 data={data_tonnage_dma.map((e: SimpleRecord) => ({
                   annee: e.annee,
@@ -247,12 +233,7 @@ export const DmaComponent: React.FC = () => {
           <DashboardElement
             isFetching={isFetching}
             title={`Destination des déchets`} section="Valorisation"
-            attributions={[
-              {
-                name: "Ademe",
-                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-              },
-            ]}
+            attributions={ attribution_odema_ademe }
           >
             {data_typedechet_destination && (
               <ChartEvolutionDechet
@@ -274,12 +255,7 @@ export const DmaComponent: React.FC = () => {
             isFetching={isFetching}
             title={`Taux de valorisation matière des DMA`} section="Valorisation"
             description= {undefined}
-            attributions={[
-              {
-                name: "Ademe",
-                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-              },
-            ]}
+            attributions={ attribution_odema_ademe }
           >
             {data_typedechet_destination && (
               <ChartTauxValo
@@ -300,12 +276,7 @@ export const DmaComponent: React.FC = () => {
             isFetching={isFetching}
             title={`Part de DMA admis en stockage`} section="Stockage"
             description= {"Objectif : Limiter à 10% des DMA admis en installations de stockage d’ici à 2035"}
-            attributions={[
-              {
-                name: "Ademe",
-                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
-              },
-            ]}
+            attributions={ attribution_odema_ademe }
           >
             {data_typedechet_destination && (
               <ChartDmaStockage
