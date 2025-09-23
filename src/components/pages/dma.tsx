@@ -2,12 +2,11 @@ import React, { CSSProperties, useState } from "react";
 import { Typography } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
 import { ChartCollectePerformance } from "../chart_collecte_performance";
-import { ChartRaceBareDMA } from "../chart_racebar_dma";
 
 import alasql from "alasql";
 import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord, DashboardPage, useApi } from "@geo2france/api-dashboard";
 import { ChartEvolutionDechet } from "../chart_evolution_dechet";
-import { ademe_opendataProvider, geo2franceProvider } from "../../App";
+import { geo2franceProvider } from "../../App";
 import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti";
 import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif";
 import { ChartTauxValo } from "../chart_taux_valo/ChartTauxValo";
@@ -30,7 +29,6 @@ const attribution_odema_ademe = [
 
 export const DmaComponent: React.FC = () => {
     const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
-    const [cregion, _setcregion] = useSearchParamsState('region','32')
     const [focus, setFocus] = useState<string | undefined>(undefined) 
 
     const chartStyle:CSSProperties = {height:'350px'}
@@ -66,15 +64,7 @@ export const DmaComponent: React.FC = () => {
       `,[data_g2f.data]) ) as SimpleRecord[]
 
 
-    const {data:data_chiffre_cle, isFetching:isFetching_chiffre_cle} = useApi({
-        resource:"sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017/lines",
-        dataProvider:ademe_opendataProvider,
-        pagination: {
-            pageSize: 5000,
-        }
-    })
-
-    const {data:data_ti, isFetching:isFetching_ti} = useApi({
+      const {data:data_ti, isFetching:isFetching_ti} = useApi({
       resource:"odema:population_tarification_ti_region",
       dataProvider:geo2franceProvider,
       pagination:{ mode: "off" }
@@ -153,11 +143,11 @@ export const DmaComponent: React.FC = () => {
 
         <DashboardElement
             title="Performances de collecte" section="Panorama"
-            isFetching={isFetching_chiffre_cle }
+            isFetching={isFetching }
             attributions={attribution_odema_ademe}
           >
           
-            {data_performance && data_chiffre_cle && (
+            {data_performance && (
               <ChartCollectePerformance
                 style={chartStyle}
                 data={data_performance.filter((e:SimpleRecord) => e.annee == year)}
@@ -165,26 +155,6 @@ export const DmaComponent: React.FC = () => {
             )}
         </DashboardElement>
 
-        <DashboardElement
-            title="Ratio régionaux" section="Panorama"
-            isFetching={isFetching_chiffre_cle}
-            attributions={[
-              {
-                name: "Ademe",
-                url: "https://data.ademe.fr/datasets/sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017",
-              },
-            ]}
-          >
-            {data_chiffre_cle && (
-              <ChartRaceBareDMA
-                style={chartStyle}
-                data={data_chiffre_cle.data.filter(
-                  (e: any) => e.Annee == year
-                )}
-                highlight_region={cregion}
-              />
-            )}
-        </DashboardElement>
 
         <DashboardElement
             isFetching={isFetching}
