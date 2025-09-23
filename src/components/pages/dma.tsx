@@ -25,22 +25,7 @@ export const DmaComponent: React.FC = () => {
 
     const chartStyle:CSSProperties = {height:'350px'}
 
-    const {data, isFetching} = useApi({
-            resource:"sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement/lines",
-            dataProvider:ademe_opendataProvider,
-            pagination: {
-                pageSize: 2000,
-            },
-            filters:[
-                {
-                    field:"C_REGION",
-                    operator:"eq",
-                    value:cregion
-                }
-            ]
-    })
-
-    const {data:data_g2f} = useApi({ 
+    const {data:data_g2f, isFetching} = useApi({ 
         resource:"odema:destination_dma_region",
         dataProvider:geo2franceProvider,
         pagination:{
@@ -48,27 +33,28 @@ export const DmaComponent: React.FC = () => {
         }
     })
    
-    const datasankey = (data?.data && alasql(`
-        SELECT L_TYP_REG_DECHET, L_TYP_REG_SERVICE, sum(TONNAGE_DMA) as TONNAGE_DMA_sum
+    const datasankey = (data_g2f?.data && alasql(`
+        SELECT [libel_dechet] as L_TYP_REG_DECHET, [libel_traitement] as L_TYP_REG_SERVICE, sum(tonnage) as TONNAGE_DMA_sum
         FROM ?
-        GROUP BY L_TYP_REG_DECHET, L_TYP_REG_SERVICE
-    `, [data.data.filter((e:any) => e.ANNEE == Number(year))])) as SimpleRecord[]
+        GROUP BY [libel_dechet], [libel_traitement]
+    `, [data_g2f.data.filter((e:any) => e.annee == Number(year))])) as SimpleRecord[];
 
+    const data_performance = (data_g2f?.data && alasql(`
+      SELECT
+        [annee],
+        CASE WHEN [source_collecte] = 'DECHETERIE' THEN 'Déchèterie'
+             WHEN [source_collecte] = 'COLLECTE' AND [libel_dechet] = 'Ordures ménagères résiduelles' THEN 'Collecte OMR'
+             ELSE 'Collecte séparées' END as [TYP_COLLECTE],
+        SUM([tonnage]) as [tonnage],
+        SUM([kg_par_habitant]) as [ratio]
+      FROM ?
+      GROUP BY  
+        [annee],  
+        CASE WHEN [source_collecte] = 'DECHETERIE' THEN 'Déchèterie'
+             WHEN [source_collecte] = 'COLLECTE' AND [libel_dechet] = 'Ordures ménagères résiduelles' THEN 'Collecte OMR'
+             ELSE 'Collecte séparées' END
+      `,[data_g2f.data]) ) as SimpleRecord[]
 
-    const {data:data_performance, isFetching: isFetching_performance} = useApi({
-        resource:"sinoe-(r)-repartition-des-tonnages-de-dma-collectes-par-type-de-collecte/lines",
-        dataProvider:ademe_opendataProvider,
-        pagination: {
-            pageSize: 600,
-        },
-        filters:[
-            {
-                field:"ANNEE",
-                operator:"eq",
-                value:year
-            },
-        ]
-    });
 
     const {data:data_chiffre_cle, isFetching:isFetching_chiffre_cle} = useApi({
         resource:"sinoe-indicateurs-chiffres-cles-dma-hors-gravats-2009-2017/lines",
@@ -84,19 +70,12 @@ export const DmaComponent: React.FC = () => {
       pagination:{ mode: "off" }
   });
 
-    const pop_region = data_chiffre_cle?.data && alasql(`
-        SELECT [Annee] as [annee], SUM([VA_POPANNEE]) AS [population]
-        FROM ?
-        WHERE [C_REGION]='${cregion}'
-        GROUP BY [Annee]
-    `, [data_chiffre_cle.data])
 
-    const data_typedechet_destination = (data_chiffre_cle?.data && data?.data && pop_region && alasql(
-        `SELECT d.*, dc.[VA_POPANNEE], p.[population] AS [VA_POPANNEE_REG]
-        FROM ? d
-        JOIN ? dc ON dc.[Annee] = d.[ANNEE] AND dc.[C_DEPT]=d.[C_DEPT]
-        JOIN ? p ON p.[annee] = d.[ANNEE] AND d.[C_REGION] = '${cregion}'
-        `, [ data?.data, data_chiffre_cle?.data, pop_region])) as SimpleRecord[]// Ajoute la population departementale et régionale
+    const data_typedechet_destination = (data_g2f?.data && alasql(
+        `SELECT [annee] as [ANNEE], [libel_dechet] as L_TYP_REG_DECHET, [libel_traitement] as L_TYP_REG_SERVICE, sum(tonnage) as TONNAGE, sum([kg_par_habitant]) as RATIO
+        FROM ?
+        GROUP BY [annee], [libel_dechet], [libel_traitement]
+        `, [ data_g2f.data ])) as SimpleRecord[]// Ajoute la population departementale et régionale
  
 
     const data_tonnage_dma = data_g2f?.data && alasql(
@@ -159,10 +138,10 @@ export const DmaComponent: React.FC = () => {
             {data_typedechet_destination && (
               <ChartEvolutionDechet
                 data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                  tonnage: e.TONNAGE_DMA,
+                  tonnage: e.TONNAGE,
                   annee: e.ANNEE,
                   type: e.L_TYP_REG_DECHET,
-                  population: e.VA_POPANNEE_REG,
+                  ratio: e.RATIO
                 }))}
                 onFocus={(e: any) => setFocus(e?.seriesName)}
                 focus_item={focus}
@@ -174,7 +153,7 @@ export const DmaComponent: React.FC = () => {
 
         <DashboardElement
             title="Performances de collecte" section="Panorama"
-            isFetching={isFetching_chiffre_cle && isFetching_performance}
+            isFetching={isFetching_chiffre_cle }
             attributions={[
               {
                 name: "Ademe",
@@ -186,17 +165,14 @@ export const DmaComponent: React.FC = () => {
             {data_performance && data_chiffre_cle && (
               <ChartCollectePerformance
                 style={chartStyle}
-                data={data_performance.data}
-                data_territoire={data_chiffre_cle.data.filter(
-                  (e: any) => e.Annee == year
-                )}
+                data={data_performance.filter((e:SimpleRecord) => e.annee == year)}
               />
             )}
         </DashboardElement>
 
         <DashboardElement
             title="Ratio régionaux" section="Panorama"
-            isFetching={isFetching_chiffre_cle && isFetching_performance}
+            isFetching={isFetching_chiffre_cle}
             attributions={[
               {
                 name: "Ademe",
@@ -281,10 +257,10 @@ export const DmaComponent: React.FC = () => {
             {data_typedechet_destination && (
               <ChartEvolutionDechet
                 data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                  tonnage: e.TONNAGE_DMA,
+                  tonnage: e.TONNAGE,
                   annee: e.ANNEE,
                   type: e.C_TYP_REG_SERVICE === '02F' ? 'Stockage' : e.L_TYP_REG_SERVICE, // Stockage inertes -> Stockage
-                  population: e.VA_POPANNEE_REG,
+                  ratio: e.RATIO
                 }))}
                 onFocus={(e: any) => setFocus(e?.seriesName)}
                 focus_item={focus}
@@ -308,10 +284,9 @@ export const DmaComponent: React.FC = () => {
             {data_typedechet_destination && (
               <ChartTauxValo
                 data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                  tonnage: e.TONNAGE_DMA,
+                  tonnage: e.TONNAGE,
                   annee: e.ANNEE,
-                  type: e.L_TYP_REG_SERVICE,
-                  population: e.VA_POPANNEE_REG,
+                  type: e.L_TYP_REG_SERVICE
                 }))}
                 onFocus={(e: any) => setFocus(e?.seriesName)}
                 focus_item={focus}
@@ -335,10 +310,9 @@ export const DmaComponent: React.FC = () => {
             {data_typedechet_destination && (
               <ChartDmaStockage
                 data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                  tonnage: e.TONNAGE_DMA,
+                  tonnage: e.TONNAGE,
                   annee: e.ANNEE,
-                  type: e.L_TYP_REG_SERVICE,
-                  population: e.VA_POPANNEE_REG,
+                  type: e.L_TYP_REG_SERVICE
                 }))}
                 onFocus={(e: any) => setFocus(e?.seriesName)}
                 focus_item={focus}

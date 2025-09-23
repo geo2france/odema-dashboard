@@ -11,7 +11,8 @@ interface DataProps {
     annee:number
     type:string
     tonnage:number
-    population:number
+    population?:number
+    ratio?:number
     [key: string]: any
 }
 
@@ -59,11 +60,11 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         d.[annee], 
         d.[type], 
         SUM(d.[tonnage]) as tonnage, 
-        SUM((d.[tonnage]/d.[population])*1000) as ratio,
+        coalesce( SUM(d.[ratio]) ,SUM((d.[tonnage]/d.[population])*1000) ) as ratio,
         t.[ratio_annee_total]
     FROM ? d
     JOIN (
-        SELECT x.[annee], SUM(x.[tonnage]/x.[population]*1000) as ratio_annee_total
+        SELECT x.[annee], coalesce( sum( x.[tonnage]/x.[population]*1000 ) , sum(x.[ratio]) ) as ratio_annee_total
         FROM ? x
         GROUP BY x.[annee]
     ) t ON d.[annee] = t.[annee]
