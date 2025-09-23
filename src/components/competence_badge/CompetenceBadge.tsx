@@ -21,7 +21,6 @@ export const CompetenceBadge: React.FC<CompetenceBadgePros> = ({ competences }) 
     return (
         <Flex style={{ height: '50px' }} gap={'middle'}>
             {competences && competenceData.map(({ name, icon: Icon, title }) => {
-                console.log(name)
                 const value = competences[name]
                 const color = value >= 1 ? colors.enabled : value <= 0 ? colors.disabled : colors.partial
                 return (
