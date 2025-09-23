@@ -39,6 +39,14 @@ export const DmaComponent: React.FC = () => {
                 }
             ]
     })
+
+    const {data:data_g2f} = useApi({ 
+        resource:"odema:destination_dma_region",
+        dataProvider:geo2franceProvider,
+        pagination:{
+            mode:"off"
+        }
+    })
    
     const datasankey = (data?.data && alasql(`
         SELECT L_TYP_REG_DECHET, L_TYP_REG_SERVICE, sum(TONNAGE_DMA) as TONNAGE_DMA_sum
@@ -90,7 +98,12 @@ export const DmaComponent: React.FC = () => {
         JOIN ? p ON p.[annee] = d.[ANNEE] AND d.[C_REGION] = '${cregion}'
         `, [ data?.data, data_chiffre_cle?.data, pop_region])) as SimpleRecord[]// Ajoute la population departementale et régionale
  
+
+    const data_tonnage_dma = data_g2f?.data && alasql(
+      `SELECT [annee], SUM([kg_par_habitant]) as [ratio], sum([tonnage]) as [tonnage] FROM ? GROUP BY [annee] ORDER BY [annee]`
+    ,[data_g2f?.data ]) as SimpleRecord[]
     
+
     return (
       <DashboardPage
         control={
@@ -209,17 +222,21 @@ export const DmaComponent: React.FC = () => {
             title={`Production de DMA par habitant et objectif régional`} section="Prévention"
             attributions={[
               {
-                name: "Ademe",
-                url: "https://data.ademe.fr/datasets/sinoe-(r)-destination-des-dma-collectes-par-type-de-traitement",
+                name: "Ademe (Sinoe)",
+                url: "https://www.sinoe.org/",
+              },
+              {
+                name: "Odema",
+                url: "https://odema-hautsdefrance.org/",
               },
             ]}>
-          {data_typedechet_destination && <ChartEvolutionObjectifs 
-                data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                  annee: e.ANNEE,
-                  ratio: (e.TONNAGE_DMA/e.VA_POPANNEE_REG)*1000,
-                  population: e.VA_POPANNEE_REG,
+          {data_tonnage_dma && <ChartEvolutionObjectifs 
+                data={data_tonnage_dma.map((e: SimpleRecord) => ({
+                  annee: e.annee,
+                  ratio: e.ratio,
+                  tonnage: e.tonnage,
                 }))}
-                dataObjectifs={[{annee:2009, ratio:632}, {annee:2025, ratio:564}, {annee:2031, ratio:541}]}
+                dataObjectifs={[{annee:2009, ratio:620}, {annee:2025, ratio:558}, {annee:2030, ratio:527}]}
                 year={Number(year)}
               /> }
           </DashboardElement>

@@ -27,7 +27,7 @@ export interface ChartEvolutionTypeDechetProps {
   }
 
 const formatter_currentyear = (value:number, year?:number) => {
-    const value_year:number = new Date(value).getFullYear()
+    const value_year:number = value
     return value_year == year ? `{currentDate|${value_year} }` : value_year.toString()
 }
 
@@ -37,7 +37,7 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
         SELECT 
             [annee], 
             SUM([ratio]) as ratio,
-            SUM([ratio_hg]) as ratio_hg
+            SUM([tonnage]) as tonnage
         FROM ?
         GROUP BY [annee]
         `,[data]) , [data]
@@ -68,11 +68,18 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
         tooltip:{
             show:true,
             trigger: 'axis',
-            valueFormatter: (value) => ( `${value} kg/hab` )
+            formatter: (p:any) => 
+                `${p[0].axisValue}<br>` + 
+                    p.map((item:any) => 
+                        `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${item.color};margin-right:5px"></span>` +
+                        `${item.seriesName} <b style="margin-left:16px">${item.value[1]} kg/hab</b>`
+                    ).join('<br>')
         },
         xAxis: [
             {
-                type: 'time',
+                type: 'value',
+                min:2009, max:2031,
+                interval:2,
                 axisLabel:{
                     formatter: (value:number) => formatter_currentyear(value, year),
                     rich: {
