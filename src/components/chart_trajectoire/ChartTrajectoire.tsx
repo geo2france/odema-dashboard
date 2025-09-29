@@ -177,8 +177,8 @@ export const ChartTrajectoire: React.FC<ITrajectoireProps> = ({
   const diplay_value = `${current_value.value?.toLocaleString(undefined,{maximumFractionDigits:0})} / ${ Number(final_objective.value)?.toLocaleString(undefined,{maximumFractionDigits:0}) }`
   return (<>
     <Radio.Group value={objectif_interpolation} onChange={e => setObjectif_interpolation(e.target.value)}>
-      <Radio.Button value="step"><CarbonChartAreaStepper /></Radio.Button>
-      <Radio.Button value="line"><CarbonChartArea /></Radio.Button>
+      <Radio.Button value="step">STEP</Radio.Button>
+      <Radio.Button value="line">LINE</Radio.Button>
     </Radio.Group>
     <EChartsReact option={option} />
     { final_objective.value && progress_data?.filter((_, idx) => idx===0).map((current, idx) =>  //Idx == 0 pour n'avoir que la région
