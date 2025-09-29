@@ -18,6 +18,7 @@ import Cerdd from "/img/Logo_cerdd.svg?url";
 import Geo2France from "/img/geo2france.svg?url";
 import { DdPage } from './components/pages/dd';
 import { RepPage } from './components/pages/rep';
+import { DmaPageEPCIHome } from './components/pages/dma_epci_home';
 
 const myTheme = {
   token: {
@@ -85,6 +86,7 @@ const route_config:RouteConfig[] = [
     children: [
       { path: "region", label: "Hauts-de-France", element: <DmaComponent /> },
       { path: "epci", label: "EPCI", element: <DmaPageEPCI /> },
+        { path: "epci_home", label: "EPCI", hidden:true, element: <DmaPageEPCIHome /> },
     ],
   },
   {
