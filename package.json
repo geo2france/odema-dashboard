@@ -18,7 +18,7 @@
     "arquero": "^8.0.2",
     "axios": "^1.7.4",
     "date-fns": "^3.6.0",
-    "echarts": "^5.5.1",
+    "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.2",
     "maplibre-gl": "^4.7.1",
     "postcss": "^8.5.1",
