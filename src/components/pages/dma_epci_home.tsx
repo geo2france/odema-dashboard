@@ -1,13 +1,12 @@
-import { useApi } from "@geo2france/api-dashboard"
+import { NextPrevSelect, useApi } from "@geo2france/api-dashboard"
 import { MapEPCIDMA } from "../map_epci_dma/mapEpciDma"
 import { geo2franceProvider } from "../../App"
-import { Dashboard, Dataset, Filter, Join, Transform } from "@geo2france/api-dashboard/dsl"
+import { Control, Dashboard, Dataset, Filter, Join, Transform, useControl } from "@geo2france/api-dashboard/dsl"
 import { ChartTiRatio } from "../chart_ti_ratio/chart_ti_ratio"
 
 
 
 export const DmaPageEPCIHome: React.FC = () => {
-    const annee = 2023
     const dma_indic = useApi({
         dataProvider:geo2franceProvider,
         resource: "odema:destination_dma_epci_harmonise",
@@ -18,13 +17,16 @@ export const DmaPageEPCIHome: React.FC = () => {
 
     return  (
      <Dashboard debug>
+        <Control>
+          <NextPrevSelect name="annee" options={Array.from({ length: (2023 - 2015) / 2 + 1 }, (_, i) => 2015 + i * 2).reverse()} defaultValue={2023} reverse />
+        </Control>
         <Dataset
           id="epci_tonnage"
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
           resource="odema:destination_dma_epci_harmonise"
         >
-            <Filter field="annee">{annee.toString()}</Filter>
+            <Filter field="annee">{useControl("annee")}</Filter>
         </Dataset>
 
         <Dataset
@@ -33,7 +35,7 @@ export const DmaPageEPCIHome: React.FC = () => {
           url="https://www.geo2france.fr/geoserver/odema/ows"
           resource="odema:population_tarification_ti_epci"
         >
-            <Filter field="annee">{annee.toString()}</Filter>
+            <Filter field="annee">{useControl("annee")}</Filter>
            <Join dataset="epci_tonnage" joinKey={["epci_siren", "siren_epci"]}></Join> 
             <Transform>{(data) => data.map((r) => ({
                 siren:r.epci_siren, 
