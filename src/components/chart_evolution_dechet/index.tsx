@@ -90,9 +90,14 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
 
     const series = (data_chart2.map((e:SimpleRecord) => ({
          name:chartBusinessProps(e.type).label,
-         data:e.data.map((e:number[]) => ([e[0].toString(), e[2], e[1], e[3] ])),
-         type:'bar',
+         data:categories?.map((y) => {
+            const current = e.data.find((x:SimpleRecord) => x[0] == y) || [y, 0, 0, 0]
+            return current
+         }
+        ).map((e) => ([e[0].toString(), e[2], e[1], e[3]]) ),
+         type:'line',
          stack:'total',
+         areaStyle: {},
          itemStyle:{
               color:chartBusinessProps(e.type).color,
          },
@@ -106,7 +111,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         encode:{
             y: normalizeState ? [3] : undefined
         }
-    }))as BarSeriesOption[]).sort((a:any,b:any) => (chartBusinessProps(a.name).sort || 0) - (chartBusinessProps(b.name).sort || 0)   )
+    }))as LineSeriesOption[]).sort((a:any,b:any) => (chartBusinessProps(a.name).sort || 0) - (chartBusinessProps(b.name).sort || 0)   )
 
     const objectifs:LineSeriesOption = { //A supprimer
         name:"Objectif",
@@ -145,6 +150,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         xAxis: [
             {
                 type: 'category',
+                boundaryGap: false,
                 data:categories?.map((annee) => ({
                     value:annee.toString(),
                     textStyle: {
