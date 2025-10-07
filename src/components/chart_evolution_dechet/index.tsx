@@ -1,7 +1,7 @@
 import alasql from "alasql";
 import { CSSProperties, useMemo, useRef, useState } from "react";
 import ReactECharts from 'echarts-for-react';
-import { EChartsOption, BarSeriesOption, LineSeriesOption } from "echarts";
+import { EChartsOption, LineSeriesOption } from "echarts";
 import { SimpleRecord, useChartActionHightlight, useChartData, useChartEvents, useDashboardElement } from "@geo2france/api-dashboard"
 import { chartBusinessProps  } from "../../utils";
 import { Button } from "antd";

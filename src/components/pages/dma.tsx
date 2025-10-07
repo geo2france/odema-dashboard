@@ -1,7 +1,6 @@
 import React, { CSSProperties, useState } from "react";
 import { Typography } from 'antd';
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
-import { ChartCollectePerformance } from "../chart_collecte_performance";
 
 import alasql from "alasql";
 import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord, DashboardPage, useApi } from "@geo2france/api-dashboard";
