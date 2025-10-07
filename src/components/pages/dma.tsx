@@ -148,9 +148,14 @@ export const DmaComponent: React.FC = () => {
           >
           
             {data_performance && (
-              <ChartCollectePerformance
+              <ChartEvolutionDechet
                 style={chartStyle}
-                data={data_performance.filter((e:SimpleRecord) => e.annee == year)}
+                data={data_performance.map((e: SimpleRecord) => ({
+                  tonnage: e.tonnage,
+                  annee: e.annee,
+                  type: e.TYP_COLLECTE,
+                  ratio: e.ratio
+                }))}
               />
             )}
         </DashboardElement>

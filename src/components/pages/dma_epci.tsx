@@ -12,7 +12,6 @@ import { grey } from '@ant-design/colors';
 import { geo2franceProvider } from "../../App"
 import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci";
 import { CompetenceBadge, CompetencesExercees } from "../competence_badge/CompetenceBadge";
-import ChartePieCollecte from "../chart_pie_collecte/ChartPieCollecte";
 
 const { Link } = Typography;
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
@@ -209,6 +208,28 @@ export const DmaPageEPCI: React.FC = () => {
         tonnage: e.tonnage,
       })), [data_traitement]);
 
+    const indicateur_mode_collecte = useMemo(() => data_traitement?.data && alasql<SimpleRecord[]>(`
+          SELECT [annee], 'Déchèterie' as [source], 
+            sum(tonnage_dechetterie) as [tonnage],
+            sum(ratio_hab_dechetterie) as [ratio]
+          FROM ?
+          GROUP BY [annee]
+          UNION ALL
+          SELECT [annee], 'Collecte OMR' as [source], sum(tonnage_pap) as [tonnage],
+          sum(ratio_hab_pap) as [ratio]
+          FROM ?
+          WHERE type_dechet = 'Ordures ménagères résiduelles'
+          GROUP BY [annee]
+          UNION ALL
+          SELECT [annee], 'Collecte séparées' as [source], sum(tonnage_pap) as [tonnage],
+          sum(ratio_hab_pap) as [ratio]
+          FROM ?
+          WHERE type_dechet != 'Ordures ménagères résiduelles'
+          GROUP BY [annee]
+      `,[data_traitement?.data, data_traitement?.data, data_traitement?.data])
+      , [data_traitement]
+    )
+
     return (<>
       <FloatButton 
         style={{'top':5, 'right':28, 'height':40}}
@@ -340,7 +361,15 @@ export const DmaPageEPCI: React.FC = () => {
                   url: "https://www.geo2france.fr/datahub/dataset/c60bd751-b4e3-4eb0-bbf0-d2252d705105",
                 },
               ]}>
-            {data_traitement && <ChartePieCollecte data={data_traitement?.data?.filter((e) => Number(e.annee) == Number(year))} /> }
+            {indicateur_mode_collecte && 
+              <ChartEvolutionDechet 
+              data={indicateur_mode_collecte?.map((e:SimpleRecord) => ({
+                  tonnage: e.tonnage,
+                  annee: e.annee,
+                  type: e.source,
+                  ratio: e.ratio
+              }))}
+              /> }
           </DashboardElement>
 
           <DashboardElement
