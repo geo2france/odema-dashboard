@@ -1,7 +1,8 @@
 import {  NextPrevSelect } from "@geo2france/api-dashboard"
 import { ChartDdModeTraitement } from "../chart_dd_mode_traitement/ChartDdModeTraitement"
 import { Alert } from "antd"
-import { Dashboard, Dataset, Filter, Control, useControl } from "@geo2france/api-dashboard/dsl";
+import { Dashboard, Dataset, Filter, Control, useControl, Producer } from "@geo2france/api-dashboard/dsl";
+import { ChartFluxInterreg } from "../chart_flux_interreg/ChartFluxInterreg";
 
 const [maxYear, minYear, defaultYear] = [2024,2022,2024]
 
@@ -19,6 +20,9 @@ export const DdPage: React.FC = () => {
                 url="https://www.geo2france.fr/geoserver/odema/ows"
                 resource="odema:dd_mode_de_traitement_produit_hdf">
                 <Filter field="annee">{useControl("annee")}</Filter>
+                <Producer url="https://trackdechets.beta.gouv.fr/">Trackdéchets</Producer>
+                <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+
             </Dataset>
 
             <Dataset
@@ -27,6 +31,18 @@ export const DdPage: React.FC = () => {
                 url="https://www.geo2france.fr/geoserver/odema/ows"
                 resource="odema:dd_mode_de_traitement_hdf">
                 <Filter field="annee">{useControl("annee")}</Filter>
+                <Producer url="https://trackdechets.beta.gouv.fr/">Trackdéchets</Producer>
+                <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+            </Dataset>
+
+            <Dataset
+                id="dd_flux_interreg"
+                type="wfs"
+                url="https://www.geo2france.fr/geoserver/odema/ows"
+                resource="odema:dd_flux_interreg"
+            >
+                <Producer url="https://trackdechets.beta.gouv.fr/">Trackdéchets</Producer>
+                <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
             </Dataset>
 
             <Control>
@@ -42,7 +58,7 @@ export const DdPage: React.FC = () => {
 
             <ChartDdModeTraitement dataset="dd_produit_hdf" />
             <ChartDdModeTraitement dataset="dd_traite_hdf"/>
-
+            <ChartFluxInterreg dataset="dd_flux_interreg" />
         </Dashboard>
     </>
     )
