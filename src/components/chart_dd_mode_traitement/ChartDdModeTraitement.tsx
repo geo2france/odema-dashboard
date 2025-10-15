@@ -1,15 +1,22 @@
 import { SimpleRecord } from "@geo2france/api-dashboard";
+import { useDataset } from "@geo2france/api-dashboard/dsl";
 import ReactECharts from 'echarts-for-react';
 import { useRef } from 'react';
 
 
 interface ChartDdModeTraitementProps {
     data?: SimpleRecord[]
+    dataset?: string
 }
 
-export const ChartDdModeTraitement: React.FC<ChartDdModeTraitementProps> = ({data} )  => {
+export const ChartDdModeTraitement: React.FC<ChartDdModeTraitementProps> = ({dataset: dataset_id} )  => {
+    const dataset  = useDataset(dataset_id) 
+    const data = dataset?.data
 
     const chartRef = useRef<any>();
+
+    const blur = dataset?.isFetching 
+
     const option = {
         tooltip: {
             trigger: 'item',
@@ -44,6 +51,6 @@ export const ChartDdModeTraitement: React.FC<ChartDdModeTraitementProps> = ({dat
     }
 
     return (
-        <ReactECharts option={option} ref={chartRef} />
+        <ReactECharts option={option} ref={chartRef} style={{filter: blur ? 'blur(4px)':undefined}}/>
     )
 }
