@@ -1,18 +1,22 @@
 import { SimpleRecord } from "@geo2france/api-dashboard";
-import { useDataset } from "@geo2france/api-dashboard/dsl";
+import { useBlockConfig, useDataset } from "@geo2france/api-dashboard/dsl";
 import ReactECharts from 'echarts-for-react';
 import { useRef } from 'react';
 
 
 interface ChartDdModeTraitementProps {
-    data?: SimpleRecord[]
     dataset?: string
+    title?:string
 }
 
-export const ChartDdModeTraitement: React.FC<ChartDdModeTraitementProps> = ({dataset: dataset_id} )  => {
+export const ChartDdModeTraitement: React.FC<ChartDdModeTraitementProps> = ({dataset: dataset_id, title} )  => {
     const dataset  = useDataset(dataset_id) 
     const data = dataset?.data
 
+    useBlockConfig({
+        title: title,
+        dataExport: data
+    })
     const chartRef = useRef<any>();
 
     const blur = dataset?.isFetching 

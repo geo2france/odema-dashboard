@@ -6,14 +6,18 @@ import { Icon } from "@iconify/react";
 
 interface ChartFluxInterregProps {
     dataset?:string
+    title?:string
+    locationKey:string
+    importKey:string
+    exportKey:string
 }
-export const ChartFluxInterreg:React.FC<ChartFluxInterregProps> = ({dataset:dataset_id}) => {
+export const ChartFluxInterreg:React.FC<ChartFluxInterregProps> = ({dataset:dataset_id, title, locationKey, importKey, exportKey}) => {
     type DisplayType = 'import_export' | 'other';
     const dataset = useDataset(dataset_id)
     const [typeDisplay, setTypeDisplay] = useState<DisplayType>('import_export');
 
     useBlockConfig({
-        title: "Flux interrégionaux de déchets dangereux depuis et vers les Hauts-de-France - 2024",
+        title: title,
         dataExport: dataset?.data
     })
 
@@ -24,7 +28,7 @@ export const ChartFluxInterreg:React.FC<ChartFluxInterregProps> = ({dataset:data
             id:'e',
             stack: 'stack',
             color:'#FFB347',
-            data: dataset?.data?.map((r) => [r.q_export*-1, r.nom_region])
+            data: dataset?.data?.map((r) => [r?.[exportKey]*-1, r?.[locationKey]])
             },
             {
             name: 'Import',
@@ -32,7 +36,7 @@ export const ChartFluxInterreg:React.FC<ChartFluxInterregProps> = ({dataset:data
             color:"#7FDBFF",
             type: 'bar',
             stack: 'stack',
-            data: dataset?.data?.map((r) => [r.q_import, r.nom_region])
+            data: dataset?.data?.map((r) => [r?.[importKey], r?.[locationKey]])
             }]
         :
         [  {
@@ -40,7 +44,7 @@ export const ChartFluxInterreg:React.FC<ChartFluxInterregProps> = ({dataset:data
             id: 's',
             color:"grey",
             type: 'bar',
-            data: dataset?.data?.map((r) => [r.q_import - r.q_export, r.nom_region])
+            data: dataset?.data?.map((r) => [r?.[importKey] - r?.[exportKey], r?.[locationKey]])
             }]
 
     const option:EChartsOption = {

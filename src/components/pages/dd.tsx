@@ -41,6 +41,7 @@ export const DdPage: React.FC = () => {
                 url="https://www.geo2france.fr/geoserver/odema/ows"
                 resource="odema:dd_flux_interreg"
             >
+                <Filter field="annee">{useControl("annee")}</Filter>
                 <Producer url="https://trackdechets.beta.gouv.fr/">Trackdéchets</Producer>
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
             </Dataset>
@@ -56,9 +57,12 @@ export const DdPage: React.FC = () => {
                             .map((i) => ({ label: i, value: i }))}/>
             </Control>
 
-            <ChartDdModeTraitement dataset="dd_produit_hdf" />
-            <ChartDdModeTraitement dataset="dd_traite_hdf"/>
-            <ChartFluxInterreg dataset="dd_flux_interreg" />
+            <ChartDdModeTraitement dataset="dd_produit_hdf" title={`Mode de traitement des DD produits en Région en ${useControl("annee")}`} />
+            <ChartDdModeTraitement dataset="dd_traite_hdf"  title={`Mode de traitement des DD traités en Région en ${useControl("annee")}`} />
+            <ChartFluxInterreg 
+                dataset="dd_flux_interreg"
+                importKey="q_import" exportKey="q_export" locationKey="nom_region"
+                title={`Flux de déchets dangereux depuis et vers les Hauts-de-France en ${useControl("annee")}`} />
         </Dashboard>
     </>
     )
