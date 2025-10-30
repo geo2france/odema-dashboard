@@ -4,6 +4,7 @@ import { from } from "arquero";
 import { SimpleRecord } from "@geo2france/api-dashboard";
 import { Link } from "react-router-dom";
 import { Icon } from '@iconify/react';
+import { ChartFluxInterreg } from "../chart_flux_interreg/ChartFluxInterreg";
 
 
 const fold = (data:SimpleRecord[]) => {
@@ -56,7 +57,27 @@ export const DaePage: React.FC = () => {
                 type="file"
                 url="/data/"
                 resource="dae_flux_region.json">
-            
+                <Producer>Odema</Producer>
+                <Transform>{data => data.sort((a,b) => b.import - a.import) }</Transform> {/** Trier par ordre d'import */}
+                <Transform>{data => data.sort((a,_b) => {
+                    const first=['Ile de France', 'Normandie', 'Grand Est']
+                    if (first.includes(a.region)) return -1
+                    return 0
+                })}</Transform>
+            </Dataset>
+
+            <Dataset
+                id="dae_flux_pays"
+                type="file"
+                url="/data/"
+                resource="dae_flux_pays.json">
+                <Producer>Odema</Producer>
+                <Transform>{data => data.map(r => ({
+                    pays_flag: `${r.pays} ${r.drapeau}`,
+                    ...r
+                }))}</Transform>
+                <Transform>{data => data.sort((a,b) => b.import - a.import) }</Transform> {/** Trier par ordre d'import */}
+
             </Dataset>
 
 
@@ -136,8 +157,20 @@ export const DaePage: React.FC = () => {
                         color="#8b8b8bff" icon="bitcoin-icons:send-filled" unit="t"/>
             </StatisticsCollection>
 
-            <div>Import / Export par région (double barre) </div>
-            <div>Import / Export par pays (double barre) </div>
+            <ChartFluxInterreg
+                    title="Import/export de DAE vers/depuis les Hauts-de-France - Régions"
+                    dataset="dae_flux_region" 
+                    locationKey="region" 
+                    importKey="import" 
+                    exportKey="export" />
+
+
+            <ChartFluxInterreg
+                    title="Import/export de DAE vers/depuis les Hauts-de-France - Pays"
+                    dataset="dae_flux_pays" 
+                    locationKey="pays_flag" 
+                    importKey="import" 
+                    exportKey="export" />
 
         </Dashboard>
 

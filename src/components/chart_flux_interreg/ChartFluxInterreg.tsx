@@ -1,8 +1,6 @@
-import { ChartEcharts, useBlockConfig, useDataset } from "@geo2france/api-dashboard/dsl"
-import { Flex, Radio } from "antd"
+import { ChartEcharts, useBlockConfig, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
 import { BarSeriesOption, EChartsOption } from "echarts"
-import { useState } from "react"
-import { Icon } from "@iconify/react";
+
 
 interface ChartFluxInterregProps {
     dataset?:string
@@ -12,34 +10,33 @@ interface ChartFluxInterregProps {
     exportKey:string
 }
 export const ChartFluxInterreg:React.FC<ChartFluxInterregProps> = ({dataset:dataset_id, title, locationKey, importKey, exportKey}) => {
-    type DisplayType = 'import_export' | 'other';
     const dataset = useDataset(dataset_id)
-    const [typeDisplay, setTypeDisplay] = useState<DisplayType>('import_export');
 
     useBlockConfig({
         title: title,
         dataExport: dataset?.data
     })
 
-    const series:BarSeriesOption[] = typeDisplay == 'import_export' ?
+    const colors = usePalette({nColors:2})
+
+    const series:BarSeriesOption[] = 
         [  {
             name: 'Export',
             type: 'bar',
             id:'e',
             stack: 'stack',
-            color:'#FFB347',
+            color:colors?.[0],
             data: dataset?.data?.map((r) => [r?.[exportKey]*-1, r?.[locationKey]])
             },
             {
             name: 'Import',
             id: 'i',
-            color:"#7FDBFF",
+            color:colors?.[1],
             type: 'bar',
             stack: 'stack',
             data: dataset?.data?.map((r) => [r?.[importKey], r?.[locationKey]])
-            }]
-        :
-        [  {
+            }
+        , {
             name: 'Solde (import - export)',
             id: 's',
             color:"grey",
@@ -50,18 +47,25 @@ export const ChartFluxInterreg:React.FC<ChartFluxInterregProps> = ({dataset:data
     const option:EChartsOption = {
         xAxis: [
             {
-            name: 'Flux de déchets (t)',
+            name: 't',
             type: 'value',
-              axisLabel: {
+            axisLabel: {
                     formatter: (value: number) => Math.abs(value).toLocaleString()
                 }
             }
         ],
         grid: {
-            top: '0%',  
+            top: '0%', 
+            bottom: '15%'
         },
         legend : {
-            show:true
+            show:true,
+            bottom:0,
+            padding:0,
+            orient: 'horizontal',
+            selected: {
+                'Solde (import - export)': false,
+            },
         },
         tooltip:{
             trigger:"axis"
@@ -73,28 +77,11 @@ export const ChartFluxInterreg:React.FC<ChartFluxInterregProps> = ({dataset:data
             axisTick: {
                 show: false
             },
+            axisLabel : { interval: 0} //Force show all labels
             }],
         series: series
     }
-    return (<>
-        <Flex justify="flex-end" style={{marginBottom:'16px'}}>
-         <Radio.Group
-            optionType="button"
-            buttonStyle="solid"
-            value={typeDisplay}
-            onChange={e => setTypeDisplay(e.target.value as DisplayType)} 
-            options={[
-                {
-                value: 'import_export',
-                label: <Icon icon="carbon:chart-population" />   ,
-                },
-                {
-                value: 'solde',
-                label:  <Icon icon="carbon:chart-bar" />   ,
-                } ]}
-    />
-    </Flex>
-        <ChartEcharts key={typeDisplay} option={option} /> {/*  key=.. fix temporaire sur api-dashboard pour forcer le rerender, faute d'accès à la props "notMerge"*/}
-    </>
+    return (
+        <ChartEcharts option={option} style={{height:300}}/>
     )
 }
