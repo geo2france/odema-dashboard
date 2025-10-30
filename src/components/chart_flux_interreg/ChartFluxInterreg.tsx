@@ -82,6 +82,6 @@ export const ChartFluxInterreg:React.FC<ChartFluxInterregProps> = ({dataset:data
         series: series
     }
     return (
-        <ChartEcharts option={option} style={{height:300}}/>
+        <ChartEcharts option={option} />
     )
 }
