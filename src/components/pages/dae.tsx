@@ -1,10 +1,11 @@
-import { Alert } from "antd"
+import { Alert, Progress } from "antd"
 import { ChartPie, Dashboard, Dataset, Palette, Producer, Statistics, StatisticsCollection, Transform } from "@geo2france/api-dashboard/dsl";
 import { from } from "arquero";
 import { SimpleRecord } from "@geo2france/api-dashboard";
 import { Link } from "react-router-dom";
 import { Icon } from '@iconify/react';
 import { ChartFluxInterreg } from "../chart_flux_interreg/ChartFluxInterreg";
+import { ChartGoal } from "../chartGoal";
 
 
 const fold = (data:SimpleRecord[]) => {
@@ -35,7 +36,8 @@ export const DaePage: React.FC = () => {
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
                 <Transform>{data => data.map(r => ({
                     ...r,
-                    'valo_matiere_ycOrga':r.B1 + r.B3
+                    'valo_matiere_ycOrga':r.B1 + r.B3,
+                    'pct_valo':100*r.B2t1
                 }))}</Transform>
             </Dataset>
 
@@ -89,7 +91,7 @@ export const DaePage: React.FC = () => {
                     color="#0070C0" icon="streamline:warehouse-1-solid" unit="t"/>
                 <Statistics 
                     dataset="indicateur_dae" 
-                    dataKey="B1" title="(B1) Valorisation" 
+                    dataKey="B1" title="(B1) Valorisation (hors orga)" 
                     color="#00a05f" icon="ph:recycle-bold" unit="t"/>
                 <Statistics 
                     dataset="indicateur_dae" 
@@ -113,7 +115,8 @@ export const DaePage: React.FC = () => {
                         color="#00a055" icon="ph:recycle-bold" unit="t"/>
             </StatisticsCollection>
 
-            <div>Atteinte de l'objectif</div>
+            <ChartGoal title="(B2t1) Atteinte de l'objectif" dataset="indicateur_dae" dataKey="pct_valo" target={100} unit="%" />
+
             <div>Carto méthaniseur et pf de compostage</div>
             <div>Recyclage par type de matière (non dispo)</div>
 
@@ -127,7 +130,6 @@ export const DaePage: React.FC = () => {
                         color="#ce6300" icon="mingcute:fire-fill" unit="t"/>
             </StatisticsCollection>
 
-
             <StatisticsCollection title="ISDND">
 
                 <Statistics 
@@ -139,7 +141,8 @@ export const DaePage: React.FC = () => {
 
                 <div><Link to="/isdnd"> En savoir plus sur les ISDND en région <Icon icon="mdi:about" width={25}/></Link></div>
             </StatisticsCollection>
-               
+            
+            <div>(Caractérisation des déchets en ISDND)</div>
 
             <StatisticsCollection title="Import / Export">
                 <Statistics 
