@@ -1,5 +1,5 @@
-import { Alert, Progress } from "antd"
-import { ChartPie, Dashboard, Dataset, Palette, Producer, Statistics, StatisticsCollection, Transform } from "@geo2france/api-dashboard/dsl";
+import { Alert } from "antd"
+import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform } from "@geo2france/api-dashboard/dsl";
 import { from } from "arquero";
 import { SimpleRecord } from "@geo2france/api-dashboard";
 import { Link } from "react-router-dom";
@@ -14,6 +14,9 @@ const fold = (data:SimpleRecord[]) => {
     return from(data).fold(keys2, {as :['indicateur', 'valeur']}).objects() 
 }
 
+const noFractionDigits = (p:any) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })
+
+
 const libels = {
     'B1' : 'Valorisation matière',
     'B3': 'Valorisation organique',
@@ -25,13 +28,13 @@ export const DaePage: React.FC = () => {
 
     return     (  
     <>
-        <Alert message="Page en cours de construction, chiffres non validés" type="warning" />
-        <Dashboard debug>
+    <Alert message="Page en cours de construction, chiffres non validés" type="warning" />
+    <Dashboard debug>
             <Palette steps={['#0070c0','#00a055','#ce6300']}/>
             <Dataset
                 id="indicateur_dae"
                 type="file"
-                url="/data/"
+                url="data"
                 resource="dae.json">
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
                 <Transform>{data => data.map(r => ({
@@ -44,7 +47,7 @@ export const DaePage: React.FC = () => {
             <Dataset
                 id="mode_traitement"
                 type="file"
-                url="/data/"
+                url="data"
                 resource="dae.json">
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
                 <Transform>{ fold }</Transform>
@@ -57,7 +60,7 @@ export const DaePage: React.FC = () => {
             <Dataset
                 id="dae_flux_region"
                 type="file"
-                url="/data/"
+                url="data"
                 resource="dae_flux_region.json">
                 <Producer>Odema</Producer>
                 <Transform>{data => data.sort((a,b) => b.import - a.import) }</Transform> {/** Trier par ordre d'import */}
@@ -71,7 +74,7 @@ export const DaePage: React.FC = () => {
             <Dataset
                 id="dae_flux_pays"
                 type="file"
-                url="/data/"
+                url="data"
                 resource="dae_flux_pays.json">
                 <Producer>Odema</Producer>
                 <Transform>{data => data.map(r => ({
@@ -82,20 +85,23 @@ export const DaePage: React.FC = () => {
 
             </Dataset>
 
-
+        <Section title="Introduction">
             <StatisticsCollection title="Intro">
                 <Statistics 
                     dataset="indicateur_dae"
                     dataKey="A2t1" title="(A2t1) Production DAE" 
                     annotation="+X% depuis 2010"
+                    valueFormatter={ noFractionDigits }
                     color="#0070C0" icon="streamline:warehouse-1-solid" unit="t"/>
                 <Statistics 
                     dataset="indicateur_dae" 
                     dataKey="B1" title="(B1) Valorisation (hors orga)" 
+                    valueFormatter={ noFractionDigits }
                     color="#00a05f" icon="ph:recycle-bold" unit="t"/>
                 <Statistics 
                     dataset="indicateur_dae" 
                     dataKey="B5" title="(B5) Valorisation énergétique" 
+                    valueFormatter={ noFractionDigits }
                     color="#ce6300" icon="mingcute:fire-fill" unit="t"/>
 
             </StatisticsCollection>
@@ -104,6 +110,8 @@ export const DaePage: React.FC = () => {
                 dataKey="valeur" nameKey="lib_indicateur"
                 donut
             />
+        </Section>
+        <Section title="Valorisation" icon="ph:recycle-bold">
 
             <StatisticsCollection title="Valorisation matière">
 
@@ -129,7 +137,8 @@ export const DaePage: React.FC = () => {
                         annotation={(param) => `dont ${param.row?.['C1'].toLocaleString(undefined, { maximumFractionDigits: 0 })} t sans valorisation énergétique`}
                         color="#ce6300" icon="mingcute:fire-fill" unit="t"/>
             </StatisticsCollection>
-
+        </Section>
+        <Section title="Enfouissement" icon="material-symbols:front-loader-outline">
             <StatisticsCollection title="ISDND">
 
                 <Statistics 
@@ -143,6 +152,8 @@ export const DaePage: React.FC = () => {
             </StatisticsCollection>
             
             <div>(Caractérisation des déchets en ISDND)</div>
+        </Section>
+        <Section title="Import / Export" icon="mdi:exchange">
 
             <StatisticsCollection title="Import / Export">
                 <Statistics 
@@ -175,7 +186,10 @@ export const DaePage: React.FC = () => {
                     importKey="import" 
                     exportKey="export" />
 
-        </Dashboard>
+        </Section>
+
+    </Dashboard>
+
 
     </>
     )
