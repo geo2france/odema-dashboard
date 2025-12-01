@@ -124,6 +124,7 @@ const App: React.FC = () => {
       logo={Odema_logo}
       theme={myTheme}
       brands={partenaires}
+      footerSlider={false}
      />
   )
 };
