@@ -169,7 +169,7 @@ export const DmaPageEPCI: React.FC = () => {
         name:"Taux de valorisation des DMA",
         description:"Part des DMA orientés vers les filières de valorisation matière ou organique.",
         value:part_valo_matiere || NaN,
-        sub_value:"Obj. régional : 65 %",
+        sub_value:"Obj. SRADDET : 65 %",
         digits:1,
         icon: <BsRecycle />,
         unit:'%'},
