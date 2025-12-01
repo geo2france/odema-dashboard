@@ -110,7 +110,7 @@ export const DaePage: React.FC = () => {
                 url="data"
                 resource="federec_traitement_matiere.json">
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
-                <Producer>Federec</Producer>
+                <Producer url="https://federrec.com/">FEDERREC</Producer>
 
             </Dataset>
 
@@ -127,27 +127,27 @@ export const DaePage: React.FC = () => {
             </Dataset>
 
         <Section title="Introduction">
-            <StatisticsCollection title="Intro">
+            <StatisticsCollection title="Intro" columns={2}>
                 <Statistics 
                     dataset="indicateur_dae"
-                    dataKey="A2t1" title="(A2t1) Production DAE" 
+                    dataKey="A2t1" title="Production de DAE" 
                     valueFormatter={ noFractionDigits }
                     color="#0070C0" icon="streamline:warehouse-1-solid" unit="t"/>
                 <Statistics 
                         dataset="indicateur_dae"
-                        dataKey="valo_matiere_ycOrga" title="(B1 + B3) Valorisation matière"
+                        dataKey="valo_matiere_ycOrga" title="Valorisation matière"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
                         annotation={(param) => `dont ${param.row?.['B3'].toLocaleString(undefined, { maximumFractionDigits: 0 })} t de valorisation organique`}
                         color="#cfe45cff" icon="ph:recycle-bold" unit="t"/>
                 <Statistics 
                     dataset="indicateur_dae" 
-                    dataKey="B5" title="(B5) Valorisation énergétique" 
+                    dataKey="B5" title="Valorisation énergétique" 
                     valueFormatter={ noFractionDigits }
                     color="#ce6300" icon="mingcute:fire-fill" unit="t"/>
 
                 <Statistics 
                         dataset="indicateur_dae"
-                        dataKey="C2" title="(C2) Enfouissement"
+                        dataKey="C2" title="Enfouissement"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
                         color="#a00000ff" icon="material-symbols:front-loader-outline" unit="t"/>
 
@@ -160,24 +160,24 @@ export const DaePage: React.FC = () => {
         </Section>
         <Section title="Valorisation" icon="ph:recycle-bold">
 
-            <StatisticsCollection title={`Valorisation en ${annee}`}>
+            <StatisticsCollection title={`Valorisation en ${annee}`} columns={2}>
 
                 <Statistics 
                         dataset="indicateur_dae"
-                        dataKey="B1" title="(B1) Valorisation matière inorganique"
+                        dataKey="B1" title="Valorisation matière inorganique"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
                         color="#cfe45cff" icon="ph:recycle-bold" unit="t"/>
 
 
                 <Statistics 
                         dataset="indicateur_dae"
-                        dataKey="B3" title="(B3) Valorisation organique"
+                        dataKey="B3" title="Valorisation organique"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
                         color="#00a055" icon="mdi:plant-outline" unit="t"/>
 
                 <Statistics 
                         dataset="indicateur_dae"
-                        dataKey="B5" title="(B5) DAE valorisés en énergie"
+                        dataKey="B5" title="DAE valorisés en énergie"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
                         annotation={(param) => `dont ${param.row?.['C1'].toLocaleString(undefined, { maximumFractionDigits: 0 })} t sans valorisation énergétique`}
                         color="#ce6300" icon="mingcute:fire-fill" unit="t"/>
@@ -197,11 +197,11 @@ export const DaePage: React.FC = () => {
 
         </Section>
         <Section title="Enfouissement" icon="material-symbols:front-loader-outline">
-            <StatisticsCollection title={`Enfouissement en ${annee}`}>
+            <StatisticsCollection title={`Enfouissement en ${annee}`} columns={2}>
 
                 <Statistics 
                         dataset="isdnd_enfouissement_total"
-                        dataKey="C2" title="(C2) Enfouissement"
+                        dataKey="C2" title="Enfouissement"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
                         annotation={p => `${p.row?.enfouissement_total.toLocaleString()} t enfouies en région (DAE et autres)`}
                         color="#a00000ff" icon="material-symbols:front-loader-outline" unit="t"/>
@@ -218,17 +218,17 @@ export const DaePage: React.FC = () => {
         </Section>
         <Section title="Import / Export" icon="mdi:exchange">
 
-            <StatisticsCollection title={`Import / Export en ${annee}`}>
+            <StatisticsCollection title={`Import / Export en ${annee}`} columns={2}>
                 <Statistics 
                         dataset="indicateur_dae"
-                        dataKey="D1" title="(D1) Import"
+                        dataKey="D1" title="Import"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
                         annotation="dont 54 741 t hors France"
                         color="#ce6300" icon="bitcoin-icons:receive-filled" unit="t"/>
 
                 <Statistics 
                         dataset="indicateur_dae"
-                        dataKey="D2" title="(D2) Export"
+                        dataKey="D2" title="Export"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
                         color="#0070c0" icon="bitcoin-icons:send-filled" unit="t"
                         annotation="dont 320 632 t hors France"/>
