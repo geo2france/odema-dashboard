@@ -1,5 +1,5 @@
 import { Alert } from "antd"
-import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl } from "@geo2france/api-dashboard/dsl";
+import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join, useDataset } from "@geo2france/api-dashboard/dsl";
 import { from } from "arquero";
 import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard";
 import { Link } from "react-router-dom";
@@ -114,6 +114,18 @@ export const DaePage: React.FC = () => {
 
             </Dataset>
 
+            <Dataset
+                id="isdnd_enfouissement_total"
+                type="wfs"
+                url="https://www.geo2france.fr/geoserver/ows/odema"
+                resource="odema:isdnd_tonnage"
+            >
+                <Filter field="annee">{annee}</Filter>
+                <Transform>{data => data.filter(row => ['59','80','62','02','60'].includes(row.departement))}</Transform>
+                <Transform>SELECT annee, sum(tonnage) as enfouissement_total FROM ? GROUP BY annee</Transform>
+                <Join dataset="indicateur_dae" joinKey="annee" />
+            </Dataset>
+
         <Section title="Introduction">
             <StatisticsCollection title="Intro">
                 <Statistics 
@@ -188,9 +200,10 @@ export const DaePage: React.FC = () => {
             <StatisticsCollection title={`Enfouissement en ${annee}`}>
 
                 <Statistics 
-                        dataset="indicateur_dae"
+                        dataset="isdnd_enfouissement_total"
                         dataKey="C2" title="(C2) Enfouissement"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
+                        annotation={p => `${p.row?.enfouissement_total.toLocaleString()} t enfouies en région (DAE et autres)`}
                         color="#a00000ff" icon="material-symbols:front-loader-outline" unit="t"/>
 
                     <Statistics 
