@@ -55,7 +55,7 @@ export const DaePage: React.FC = () => {
                 <Transform>{data => data.map(r => ({
                     ...r,
                     'valo_matiere_ycOrga':r.B1 + r.B3,
-                    'pct_valo':100*r.B2t1
+                    'pct_valo':100*((r.B1 + r.B3) / r.A2t3 )
                 }))}</Transform>
             </Dataset>
 
@@ -183,7 +183,7 @@ export const DaePage: React.FC = () => {
                         color="#ce6300" icon="mingcute:fire-fill" unit="t"/>
             </StatisticsCollection>
 
-            <ChartGoal title="(B2t1) Atteinte de l'objectif du SRADDET" dataset="indicateur_dae" dataKey="pct_valo" yearKey="annee" target={65} unit="%" />
+            <ChartGoal title="Atteinte de l'objectif du SRADDET" dataset="indicateur_dae" dataKey="pct_valo" yearKey="annee" target={65} unit="%" />
 
             <ChartPie
                 title="Gistement de valorisation matière (hors organique)"
