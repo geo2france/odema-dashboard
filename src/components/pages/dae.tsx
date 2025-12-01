@@ -119,7 +119,6 @@ export const DaePage: React.FC = () => {
                 <Statistics 
                     dataset="indicateur_dae"
                     dataKey="A2t1" title="(A2t1) Production DAE" 
-                    annotation="+X% depuis 2010"
                     valueFormatter={ noFractionDigits }
                     color="#0070C0" icon="streamline:warehouse-1-solid" unit="t"/>
                 <Statistics 
@@ -138,7 +137,6 @@ export const DaePage: React.FC = () => {
                         dataset="indicateur_dae"
                         dataKey="C2" title="(C2) Enfouissement"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
-                        annotation={(_param) => `+X% par rapport à 2010`}
                         color="#a00000ff" icon="material-symbols:front-loader-outline" unit="t"/>
 
             </StatisticsCollection>
@@ -193,7 +191,6 @@ export const DaePage: React.FC = () => {
                         dataset="indicateur_dae"
                         dataKey="C2" title="(C2) Enfouissement"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
-                        annotation={(_param) => `+X% par rapport à 2010`}
                         color="#a00000ff" icon="material-symbols:front-loader-outline" unit="t"/>
 
                     <Statistics 
