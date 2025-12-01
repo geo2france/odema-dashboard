@@ -18,9 +18,10 @@ const noFractionDigits = (p:any) => p.value.toLocaleString(undefined, { maximumF
 
 
 const libels = {
-    'B1' : 'Valorisation matière',
+    'B1B3' : 'Valorisation matière',
     'B3': 'Valorisation organique',
-    'B5': 'Valorisation énergétique'
+    'B5': 'Valorisation énergétique',
+    'C2' : 'Enfouissement'
 }
 const annee = 2022
 export const DaePage: React.FC = () => {
@@ -30,7 +31,15 @@ export const DaePage: React.FC = () => {
     <>
     <Alert message="Page en cours de construction, chiffres non validés" type="warning" />
     <Dashboard debug>
-            <Palette steps={['#0070c0','#00a055','#ce6300']}/>
+            <Palette steps={['#0070c0','#00a055','#ce6300']} 
+                labels={{
+                    'Valorisation énergétique':'#ce6300',
+                    'Valorisation organique':'#00a055',
+                    'Valorisation matière':'#cfe45cff',
+                    'Enfouissement':'#a00000ff'
+
+                }}
+                />
             <Dataset
                 id="indicateur_dae"
                 type="file"
@@ -50,10 +59,13 @@ export const DaePage: React.FC = () => {
                 url="data"
                 resource="dae.json">
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+                <Transform>{data => data.map(r => ({...r, B1B3 : r.B1+r.B3}))}</Transform>
                 <Transform>{ fold }</Transform>
                 <Transform>{ data => data.filter( r => r.annee = annee).filter( r => 
-                    ['B1', 'B3', 'B5'].includes(r.indicateur))
-                    .map(r => ({ ...r, lib_indicateur:libels[r.indicateur  as keyof typeof libels]}))
+                    ['B5','B1B3','C2'].includes(r.indicateur))
+                    .map(r => ({ 
+                        ...r, 
+                        lib_indicateur:libels[r.indicateur  as keyof typeof libels] || r.indicateur}))
                  }</Transform>
             </Dataset>
 
@@ -85,6 +97,16 @@ export const DaePage: React.FC = () => {
 
             </Dataset>
 
+            <Dataset
+                id="federec_traitement_matiere"
+                type="file"
+                url="data"
+                resource="federec_traitement_matiere.json">
+                <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+                <Producer>Federec</Producer>
+
+            </Dataset>
+
         <Section title="Introduction">
             <StatisticsCollection title="Intro">
                 <Statistics 
@@ -94,15 +116,23 @@ export const DaePage: React.FC = () => {
                     valueFormatter={ noFractionDigits }
                     color="#0070C0" icon="streamline:warehouse-1-solid" unit="t"/>
                 <Statistics 
-                    dataset="indicateur_dae" 
-                    dataKey="B1" title="(B1) Valorisation (hors orga)" 
-                    valueFormatter={ noFractionDigits }
-                    color="#00a05f" icon="ph:recycle-bold" unit="t"/>
+                        dataset="indicateur_dae"
+                        dataKey="valo_matiere_ycOrga" title="(B1 + B3) Valorisation matière"
+                        valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
+                        annotation={(param) => `dont ${param.row?.['B3'].toLocaleString(undefined, { maximumFractionDigits: 0 })} t de valorisation organique`}
+                        color="#cfe45cff" icon="ph:recycle-bold" unit="t"/>
                 <Statistics 
                     dataset="indicateur_dae" 
                     dataKey="B5" title="(B5) Valorisation énergétique" 
                     valueFormatter={ noFractionDigits }
                     color="#ce6300" icon="mingcute:fire-fill" unit="t"/>
+
+                <Statistics 
+                        dataset="indicateur_dae"
+                        dataKey="C2" title="(C2) Enfouissement"
+                        valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
+                        annotation={(_param) => `+X% par rapport à 2010`}
+                        color="#a00000ff" icon="material-symbols:front-loader-outline" unit="t"/>
 
             </StatisticsCollection>
 
@@ -117,19 +147,17 @@ export const DaePage: React.FC = () => {
 
                 <Statistics 
                         dataset="indicateur_dae"
-                        dataKey="valo_matiere_ycOrga" title="(B1 + B3) Valorisation matière"
+                        dataKey="B1" title="(B1) Valorisation matière inorganique"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
-                        annotation={(param) => `dont ${param.row?.['B3'].toLocaleString(undefined, { maximumFractionDigits: 0 })} t de valorisation organique`}
-                        color="#00a055" icon="ph:recycle-bold" unit="t"/>
-            </StatisticsCollection>
-
-            <ChartGoal title="(B2t1) Atteinte de l'objectif" dataset="indicateur_dae" dataKey="pct_valo" target={100} unit="%" />
-
-            <div>Carto méthaniseur et pf de compostage</div>
-            <div>Recyclage par type de matière (non dispo)</div>
+                        color="#cfe45cff" icon="ph:recycle-bold" unit="t"/>
 
 
-            <StatisticsCollection title="Valorisation énergétique">
+                <Statistics 
+                        dataset="indicateur_dae"
+                        dataKey="B3" title="(B3) Valorisation organique"
+                        valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
+                        color="#00a055" icon="mdi:plant-outline" unit="t"/>
+
                 <Statistics 
                         dataset="indicateur_dae"
                         dataKey="B5" title="(B5) DAE valorisés en énergie"
@@ -137,6 +165,19 @@ export const DaePage: React.FC = () => {
                         annotation={(param) => `dont ${param.row?.['C1'].toLocaleString(undefined, { maximumFractionDigits: 0 })} t sans valorisation énergétique`}
                         color="#ce6300" icon="mingcute:fire-fill" unit="t"/>
             </StatisticsCollection>
+
+            <ChartGoal title="(B2t1) Atteinte de l'objectif" dataset="indicateur_dae" dataKey="pct_valo" yearKey="annee" target={65} unit="%" />
+
+            <ChartPie
+                title="Gistement de valorisation matière (hors organique)"
+                dataset="federec_traitement_matiere"
+                dataKey="quantite"
+                nameKey="categorie"
+                unit="t"
+                donut
+            />
+            <div>Carto méthaniseur et pf de compostage</div>
+
         </Section>
         <Section title="Enfouissement" icon="material-symbols:front-loader-outline">
             <StatisticsCollection title="ISDND">
@@ -147,6 +188,11 @@ export const DaePage: React.FC = () => {
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
                         annotation={(_param) => `+X% par rapport à 2010`}
                         color="#a00000ff" icon="material-symbols:front-loader-outline" unit="t"/>
+
+                    <Statistics 
+                        dataset="indicateur_dae"
+                        dataKey="C4_residuelle" title="Capacité résiduelle"
+                        color="grey" icon="fluent:resize-28-filled" unit="t"/>
 
                 <div><Link to="/isdnd"> En savoir plus sur les ISDND en région <Icon icon="mdi:about" width={25}/></Link></div>
             </StatisticsCollection>
@@ -160,15 +206,15 @@ export const DaePage: React.FC = () => {
                         dataset="indicateur_dae"
                         dataKey="D1" title="(D1) Import"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
-                        annotation={(_param) => `+X% par rapport à 2010`}
-                        color="#8b8b8bff" icon="bitcoin-icons:receive-filled" unit="t"/>
+                        annotation="dont 54 741 t hors France"
+                        color="#ce6300" icon="bitcoin-icons:receive-filled" unit="t"/>
 
                 <Statistics 
                         dataset="indicateur_dae"
                         dataKey="D2" title="(D2) Export"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
-                        annotation={(_param) => `+X% par rapport à 2010`}
-                        color="#8b8b8bff" icon="bitcoin-icons:send-filled" unit="t"/>
+                        color="#0070c0" icon="bitcoin-icons:send-filled" unit="t"
+                        annotation="dont 320 632 t hors France"/>
             </StatisticsCollection>
 
             <ChartFluxInterreg
@@ -177,7 +223,6 @@ export const DaePage: React.FC = () => {
                     locationKey="region" 
                     importKey="import" 
                     exportKey="export" />
-
 
             <ChartFluxInterreg
                     title="Import/export de DAE vers/depuis les Hauts-de-France - Pays"
