@@ -1,7 +1,7 @@
 import { Alert } from "antd"
-import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform } from "@geo2france/api-dashboard/dsl";
+import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl } from "@geo2france/api-dashboard/dsl";
 import { from } from "arquero";
-import { SimpleRecord } from "@geo2france/api-dashboard";
+import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard";
 import { Link } from "react-router-dom";
 import { Icon } from '@iconify/react';
 import { ChartFluxInterreg } from "../chart_flux_interreg/ChartFluxInterreg";
@@ -23,9 +23,10 @@ const libels = {
     'B5': 'Valorisation énergétique',
     'C2' : 'Enfouissement'
 }
-const annee = 2022
+//const annee = 2022
 export const DaePage: React.FC = () => {
 
+    const annee = useControl("annee")
 
     return     (  
     <>
@@ -40,12 +41,17 @@ export const DaePage: React.FC = () => {
 
                 }}
                 />
+
+            <Control>
+                <NextPrevSelect name="annee" options={[2022]} defaultValue={2022}/>
+            </Control>
             <Dataset
                 id="indicateur_dae"
                 type="file"
                 url="data"
                 resource="dae.json">
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+                <Transform>{data => data.filter(row => row.annee == annee )}</Transform>
                 <Transform>{data => data.map(r => ({
                     ...r,
                     'valo_matiere_ycOrga':r.B1 + r.B3,
@@ -59,6 +65,7 @@ export const DaePage: React.FC = () => {
                 url="data"
                 resource="dae.json">
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+                <Transform>{data => data.filter(row => row.annee == annee )}</Transform>
                 <Transform>{data => data.map(r => ({...r, B1B3 : r.B1+r.B3}))}</Transform>
                 <Transform>{ fold }</Transform>
                 <Transform>{ data => data.filter( r => r.annee = annee).filter( r => 
@@ -136,14 +143,14 @@ export const DaePage: React.FC = () => {
 
             </StatisticsCollection>
 
-            <ChartPie title="Modes de traitement" dataset="mode_traitement" 
+            <ChartPie title={`Modes de traitement en ${annee}`} dataset="mode_traitement" 
                 dataKey="valeur" nameKey="lib_indicateur"
                 donut
             />
         </Section>
         <Section title="Valorisation" icon="ph:recycle-bold">
 
-            <StatisticsCollection title="Valorisation matière">
+            <StatisticsCollection title={`Valorisation en ${annee}`}>
 
                 <Statistics 
                         dataset="indicateur_dae"
@@ -166,7 +173,7 @@ export const DaePage: React.FC = () => {
                         color="#ce6300" icon="mingcute:fire-fill" unit="t"/>
             </StatisticsCollection>
 
-            <ChartGoal title="(B2t1) Atteinte de l'objectif" dataset="indicateur_dae" dataKey="pct_valo" yearKey="annee" target={65} unit="%" />
+            <ChartGoal title="(B2t1) Atteinte de l'objectif du SRADDET" dataset="indicateur_dae" dataKey="pct_valo" yearKey="annee" target={65} unit="%" />
 
             <ChartPie
                 title="Gistement de valorisation matière (hors organique)"
@@ -180,7 +187,7 @@ export const DaePage: React.FC = () => {
 
         </Section>
         <Section title="Enfouissement" icon="material-symbols:front-loader-outline">
-            <StatisticsCollection title="ISDND">
+            <StatisticsCollection title={`Enfouissement en ${annee}`}>
 
                 <Statistics 
                         dataset="indicateur_dae"
@@ -201,7 +208,7 @@ export const DaePage: React.FC = () => {
         </Section>
         <Section title="Import / Export" icon="mdi:exchange">
 
-            <StatisticsCollection title="Import / Export">
+            <StatisticsCollection title={`Import / Export en ${annee}`}>
                 <Statistics 
                         dataset="indicateur_dae"
                         dataKey="D1" title="(D1) Import"
