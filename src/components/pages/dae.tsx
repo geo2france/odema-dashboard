@@ -1,5 +1,5 @@
 import { Alert } from "antd"
-import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join, useDataset } from "@geo2france/api-dashboard/dsl";
+import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join } from "@geo2france/api-dashboard/dsl";
 import { from } from "arquero";
 import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard";
 import { Link } from "react-router-dom";
