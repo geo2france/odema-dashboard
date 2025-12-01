@@ -19,6 +19,7 @@ import Geo2France from "/img/geo2france.svg?url";
 import { DdPage } from './components/pages/dd';
 import { RepPage } from './components/pages/rep';
 import { DaePage } from './components/pages/dae';
+import { Icon } from '@iconify/react';
 
 const myTheme = {
   token: {
@@ -109,8 +110,9 @@ const route_config:RouteConfig[] = [
     {
     path: "dae",
     label: "DAE",
+    icon: <Icon icon="material-symbols:factory-outline" />,
     element: <DaePage />,
-    hidden: true,
+    hidden: false,
   },
 ];
 
