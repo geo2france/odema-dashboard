@@ -1,5 +1,5 @@
 import { Alert } from "antd"
-import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join } from "@geo2france/api-dashboard/dsl";
+import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join, useDataset } from "@geo2france/api-dashboard/dsl";
 import { from } from "arquero";
 import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard";
 import { Link } from "react-router-dom";
@@ -9,9 +9,10 @@ import { ChartGoal } from "../chartGoal";
 
 
 const fold = (data:SimpleRecord[]) => {
-    const keys = Object.keys(data?.[0])
-    const keys2 = keys.filter(e => e!=='annee')
-    return from(data).fold(keys2, {as :['indicateur', 'valeur']}).objects() 
+    if (!data || data.length === 0) return [];
+    const keys = Object?.keys(data?.[0])
+    const keys2 = keys?.filter(e => e!=='annee')
+    return from(data).fold(keys2, {as :['indicateur', 'valeur']})?.objects() 
 }
 
 const noFractionDigits = (p:any) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })
@@ -27,7 +28,7 @@ const libels = {
 export const DaePage: React.FC = () => {
 
     const annee = useControl("annee")
-
+    console.log(useDataset("indicateur_dae"))
     return     (  
     <>
     <Alert message="Page en cours de construction, chiffres non validés" type="warning" />
@@ -55,6 +56,7 @@ export const DaePage: React.FC = () => {
                 <Transform>{data => data.map(r => ({
                     ...r,
                     'valo_matiere_ycOrga':r.B1 + r.B3,
+                    'B8t3_pct':r.B8t3*100,
                     'pct_valo':100*((r.B1 + r.B3) / r.A2t3 )
                 }))}</Transform>
             </Dataset>
@@ -114,7 +116,7 @@ export const DaePage: React.FC = () => {
 
             </Dataset>
 
-            <Dataset
+           <Dataset
                 id="isdnd_enfouissement_total"
                 type="wfs"
                 url="https://www.geo2france.fr/geoserver/ows/odema"
@@ -130,7 +132,7 @@ export const DaePage: React.FC = () => {
             <StatisticsCollection title="Intro" columns={2}>
                 <Statistics 
                     dataset="indicateur_dae"
-                    dataKey="A2t1" title="Production de DAE" 
+                    dataKey="A2t3" title="Production de DAE" 
                     valueFormatter={ noFractionDigits }
                     color="#0070C0" icon="streamline:warehouse-1-solid" unit="t"/>
                 <Statistics 
@@ -183,7 +185,7 @@ export const DaePage: React.FC = () => {
                         color="#ce6300" icon="mingcute:fire-fill" unit="t"/>
             </StatisticsCollection>
 
-            <ChartGoal title="Atteinte de l'objectif du SRADDET" dataset="indicateur_dae" dataKey="pct_valo" yearKey="annee" target={65} unit="%" />
+            <ChartGoal title="Atteinte de l'objectif du SRADDET" dataset="indicateur_dae" dataKey="B8t3_pct" yearKey="annee" target={65} unit="%" />
 
             <ChartPie
                 title="Gistement de valorisation matière (hors organique)"
