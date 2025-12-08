@@ -13,7 +13,7 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
 
     const dataset = useDataset(dataset_id)
     const blur = dataset?.isFetching // A vérifier, le blur ne se déclanche pas lors du changement d'année. A gérer niveau <Block> ?
-    console.log(blur)
+
     const links = dataset?.data?.filter((e) => e.target !== `Incinération sans récupération d'énergie`); // Pas assez de tonnage
 
 
