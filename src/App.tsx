@@ -20,6 +20,7 @@ import { DdPage } from './components/pages/dd';
 import { RepPage } from './components/pages/rep';
 import { DaePage } from './components/pages/dae';
 import { Icon } from '@iconify/react';
+import { PageDma } from './components/pages/dma_dsl';
 
 const myTheme = {
   token: {
@@ -113,6 +114,13 @@ const route_config:RouteConfig[] = [
     icon: <Icon icon="material-symbols:factory-outline" />,
     element: <DaePage />,
     hidden: false,
+  },
+      {
+    path: "dma_dsl",
+    label: "DMA (DSL)",
+    icon: <Icon icon="material-symbols:factory-outline" />,
+    element: <PageDma />,
+    hidden: true,
   },
 ];
 
