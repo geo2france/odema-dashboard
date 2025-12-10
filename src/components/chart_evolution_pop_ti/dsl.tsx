@@ -1,4 +1,4 @@
-import React, { CSSProperties, useRef } from "react";
+import React, { CSSProperties } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from "echarts";
 
