@@ -19,9 +19,22 @@ export const PageDma: React.FC = () => {
                 'Déchets verts et biodéchets':chartBusinessProps("Déchets verts et biodéchets").color ?? 'white',
                 'Déchets dangereux (y.c. DEEE)':chartBusinessProps("Déchets dangereux (y.c. DEEE)").color ?? 'white',
                 'Autres':chartBusinessProps('Autres').color ?? 'white',
+                'Non précisé':chartBusinessProps('Autres').color ?? 'white',
                 'Déchèterie':chartBusinessProps('Déchèterie').color ?? 'white',
                 'Collecte séparée':chartBusinessProps('Matériaux recyclables').color ?? 'white',
                 'Collecte OMR':chartBusinessProps('Ordures ménagères résiduelles').color ?? 'white',
+                  'Incinération sans récupération d\'énergie':
+                    chartBusinessProps('Incinération sans récupération d\'énergie').color ?? 'white',
+                'Incinération avec récupération d\'énergie':
+                    chartBusinessProps('Incinération avec récupération d\'énergie').color ?? 'white',
+                'Stockage':
+                    chartBusinessProps('Stockage').color ?? 'white',
+                'Stockage pour inertes':
+                    chartBusinessProps('Stockage pour inertes').color ?? 'white',
+                'Valorisation matière':
+                    chartBusinessProps('Valorisation matière').color ?? 'white',
+                'Valorisation organique':
+                    chartBusinessProps('Valorisation organique').color ?? 'white',
             }}
             
             /> {/* API dasboard : permettre une valeur undefined ?*/}
@@ -128,6 +141,12 @@ export const PageDma: React.FC = () => {
                 title="Tarification incitative sur la collecte des OMR" year={Number(useControl('annee'))}/>
                 
                 <MapTI dataset="tarification_om" title="Territoires en tarification incitative sur la collecte des OMR"/>
+            </Section>
+
+            <Section title="Valorisation">
+                <ChartYearSerie dataset="destination_dma_region" title="Destination des déchets"
+                      yearKey="annee" categoryKey="libel_traitement" valueKey="kg_par_habitant" type="area"
+                />{/* devnote : Hiérachie des modes non respectée, Prévu dans le dev de api-dashboard  https://github.com/geo2france/api-dashboard/issues/151 */}
             </Section>
         </Dashboard>
     )
