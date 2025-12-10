@@ -2,6 +2,7 @@ import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartYearSerie, Control, Dashboard, Dataset, Palette, Producer, Section, Transform, useControl } from "@geo2france/api-dashboard/dsl"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination/dsl"
 import { chartBusinessProps } from "../../utils"
+import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif_dsl"
 
 export const PageDma: React.FC = () => {
     const [maxYear, minYear, defaultYear] = [2023,2009,2021]
@@ -59,6 +60,17 @@ export const PageDma: React.FC = () => {
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
             </Dataset>
 
+            <Dataset
+                id="tonnage_dma" 
+                type="wfs"
+                url="https://www.geo2france.fr/geoserver/odema/ows"
+                resource="odema:destination_dma_region"    
+            >
+               <Transform>SELECT [annee], SUM([kg_par_habitant]) as [ratio], sum([tonnage]) as [tonnage] FROM ? GROUP BY [annee] ORDER BY [annee]</Transform>
+                <Producer url="https://sinoe.org">Ademe (Sinoe)</Producer>
+                <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+            </Dataset>
+
             <Control>
             <NextPrevSelect
                 name="annee"
@@ -85,7 +97,11 @@ export const PageDma: React.FC = () => {
             </Section>
 
             <Section title={"Prévention"}>
-                <div>hello</div>
+                <ChartEvolutionObjectifs dataset="tonnage_dma" 
+                title="Production de DMA par habitant et objectif régional"
+                dataObjectifs={[{annee:2009, ratio:620}, {annee:2025, ratio:558}, {annee:2030, ratio:527}]}
+                year={Number(useControl('annee')) || 2023}
+                />
             </Section>
         </Dashboard>
     )
