@@ -4,6 +4,7 @@ import { ChartSankeyDestinationDMA } from "../chart_sankey_destination/dsl"
 import { chartBusinessProps } from "../../utils"
 import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif_dsl"
 import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti/dsl"
+import { MapTI } from "../map_ti/mapTi_dsl"
 
 export const PageDma: React.FC = () => {
     const [maxYear, minYear, defaultYear] = [2023,2009,2021]
@@ -81,6 +82,16 @@ export const PageDma: React.FC = () => {
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
             </Dataset>
 
+            <Dataset
+                id="tarification_om" 
+                type="wfs"
+                url="https://www.geo2france.fr/geoserver/odema/ows"
+                resource="odema:tarification_om"
+                meta={{srsname:'EPSG:4326'}}
+            >
+                <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+            </Dataset>
+
             <Control>
             <NextPrevSelect
                 name="annee"
@@ -115,6 +126,8 @@ export const PageDma: React.FC = () => {
 
                 <ChartEvolutionPopTi dataset="population_tarification_ti_region"
                 title="Tarification incitative sur la collecte des OMR" year={Number(useControl('annee'))}/>
+                
+                <MapTI dataset="tarification_om" title="Territoires en tarification incitative sur la collecte des OMR"/>
             </Section>
         </Dashboard>
     )
