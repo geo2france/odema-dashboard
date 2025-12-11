@@ -1,10 +1,10 @@
 import { CSSProperties,  useState } from "react";
 
-import { Button, Segmented } from "antd";
-import { FaPercent } from "react-icons/fa";
-import { ChartYearSerie, useBlockConfig } from "@geo2france/api-dashboard/dsl";
-import { EChartsOption } from "echarts";
+import { Segmented } from "antd";
+import { ChartYearSerie } from "@geo2france/api-dashboard/dsl";
+import { EChartsOption, SeriesOption } from "echarts";
 import { Icon } from "@iconify/react";
+import { chartBusinessProps } from "../../utils";
 
 export interface ChartEvolutionTypeDechetProps {
     dataset: string;
@@ -41,6 +41,8 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
             (e.value[2])?.toLocaleString(undefined, {maximumFractionDigits: 0})+' T'
         })`
 
+    /* Hiérachie métier */
+    const seriesSorter = (a:SeriesOption, b:SeriesOption) => (chartBusinessProps(String(a.name)).sort || 0) - (chartBusinessProps(String(b.name)).sort || 0)
 
     const options:EChartsOption = {
         yAxis:{name: normalizeState ? "%" : "Kg/hab"},
@@ -68,6 +70,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
             yearMark={ year } 
             options={ options } 
             normalize={normalizeState}
+            seriesSort={ seriesSorter }
             type="area"/>
         </>
     )
