@@ -5,6 +5,7 @@ import { chartBusinessProps } from "../../utils"
 import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif_dsl"
 import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti/dsl"
 import { MapTI } from "../map_ti/mapTi_dsl"
+import { ChartEvolutionDechet } from "../chart_evolution_dechet/dsl"
 
 export const PageDma: React.FC = () => {
     const [maxYear, minYear, defaultYear] = [2023,2009,2021]
@@ -123,11 +124,18 @@ export const PageDma: React.FC = () => {
                     title={`Types et destination des déchets en ${useControl("annee")}`} 
                     dataset="destination_dma_region_sankey" />
 
-                <ChartYearSerie dataset="destination_dma_region" title="Type de déchets collectés"
-                 yearKey="annee" categoryKey="libel_dechet" valueKey="kg_par_habitant" type="area"/>
+                <ChartEvolutionDechet  dataset="destination_dma_region" title="Type de déchets collectés"
+                 yearKey="annee" categoryKey="libel_dechet" ratioKey="kg_par_habitant"
+                 tonnageKey="tonnage"
+                 year={Number(useControl('annee'))}
+                />
 
-                <ChartYearSerie dataset="destination_dma_region" title="Type de déchets collectés"
-                 yearKey="annee" categoryKey="SOURCE_TYP" valueKey="kg_par_habitant" type="area"/>
+                <ChartEvolutionDechet  dataset="destination_dma_region" title="Sources de collectes"
+                 yearKey="annee" categoryKey="SOURCE_TYP" ratioKey="kg_par_habitant"
+                 tonnageKey="tonnage"
+                 year={Number(useControl('annee'))}
+                />
+
             </Section>
 
             <Section title={"Prévention"}>
@@ -144,9 +152,13 @@ export const PageDma: React.FC = () => {
             </Section>
 
             <Section title="Valorisation">
-                <ChartYearSerie dataset="destination_dma_region" title="Destination des déchets"
-                      yearKey="annee" categoryKey="libel_traitement" valueKey="kg_par_habitant" type="area"
-                />{/* devnote : Hiérachie des modes non respectée, Prévu dans le dev de api-dashboard  https://github.com/geo2france/api-dashboard/issues/151 */}
+
+                <ChartEvolutionDechet  dataset="destination_dma_region" title="Destination des déchets"
+                 yearKey="annee" categoryKey="libel_traitement" ratioKey="kg_par_habitant"
+                 tonnageKey="tonnage"
+                 year={Number(useControl('annee'))}
+                />
+                {/* devnote : Hiérachie des modes non respectée, Prévu dans le dev de api-dashboard  https://github.com/geo2france/api-dashboard/issues/151 */}
             </Section>
         </Dashboard>
     )
