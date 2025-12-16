@@ -21,6 +21,7 @@ import { RepPage } from './components/pages/rep';
 import { DaePage } from './components/pages/dae';
 import { Icon } from '@iconify/react';
 import { PageDma } from './components/pages/dma_dsl';
+import { DmaPageEPCI_dsl } from './components/pages/dma_epci_dsl';
 
 const myTheme = {
   token: {
@@ -89,6 +90,8 @@ const route_config:RouteConfig[] = [
       { path: "region", label: "Hauts-de-France", element: <DmaComponent /> },
       { path: "region_dsl", label: "Hauts-de-France", element: <PageDma />, hidden:true },
       { path: "epci", label: "EPCI", element: <DmaPageEPCI /> },
+      { path: "epci_dsl", label: "EPCI", element: <DmaPageEPCI_dsl />, hidden:true },
+
     ],
   },
   {
