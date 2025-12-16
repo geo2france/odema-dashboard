@@ -87,6 +87,7 @@ const route_config:RouteConfig[] = [
     element: <DmaComponent />,
     children: [
       { path: "region", label: "Hauts-de-France", element: <DmaComponent /> },
+      { path: "region_dsl", label: "Hauts-de-France", element: <PageDma />, hidden:true },
       { path: "epci", label: "EPCI", element: <DmaPageEPCI /> },
     ],
   },
@@ -114,14 +115,7 @@ const route_config:RouteConfig[] = [
     icon: <Icon icon="material-symbols:factory-outline" />,
     element: <DaePage />,
     hidden: false,
-  },
-      {
-    path: "dma_dsl",
-    label: "DMA (DSL)",
-    icon: <Icon icon="material-symbols:factory-outline" />,
-    element: <PageDma />,
-    hidden: true,
-  },
+  }
 ];
 
 const App: React.FC = () => {
