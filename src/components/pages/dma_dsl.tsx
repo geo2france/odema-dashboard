@@ -1,11 +1,13 @@
 import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard"
-import { ChartYearSerie, Control, Dashboard, Dataset, Palette, Producer, Section, Transform, useControl } from "@geo2france/api-dashboard/dsl"
+import { Control, Dashboard, Dataset, Palette, Producer, Section, Transform, useControl } from "@geo2france/api-dashboard/dsl"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination/dsl"
 import { chartBusinessProps } from "../../utils"
 import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif_dsl"
 import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti/dsl"
 import { MapTI } from "../map_ti/mapTi_dsl"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet/dsl"
+import { ChartTauxValo } from "../chart_taux_valo/ChartTauxValo_dsl"
+import { ChartDmaStockage } from "../chart_dma_stockage/ChartDmaStockage_dsl"
 
 export const PageDma: React.FC = () => {
     const [maxYear, minYear, defaultYear] = [2023,2009,2021]
@@ -159,6 +161,12 @@ export const PageDma: React.FC = () => {
                  year={Number(useControl('annee'))}
                 />
                 {/* devnote : Hiérachie des modes non respectée, Prévu dans le dev de api-dashboard  https://github.com/geo2france/api-dashboard/issues/151 */}
+            
+                <ChartTauxValo dataset="destination_dma_region" title={`Taux de valorisation matière des DMA`} showObjectives/>
+            </Section>
+
+            <Section title="Stockage">
+                <ChartDmaStockage dataset="destination_dma_region" title={`Part de DMA admis en stockage`} showObjectives/>
             </Section>
         </Dashboard>
     )
