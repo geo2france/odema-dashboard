@@ -9,12 +9,7 @@ import { ChartEvolutionDechet } from "../chart_evolution_dechet/dsl"
 import { ChartTauxValo } from "../chart_taux_valo/ChartTauxValo_dsl"
 import { ChartDmaStockage } from "../chart_dma_stockage/ChartDmaStockage_dsl"
 
-export const PageDma: React.FC = () => {
-    const [maxYear, minYear, defaultYear] = [2023,2009,2021]
-
-    return (
-        <Dashboard debug>
-            <Palette steps={['red','green','blue']} labels={{
+export const DMA_colors_labels = {
                 'Ordures ménagères résiduelles':chartBusinessProps('Ordures ménagères résiduelles').color ?? 'white' ,
                 'Encombrants':chartBusinessProps('Encombrants').color ?? 'white',
                 'Matériaux recyclables':chartBusinessProps('Matériaux recyclables').color ?? 'white',
@@ -38,7 +33,14 @@ export const PageDma: React.FC = () => {
                     chartBusinessProps('Valorisation matière').color ?? 'white',
                 'Valorisation organique':
                     chartBusinessProps('Valorisation organique').color ?? 'white',
-            }}
+            }
+
+export const PageDma: React.FC = () => {
+    const [maxYear, minYear, defaultYear] = [2023,2009,2021]
+
+    return (
+        <Dashboard debug>
+            <Palette steps={['red','green','blue']} labels={ DMA_colors_labels }
             
             /> {/* API dasboard : permettre une valeur undefined ?*/}
             <Dataset
