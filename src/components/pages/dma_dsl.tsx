@@ -69,7 +69,7 @@ export const PageDma: React.FC = () => {
                 url="https://www.geo2france.fr/geoserver/odema/ows"
                 resource="odema:destination_dma_region"    
             >
-               <Transform>{data => data.map(r =>({
+               <Transform>{data => data.map((r:SimpleRecord) =>({
                     ...r,
                     SOURCE_TYP : r.source_collecte == 'DECHETERIE' ? 'Déchèterie' : 
                                   r.source_collecte == 'COLLECTE' && r.libel_dechet == 'Ordures ménagères résiduelles' ? 'Collecte OMR':
