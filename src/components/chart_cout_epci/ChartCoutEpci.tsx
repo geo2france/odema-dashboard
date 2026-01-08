@@ -1,7 +1,7 @@
 import { Radio, Typography } from 'antd';
 import { registerTheme, BarSeriesOption, EChartsOption} from 'echarts';
 import ReactECharts from 'echarts-for-react';
-import { useChartData, useDashboardElement, useSearchParamsState } from "@geo2france/api-dashboard";
+import { useSearchParamsState } from "@geo2france/api-dashboard";
 import { CSSProperties, ReactElement, useRef } from 'react';
 import { GiPerson, GiSwapBag } from "react-icons/gi";
 import { useBlockConfig, useDataset } from '@geo2france/api-dashboard/dsl';
