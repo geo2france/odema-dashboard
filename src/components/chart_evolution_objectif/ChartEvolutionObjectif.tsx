@@ -3,6 +3,7 @@ import { CSSProperties, useMemo, useRef } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from "echarts";
 import alasql from "alasql";
+import { useBlockConfig, useDataset } from "@geo2france/api-dashboard/dsl";
 
 
 interface DataProps {
@@ -18,7 +19,8 @@ interface DataObjectifsProps {
 }
 
 export interface ChartEvolutionTypeDechetProps {
-    data: DataProps[];
+    dataset: string;
+    title?:string;
     dataObjectifs?:DataObjectifsProps[];
     onFocus?:any;
     focus_item?:string;
@@ -31,8 +33,11 @@ const formatter_currentyear = (value:number, year?:number) => {
     return value_year == year ? `{currentDate|${value_year} }` : value_year.toString()
 }
 
-export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = ({data, dataObjectifs, onFocus, focus_item, style, year} )  => {
-    const chartRef = useRef<any>()
+export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = ({dataset:dataset_id, dataObjectifs, title, style, year} )  => {
+
+    const dataset = useDataset(dataset_id);
+    const data = dataset?.data;
+
     const data_chart = data && useMemo(() => alasql(`
         SELECT 
             [annee], 
@@ -43,13 +48,13 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
         `,[data]) , [data]
     ) as SimpleRecord[];
     
-    useChartData({data:data_chart, dependencies:[data]})
+    useBlockConfig({title:title, dataExport:data_chart})
 
     const serie:LineSeriesOption = {
         name: "Déchet",
         type:'line',
         color:"#FF8282",
-        data: data_chart.map((e:SimpleRecord) => [e.annee.toString(), Math.round(e.ratio)])
+        data: data_chart?.map((e:SimpleRecord) => [e.annee.toString(), Math.round(e.ratio)])
     }
 
     const serie_obj:LineSeriesOption = {
@@ -99,8 +104,7 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
             }
         ]
     }
-    useDashboardElement({chartRef})
     return (
-        <ReactECharts option={option} ref={chartRef} style={ style} />
+        <ReactECharts option={option} style={ style} />
     )
 }

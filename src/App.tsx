@@ -3,7 +3,6 @@ import './index.css';
 import { WfsProvider, DatafairProvider, DashboardApp } from "@geo2france/api-dashboard";
 import { Partner, RouteConfig } from "@geo2france/api-dashboard";
 
-import { DmaComponent } from "./components/pages/dma";
 import { EnfouissementPage } from "./components/pages/enfouissement";
 import { DmaPageEPCI } from "./components/pages/dma_epci";
 import { HomePage } from "./components/pages/home";
@@ -20,8 +19,7 @@ import { DdPage } from './components/pages/dd';
 import { RepPage } from './components/pages/rep';
 import { DaePage } from './components/pages/dae';
 import { Icon } from '@iconify/react';
-import { PageDma } from './components/pages/dma_dsl';
-import { DmaPageEPCI_dsl } from './components/pages/dma_epci_dsl';
+import { PageDma } from './components/pages/dma';
 
 const myTheme = {
   token: {
@@ -85,13 +83,10 @@ const route_config:RouteConfig[] = [
     path: "dma",
     label: "DMA",
     icon: <HomeOutlined />,
-    element: <DmaComponent />,
+    element: <PageDma />,
     children: [
-      { path: "region", label: "Hauts-de-France", element: <DmaComponent /> },
-      { path: "region_dsl", label: "Hauts-de-France", element: <PageDma />, hidden:true },
+      { path: "region", label: "Hauts-de-France", element: <PageDma /> },
       { path: "epci", label: "EPCI", element: <DmaPageEPCI /> },
-      { path: "epci_dsl", label: "EPCI", element: <DmaPageEPCI_dsl />, hidden:true },
-
     ],
   },
   {

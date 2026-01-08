@@ -4,6 +4,7 @@ import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
 import { SimpleRecord, useChartData, useDashboardElement } from "@geo2france/api-dashboard";
 import { interpolate } from "../../utils";
+import { ChartEcharts, useBlockConfig, useDataset } from "@geo2france/api-dashboard/dsl";
 
 const formatter_currentyear = (value:number, year?:number) => {
     const value_year:number = new Date(value).getFullYear()
@@ -18,27 +19,29 @@ interface DataProps {
 }
 
 interface ChartDmaStockageProps {
-    data: DataProps[]
-    onFocus?:any;
-    focus_item?:string;
+    dataset: string;
+    title?:string;
+    yearKey?:string;
     style? : CSSProperties;
     year? : number;
     showObjectives?:boolean;
   }
 
-export const ChartDmaStockage: React.FC<ChartDmaStockageProps> = ({data, onFocus, focus_item, style, year, showObjectives=false} )  => {
-    const chartRef = useRef<any>()
-    useDashboardElement({chartRef});
+export const ChartDmaStockage: React.FC<ChartDmaStockageProps> = ({dataset:dataset_id, title, style, year, showObjectives=false} )  => {
+    const dataset = useDataset(dataset_id)
+    const data = dataset?.data  as DataProps[] 
+
+    useBlockConfig({title})
 
 
     const data_obj = [
         {annee:2009, value:0.278},
         {annee:2035, value:0.1},
     ]
-    const dataChart = useMemo(()=>alasql(`
+    const dataChart = useMemo(()=> data && alasql(`
             SELECT 
                 [annee], 
-                SUM(CASE WHEN [type]='Stockage' THEN [tonnage] ELSE 0 END) as stockage,
+                SUM(CASE WHEN [libel_traitement]='Stockage' THEN [tonnage] ELSE 0 END) as stockage,
                 SUM([tonnage]) as tout_mode
             FROM ?
             GROUP BY [annee]
@@ -56,7 +59,7 @@ export const ChartDmaStockage: React.FC<ChartDmaStockageProps> = ({data, onFocus
         backgroundStyle: {
             color: 'rgba(180, 180, 180, 0.1)'
           },
-        data: dataChart.map((e:SimpleRecord) => [e.annee.toString(), (e.stockage)/(e.tout_mode)]),
+        data: dataChart?.map((e:SimpleRecord) => [e.annee.toString(), (e.stockage)/(e.tout_mode)]),
     }
 
 
@@ -106,6 +109,6 @@ export const ChartDmaStockage: React.FC<ChartDmaStockageProps> = ({data, onFocus
     }
 
     return (
-        <ReactECharts option={option} ref={chartRef} style={ style} />
+        <ChartEcharts option={option} style={ style} />
     )
 }
