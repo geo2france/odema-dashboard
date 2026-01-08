@@ -1,29 +1,19 @@
-import { Card, Col, Descriptions, DescriptionsProps, FloatButton, Modal, Row, Typography } from "antd"
+import { Card, Descriptions, DescriptionsProps } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination/dsl"
-import { FilePdfOutlined, InfoCircleOutlined } from "@ant-design/icons"
-import alasql from "alasql"
-import { BsRecycle } from "react-icons/bs";
-import { useMemo, useState } from "react"
-import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
-import { TbReportMoney } from "react-icons/tb";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, DashboardPage, useApi } from "@geo2france/api-dashboard"
+import { FaPeopleGroup, FaHouseFlag } from "react-icons/fa6";
+import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet/dsl"
-import { grey } from '@ant-design/colors';
-import { geo2franceProvider } from "../../App"
-import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci_dsl";
+import { ChartCoutEpci } from "../chart_cout_epci/ChartCoutEpci_dsl";
 import { CompetenceBadge, CompetencesExercees } from "../competence_badge/CompetenceBadge";
 import { Control, Dashboard, Dataset, Filter, useControl, Select, useDataset, StatisticsCollection, Statistics, Transform, Producer, Palette} from "@geo2france/api-dashboard/dsl";
-import { chartBusinessProps } from "../../utils";
 import { DMA_colors_labels } from "./dma_dsl";
 import { ChartRPQS } from "../chart_rpqs/rpqs";
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
 export const DmaPageEPCI_dsl: React.FC = () => {
-    //console.log('poeutte',useDataset('data_territoire'))
     const siren_epci = useControl('siren_epci')
     const current_epci = useDataset('data_territoire')?.data?.find(r => r.siren == siren_epci) // Info sur l'EPCI sélectionné
-   // console.log(current_epci)
 
     const competences:CompetencesExercees={
       'collecte':current_epci?.population_collecte / current_epci?.population,
@@ -174,15 +164,14 @@ export const DmaPageEPCI_dsl: React.FC = () => {
      </Dataset>
 
 
-    <DashboardElement title="Territoire">
+    <Card styles={{header:{padding: 5,paddingLeft: 15, fontSize: 14, minHeight: 35}, body:{height:"100%", padding:0} }} title="Territoire">
       <Descriptions
             items={territoire_descritpion_item}
             style={{ marginTop: 5, padding:8 }}
         />
-    </DashboardElement>
+    </Card>
 
     <StatisticsCollection title="Indicateurs">
-
       <Statistics title="Taux de valorisation" unit="%" dataset="indicateur_territoire" dataKey="part_valo" icon="fa7-solid:recycle" 
       valueFormatter={(p) => p.value.toLocaleString(undefined, {maximumFractionDigits:1})} color={"#f7e11cff"}
       annotation=""/>
@@ -194,13 +183,11 @@ export const DmaPageEPCI_dsl: React.FC = () => {
       <Statistics title="Part de la population en TI" unit="%" dataset="tarification_ti" dataKey="part_pop_ti" icon="tabler:report-money" 
       valueFormatter={(p) => (p.value*100).toLocaleString(undefined, {maximumFractionDigits:0})}
       annotation="" color="#bd4cbdff"/>
-      
     </StatisticsCollection>
 
     <ChartSankeyDestinationDMA 
         title={`Types et destination des déchets en ${useControl("annee")}`} 
         dataset="destination_dma_sankey" />
-
 
       <ChartEvolutionDechet  dataset="data_traitement" title="Type de déchets collectés"
                          yearKey="annee" categoryKey="type_dechet" ratioKey="ratio_hab"
@@ -214,9 +201,9 @@ export const DmaPageEPCI_dsl: React.FC = () => {
                          year={Number(useControl('annee'))}
                         />
 
-      <ChartRPQS dataset="rpqs" year={Number(useControl('annee'))} />
-
       <ChartCoutEpci dataset="couts_epci"/>
+
+      <ChartRPQS dataset="rpqs" year={Number(useControl('annee'))} />
 
     </Dashboard>
     );
