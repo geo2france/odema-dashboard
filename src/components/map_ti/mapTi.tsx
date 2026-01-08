@@ -1,17 +1,18 @@
-import { SimpleRecord, useApi, useDashboardElement, useMapControl, LegendItem, MapLegend } from "@geo2france/api-dashboard"
-import { CSSProperties, useRef, useState } from "react"
+import {  LegendItem } from "@geo2france/api-dashboard"
+import { CSSProperties, useState } from "react"
 import Map, { Layer, LayerProps, Source, SourceProps, Popup} from 'react-map-gl/maplibre';
 import { BaseLayer } from '../map_baselayer';
-import { geo2franceProvider } from "../../App";
 
 import { NavLink } from "react-router-dom";
 import { map_locale } from "../../utils";
+import { LegendControl, useBlockConfig, useDataset } from "@geo2france/api-dashboard/dsl";
 
 
 interface IMapTIProps{
-    data?:SimpleRecord[],
+    dataset:string,
     year?:number,
-    style?:CSSProperties
+    style?:CSSProperties,
+    title?:string
 }
 
 
@@ -23,30 +24,23 @@ const legendItems:LegendItem[] = [
     { color: colors.incitative, label: 'Tarification incitative' }
 ];
 
-export const MapTI: React.FC<IMapTIProps> = ({ style }) => {
+export const MapTI: React.FC<IMapTIProps> = ({ dataset:dataset_id, style, title}) => {
     const [clickedFeature, setClickedFeature] = useState<any>(undefined);
-
-    const mapRef = useRef<any>(null);
-    useDashboardElement({chartRef:mapRef});
-    useMapControl({mapRef, legendElement:<MapLegend items={legendItems}/>})
+    const dataset = useDataset(dataset_id)
 
     const onClickMap = (evt:any) => {
        setClickedFeature({...evt.features[0], ...{lngLat:evt.lngLat}})
     }
 
-    const geojson_ti = useApi({
-        resource:"odema:tarification_om",
-        meta:{srsname:'EPSG:4326'},
-        dataProvider:geo2franceProvider,
-        pagination:{mode:"off"}
-    })
+    useBlockConfig({title, dataExport: dataset?.data})
+    const geojson_ti = dataset?.geojson
 
     const source_ti:SourceProps = {
         type:'geojson',
-        data:geojson_ti.data?.geojson
+        data:geojson_ti
       }
 
-    const layer_ti:LayerProps = {
+      const layer_ti:LayerProps = {
         'id': 'ti',
         'type': 'fill',
         'paint': {
@@ -67,7 +61,6 @@ export const MapTI: React.FC<IMapTIProps> = ({ style }) => {
             <Map
       reuseMaps
       preserveDrawingBuffer
-      ref={mapRef}
       initialViewState={{
         latitude: 49.96462, //Centroid enveloppe HDF
         longitude: 2.820399,
@@ -83,7 +76,7 @@ export const MapTI: React.FC<IMapTIProps> = ({ style }) => {
 
       <BaseLayer layer="osm"/>
 
-     {geojson_ti.data && <Source {...source_ti}>
+     {geojson_ti && <Source {...source_ti}>
         <Layer {...layer_ti}></Layer>
       </Source> }
 
@@ -99,6 +92,7 @@ export const MapTI: React.FC<IMapTIProps> = ({ style }) => {
         </>
         
     </Popup> }
+           <LegendControl items={legendItems} /> 
 
     </Map>
         </>

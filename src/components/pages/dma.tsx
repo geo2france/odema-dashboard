@@ -1,273 +1,173 @@
-import React, { CSSProperties, useState } from "react";
-import { Typography } from 'antd';
-import { ChartSankeyDestinationDMA } from "../chart_sankey_destination";
+import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard"
+import { Control, Dashboard, Dataset, Palette, Producer, Section, Transform, useControl } from "@geo2france/api-dashboard/dsl"
+import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
+import { chartBusinessProps } from "../../utils"
+import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif"
+import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti"
+import { MapTI } from "../map_ti/mapTi"
+import { ChartEvolutionDechet } from "../chart_evolution_dechet"
+import { ChartTauxValo } from "../chart_taux_valo/ChartTauxValo"
+import { ChartDmaStockage } from "../chart_dma_stockage/ChartDmaStockage"
 
-import alasql from "alasql";
-import { useSearchParamsState, DashboardElement, NextPrevSelect, SimpleRecord, DashboardPage, useApi } from "@geo2france/api-dashboard";
-import { ChartEvolutionDechet } from "../chart_evolution_dechet";
-import { geo2franceProvider } from "../../App";
-import { ChartEvolutionPopTi } from "../chart_evolution_pop_ti";
-import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif";
-import { ChartTauxValo } from "../chart_taux_valo/ChartTauxValo";
-import { ChartDmaStockage } from "../chart_dma_stockage/ChartDmaStockage";
-import { MapTI } from "../map_ti/mapTi";
+export const DMA_colors_labels = {
+                'Ordures ménagères résiduelles':chartBusinessProps('Ordures ménagères résiduelles').color ?? 'white' ,
+                'Encombrants':chartBusinessProps('Encombrants').color ?? 'white',
+                'Matériaux recyclables':chartBusinessProps('Matériaux recyclables').color ?? 'white',
+                'Déblais et gravats':chartBusinessProps('Déblais et gravats').color ?? 'white',
+                'Déchets verts et biodéchets':chartBusinessProps("Déchets verts et biodéchets").color ?? 'white',
+                'Déchets dangereux (y.c. DEEE)':chartBusinessProps("Déchets dangereux (y.c. DEEE)").color ?? 'white',
+                'Autres':chartBusinessProps('Autres').color ?? 'white',
+                'Non précisé':chartBusinessProps('Autres').color ?? 'white',
+                'Déchèterie':chartBusinessProps('Déchèterie').color ?? 'white',
+                'Collecte séparée':chartBusinessProps('Matériaux recyclables').color ?? 'white',
+                'Collecte OMR':chartBusinessProps('Ordures ménagères résiduelles').color ?? 'white',
+                  'Incinération sans récupération d\'énergie':
+                    chartBusinessProps('Incinération sans récupération d\'énergie').color ?? 'white',
+                'Incinération avec récupération d\'énergie':
+                    chartBusinessProps('Incinération avec récupération d\'énergie').color ?? 'white',
+                'Stockage':
+                    chartBusinessProps('Stockage').color ?? 'white',
+                'Stockage pour inertes':
+                    chartBusinessProps('Stockage pour inertes').color ?? 'white',
+                'Valorisation matière':
+                    chartBusinessProps('Valorisation matière').color ?? 'white',
+                'Valorisation organique':
+                    chartBusinessProps('Valorisation organique').color ?? 'white',
+            }
 
-const {Text} = Typography;
-const [maxYear, minYear, defaultYear] = [2023,2009,2021]
-
-const attribution_odema_ademe = [
-              {
-                name: "Ademe (Sinoe)",
-                url: "https://www.sinoe.org/",
-              },
-              {
-                name: "Odema",
-                url: "https://odema-hautsdefrance.org/",
-              },
-            ]
-
-export const DmaComponent: React.FC = () => {
-    const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
-    const [focus, setFocus] = useState<string | undefined>(undefined) 
-
-    const chartStyle:CSSProperties = {height:'350px'}
-
-    const {data:data_g2f, isFetching} = useApi({ 
-        resource:"odema:destination_dma_region",
-        dataProvider:geo2franceProvider,
-        pagination:{
-            mode:"off"
-        }
-    })
-   
-    const datasankey = (data_g2f?.data && alasql(`
-        SELECT [libel_dechet] as L_TYP_REG_DECHET, [libel_traitement] as L_TYP_REG_SERVICE, sum(tonnage) as TONNAGE_DMA_sum
-        FROM ?
-        GROUP BY [libel_dechet], [libel_traitement]
-    `, [data_g2f.data.filter((e:any) => e.annee == Number(year))])) as SimpleRecord[];
-
-    const data_performance = (data_g2f?.data && alasql(`
-      SELECT
-        [annee],
-        CASE WHEN [source_collecte] = 'DECHETERIE' THEN 'Déchèterie'
-             WHEN [source_collecte] = 'COLLECTE' AND [libel_dechet] = 'Ordures ménagères résiduelles' THEN 'Collecte OMR'
-             ELSE 'Collecte séparées' END as [TYP_COLLECTE],
-        SUM([tonnage]) as [tonnage],
-        SUM([kg_par_habitant]) as [ratio]
-      FROM ?
-      GROUP BY  
-        [annee],  
-        CASE WHEN [source_collecte] = 'DECHETERIE' THEN 'Déchèterie'
-             WHEN [source_collecte] = 'COLLECTE' AND [libel_dechet] = 'Ordures ménagères résiduelles' THEN 'Collecte OMR'
-             ELSE 'Collecte séparées' END
-      `,[data_g2f.data]) ) as SimpleRecord[]
-
-
-      const {data:data_ti, isFetching:isFetching_ti} = useApi({
-      resource:"odema:population_tarification_ti_region",
-      dataProvider:geo2franceProvider,
-      pagination:{ mode: "off" }
-  });
-
-
-    const data_typedechet_destination = (data_g2f?.data && alasql(
-        `SELECT [annee] as [ANNEE], [libel_dechet] as L_TYP_REG_DECHET, [libel_traitement] as L_TYP_REG_SERVICE, sum(tonnage) as TONNAGE, sum([kg_par_habitant]) as RATIO
-        FROM ?
-        GROUP BY [annee], [libel_dechet], [libel_traitement]
-        `, [ data_g2f.data ])) as SimpleRecord[]// Ajoute la population departementale et régionale
- 
-
-    const data_tonnage_dma = data_g2f?.data && alasql(
-      `SELECT [annee], SUM([kg_par_habitant]) as [ratio], sum([tonnage]) as [tonnage] FROM ? GROUP BY [annee] ORDER BY [annee]`
-    ,[data_g2f?.data ]) as SimpleRecord[]
-    
+export const PageDma: React.FC = () => {
+    const [maxYear, minYear, defaultYear] = [2023,2009,2021]
 
     return (
-      <DashboardPage
-        control={
-              <NextPrevSelect
-                onChange={(e: any) => (e ? setYear(e) : undefined)}
+        <Dashboard debug>
+            <Palette  labels={ DMA_colors_labels } />
+            <Dataset
+                id="destination_dma_region_sankey" 
+                type="wfs"
+                url="https://www.geo2france.fr/geoserver/odema/ows"
+                resource="odema:destination_dma_region"    
+            >
+                <Transform>{`SELECT [libel_dechet] as L_TYP_REG_DECHET, [libel_traitement] as L_TYP_REG_SERVICE, sum(tonnage) as TONNAGE_DMA_sum
+                    FROM ?
+                    WHERE [annee]= ${useControl("annee")}
+                    GROUP BY [libel_dechet], [libel_traitement]`}</Transform>
+                {/* A simplifier */} <Transform>
+                    {data => data.map((i: SimpleRecord) => ({
+                                  value: Math.max(i.TONNAGE_DMA_sum, 1),
+                                  source: i.L_TYP_REG_DECHET,
+                                  target: i.L_TYP_REG_SERVICE === 'Stockage pour inertes' ? 'Stockage' : i.L_TYP_REG_SERVICE,}))}
+                </Transform>
+                <Producer url="https://sinoe.org">Ademe (Sinoe)</Producer>
+                <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+            </Dataset>
+
+            <Dataset
+                id="destination_dma_region" 
+                type="wfs"
+                url="https://www.geo2france.fr/geoserver/odema/ows"
+                resource="odema:destination_dma_region"    
+            >
+               <Transform>{data => data.map((r:SimpleRecord) =>({
+                    ...r,
+                    SOURCE_TYP : r.source_collecte == 'DECHETERIE' ? 'Déchèterie' : 
+                                  r.source_collecte == 'COLLECTE' && r.libel_dechet == 'Ordures ménagères résiduelles' ? 'Collecte OMR':
+                                  'Collecte séparée'
+               }))}</Transform>
+
+                <Producer url="https://sinoe.org">Ademe (Sinoe)</Producer>
+                <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+            </Dataset>
+
+            <Dataset
+                id="tonnage_dma" 
+                type="wfs"
+                url="https://www.geo2france.fr/geoserver/odema/ows"
+                resource="odema:destination_dma_region"    
+            >
+               <Transform>SELECT [annee], SUM([kg_par_habitant]) as [ratio], sum([tonnage]) as [tonnage] FROM ? GROUP BY [annee] ORDER BY [annee]</Transform>
+                <Producer url="https://sinoe.org">Ademe (Sinoe)</Producer>
+                <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+            </Dataset>
+
+            <Dataset
+                id="population_tarification_ti_region" 
+                type="wfs"
+                url="https://www.geo2france.fr/geoserver/odema/ows"
+                resource="odema:population_tarification_ti_region"    
+            >
+                <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+            </Dataset>
+
+            <Dataset
+                id="tarification_om" 
+                type="wfs"
+                url="https://www.geo2france.fr/geoserver/odema/ows"
+                resource="odema:tarification_om"
+                meta={{srsname:'EPSG:4326'}}
+            >
+                <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+            </Dataset>
+
+            <Control>
+            <NextPrevSelect
+                name="annee"
                 reverse={true}
-                value={year}
+                defaultValue={defaultYear}
                 options={
                   Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
                   .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
                   .reverse()
                   .map((i) => ({ label: i, value: i }))}
               />
-        }
-      
-        sections={['Panorama', 'Prévention', 'Valorisation', 'Stockage']}
-      >
 
-          <DashboardElement
-            isFetching={isFetching}
-            title={`Types et destination des déchets en ${year}`} section="Panorama"
-            attributions={attribution_odema_ademe}
-          >
-            {datasankey && (
-              <ChartSankeyDestinationDMA
-                style={chartStyle}
-                onFocus={(e: any) => setFocus(e?.name)}
-                focus_item={focus}
-                data={datasankey.map((i: SimpleRecord) => ({
-                  value: Math.max(i.TONNAGE_DMA_sum, 1),
-                  source: i.L_TYP_REG_DECHET,
-                  target: i.L_TYP_REG_SERVICE === 'Stockage pour inertes' ? 'Stockage' : i.L_TYP_REG_SERVICE,
-                }))}
-              />
-            )}
-          </DashboardElement>
+            </Control>
+            <Section title={"Panorama"}>
+                <ChartSankeyDestinationDMA 
+                    title={`Types et destination des déchets en ${useControl("annee")}`} 
+                    dataset="destination_dma_region_sankey" />
 
-          <DashboardElement
-            isFetching={isFetching}
-            title={`Type de déchets collectés`} section="Panorama"
-            attributions={attribution_odema_ademe}
-          >
-            {data_typedechet_destination && (
-              <ChartEvolutionDechet
-                data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                  tonnage: e.TONNAGE,
-                  annee: e.ANNEE,
-                  type: e.L_TYP_REG_DECHET,
-                  ratio: e.RATIO
-                }))}
-                onFocus={(e: any) => setFocus(e?.seriesName)}
-                focus_item={focus}
-                year={Number(year)}
-                showObjectives={false}
-              />
-            )}
-        </DashboardElement>
+                <ChartEvolutionDechet  dataset="destination_dma_region" title="Type de déchets collectés"
+                 yearKey="annee" categoryKey="libel_dechet" ratioKey="kg_par_habitant"
+                 tonnageKey="tonnage"
+                 year={Number(useControl('annee'))}
+                />
 
-        <DashboardElement
-            title="Performances de collecte" section="Panorama"
-            isFetching={isFetching }
-            attributions={attribution_odema_ademe}
-          >
-          
-            {data_performance && (
-              <ChartEvolutionDechet
-                style={chartStyle}
-                data={data_performance.map((e: SimpleRecord) => ({
-                  tonnage: e.tonnage,
-                  annee: e.annee,
-                  type: e.TYP_COLLECTE,
-                  ratio: e.ratio
-                }))}
-              />
-            )}
-        </DashboardElement>
+                <ChartEvolutionDechet  dataset="destination_dma_region" title="Sources de collectes"
+                 yearKey="annee" categoryKey="SOURCE_TYP" ratioKey="kg_par_habitant"
+                 tonnageKey="tonnage"
+                 year={Number(useControl('annee'))}
+                />
 
+            </Section>
 
-        <DashboardElement
-            isFetching={isFetching}
-            description= {<Text type="secondary">L'objectif régional est d'arriver à une production de <b>564 kg/hab en 2025</b> et{' '}
-            <b>541 kg/hab en 2030</b>.</Text> }
-            title={`Production de DMA par habitant et objectif régional`} section="Prévention"
-            attributions={ attribution_odema_ademe } >
-          {data_tonnage_dma && <ChartEvolutionObjectifs 
-                data={data_tonnage_dma.map((e: SimpleRecord) => ({
-                  annee: e.annee,
-                  ratio: e.ratio,
-                  tonnage: e.tonnage,
-                }))}
+            <Section title={"Prévention"}>
+                <ChartEvolutionObjectifs dataset="tonnage_dma" 
+                title="Production de DMA par habitant et objectif régional"
                 dataObjectifs={[{annee:2009, ratio:620}, {annee:2025, ratio:558}, {annee:2030, ratio:527}]}
-                year={Number(year)}
-              /> }
-          </DashboardElement>
+                year={Number(useControl('annee')) || 2023}
+                />
 
-        <DashboardElement
-            title="Tarification incitative sur la collecte des OMR"
-            description="Tarification incitative : mode de tarification qui comprend une part incitative sur les OMR.
-            Cette part peut concerner le volume de déchets et/ou le nombre de levées."
-            isFetching={isFetching_ti}  section="Prévention"
-            attributions={[
-              {
-                name: "Odema",
-                url: "https://www.geo2france.fr/datahub/dataset/891b801c-6196-42bc-99fd-e84663eaaa2f",
-              },
-            ]}
-          >
-            {data_ti && (
-              <ChartEvolutionPopTi
-                style={chartStyle}
-                data={data_ti.data}
-                year={Number(year)}
-              />
-            )}
-             <p style={{marginLeft:16}}>La région contribue à l'<b>objectif national</b> de <b>25 millions d'habitants couverts en 2025</b>.</p>
-        </DashboardElement>
+                <ChartEvolutionPopTi dataset="population_tarification_ti_region"
+                title="Tarification incitative sur la collecte des OMR" year={Number(useControl('annee'))}/>
+                
+                <MapTI dataset="tarification_om" title="Territoires en tarification incitative sur la collecte des OMR"/>
+            </Section>
 
-        <DashboardElement
-        title = "Territoires en tarification incitative sur la collecte des OMR" section="Prévention">
-          <MapTI></MapTI>
-        </DashboardElement>
+            <Section title="Valorisation">
 
-          <DashboardElement
-            isFetching={isFetching}
-            title={`Destination des déchets`} section="Valorisation"
-            attributions={ attribution_odema_ademe }
-          >
-            {data_typedechet_destination && (
-              <ChartEvolutionDechet
-                data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                  tonnage: e.TONNAGE,
-                  annee: e.ANNEE,
-                  type: e.C_TYP_REG_SERVICE === '02F' ? 'Stockage' : e.L_TYP_REG_SERVICE, // Stockage inertes -> Stockage
-                  ratio: e.RATIO
-                }))}
-                onFocus={(e: any) => setFocus(e?.seriesName)}
-                focus_item={focus}
-                year={Number(year)}
-                normalize
-              />
-            )}
-          </DashboardElement>
+                <ChartEvolutionDechet  dataset="destination_dma_region" title="Destination des déchets"
+                 yearKey="annee" categoryKey="libel_traitement" ratioKey="kg_par_habitant"
+                 tonnageKey="tonnage"
+                 year={Number(useControl('annee'))}
+                />
+                {/* devnote : Hiérachie des modes non respectée, Prévu dans le dev de api-dashboard  https://github.com/geo2france/api-dashboard/issues/151 */}
+            
+                <ChartTauxValo dataset="destination_dma_region" title={`Taux de valorisation matière des DMA`} showObjectives/>
+            </Section>
 
-          <DashboardElement
-            isFetching={isFetching}
-            title={`Taux de valorisation matière des DMA`} section="Valorisation"
-            description= {undefined}
-            attributions={ attribution_odema_ademe }
-          >
-            {data_typedechet_destination && (
-              <ChartTauxValo
-                data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                  tonnage: e.TONNAGE,
-                  annee: e.ANNEE,
-                  type: e.L_TYP_REG_SERVICE
-                }))}
-                onFocus={(e: any) => setFocus(e?.seriesName)}
-                focus_item={focus}
-                year={Number(year)}
-                showObjectives
-              />
-            )}
-          </DashboardElement>
-
-          <DashboardElement
-            isFetching={isFetching}
-            title={`Part de DMA admis en stockage`} section="Stockage"
-            description= {"Objectif : Limiter à 10% des DMA admis en installations de stockage d’ici à 2035"}
-            attributions={ attribution_odema_ademe }
-          >
-            {data_typedechet_destination && (
-              <ChartDmaStockage
-                data={data_typedechet_destination.map((e: SimpleRecord) => ({
-                  tonnage: e.TONNAGE,
-                  annee: e.ANNEE,
-                  type: e.L_TYP_REG_SERVICE
-                }))}
-                onFocus={(e: any) => setFocus(e?.seriesName)}
-                focus_item={focus}
-                year={Number(year)}
-                showObjectives
-              />
-            )}
-          </DashboardElement>
-
-      </DashboardPage>
-
-    );
-};
+            <Section title="Stockage">
+                <ChartDmaStockage dataset="destination_dma_region" title={`Part de DMA admis en stockage`} showObjectives/>
+            </Section>
+        </Dashboard>
+    )
+}
