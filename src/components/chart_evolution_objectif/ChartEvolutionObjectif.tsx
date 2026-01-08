@@ -1,5 +1,5 @@
-import { SimpleRecord, useChartData, useDashboardElement } from "@geo2france/api-dashboard";
-import { CSSProperties, useMemo, useRef } from "react";
+import { SimpleRecord } from "@geo2france/api-dashboard";
+import { CSSProperties, useMemo } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from "echarts";
 import alasql from "alasql";
@@ -36,7 +36,7 @@ const formatter_currentyear = (value:number, year?:number) => {
 export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = ({dataset:dataset_id, dataObjectifs, title, style, year} )  => {
 
     const dataset = useDataset(dataset_id);
-    const data = dataset?.data;
+    const data = dataset?.data as DataProps | undefined;
 
     const data_chart = data && useMemo(() => alasql(`
         SELECT 

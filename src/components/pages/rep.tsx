@@ -2,7 +2,7 @@ import { Producer, Transform } from "@geo2france/api-dashboard/dsl";
 import { ChartPie } from "@geo2france/api-dashboard/dsl";
 import { Dashboard, Dataset, Debug, Filter, Control } from "@geo2france/api-dashboard/dsl";
 import { chartBusinessProps } from "../../utils";
-import { NextPrevSelect } from "@geo2france/api-dashboard";
+import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard";
 import { useControl } from "@geo2france/api-dashboard/dsl";
 import { Palette } from "@geo2france/api-dashboard/dsl";
 
@@ -27,7 +27,7 @@ export const RepPage: React.FC = () => {
             <Filter field="dep_site_trt" operator="in">{['59','62','80','02','60']}</Filter>
             <Filter field="annee">{useControl('annee')}</Filter>
             <Transform>{
-                (data) => data.map(row => ({...row, 
+                (data) => data.map((row:SimpleRecord)  => ({...row, 
                     'filiere_libel':chartBusinessProps(row.filiere).label,
                     'tonnage': row.masse
                 } ))}
@@ -45,7 +45,7 @@ export const RepPage: React.FC = () => {
             <Filter field="dep_site_coll" operator="in">{['59','62','80','02','60']}</Filter>
             <Filter field="annee">{useControl('annee')}</Filter>
             <Transform>{
-                (data) => data.map(row => ({...row, 
+                (data) => data.map((row:SimpleRecord)  => ({...row, 
                     'filiere_libel':chartBusinessProps(row.filiere).label,
                     'tonnage': row.masse
                 } ))}
@@ -63,7 +63,7 @@ export const RepPage: React.FC = () => {
             <Filter field="dep_rr" operator="in">{['59','62','80','02','60']}</Filter>
             <Filter field="annee">{useControl('annee')}</Filter>
             <Transform>{
-                (data) => data.map(row => ({...row, 
+                (data) => data.map((row:SimpleRecord) => ({...row, 
                     'filiere_libel':chartBusinessProps(row.filiere).label,
                     'tonnage': row.masse
                 } ))}

@@ -1,8 +1,7 @@
-import { CSSProperties, useMemo, useRef } from "react"
-import ReactECharts from 'echarts-for-react';
+import { CSSProperties, useMemo } from "react"
 import alasql from "alasql";
 import { BarSeriesOption, EChartsOption, LineSeriesOption } from "echarts";
-import { SimpleRecord, useChartData, useDashboardElement } from "@geo2france/api-dashboard";
+import { SimpleRecord, useChartData } from "@geo2france/api-dashboard";
 import { interpolate } from "../../utils";
 import { ChartEcharts, useBlockConfig, useDataset } from "@geo2france/api-dashboard/dsl";
 

@@ -52,8 +52,8 @@ export const DaePage: React.FC = () => {
                 url="data"
                 resource="dae.json">
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
-                <Transform>{data => data.filter(row => row.annee == annee )}</Transform>
-                <Transform>{data => data.map(r => ({
+                <Transform>{data => data.filter((row:SimpleRecord)  => row.annee == annee )}</Transform>
+                <Transform>{data => data.map((r:SimpleRecord)  => ({
                     ...r,
                     'valo_matiere_ycOrga':r.B1 + r.B3,
                     'B8t3_pct':r.B8t3*100,
@@ -67,10 +67,10 @@ export const DaePage: React.FC = () => {
                 url="data"
                 resource="dae.json">
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
-                <Transform>{data => data.filter(row => row.annee == annee )}</Transform>
-                <Transform>{data => data.map(r => ({...r, B1B3 : r.B1+r.B3}))}</Transform>
+                <Transform>{ (data:SimpleRecord[]) => data.filter(row  => row.annee == annee )}</Transform>
+                <Transform>{ (data:SimpleRecord[]) => data.map(r  => ({...r, B1B3 : r.B1+r.B3}))}</Transform>
                 <Transform>{ fold }</Transform>
-                <Transform>{ data => data.filter( r => r.annee = annee).filter( r => 
+                <Transform>{ (data:SimpleRecord[])  => data.filter( r => r.annee = annee).filter( r => 
                     ['B5','B1B3','C2'].includes(r.indicateur))
                     .map(r => ({ 
                         ...r, 
@@ -84,8 +84,8 @@ export const DaePage: React.FC = () => {
                 url="data"
                 resource="dae_flux_region.json">
                 <Producer>Odema</Producer>
-                <Transform>{data => data.sort((a,b) => b.import - a.import) }</Transform> {/** Trier par ordre d'import */}
-                <Transform>{data => data.sort((a,_b) => {
+                <Transform>{ (data:SimpleRecord[]) => data.sort((a,b) => b.import - a.import) }</Transform> {/** Trier par ordre d'import */}
+                <Transform>{ (data:SimpleRecord[]) => data.sort((a,_b) => {
                     const first=['Ile de France', 'Normandie', 'Grand Est']
                     if (first.includes(a.region)) return -1
                     return 0
@@ -98,11 +98,11 @@ export const DaePage: React.FC = () => {
                 url="data"
                 resource="dae_flux_pays.json">
                 <Producer>Odema</Producer>
-                <Transform>{data => data.map(r => ({
+                <Transform>{ (data:SimpleRecord[]) => data.map(r => ({
                     pays_flag: `${r.pays} ${r.drapeau}`,
                     ...r
                 }))}</Transform>
-                <Transform>{data => data.sort((a,b) => b.import - a.import) }</Transform> {/** Trier par ordre d'import */}
+                <Transform>{ (data:SimpleRecord[]) => data.sort((a,b) => b.import - a.import) }</Transform> {/** Trier par ordre d'import */}
 
             </Dataset>
 
@@ -123,7 +123,7 @@ export const DaePage: React.FC = () => {
                 resource="odema:isdnd_tonnage"
             >
                 <Filter field="annee">{annee}</Filter>
-                <Transform>{data => data.filter(row => ['59','80','62','02','60'].includes(row.departement))}</Transform>
+                <Transform>{ (data:SimpleRecord[]) => data.filter(row => ['59','80','62','02','60'].includes(row.departement))}</Transform>
                 <Transform>SELECT annee, sum(tonnage) as enfouissement_total FROM ? GROUP BY annee</Transform>
                 <Join dataset="indicateur_dae" joinKey="annee" />
             </Dataset>
