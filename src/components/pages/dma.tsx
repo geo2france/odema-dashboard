@@ -36,7 +36,7 @@ export const DMA_colors_labels = {
             }
 
 export const PageDma: React.FC = () => {
-    const [maxYear, minYear, defaultYear] = [2023,2009,2021]
+    const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
     return (
         <Dashboard debug>

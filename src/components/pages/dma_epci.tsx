@@ -56,12 +56,12 @@ export const DmaPageEPCI: React.FC = () => {
           <NextPrevSelect
                 name="annee"
                 reverse={true}
-                defaultValue={defaultYear}
+                defaultValue={String(defaultYear)}
                 options={
                   Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
                   .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
                   .reverse()
-                  .map((i) => ({ label: i, value: i }))}
+                  .map((i) => ({ label: String(i), value: String(i) }))}
               />
           <Select 
             name="siren_epci"
