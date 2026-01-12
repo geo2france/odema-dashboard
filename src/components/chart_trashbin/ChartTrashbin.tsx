@@ -14,8 +14,8 @@ export const ChartTrashbin:React.FC<ChartTrashbinProps> = ({dataset:dataset_id})
 
     const total = dataset?.data?.reduce((sum, d) => sum + d.ratio, 0);
 
-    const poubelle64 = "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxtYXNrIGlkPSJiaW5NYXNrIj4KICAgICAgPCEtLSBUb3V0IGNhY2jDqSBwYXIgZMOpZmF1dCAtLT4KICAgICAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0id2hpdGUiLz4KCiAgICAgIDwhLS0gSW50w6lyaWV1ciBkZSBsYSBwb3ViZWxsZSA9IHRyYW5zcGFyZW50IC0tPgogICAgICA8cGF0aCBkPSJNNTAgNjAgTDE1MCA2MCBMMTMwIDI2MCBMNzAgMjYwIFoiIGZpbGw9ImJsYWNrIi8+CiAgICA8L21hc2s+CiAgPC9kZWZzPgoKICA8IS0tIEZvbmQgb3BhcXVlIGF2ZWMgdHJvdSAtLT4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmZmZmZmIiBtYXNrPSJ1cmwoI2Jpbk1hc2spIi8+CgogIDwhLS0gQ29udG91ciBkZSBsYSBwb3ViZWxsZSAtLT4KICA8cGF0aCBkPSJNNTAgNjAgTDE1MCA2MCBMMTMwIDI2MCBMNzAgMjYwIFoiCiAgICAgICAgZmlsbD0ibm9uZSIKICAgICAgICBzdHJva2U9IiMzMzMiCiAgICAgICAgc3Ryb2tlLXdpZHRoPSI2Ii8+Cjwvc3ZnPg=="
-    const barWidth = 100
+    const poubelle64 = "data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cpath d='M5.82907 6.65808H18.6325V19.2906C18.6325 20.3951 17.7371 21.2906 16.6325 21.2906H7.82907C6.7245 21.2906 5.82907 20.3951 5.82907 19.2906V6.65808Z' stroke='%23333333' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3C/path%3E%3Cpath d='M4 5.74365L20.4615 5.74365' stroke='%23333333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3C/path%3E%3Cpath d='M14.9134 3H9.54816L8.57266 5.74359H15.8889L14.9134 3Z' stroke='%23333333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
+    const barWidth = 150
 
     const series:BarSeriesOption[] = data?.sort((a,b) => b.ratio - a.ratio).map( d => ({
         type: 'bar',
@@ -31,23 +31,21 @@ export const ChartTrashbin:React.FC<ChartTrashbinProps> = ({dataset:dataset_id})
 
     const option:EChartsOption = {
         graphic: [
-        {
-            type: 'image',
-            z: 3,               // au-dessus des bars
-            left: 'center',
-            top: '0%',
-            silent: true, 
-            style: {
-                image: poubelle64,
-                width: 200,
-                height: 300,
-                opacity: 1 //Debug
+            {
+                type:'image',
+                z:3,
+                left:'center',
+                top:'5%',
+                silent:true,
+                style: {
+                    image:"/poubelle.png",
+                    height: 280,
+                }
             }
-        },
         ],
         grid: {
             left: 'center',
-            bottom: 43,
+            bottom: 10,
             containLabel: false,
             width:barWidth
         },
