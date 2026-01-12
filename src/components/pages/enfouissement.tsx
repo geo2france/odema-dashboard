@@ -63,7 +63,7 @@ export const EnfouissementPage: React.FC = () => {
     FROM ?
     WHERE tonnage > 0
     ORDER BY annee DESC
-`, [data_isdnd.data]) as SimpleRecord[]).map((e:SimpleRecord) => ({value:Number(e.annee), label:e.annee}))
+`, [data_isdnd.data]) as SimpleRecord[]).map((e:SimpleRecord) => ({value:String(e.annee), label:e.annee}))
 
 
     const {data:data_capacite, isFetching:isFetchingCapacite} = useApi({ // Historique des arrếtés
