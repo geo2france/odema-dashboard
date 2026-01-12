@@ -8,6 +8,7 @@ import { CompetenceBadge, CompetencesExercees } from "../competence_badge/Compet
 import { Control, Dashboard, Dataset, Filter, useControl, Select, useDataset, StatisticsCollection, Statistics, Transform, Producer, Palette} from "@geo2france/api-dashboard/dsl";
 import { DMA_colors_labels } from "./dma";
 import { ChartRPQS } from "../chart_rpqs/rpqs";
+import { ChartTrashbin } from "../chart_trashbin/ChartTrashbin";
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
@@ -112,6 +113,21 @@ export const DmaPageEPCI: React.FC = () => {
     </Dataset>
 
     <Dataset
+          id="current_trash_composition" 
+          type="wfs"
+          url="https://www.geo2france.fr/geoserver/odema/ows"
+          resource="odema:destination_dma_epci_harmonise"
+      >
+        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="annee">{useControl("annee")}</Filter>
+        <Transform>
+            SELECT type_dechet, sum(ratio_hab_pap) as ratio
+            FROM ?
+            GROUP BY type_dechet
+        </Transform> 
+     </Dataset>
+
+    <Dataset
           id="tarification_ti" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
@@ -154,7 +170,7 @@ export const DmaPageEPCI: React.FC = () => {
         <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
     </Dataset>
 
-      <Dataset
+    <Dataset
           id="rpqs" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
@@ -205,6 +221,7 @@ export const DmaPageEPCI: React.FC = () => {
 
       <ChartRPQS dataset="rpqs" year={Number(useControl('annee'))} />
 
+      <ChartTrashbin dataset="current_trash_composition" />
     </Dashboard>
     );
 }
