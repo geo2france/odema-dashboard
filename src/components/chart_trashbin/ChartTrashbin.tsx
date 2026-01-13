@@ -13,7 +13,7 @@ export const ChartTrashbin:React.FC<ChartTrashbinProps> = ({dataset:dataset_id})
     const canvasWidth = chartRef?.current?.getEchartsInstance().getWidth()
 
     useBlockConfig({
-        title: "Types de déchets collectés (porte-à-porte)"
+        title: "Types de déchets collectés (porte-à-porte) par habitant"
     })
 
     const dataset = useDataset(dataset_id)
@@ -32,7 +32,10 @@ type BarSeriesWithName = BarSeriesOption & { name: string };
         data: [d.ratio],
         color: chartBusinessProps(d.type_dechet).color,
         barWidth:barWidth,
-        label:{show: (!!total && 100*(d.ratio / total) > 5) },
+        label:{
+            show: (!!total && 100*(d.ratio / total) > 5),
+            formatter : (p:any) => `${p.data.toLocaleString(undefined, {maximumFractionDigits:0})} kg`
+        },
         stack: 'total',    })) ?? []
 
     const option:EChartsOption = {
@@ -73,7 +76,10 @@ type BarSeriesWithName = BarSeriesOption & { name: string };
             max:total,
             show: false,
         },
-        tooltip: {show: true},
+        tooltip: {
+            show: true,
+            formatter: (p:any) => `${p.marker} ${p.seriesName} : <b>${p.data.toLocaleString(undefined, {maximumFractionDigits:1})}</b> kg`
+        },
         series : series
 
     }
