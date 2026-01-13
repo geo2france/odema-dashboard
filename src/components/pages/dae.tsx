@@ -28,7 +28,6 @@ const libels = {
 export const DaePage: React.FC = () => {
 
     const annee = useControl("annee")
-    console.log(useDataset("indicateur_dae"))
     return     (  
     <>
     <Alert message="Page en cours de construction, chiffres non validés" type="warning" />
@@ -44,7 +43,7 @@ export const DaePage: React.FC = () => {
                 />
 
             <Control>
-                <NextPrevSelect name="annee" options={[2022]} defaultValue={2022}/>
+                <NextPrevSelect name="annee" options={["2022"]} defaultValue={"2022"}/>
             </Control>
             <Dataset
                 id="indicateur_dae"
