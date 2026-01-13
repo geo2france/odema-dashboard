@@ -83,6 +83,7 @@ export const EnfouissementPage: React.FC = () => {
       <Control>
          <Flex wrap justify="flex-start" align="flex-start" gap="small">
             <NextPrevSelect reverse={true}
+                name="annee" label="Année"
                 options={select_options_annees}
                 value={year} defaultValue={year}
                 onChange={(e) => setYear(e.toString())} />

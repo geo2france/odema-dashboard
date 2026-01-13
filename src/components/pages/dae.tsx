@@ -1,5 +1,5 @@
 import { Alert } from "antd"
-import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join, useDataset } from "@geo2france/api-dashboard/dsl";
+import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join, useDataset, Select } from "@geo2france/api-dashboard/dsl";
 import { from } from "arquero";
 import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard";
 import { Link } from "react-router-dom";
@@ -43,7 +43,7 @@ export const DaePage: React.FC = () => {
                 />
 
             <Control>
-                <NextPrevSelect name="annee" options={["2022"]} defaultValue={"2022"}/>
+                <Select arrows name="annee" options={["2022"]} defaultValue={"2022"}/>
             </Control>
             <Dataset
                 id="indicateur_dae"

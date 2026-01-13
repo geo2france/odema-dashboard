@@ -54,8 +54,9 @@ export const DmaPageEPCI: React.FC = () => {
       <Palette labels={ DMA_colors_labels } />
       
       <Control>
-          <NextPrevSelect
+          <Select
                 name="annee"
+                arrows
                 reverse={true}
                 defaultValue={String(defaultYear)}
                 options={
