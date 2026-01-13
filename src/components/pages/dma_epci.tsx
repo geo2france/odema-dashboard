@@ -55,7 +55,7 @@ export const DmaPageEPCI: React.FC = () => {
       
       <Control>
           <Select
-                name="annee"
+                name="annee" label="Année"
                 arrows
                 reverse={true}
                 defaultValue={String(defaultYear)}
@@ -66,7 +66,7 @@ export const DmaPageEPCI: React.FC = () => {
                   .map((i) => ({ label: String(i), value: String(i) }))}
               />
           <Select 
-            name="siren_epci"
+            name="siren_epci" label="Territoire"
             showSearch
             dataset="data_territoire"
             valueField="siren" labelField="name" />
@@ -101,6 +101,7 @@ export const DmaPageEPCI: React.FC = () => {
           resource="odema:destination_dma_epci_harmonise"
       >
         <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="annee">{useControl("annee")}</Filter>
         <Transform>SELECT 
                     [annee],
                     SUM([tonnage]) as tonnage,
