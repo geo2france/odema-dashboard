@@ -5,9 +5,10 @@ import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { ChartCoutEpci } from "../chart_cout_epci/ChartCoutEpci";
 import { CompetenceBadge, CompetencesExercees } from "../competence_badge/CompetenceBadge";
-import { Control, Dashboard, Dataset, Filter, useControl, Select, useDataset, StatisticsCollection, Statistics, Transform, Producer, Palette} from "@geo2france/api-dashboard/dsl";
+import { Control, Dashboard, Dataset, Filter, useControl, Select, useDataset, StatisticsCollection, Statistics, Transform, Producer, Palette, Section} from "@geo2france/api-dashboard/dsl";
 import { DMA_colors_labels } from "./dma";
 import { ChartRPQS } from "../chart_rpqs/rpqs";
+import { ChartTrashbin } from "../chart_trashbin/ChartTrashbin";
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
@@ -112,6 +113,21 @@ export const DmaPageEPCI: React.FC = () => {
     </Dataset>
 
     <Dataset
+          id="current_trash_composition" 
+          type="wfs"
+          url="https://www.geo2france.fr/geoserver/odema/ows"
+          resource="odema:destination_dma_epci_harmonise"
+      >
+        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="annee">{useControl("annee")}</Filter>
+        <Transform>
+            SELECT type_dechet, sum(ratio_hab_pap) as ratio
+            FROM ?
+            GROUP BY type_dechet
+        </Transform> 
+     </Dataset>
+
+    <Dataset
           id="tarification_ti" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
@@ -154,7 +170,7 @@ export const DmaPageEPCI: React.FC = () => {
         <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
     </Dataset>
 
-      <Dataset
+    <Dataset
           id="rpqs" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
@@ -163,47 +179,52 @@ export const DmaPageEPCI: React.FC = () => {
         <Filter field="code_epci">{useControl("siren_epci")}</Filter>
      </Dataset>
 
+    <Section title="Panorama">
+        <Card styles={{header:{padding: 5,paddingLeft: 15, fontSize: 14, minHeight: 35}, body:{height:"100%", padding:0} }} title="Territoire">
+        <Descriptions
+                items={territoire_descritpion_item}
+                style={{ marginTop: 5, padding:8 }}
+            />
+        </Card>
 
-    <Card styles={{header:{padding: 5,paddingLeft: 15, fontSize: 14, minHeight: 35}, body:{height:"100%", padding:0} }} title="Territoire">
-      <Descriptions
-            items={territoire_descritpion_item}
-            style={{ marginTop: 5, padding:8 }}
-        />
-    </Card>
+        <StatisticsCollection title="Indicateurs">
+        <Statistics title="Taux de valorisation" unit="%" dataset="indicateur_territoire" dataKey="part_valo" icon="fa7-solid:recycle" 
+        valueFormatter={(p) => p.value.toLocaleString(undefined, {maximumFractionDigits:1})} color={"#f7e11cff"}
+        annotation=""/>
+        
+        <Statistics title="Production de DMA" unit="kg/hab" dataset="indicateur_territoire" dataKey="ratio_dma" icon="famicons:trash" 
+        valueFormatter={(p) => p.value.toLocaleString(undefined, {maximumFractionDigits:0})}
+        invertColor annotation=""/>
+        
+        <Statistics title="Part de la population en TI" unit="%" dataset="tarification_ti" dataKey="part_pop_ti" icon="tabler:report-money" 
+        valueFormatter={(p) => (p.value*100).toLocaleString(undefined, {maximumFractionDigits:0})}
+        annotation="" color="#bd4cbdff"/>
+        </StatisticsCollection>
 
-    <StatisticsCollection title="Indicateurs">
-      <Statistics title="Taux de valorisation" unit="%" dataset="indicateur_territoire" dataKey="part_valo" icon="fa7-solid:recycle" 
-      valueFormatter={(p) => p.value.toLocaleString(undefined, {maximumFractionDigits:1})} color={"#f7e11cff"}
-      annotation=""/>
-      
-      <Statistics title="Production de DMA" unit="kg/hab" dataset="indicateur_territoire" dataKey="ratio_dma" icon="famicons:trash" 
-      valueFormatter={(p) => p.value.toLocaleString(undefined, {maximumFractionDigits:0})}
-      invertColor annotation=""/>
-      
-      <Statistics title="Part de la population en TI" unit="%" dataset="tarification_ti" dataKey="part_pop_ti" icon="tabler:report-money" 
-      valueFormatter={(p) => (p.value*100).toLocaleString(undefined, {maximumFractionDigits:0})}
-      annotation="" color="#bd4cbdff"/>
-    </StatisticsCollection>
+        <ChartSankeyDestinationDMA 
+            title={`Types et destination des déchets en ${useControl("annee")}`} 
+            dataset="destination_dma_sankey" />
 
-    <ChartSankeyDestinationDMA 
-        title={`Types et destination des déchets en ${useControl("annee")}`} 
-        dataset="destination_dma_sankey" />
+        <ChartTrashbin dataset="current_trash_composition" />
+        <ChartRPQS dataset="rpqs" year={Number(useControl('annee'))} />
 
+    </Section>
+    <Section title="Traitement">
       <ChartEvolutionDechet  dataset="data_traitement" title="Type de déchets collectés"
                          yearKey="annee" categoryKey="type_dechet" ratioKey="ratio_hab"
                          tonnageKey="tonnage"
                          year={Number(useControl('annee'))}
                         />
 
-      <ChartEvolutionDechet  dataset="data_traitement" title="Type de déchets collectés"
+      <ChartEvolutionDechet  dataset="data_traitement" title="Filières de destination"
                          yearKey="annee" categoryKey="traitement_destination" ratioKey="ratio_hab"
                          tonnageKey="tonnage"
                          year={Number(useControl('annee'))}
                         />
-
+    </Section>
+    <Section title="Coûts">
       <ChartCoutEpci dataset="couts_epci"/>
-
-      <ChartRPQS dataset="rpqs" year={Number(useControl('annee'))} />
+    </Section>
 
     </Dashboard>
     );
