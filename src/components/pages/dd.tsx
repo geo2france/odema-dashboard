@@ -50,11 +50,11 @@ export const DdPage: React.FC = () => {
                 <NextPrevSelect 
                     name="annee"
                     reverse
-                    defaultValue={defaultYear}
+                    defaultValue={String(defaultYear)}
                     options={
                             Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
                             .reverse()
-                            .map((i) => ({ label: i, value: i }))}/>
+                            .map((i) => ({ label: String(i), value: String(i) }))}/>
             </Control>
 
             <ChartDdModeTraitement dataset="dd_produit_hdf" title={`Mode de traitement des DD produits en Région en ${useControl("annee")}`} />

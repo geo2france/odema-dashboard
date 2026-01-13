@@ -1,7 +1,7 @@
 import { Card, Descriptions, DescriptionsProps } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { FaPeopleGroup, FaHouseFlag } from "react-icons/fa6";
-import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard"
+import { SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { ChartCoutEpci } from "../chart_cout_epci/ChartCoutEpci";
 import { CompetenceBadge, CompetencesExercees } from "../competence_badge/CompetenceBadge";

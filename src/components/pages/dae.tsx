@@ -1,7 +1,7 @@
 import { Alert } from "antd"
-import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join, useDataset, Select } from "@geo2france/api-dashboard/dsl";
+import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join, Select } from "@geo2france/api-dashboard/dsl";
 import { from } from "arquero";
-import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard";
+import { SimpleRecord } from "@geo2france/api-dashboard";
 import { Link } from "react-router-dom";
 import { Icon } from '@iconify/react';
 import { ChartFluxInterreg } from "../chart_flux_interreg/ChartFluxInterreg";
@@ -194,7 +194,6 @@ export const DaePage: React.FC = () => {
                 unit="t"
                 donut
             />
-            <div>Carto méthaniseur et pf de compostage</div>
 
         </Section>
         <Section title="Enfouissement" icon="material-symbols:front-loader-outline">
@@ -215,7 +214,6 @@ export const DaePage: React.FC = () => {
                 <div><Link to="/isdnd"> En savoir plus sur les ISDND en région <Icon icon="mdi:about" width={25}/></Link></div>
             </StatisticsCollection>
             
-            <div>(Caractérisation des déchets en ISDND)</div>
         </Section>
         <Section title="Import / Export" icon="mdi:exchange">
 

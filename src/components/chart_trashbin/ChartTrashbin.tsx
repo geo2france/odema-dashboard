@@ -1,4 +1,4 @@
-import { ChartEcharts, useBlockConfig, useControl, useDataset } from "@geo2france/api-dashboard/dsl"
+import { ChartEcharts, useBlockConfig, useDataset } from "@geo2france/api-dashboard/dsl"
 import { BarSeriesOption, EChartsOption } from "echarts"
 import { chartBusinessProps } from "../../utils"
 import { useRef } from "react"

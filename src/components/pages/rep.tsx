@@ -15,7 +15,7 @@ export const RepPage: React.FC = () => {
           <Debug />
           <Palette steps={['#264653','#2a9d8f', '#e9c46a','#f4a261','#e76f51']}/>
           <Control>
-            <NextPrevSelect name='annee' options={[2022,2023]} defaultValue={2023}/>
+            <NextPrevSelect name='annee' options={["2022","2023"]} defaultValue={"2023"}/>
           </Control>
           <Dataset
             id='traitement_rep'
