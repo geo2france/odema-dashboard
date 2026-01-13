@@ -1,8 +1,9 @@
-import { ChartEcharts, useBlockConfig, useDataset } from "@geo2france/api-dashboard/dsl"
+import { ChartEcharts, useBlockConfig, useControl, useDataset } from "@geo2france/api-dashboard/dsl"
 import { BarSeriesOption, EChartsOption } from "echarts"
 import { chartBusinessProps } from "../../utils"
 import { useRef } from "react"
 import EChartsReact from "echarts-for-react"
+
 interface ChartTrashbinProps {
     dataset:string
 }
@@ -12,7 +13,7 @@ export const ChartTrashbin:React.FC<ChartTrashbinProps> = ({dataset:dataset_id})
     const canvasWidth = chartRef?.current?.getEchartsInstance().getWidth()
 
     useBlockConfig({
-        title: "Gisement DMA"
+        title: "Types de déchets collectés (porte-à-porte)"
     })
 
     const dataset = useDataset(dataset_id)
@@ -23,7 +24,9 @@ export const ChartTrashbin:React.FC<ChartTrashbinProps> = ({dataset:dataset_id})
     const barWidth = 150
 
 type BarSeriesWithName = BarSeriesOption & { name: string };
-    const series:BarSeriesWithName[] = data?.sort((a,b) => b.ratio - a.ratio).map( d => ({
+    const series:BarSeriesWithName[] = data?.sort((a,b) => b.ratio - a.ratio)
+        .filter(d => d.ratio > 1)
+        .map( d => ({
         type: 'bar',
         name: d.type_dechet,
         data: [d.ratio],
@@ -76,6 +79,8 @@ type BarSeriesWithName = BarSeriesOption & { name: string };
     }
 
     return (
-        <ChartEcharts option={option} ref={chartRef}/>
+        <ChartEcharts style={{width:"100%"}} option={option} ref={chartRef} 
+            replaceMerge={['series']} // Nécessaire si des séries peuvent disparaitre entre rendus
+            /> 
     )
 }
