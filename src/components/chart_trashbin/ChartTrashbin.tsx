@@ -47,7 +47,7 @@ type BarSeriesWithName = BarSeriesOption & { name: string };
                 top:'5%',
                 silent:true,
                 style: {
-                    image:"/poubelle.png",
+                    image:"poubelle.png",
                     height: 280,
                 }
             }
