@@ -20,6 +20,7 @@ import { RepPage } from './components/pages/rep';
 import { DaePage } from './components/pages/dae';
 import { Icon } from '@iconify/react';
 import { PageDma } from './components/pages/dma';
+import { PageSRADDET } from './components/pages/sraddet_indic';
 
 const myTheme = {
   token: {
@@ -88,6 +89,12 @@ const route_config:RouteConfig[] = [
       { path: "region", label: "Hauts-de-France", element: <PageDma /> },
       { path: "epci", label: "EPCI", element: <DmaPageEPCI /> },
     ],
+  },
+  {
+    path:"sraddet",
+    label:"SRADDET",
+    hidden:true,
+    element: <PageSRADDET />
   },
   {
     path: "isdnd",
