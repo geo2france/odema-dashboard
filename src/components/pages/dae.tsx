@@ -1,12 +1,12 @@
-import { Alert } from "antd"
-import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join, Select } from "@geo2france/api-dashboard/dsl";
+import { Typography } from "antd"
+import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join, Select, Intro } from "@geo2france/api-dashboard/dsl";
 import { from } from "arquero";
 import { SimpleRecord } from "@geo2france/api-dashboard";
 import { Link } from "react-router-dom";
 import { Icon } from '@iconify/react';
 import { ChartFluxInterreg } from "../chart_flux_interreg/ChartFluxInterreg";
 import { ChartGoal } from "../chartGoal";
-
+const { Paragraph} = Typography
 
 const fold = (data:SimpleRecord[]) => {
     if (!data || data.length === 0) return [];
@@ -30,8 +30,15 @@ export const DaePage: React.FC = () => {
     const annee = useControl("annee")
     return     (  
     <>
-    <Alert message="Page en cours de construction, chiffres non validés" type="warning" />
     <Dashboard debug>
+            <Intro title="Les déchets d'activités économiques en Hauts-de-France">
+                <div><Paragraph>L'ADEME a publié en 2020 un guide qui propose une <Link to="https://librairie.ademe.fr/economie-circulaire-et-dechets/3846-methode-harmonisee-d-observation-des-dechets-d-activite-economiques-dae-9791029716171.html">méthode harmonisée <Icon height={10} icon="oi:external-link"/></Link> d'observation des déchets d'activités économiques (DAE). 
+                    </Paragraph>
+                    <Paragraph>L'Odema est accompagné du bureau d'études AJBD pour suivre cette méthode et construire les indicateurs de l'Observatoire. 
+                        Dans ce contexte, le périmètre d'observation des DAE est le suivant : tous les DAE à l'exception des déchets dangereux, inertes, du BTP, agricoles et d'assainissement.
+                    </Paragraph>
+                </div>
+            </Intro>
             <Palette steps={['#0070c0','#00a055','#ce6300']} 
                 labels={{
                     'Valorisation énergétique':'#ce6300',
@@ -43,7 +50,7 @@ export const DaePage: React.FC = () => {
                 />
 
             <Control>
-                <Select arrows name="annee" options={["2022"]} defaultValue={"2022"}/>
+                <Select label="Année" arrows name="annee" options={["2022"]} defaultValue={"2022"}/>
             </Control>
             <Dataset
                 id="indicateur_dae"
@@ -128,10 +135,10 @@ export const DaePage: React.FC = () => {
             </Dataset>
 
         <Section title="Introduction">
-            <StatisticsCollection title="Intro" columns={2}>
+            <StatisticsCollection title={`Chiffres clés DAE ${annee} en Hauts-de-France`} columns={2}>
                 <Statistics 
                     dataset="indicateur_dae"
-                    dataKey="A2t3" title="Production de DAE" 
+                    dataKey="A2t3" title="DAE en entrée d'installation" 
                     valueFormatter={ noFractionDigits }
                     color="#0070C0" icon="streamline:warehouse-1-solid" unit="t"/>
                 <Statistics 
@@ -156,12 +163,14 @@ export const DaePage: React.FC = () => {
 
             <ChartPie title={`Modes de traitement en ${annee}`} dataset="mode_traitement" 
                 dataKey="valeur" nameKey="lib_indicateur"
+                unit="t" precision={0}
+                option={{graphic:{style:{fontSize:18}}}}
                 donut
             />
         </Section>
         <Section title="Valorisation" icon="ph:recycle-bold">
 
-            <StatisticsCollection title={`Valorisation en ${annee}`} columns={2}>
+            <StatisticsCollection title={`Chiffres clés DAE ${annee} - valorisation`} columns={2}>
 
                 <Statistics 
                         dataset="indicateur_dae"
@@ -184,20 +193,21 @@ export const DaePage: React.FC = () => {
                         color="#ce6300" icon="mingcute:fire-fill" unit="t"/>
             </StatisticsCollection>
 
-            <ChartGoal title="Atteinte de l'objectif du SRADDET" dataset="indicateur_dae" dataKey="B8t3_pct" yearKey="annee" target={65} unit="%" />
+            <ChartGoal title="Objectif du SRADDET" dataset="indicateur_dae" dataKey="B8t3_pct" yearKey="annee" target={65} unit="%" />
 
             <ChartPie
-                title="Gistement de valorisation matière (hors organique)"
+                title="Caractérisation des DAE valorisés matière (hors organique)"
                 dataset="federec_traitement_matiere"
                 dataKey="quantite"
                 nameKey="categorie"
+                option={{graphic:{style:{fontSize:18}}}}
                 unit="t"
                 donut
             />
 
         </Section>
         <Section title="Enfouissement" icon="material-symbols:front-loader-outline">
-            <StatisticsCollection title={`Enfouissement en ${annee}`} columns={2}>
+            <StatisticsCollection title={`Chiffres clés DAE ${annee} - enfouissement`} columns={2}>
 
                 <Statistics 
                         dataset="isdnd_enfouissement_total"
@@ -217,7 +227,7 @@ export const DaePage: React.FC = () => {
         </Section>
         <Section title="Import / Export" icon="mdi:exchange">
 
-            <StatisticsCollection title={`Import / Export en ${annee}`} columns={2}>
+            <StatisticsCollection title={`Chiffres clés DAE en ${annee} - import / export`} columns={2}>
                 <Statistics 
                         dataset="indicateur_dae"
                         dataKey="D1" title="Import"

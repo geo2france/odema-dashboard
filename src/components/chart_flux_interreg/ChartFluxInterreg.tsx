@@ -47,10 +47,9 @@ export const ChartFluxInterreg:React.FC<ChartFluxInterregProps> = ({dataset:data
     const option:EChartsOption = {
         xAxis: [
             {
-            name: 't',
             type: 'value',
             axisLabel: {
-                    formatter: (value: number) => Math.abs(value).toLocaleString()
+                    formatter: (value: number) => Math.abs(value/1e3).toLocaleString()+' kt'
                 }
             }
         ],
