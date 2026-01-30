@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Icon } from '@iconify/react';
 import { ChartFluxInterreg } from "../chart_flux_interreg/ChartFluxInterreg";
 import { ChartGoal } from "../chartGoal";
+import { ChartDaeModeTraitement } from "../chart_dae_mode_traitement/ChartDaeModeTraitement";
 const { Paragraph} = Typography
 
 const fold = (data:SimpleRecord[]) => {
@@ -61,9 +62,9 @@ export const DaePage: React.FC = () => {
                 <Transform>{data => data.filter((row:SimpleRecord)  => row.annee == annee )}</Transform>
                 <Transform>{data => data.map((r:SimpleRecord)  => ({
                     ...r,
-                    'valo_matiere_ycOrga':r.B1 + r.B3,
+                    'valo_matiere_ycOrga':r.B1bis + r.B3,
                     'B8t3_pct':r.B8t3*100,
-                    'pct_valo':100*((r.B1 + r.B3) / r.A2t3 )
+                    'pct_valo':100*((r.B1bis + r.B3) / r.A2t3 )
                 }))}</Transform>
             </Dataset>
 
@@ -74,7 +75,7 @@ export const DaePage: React.FC = () => {
                 resource="dae.json">
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
                 <Transform>{ (data:SimpleRecord[]) => data.filter(row  => row.annee == annee )}</Transform>
-                <Transform>{ (data:SimpleRecord[]) => data.map(r  => ({...r, B1B3 : r.B1+r.B3}))}</Transform>
+                <Transform>{ (data:SimpleRecord[]) => data.map(r  => ({...r, B1B3 : r.B1bis+r.B3}))}</Transform>
                 <Transform>{ fold }</Transform>
                 <Transform>{ (data:SimpleRecord[])  => data.filter( r => r.annee = annee).filter( r => 
                     ['B5','B1B3','C2'].includes(r.indicateur))
@@ -161,12 +162,7 @@ export const DaePage: React.FC = () => {
 
             </StatisticsCollection>
 
-            <ChartPie title={`Modes de traitement en ${annee}`} dataset="mode_traitement" 
-                dataKey="valeur" nameKey="lib_indicateur"
-                unit="t" precision={0}
-                option={{graphic:{style:{fontSize:18}}}}
-                donut
-            />
+            <ChartDaeModeTraitement dataKey="valeur" nameKey="lib_indicateur" dataset="mode_traitement" />
         </Section>
         <Section title="Valorisation" icon="ph:recycle-bold">
 
@@ -174,10 +170,9 @@ export const DaePage: React.FC = () => {
 
                 <Statistics 
                         dataset="indicateur_dae"
-                        dataKey="B1" title="Valorisation matière inorganique"
+                        dataKey="B1bis" title="Valorisation matière inorganique"
                         valueFormatter={ (p) => p.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) }
                         color="#cfe45cff" icon="ph:recycle-bold" unit="t"/>
-
 
                 <Statistics 
                         dataset="indicateur_dae"
