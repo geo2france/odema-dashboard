@@ -204,20 +204,13 @@ export const DaePage: React.FC = () => {
 
             <ChartGoal title="Objectif du SRADDET" dataset="indicateur_dae" dataKey="B8t3_pct" yearKey="annee" target={65} unit="%" />
 
-            {/*<ChartPie
-                title="Caractérisation des DAE valorisés matière (hors organique)"
-                dataset="federec_traitement_matiere"
-                dataKey="quantite"
-                nameKey="categorie"
-                option={{graphic:{style:{fontSize:18}}}}
-                unit="t"
-                donut
-            />*/}
-
             <ChartComparison dataset="federec_traitement_matiere" 
                 title="Caractérisation des DAE valorisés matière (hors organique)" 
                 valueKey="quantite" nameKey="categorie" unit="t" 
-                option={{xAxis:{axisLabel:{formatter: (v:number) => `${(v/1e3).toLocaleString()} kt` }}}}
+                option={{
+                    xAxis:{axisLabel:{formatter: (v:number) => `${(v/1e3).toLocaleString()} kt` }},
+                    yAxis: {axisLabel:{overflow:"break", width:150}}
+                }}
             label='none' />
 
         </Section>
