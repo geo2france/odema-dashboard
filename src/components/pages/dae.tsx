@@ -1,12 +1,11 @@
 import { Typography } from "antd"
-import { ChartPie, Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join, Select, Intro } from "@geo2france/api-dashboard/dsl";
+import { Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join, Select, Intro, ChartComparison } from "@geo2france/api-dashboard/dsl";
 import { from } from "arquero";
 import { SimpleRecord } from "@geo2france/api-dashboard";
 import { Link } from "react-router-dom";
 import { Icon } from '@iconify/react';
 import { ChartFluxInterreg } from "../chart_flux_interreg/ChartFluxInterreg";
 import { ChartGoal } from "../chartGoal";
-import { ChartDaeModeTraitement } from "../chart_dae_mode_traitement/ChartDaeModeTraitement";
 const { Paragraph} = Typography
 
 const fold = (data:SimpleRecord[]) => {
@@ -136,11 +135,16 @@ export const DaePage: React.FC = () => {
             </Dataset>
 
         <Section title="Introduction">
+            <div style={{padding:16}}>
+                <Paragraph>L'Odema est accompagné du bureau d'études AJBD pour suivre cette méthode et construire les indicateurs de l'Observatoire. </Paragraph> 
+                <Paragraph>Dans ce contexte, le périmètre d'observation des DAE est le suivant : <b>tous les DAE à l'exception des déchets dangereux, inertes, du BTP, agricoles et d'assainissement</b>.</Paragraph> 
+            </div>
             <StatisticsCollection title={`Chiffres clés DAE ${annee} en Hauts-de-France`} columns={2}>
                 <Statistics 
                     dataset="indicateur_dae"
                     dataKey="A2t3" title="DAE en entrée d'installation" 
                     valueFormatter={ noFractionDigits }
+                    help="Quantité mesurée en entrée d'installation"
                     color="#0070C0" icon="streamline:warehouse-1-solid" unit="t"/>
                 <Statistics 
                         dataset="indicateur_dae"
@@ -162,7 +166,17 @@ export const DaePage: React.FC = () => {
 
             </StatisticsCollection>
 
-            <ChartDaeModeTraitement dataKey="valeur" nameKey="lib_indicateur" dataset="mode_traitement" />
+            <ChartComparison 
+                title="Modes de traitement en 2022" 
+                valueKey="valeur" 
+                nameKey="lib_indicateur" 
+                dataset="mode_traitement" 
+                chartType="bar"
+                unit="t" 
+                label='percent'
+                option={{xAxis:{axisLabel:{formatter: (v:number) => `${(v/1e3).toLocaleString()} kt` }}}}
+            />
+
         </Section>
         <Section title="Valorisation" icon="ph:recycle-bold">
 
@@ -190,7 +204,7 @@ export const DaePage: React.FC = () => {
 
             <ChartGoal title="Objectif du SRADDET" dataset="indicateur_dae" dataKey="B8t3_pct" yearKey="annee" target={65} unit="%" />
 
-            <ChartPie
+            {/*<ChartPie
                 title="Caractérisation des DAE valorisés matière (hors organique)"
                 dataset="federec_traitement_matiere"
                 dataKey="quantite"
@@ -198,7 +212,13 @@ export const DaePage: React.FC = () => {
                 option={{graphic:{style:{fontSize:18}}}}
                 unit="t"
                 donut
-            />
+            />*/}
+
+            <ChartComparison dataset="federec_traitement_matiere" 
+                title="Caractérisation des DAE valorisés matière (hors organique)" 
+                valueKey="quantite" nameKey="categorie" unit="t" 
+                option={{xAxis:{axisLabel:{formatter: (v:number) => `${(v/1e3).toLocaleString()} kt` }}}}
+            label='none' />
 
         </Section>
         <Section title="Enfouissement" icon="material-symbols:front-loader-outline">
