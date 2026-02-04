@@ -69,11 +69,6 @@ export const EnfouissementPage: React.FC = () => {
     const {data:data_capacite, isFetching:isFetchingCapacite} = useApi({ // Historique des arrếtés
         resource:"odema:capacite_isdnd",
         dataProvider:geo2franceProvider,
-        /* filters:[{
-            field:"aiot",
-            operator:"eq",
-            value:aiot
-        }],*/
         pagination:{
             mode:"off"
         }
