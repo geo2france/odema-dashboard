@@ -3,7 +3,6 @@ import './index.css';
 import { WfsProvider, DatafairProvider, DashboardApp } from "@geo2france/api-dashboard";
 import { Partner, RouteConfig } from "@geo2france/api-dashboard";
 
-import { DmaComponent } from "./components/pages/dma";
 import { EnfouissementPage } from "./components/pages/enfouissement";
 import { DmaPageEPCI } from "./components/pages/dma_epci";
 import { HomePage } from "./components/pages/home";
@@ -18,6 +17,9 @@ import Cerdd from "/img/Logo_cerdd.svg?url";
 import Geo2France from "/img/geo2france.svg?url";
 import { DdPage } from './components/pages/dd';
 import { RepPage } from './components/pages/rep';
+import { DaePage } from './components/pages/dae';
+import { Icon } from '@iconify/react';
+import { PageDma } from './components/pages/dma';
 
 const myTheme = {
   token: {
@@ -81,9 +83,9 @@ const route_config:RouteConfig[] = [
     path: "dma",
     label: "DMA",
     icon: <HomeOutlined />,
-    element: <DmaComponent />,
+    element: <PageDma />,
     children: [
-      { path: "region", label: "Hauts-de-France", element: <DmaComponent /> },
+      { path: "region", label: "Hauts-de-France", element: <PageDma /> },
       { path: "epci", label: "EPCI", element: <DmaPageEPCI /> },
     ],
   },
@@ -105,6 +107,13 @@ const route_config:RouteConfig[] = [
     element: <RepPage />,
     hidden: true,
   },
+    {
+    path: "dae",
+    label: "DAE",
+    icon: <Icon icon="material-symbols:factory-outline" />,
+    element: <DaePage />,
+    hidden: false,
+  }
 ];
 
 const App: React.FC = () => {
@@ -117,6 +126,7 @@ const App: React.FC = () => {
       logo={Odema_logo}
       theme={myTheme}
       brands={partenaires}
+      footerSlider={false}
      />
   )
 };

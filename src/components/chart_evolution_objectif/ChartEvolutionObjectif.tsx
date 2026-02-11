@@ -1,8 +1,9 @@
-import { SimpleRecord, useChartData, useDashboardElement } from "@geo2france/api-dashboard";
-import { CSSProperties, useMemo, useRef } from "react";
+import { SimpleRecord } from "@geo2france/api-dashboard";
+import { CSSProperties, useMemo } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from "echarts";
 import alasql from "alasql";
+import { useBlockConfig, useDataset } from "@geo2france/api-dashboard/dsl";
 
 
 interface DataProps {
@@ -18,7 +19,8 @@ interface DataObjectifsProps {
 }
 
 export interface ChartEvolutionTypeDechetProps {
-    data: DataProps[];
+    dataset: string;
+    title?:string;
     dataObjectifs?:DataObjectifsProps[];
     onFocus?:any;
     focus_item?:string;
@@ -27,29 +29,32 @@ export interface ChartEvolutionTypeDechetProps {
   }
 
 const formatter_currentyear = (value:number, year?:number) => {
-    const value_year:number = new Date(value).getFullYear()
+    const value_year:number = value
     return value_year == year ? `{currentDate|${value_year} }` : value_year.toString()
 }
 
-export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = ({data, dataObjectifs, onFocus, focus_item, style, year} )  => {
-    const chartRef = useRef<any>()
+export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = ({dataset:dataset_id, dataObjectifs, title, style, year} )  => {
+
+    const dataset = useDataset(dataset_id);
+    const data = dataset?.data as DataProps | undefined;
+
     const data_chart = data && useMemo(() => alasql(`
         SELECT 
             [annee], 
             SUM([ratio]) as ratio,
-            SUM([ratio_hg]) as ratio_hg
+            SUM([tonnage]) as tonnage
         FROM ?
         GROUP BY [annee]
         `,[data]) , [data]
     ) as SimpleRecord[];
     
-    useChartData({data:data_chart, dependencies:[data]})
+    useBlockConfig({title:title, dataExport:data_chart})
 
     const serie:LineSeriesOption = {
         name: "Déchet",
         type:'line',
         color:"#FF8282",
-        data: data_chart.map((e:SimpleRecord) => [e.annee.toString(), Math.round(e.ratio)])
+        data: data_chart?.map((e:SimpleRecord) => [e.annee.toString(), Math.round(e.ratio)])
     }
 
     const serie_obj:LineSeriesOption = {
@@ -68,11 +73,18 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
         tooltip:{
             show:true,
             trigger: 'axis',
-            valueFormatter: (value) => ( `${value} kg/hab` )
+            formatter: (p:any) => 
+                `${p[0].axisValue}<br>` + 
+                    p.map((item:any) => 
+                        `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${item.color};margin-right:5px"></span>` +
+                        `${item.seriesName} <b style="margin-left:16px">${item.value[1]} kg/hab</b>`
+                    ).join('<br>')
         },
         xAxis: [
             {
-                type: 'time',
+                type: 'value',
+                min:2009, max:2031,
+                interval:2,
                 axisLabel:{
                     formatter: (value:number) => formatter_currentyear(value, year),
                     rich: {
@@ -92,8 +104,7 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
             }
         ]
     }
-    useDashboardElement({chartRef})
     return (
-        <ReactECharts option={option} ref={chartRef} style={ style} />
+        <ReactECharts option={option} style={ style} />
     )
 }

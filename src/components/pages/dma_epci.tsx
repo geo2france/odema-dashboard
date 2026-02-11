@@ -1,135 +1,20 @@
-import { Card, Col, Descriptions, DescriptionsProps, FloatButton, Modal, Row, Select, Typography } from "antd"
+import { Card, Descriptions, DescriptionsProps } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
-import { FilePdfOutlined, InfoCircleOutlined } from "@ant-design/icons"
-import alasql from "alasql"
-import { BsRecycle } from "react-icons/bs";
-import { useMemo, useState } from "react"
-import { FaPeopleGroup, FaHouseFlag , FaTrashCan } from "react-icons/fa6";
-import { TbReportMoney } from "react-icons/tb";
-import { DashboardElement, NextPrevSelect, KeyFigure, useSearchParamsState, FlipCard, SimpleRecord, DashboardPage, useApi } from "@geo2france/api-dashboard"
+import { FaPeopleGroup, FaHouseFlag } from "react-icons/fa6";
+import { SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
-import { grey } from '@ant-design/colors';
-import { geo2franceProvider } from "../../App"
-import { ChartCoutEpci, ChartCoutEpciDescription } from "../chart_cout_epci/ChartCoutEpci";
+import { ChartCoutEpci } from "../chart_cout_epci/ChartCoutEpci";
 import { CompetenceBadge, CompetencesExercees } from "../competence_badge/CompetenceBadge";
-import ChartePieCollecte from "../chart_pie_collecte/ChartPieCollecte";
+import { Control, Dashboard, Dataset, Filter, useControl, Select, useDataset, StatisticsCollection, Statistics, Transform, Producer, Palette, Section} from "@geo2france/api-dashboard/dsl";
+import { DMA_colors_labels } from "./dma";
+import { ChartRPQS } from "../chart_rpqs/rpqs";
+import { ChartTrashbin } from "../chart_trashbin/ChartTrashbin";
 
-const { Link } = Typography;
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
 export const DmaPageEPCI: React.FC = () => {
-    const [siren_epci, setSiren_epci] = useSearchParamsState('siren','200067999')
-    const [year, setYear] = useSearchParamsState('year',defaultYear.toString())
-    const [focus, setFocus] = useState<string | undefined>(undefined)
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const {data: data_territoire} = useApi({
-        resource:"odema:territoire_epci",
-        dataProvider:geo2franceProvider,
-        pagination:{
-          mode:"off"
-        },
-        filters:[
-          {
-            field:"annee",
-            operator:"eq",
-            value:year
-          }
-        ],
-        meta:{
-          properties:["annee", "name", "name_short", "siren", "population", "nb_communes", "population_collecte", "population_traitement", "population_dechetterie"]
-        }
-    })
-
-
-    const {data:data_traitement, isFetching:data_traitement_isFecthing} =  useApi({ 
-        resource:"odema:destination_dma_epci_harmonise",
-        dataProvider:geo2franceProvider,
-        pagination:{
-            mode:"off"
-        },
-        filters:[
-            {
-                field:"siren_epci",
-                operator:"eq",
-                value:siren_epci
-            }
-        ]
-    })
-
-    const {data:data_ti} = useApi({
-        resource:"odema:population_tarification_ti_epci",
-        dataProvider:geo2franceProvider,
-        pagination:{ mode: "off" },
-        filters:[
-            {
-                field:"annee",
-                value:year,
-                operator:"eq"
-            },
-            {
-                field:"epci_siren",
-                operator:"eq",
-                value:siren_epci
-            }
-        ]
-    });
-
-    const {data:data_cout} = useApi({
-      resource:"odema:couts_epci",
-      dataProvider:geo2franceProvider,
-      pagination:{ mode: "off" },
-      filters:[
-          {
-              field:"epci_siren",
-              operator:"eq",
-              value:siren_epci
-          }
-      ]
-  });
-
-    const {data:data_rpqs} =  useApi({ 
-        resource:"odema:rqps ",
-        dataProvider:geo2franceProvider,
-        pagination:{
-            mode:"off"
-        },
-        filters:[
-            {
-                field:"code_epci",
-                operator:"eq",
-                value:siren_epci
-            }
-        ]
-    });
- 
-   const territories = data_territoire?.data;
-   const options_territories = territories?.map((t:any) => ({label: t.name, value: t.siren})) 
-
-    
-  
-
-    const indicateurs_cles = data_traitement?.data && alasql<SimpleRecord[]>(`
-      SELECT 
-        [annee],
-        [traitement_destination], 
-        SUM([tonnage]) as tonnage
-      FROM ? 
-      GROUP BY [annee], [traitement_destination]
-    `,[data_traitement?.data])// chiffres clés pour les cards TODO
-  
-
-
-    const current_indicateurs_cles = indicateurs_cles?.filter((e) => e.annee == year )
-
-    const dma_total = current_indicateurs_cles?.reduce((sum, val) => sum + val.tonnage, 0)
-
-    const part_valo_matiere = dma_total && 100 * (current_indicateurs_cles?.find((e) => e.traitement_destination ==  "Valorisation organique")?.tonnage 
-                              + current_indicateurs_cles?.find((e) => e.traitement_destination ==  "Valorisation matière")?.tonnage ) 
-                              / dma_total
-
-
-    const current_epci = territories?.find((e:any) => (e.siren == siren_epci) ) 
+    const siren_epci = useControl('siren_epci')
+    const current_epci = useDataset('data_territoire')?.data?.find(r => r.siren == siren_epci) // Info sur l'EPCI sélectionné
 
     const competences:CompetencesExercees={
       'collecte':current_epci?.population_collecte / current_epci?.population,
@@ -161,287 +46,188 @@ export const DmaPageEPCI: React.FC = () => {
         {
           key:'competences',
           label:'Compétences',
-          children: <CompetenceBadge competences={competences} />
+          children:<CompetenceBadge competences={competences} />
         }
     ]
 
-    const key_figures:any[] = [
-        {id:"valo_dma", 
-        name:"Taux de valorisation des DMA",
-        description:"Part des DMA orientés vers les filières de valorisation matière ou organique.",
-        value:part_valo_matiere || NaN,
-        sub_value:"Obj. régional : 65 %",
-        digits:1,
-        icon: <BsRecycle />,
-        unit:'%'},
-        {id:"prod_dma", 
-        name:"Production de DMA",
-        description:"Production globale annuelle de DMA.",
-        value: ( (dma_total || NaN) / current_epci?.population) * 1e3,
-        sub_value:"Obj. régional : 553 kg/hab",
-        icon: <FaTrashCan />,
-        unit:'kg/hab'},
-        {
-            id:"pop_ti",
-            name:"Part de la population en TI",
-            description: "Par de la population pour laquelle la taxe ou redevance d'enlèvement des déchets ménagers comprend une part incitative, c'est à dire dépendante de la masse de déchets produite et/ou du nombre de levées",
-            value: data_ti?.data[0]?.part_pop_ti*100,
-            sub_value:"Obj. régional : 30 %",
-            icon:<TbReportMoney />,
-            unit:"%"
-        }
-    ]
+    return (<Dashboard debug>
+      <Palette labels={ DMA_colors_labels } />
+      
+      <Control>
+          <Select
+                name="annee" label="Année"
+                arrows
+                reverse={true}
+                defaultValue={String(defaultYear)}
+                options={
+                  Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
+                  .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
+                  .reverse()
+                  .map((i) => ({ label: String(i), value: String(i) }))}
+              />
+          <Select 
+            name="siren_epci" label="Territoire"
+            showSearch
+            dataset="data_territoire"
+            valueField="siren" labelField="name" />
 
-    const indicateur_type_dechet = useMemo(() => 
-      data_traitement?.data.flatMap((e) => ({
-        annee: e.annee,
-        type: e.type_dechet,
-        population: e.population,
-        tonnage: e.tonnage,
-      })) , [data_traitement]);
-    
+      </Control>
 
-    const indicateurs_destination_dechet = useMemo(() => 
-      data_traitement?.data.map((e) => ({
-        annee: e.annee,
-        type: e.traitement_destination === 'Stockage pour inertes' ? 'Stockage' : e.traitement_destination,
-        population: e.population,
-        tonnage: e.tonnage,
-      })), [data_traitement]);
-
-    return (<>
-      <FloatButton 
-        style={{'top':5, 'right':28, 'height':40}}
-        icon={<InfoCircleOutlined />}
-        type='primary'
-        shape='square'
-        onClick={() => setIsModalOpen(true)}
-        />
-
-      <Modal
-        title="Tableau de bord EPCI"
-        closable={{ 'aria-label': 'Custom Close Button' }}
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        style={{width:undefined}}
-        footer={null}
+      <Dataset
+          id="data_territoire" 
+          type="wfs"
+          url="https://www.geo2france.fr/geoserver/odema/ows"
+          resource="odema:territoire_epci"
+          meta={{
+            properties:["annee", "name", "name_short", "siren", "population", "nb_communes", "population_collecte", "population_traitement", "population_dechetterie"]
+          }}  
       >
-        <p>Les tonnages présentés ici sont issus de l'enquête collecte de <Link href="https://www.sinoe.org/" target="_blank">Sinoe</Link>,
-        mais distribués sur des périmètres différents au prorata de la population. Il peut donc s'agir de tonnages estimés.</p>
-        <p>Retrouvez ici le <Link href="https://www.geo2france.fr/portal/download-document/d46bc35bac12000f2c2fa4b794a36194" target="_blank">détail de la méthode</Link> utilisée.</p>
-      </Modal>
+        <Filter field="annee">{useControl("annee")}</Filter>   
+     </Dataset>
 
-      <DashboardPage
-        control={
-            [
-                <NextPrevSelect key="A"
-                      onChange={(e: any) => (e ? setYear(e) : undefined)}
-                      reverse={true}
-                      value={year}
-                      options={
-                        Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
-                        .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
-                        .reverse()
-                        .map((i) => ({ label: i, value: i }))}
-                    />,
-                <Select key="B"
-                      className='select-fixed' 
-                      value={siren_epci}
-                      showSearch
-                      optionFilterProp="label"
-                      onSelect={setSiren_epci}
-                      options={options_territories}
-                      style={{ maxWidth:"100%" }}
-                />
-            ]
-          }
+      <Dataset
+          id="data_traitement" 
+          type="wfs"
+          url="https://www.geo2france.fr/geoserver/odema/ows"
+          resource="odema:destination_dma_epci_harmonise"
       >
+        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+     </Dataset>
 
-      <DashboardElement title="Territoire" section="Panorama" toolbox={false}>
-          <Descriptions
-            items={territoire_descritpion_item}
-            style={{ marginTop: 5 }}
-          />
-        </DashboardElement>
+    <Dataset
+          id="indicateur_territoire" 
+          type="wfs"
+          url="https://www.geo2france.fr/geoserver/odema/ows"
+          resource="odema:destination_dma_epci_harmonise"
+      >
+        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="annee">{useControl("annee")}</Filter>
+        <Transform>SELECT 
+                    [annee],
+                    SUM([tonnage]) as tonnage,
+                    MAX([population]) as population,
+                    1000 * SUM([tonnage]) / MAX([population]) as ratio_dma,
+                    100*SUM(CASE WHEN traitement_destination ilike 'Valorisation%' THEN tonnage END) / SUM([tonnage]) as part_valo
+                  FROM ? 
+                  GROUP BY [annee]
+                  ORDER BY [annee]
+        </Transform>
+    </Dataset>
 
-        <DashboardElement
-        virtual
-        title="Chiffre clés"
-        section="Panorama">
-          <Row>{key_figures.map((f, idx) => (
-            <Col xl={24/3} md={24/3} xs={24} key={idx}>
-              <KeyFigure
-                value={f.value}
-                unit={f.unit}
-                digits={f.digits || 0}
-                name={f.name}
-                icon={f.icon}
-                sub_value={f.sub_value}
-                description={f.description}
-              />
-            </Col>
-          ))}</Row>
-        </DashboardElement>
+    <Dataset
+          id="current_trash_composition" 
+          type="wfs"
+          url="https://www.geo2france.fr/geoserver/odema/ows"
+          resource="odema:destination_dma_epci_harmonise"
+      >
+        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="annee">{useControl("annee")}</Filter>
+        <Transform>
+            SELECT type_dechet, sum(ratio_hab_pap) as ratio
+            FROM ?
+            GROUP BY type_dechet
+        </Transform> 
+     </Dataset>
 
-          <DashboardElement
-            section="Panorama"
-            isFetching={data_traitement_isFecthing}
-            title={`Destination des DMA par type de déchet en ${year}`}
-            attributions={[
-              {
-                name: "Odema",
-                url: "https://www.geo2france.fr/datahub/dataset/c60bd751-b4e3-4eb0-bbf0-d2252d705105",
-              },
-            ]}
-          >
-            {data_traitement && (
-              <ChartSankeyDestinationDMA
-                data={data_traitement?.data
-                  .filter((d: any) => d.annee == year)
-                  .map((i: SimpleRecord) => ({
-                    value: Math.max(i.tonnage, 1),
-                    source: i.type_dechet,
-                    target: i.traitement_destination === 'Stockage pour inertes' ? 'Stockage' : i.traitement_destination,
-                  }))}
-                onFocus={(e: any) => setFocus(e?.name)}
-                focus_item={focus}
-              />
-            )}
-          </DashboardElement>
+    <Dataset
+          id="tarification_ti" 
+          type="wfs"
+          url="https://www.geo2france.fr/geoserver/odema/ows"
+          resource="odema:population_tarification_ti_epci"
+      >
+        <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
+        <Transform>SELECT * FROM ? order by annee</Transform>
+     </Dataset>
 
-          <DashboardElement
-            isFetching={data_traitement_isFecthing}
-            title={`Type de déchets collectés`}
-            section="Panorama"
-            attributions={[
-              {
-                name: "Odema",
-                url: "https://www.geo2france.fr/datahub/dataset/c60bd751-b4e3-4eb0-bbf0-d2252d705105",
-              },
-            ]}
-          >
-            {indicateur_type_dechet && (
-              <ChartEvolutionDechet
-                data = {indicateur_type_dechet}
-                onFocus={(e: any) => setFocus(e?.seriesName)}
-                focus_item={focus}
-                year={Number(year)}
-              />
-            )}
-          </DashboardElement>
 
-          <DashboardElement 
-              title={`Répartition des modes de collecte en ${year}`}
-              isFetching={data_traitement_isFecthing}
-              section="Panorama" 
-              attributions={[
-                {
-                  name: "Odema",
-                  url: "https://www.geo2france.fr/datahub/dataset/c60bd751-b4e3-4eb0-bbf0-d2252d705105",
-                },
-              ]}>
-            {data_traitement && <ChartePieCollecte data={data_traitement?.data?.filter((e) => Number(e.annee) == Number(year))} /> }
-          </DashboardElement>
+    <Dataset
+          id="couts_epci" 
+          type="wfs"
+          url="https://www.geo2france.fr/geoserver/odema/ows"
+          resource="odema:couts_epci"
+      >
+        <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
+        <Transform>SELECT * FROM ? order by annee</Transform>
+     </Dataset>
 
-          <DashboardElement
-            isFetching={data_traitement_isFecthing}
-            title={`Destination des déchets`}
-            section="Traitement"
-            attributions={[
-              {
-                name: "Odema",
-                url: "https://www.geo2france.fr/datahub/dataset/c60bd751-b4e3-4eb0-bbf0-d2252d705105",
-              },
-            ]}
-          >
-            {indicateurs_destination_dechet && (
-              <ChartEvolutionDechet
-                data={indicateurs_destination_dechet}
-                onFocus={(e: any) => setFocus(e?.seriesName)}
-                focus_item={focus}
-                year={Number(year)}
-              />
-            )}
-          </DashboardElement>
+    <Dataset
+        id="destination_dma_sankey" 
+        type="wfs"
+        url="https://www.geo2france.fr/geoserver/odema/ows"
+        resource="odema:destination_dma_epci_harmonise"    
+    >
+        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+        <Transform>{`SELECT type_dechet, traitement_destination, sum(tonnage) as tonnage
+            FROM ?
+            WHERE [annee]= ${useControl("annee")}
+            GROUP BY [type_dechet], [traitement_destination]`}</Transform>
+        {/* A simplifier */} 
+        <Transform>
+            {data => data.map((i: SimpleRecord) => ({
+                          value: Math.max(i.tonnage, 1),
+                          source: i.type_dechet,
+                          target: i.traitement_destination === 'Stockage pour inertes' ? 'Stockage' : i.traitement_destination,}))}
+        </Transform>
+        <Producer url="https://sinoe.org">Ademe (Sinoe)</Producer>
+        <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+    </Dataset>
 
-          <DashboardElement 
-            title="Coûts de gestion des déchets"
-            section="Coûts"
-            description={ChartCoutEpciDescription}
-            attributions={[
-              {
-                name: "Ademe",
-                url: "https://www.sinoe.org/",
-              },
-            ]}
-            >{data_cout && 
-              <ChartCoutEpci data={data_cout?.data}/> }
-          </DashboardElement>
-          
-          <DashboardElement
-            title="Rapports RPQS"
-            section="Panorama"
-            virtual>
-            <FlipCard
-              information={
-                <div style={{ padding: 5 }}>
-                  <p>
-                    L'article{" "}
-                    <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031840555/2021-09-21">
-                      L2224-1
-                    </a>{" "}
-                    du Code général des collectivités territoriales impose aux
-                    collectivités ayant la compétence collecte ou traitement de
-                    déchets de publier annuellement un RPQS de gestion et
-                    prévention des déchets.
-                  </p>
-                  <p>
-                    <strong>Un travail de centralisation</strong> par l'Odema est
-                    en cours. Si vous avez en votre possession des documents
-                    identifiés comme manquants, merci de bien vouloir nous les
-                    transmettre.
-                  </p>
-                </div>
-              }
-              title={<span style={{ marginLeft: 5 }}>Bilans RPQS</span>}
-            >
-              {data_rpqs?.data &&
-              data_rpqs?.data?.filter((e: any) => e.url).length > 0 ? (
-                data_rpqs?.data
-                  .sort((a: any, b: any) => b.annee_exercice - a.annee_exercice)
-                  .map((d: any) => (
-                    <Card.Grid
-                      key={d.annee_exercice}
-                      hoverable={d.url}
-                      style={{ width: "20%", paddingTop: 5, textAlign: "center" }}
-                    >
-                      {d.url ? (
-                        <a href={d.url}>
-                          <FilePdfOutlined style={{ fontSize: 25 }} />{" "}
-                        </a>
-                      ) : (
-                        <FilePdfOutlined
-                          style={{ color: grey[1], fontSize: 25 }}
+    <Dataset
+          id="rpqs" 
+          type="wfs"
+          url="https://www.geo2france.fr/geoserver/odema/ows"
+          resource="odema:rqps"
+      >
+        <Filter field="code_epci">{useControl("siren_epci")}</Filter>
+     </Dataset>
+
+    <Section title="Panorama">
+        <Card styles={{header:{padding: 5,paddingLeft: 15, fontSize: 14, minHeight: 35}, body:{height:"100%", padding:0} }} title="Territoire">
+        <Descriptions
+                items={territoire_descritpion_item}
+                style={{ marginTop: 5, padding:8 }}
+            />
+        </Card>
+
+        <StatisticsCollection title="Indicateurs">
+        <Statistics title="Taux de valorisation" unit="%" dataset="indicateur_territoire" dataKey="part_valo" icon="fa7-solid:recycle" 
+        valueFormatter={(p) => p.value.toLocaleString(undefined, {maximumFractionDigits:1})} color={"#f7e11cff"}
+        annotation=""/>
+        
+        <Statistics title="Production de DMA" unit="kg/hab" dataset="indicateur_territoire" dataKey="ratio_dma" icon="famicons:trash" 
+        valueFormatter={(p) => p.value.toLocaleString(undefined, {maximumFractionDigits:0})}
+        invertColor annotation=""/>
+        
+        <Statistics title="Part de la population en TI" unit="%" dataset="tarification_ti" dataKey="part_pop_ti" icon="tabler:report-money" 
+        valueFormatter={(p) => (p.value*100).toLocaleString(undefined, {maximumFractionDigits:0})}
+        annotation="" color="#bd4cbdff"/>
+        </StatisticsCollection>
+
+        <ChartSankeyDestinationDMA 
+            title={`Types et destination des déchets en ${useControl("annee")}`} 
+            dataset="destination_dma_sankey" />
+
+        <ChartTrashbin dataset="current_trash_composition" />
+        <ChartRPQS dataset="rpqs" year={Number(useControl('annee'))} />
+
+    </Section>
+    <Section title="Traitement">
+      <ChartEvolutionDechet  dataset="data_traitement" title="Type de déchets collectés"
+                         yearKey="annee" categoryKey="type_dechet" ratioKey="ratio_hab"
+                         tonnageKey="tonnage"
+                         year={Number(useControl('annee'))}
                         />
-                      )}
-                      <br />
-                      {d.annee_exercice == year ? (
-                        <strong>{d.annee_exercice}</strong>
-                      ) : d.url ? (
-                        <span>{d.annee_exercice}</span>
-                      ) : (
-                        <span style={{ color: grey[1] }}>{d.annee_exercice}</span>
-                      )}
-                    </Card.Grid>
-                  ))
-              ) : (
-                <small style={{ margin: 5 }}>
-                  🙁 Aucun rapport n'est disponible.
-                </small>
-              )}
-            </FlipCard>
-          </DashboardElement>
-      </DashboardPage>
-    </>
+
+      <ChartEvolutionDechet  dataset="data_traitement" title="Filières de destination"
+                         yearKey="annee" categoryKey="traitement_destination" ratioKey="ratio_hab"
+                         tonnageKey="tonnage"
+                         year={Number(useControl('annee'))}
+                        />
+    </Section>
+    <Section title="Coûts">
+      <ChartCoutEpci dataset="couts_epci"/>
+    </Section>
+
+    </Dashboard>
     );
 }

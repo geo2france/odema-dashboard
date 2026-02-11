@@ -1,26 +1,23 @@
-import React, { CSSProperties, useRef } from "react";
-import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require('echarts-for-react');
+import React, { CSSProperties } from "react";
 import { chartBusinessProps, wrappe } from "../../utils";
-import { useDashboardElement, useChartActionHightlight, useChartEvents, SimpleRecord, useChartData } from "@geo2france/api-dashboard";
+import { ChartEcharts, useBlockConfig, useDataset } from "@geo2france/api-dashboard/dsl";
+import { EChartsOption } from "echarts";
 
 export interface ChartSankeyDestinationDMAProps {
-    data: any[] | SimpleRecord[]; 
-    onFocus?:any;
-    focus_item?:string;
+    dataset?: string; 
+    title?: string;
     style? : CSSProperties;
   }
 
-export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps> = ( {data, onFocus, focus_item, style} ) => {
-    const chartRef = useRef<any>()
+export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps> = ( {dataset:dataset_id, style, title} ) => {
 
-    useChartEvents({chartRef:chartRef, onFocus:onFocus})
-    useChartActionHightlight({chartRef:chartRef, target:{name:focus_item}})
-    useDashboardElement({chartRef})
-    useChartData({data:data, dependencies:[data]}) //Renommer les champs
+    const dataset = useDataset(dataset_id)
+    const blur = dataset?.isFetching // A vérifier, le blur ne se déclanche pas lors du changement d'année. A gérer niveau <Block> ?
+
+    const links = dataset?.data?.filter((e) => e.target !== `Incinération sans récupération d'énergie`); // Pas assez de tonnage
 
 
-    const links = data.filter((e) => e.target !== `Incinération sans récupération d'énergie`); // Pas assez de tonnage
-    const data_echart = [... new Set([
+    const data_echart = links && [... new Set([
         ...links.map((d) => (d.source) ), 
         ...links.map((d) => (d.target) ) 
     ] ) ].map((e) => ({
@@ -30,12 +27,16 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
         label:{formatter:(x:any) => wrappe(x.name,20)}
         }
         )).sort((a,b) => (chartBusinessProps(b.name).sort || 0) - (chartBusinessProps(a.name).sort || 0)   )
-    const option = {
+
+    useBlockConfig({ dataExport: dataset?.data, title});
+
+    const option:EChartsOption = {
         tooltip: {
             trigger: 'item',
             triggerOn: 'mousemove',
-            valueFormatter: (v:number) => `${Math.floor(v).toLocaleString()} T`
+            valueFormatter: (v) => v ? `${Math.floor(Number(v)).toLocaleString()} T` : ''
         },
+        xAxis:{show:false},yAxis:{show:false},
         series: 
         {
             name: 'Access From',
@@ -61,8 +62,8 @@ export const ChartSankeyDestinationDMA: React.FC<ChartSankeyDestinationDMAProps>
     };
 
     return(
-        <ReactECharts
-        option={option} ref={chartRef} style={{ ...style, marginTop:"0px"}}/>
+        <ChartEcharts
+        option={option} style={{ ...style, filter: blur ? 'blur(4px)':undefined, marginTop:"0px"}}/>
     )
 }
 

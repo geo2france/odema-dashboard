@@ -26,9 +26,7 @@ export const ChartIsdndGlobal: React.FC<IChartIsdndGlobalProps> = ({ data, data_
         ORDER BY c.[annee]
     `, [data, data_capacite]) as SimpleRecord[];
 
-
-    console.log(data_capacite.filter((row) => row.annee===2024))
-    
+   
     useChartData({data:data_chart}) //Pas de  dependencies : les données du graphique ne change pas
 
     const data_objectif = [

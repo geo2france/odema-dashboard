@@ -31,7 +31,6 @@ export const ChartEvolutionISDND: React.FC<IChartEvolutionISDND> = ({ data, data
         data:data_chart, 
         dependencies:[aiot]})
 
-    console.log()
     const myseries: BarSeriesOption = 
         {
             name:`Entrants`,

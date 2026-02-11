@@ -1,8 +1,8 @@
-import React, { CSSProperties, useRef } from "react";
+import React, { CSSProperties } from "react";
 import ReactECharts from 'echarts-for-react';
 import { EChartsOption, LineSeriesOption } from "echarts";
 
-import { useChartActionHightlight, useChartEvents, useChartData, useDashboardElement } from "@geo2france/api-dashboard";
+import { useBlockConfig, useDataset } from "@geo2france/api-dashboard/dsl";
 
 /**
  * La structures des données attendues.
@@ -15,9 +15,8 @@ interface DataProps {
 }
 
 export interface ChartEvolutionPopTiProps {
-    data: DataProps[]
-    onFocus?: (e:any) => void;
-    focus_item?: string;
+    dataset: string
+    title?: string;
     style?: CSSProperties; // Style à appliquer au graphique ECharts
     year?: number
   }
@@ -35,27 +34,20 @@ ${e.marker}
 ${e.seriesName} <br>
 <b>${e.value[1].toLocaleString()} hab.</b> (${(Math.round(e.value[2]*1000)/10).toLocaleString()} %)`
 
-export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, onFocus, focus_item, style, year} )  => {
-    const chartRef = useRef<any>()
+export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({dataset:dataset_id, title, style, year} )  => {
     const threshold_proj = 2023 ; // Année après laquelle démarre la projection
 
-    useChartEvents({chartRef:chartRef, onFocus:onFocus}) // Optionnel, récupérer des évenements (click ou focus) vers le parents
-    useChartActionHightlight({chartRef:chartRef, target:{seriesName:focus_item}}) // Optionnel, pour déclencher des Hightlight sur le graphique
-    useDashboardElement({chartRef})  // Nécessaire pour DashboardElement
+    const dataset = useDataset(dataset_id)
+    const data:DataProps[] | undefined = dataset?.data as DataProps[] | undefined;
 
-    useChartData({
-      data: data.map((e: any) => ({
-        annee: e.annee,
-        pop_totale: e.pop_totale,
-        pop_ti: e.pop_ti,
-        pop_tc: e.pop_tc,
-        part_pop_ti: e.part_pop_ti,
-      })),
+   useBlockConfig({
+      dataExport: data,
+      title
     });
 
     const serie: LineSeriesOption = {
       name: "Population en TI",
-      data: data.filter((e) => e.annee <= threshold_proj)
+      data: data?.filter((e) => e.annee <= threshold_proj)
         .sort((a,b) => a.annee - b.annee)
         .map((e) => ({ 
           value:[e.annee.toString(), e.pop_ti, e.pop_ti/e.pop_totale]
@@ -67,7 +59,7 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
 
     const serie_proj: LineSeriesOption = {
         name: "Population en TI (Projection)",
-        data: data.filter((e) => e.annee >= threshold_proj)
+        data: data?.filter((e) => e.annee >= threshold_proj)
           .sort((a,b) => a.annee - b.annee)
           .map((e) => ({ 
             value:[e.annee.toString(), e.pop_ti, e.pop_ti/e.pop_totale],
@@ -119,6 +111,9 @@ export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({data, o
 
     }
     return (
-        <ReactECharts option={option} ref={chartRef} style={style} />
+      <>
+        <ReactECharts option={option} style={style} />
+        <p style={{marginLeft:16}}>La région contribue à l'<b>objectif national</b> de <b>25 millions d'habitants couverts en 2025</b>.</p>
+      </>
     )
 }

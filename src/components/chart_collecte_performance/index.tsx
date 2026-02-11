@@ -7,21 +7,17 @@ import { chartBusinessProps } from "../../utils";
 
 export interface ChartCollectePerformanceProps {
     data: any[] | SimpleRecord[]; // Spécifier les champs au niveau de la ressource
-    data_territoire: any[] | SimpleRecord[]; // Le endpoint précédent ne fournie pas la POPANNEE
-    c_region?:string
     style? : CSSProperties
   }
 
-export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> = ( {data, data_territoire, c_region='32', style} ) => {
+export const ChartCollectePerformance: React.FC<ChartCollectePerformanceProps> = ( {data, style} ) => {
     const chartRef = useRef<any>()
     useDashboardElement({chartRef})
 
-    const data_pie = useMemo(() => alasql(`SELECT TYP_COLLECTE, (sum(TONNAGE_T_HG) / sum(data_territoire.VA_POPANNEE))*1000 AS RATIO_KG_HAB 
+    const data_pie = useMemo(() => alasql(`SELECT TYP_COLLECTE, sum([ratio]) as RATIO_KG_HAB 
                         FROM ? data 
-                        JOIN ? as data_territoire ON data_territoire.N_DEPT = data.N_DEPT AND data_territoire.Annee = data.ANNEE
-                        WHERE C_REGION='${c_region}'
-                        GROUP BY TYP_COLLECTE`, [data, data_territoire]),
-        [data, data_territoire, c_region]               
+                        GROUP BY TYP_COLLECTE`, [data]),
+        [data]               
     ) as SimpleRecord[]
 
     useChartData({data:data_pie, dependencies:[data_pie]})
