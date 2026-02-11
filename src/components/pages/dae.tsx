@@ -6,7 +6,10 @@ import { Link } from "react-router-dom";
 import { Icon } from '@iconify/react';
 import { ChartFluxInterreg } from "../chart_flux_interreg/ChartFluxInterreg";
 import { ChartGoal } from "../chartGoal";
+import { theme } from 'antd';
 const { Paragraph} = Typography
+
+const { useToken } = theme
 
 const fold = (data:SimpleRecord[]) => {
     if (!data || data.length === 0) return [];
@@ -28,6 +31,7 @@ const libels = {
 export const DaePage: React.FC = () => {
 
     const annee = useControl("annee")
+    const { token } = useToken()
     return     (  
     <>
     <Dashboard debug>
@@ -135,9 +139,13 @@ export const DaePage: React.FC = () => {
             </Dataset>
 
         <Section title="Introduction">
-            <div style={{padding:16}}>
-                <Paragraph>L'Odema est accompagné du bureau d'études AJBD pour suivre cette méthode et construire les indicateurs de l'Observatoire. </Paragraph> 
-                <Paragraph>Dans ce contexte, le périmètre d'observation des DAE est le suivant : <b>tous les DAE à l'exception des déchets dangereux, inertes, du BTP, agricoles et d'assainissement</b>.</Paragraph> 
+            <div style={{padding:16, textAlign: 'center' }}>
+                <Icon icon={"material-symbols:chat-info-rounded"} 
+                    width={64} height={64} 
+                    style={{marginBottom:32, marginTop:24}}
+                    color={token.colorPrimary}
+                /> 
+                <Paragraph>Pour une bonne lecture des indicateurs présentés sur ces tableaux de bord, le périmètre d'observation des DAE est le suivant : <br/> <b>tous les DAE à l'exception des déchets dangereux, inertes, du BTP, agricoles et d'assainissement</b>.</Paragraph> 
             </div>
             <StatisticsCollection title={`Chiffres clés DAE ${annee} en Hauts-de-France`} columns={2}>
                 <Statistics 
