@@ -187,12 +187,14 @@ export const PageSRADDET:React.FC = ({}) => {
                 <Statistics dataset="indicateur_sraddet" dataKey="capacite_isdnd_pr_tonnage_2010" unit="%" 
                 icon="material-symbols:front-loader" color="#d04e49" aggregate="lastNotNull"
                 title="Enfouissement" annotation={(p) => `${ p.row?.annee } : Capacité autorisée vs quantité enfouie en 2010.`}
+                help="Application la plus rigoureuse de l'objectif"
                 valueFormatter={(p) => p.value.toLocaleString(undefined, {maximumFractionDigits:1})}/>
             </StatisticsCollection>
 
             <StatisticsCollection title="Valorisation matière objectifs 65% (DNDNI)">
                 <Statistics dataset="indicateur_sraddet" dataKey="part_valo_matiere_btp" unit="%" 
                 icon="mdi:bricks" color="#e4a909" aggregate="lastNotNull"
+                help="Attention, les années ne coincident pas entre BTP/DAE/DMA !"
                 title="Valorisation matière BTP" annotation={(p) => `${p.row?.annee} : Part de valorisation matière BTP`}
                 valueFormatter={(p) => p.value.toLocaleString(undefined, {maximumFractionDigits:1})}/>
 
