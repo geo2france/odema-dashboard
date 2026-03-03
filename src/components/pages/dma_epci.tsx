@@ -50,7 +50,7 @@ export const DmaPageEPCI: React.FC = () => {
         }
     ]
 
-    return (<Dashboard debug>
+    return (<Dashboard>
       <Palette labels={ DMA_colors_labels } />
       
       <Control>
@@ -176,7 +176,7 @@ export const DmaPageEPCI: React.FC = () => {
           id="rpqs" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
-          resource="odema:rqps"
+          resource="odema:rpqs"
       >
         <Filter field="code_epci">{useControl("siren_epci")}</Filter>
      </Dataset>
