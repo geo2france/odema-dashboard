@@ -1,7 +1,7 @@
 import { Card, Descriptions, DescriptionsProps } from "antd"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { FaPeopleGroup, FaHouseFlag } from "react-icons/fa6";
-import { SimpleRecord } from "@geo2france/api-dashboard"
+import { PageProps, SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { ChartCoutEpci } from "../chart_cout_epci/ChartCoutEpci";
 import { CompetenceBadge, CompetencesExercees } from "../competence_badge/CompetenceBadge";
@@ -12,7 +12,7 @@ import { ChartTrashbin } from "../chart_trashbin/ChartTrashbin";
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
-export const DmaPageEPCI: React.FC = () => {
+export const DmaPageEPCI: React.FC<PageProps> = () => {
     const siren_epci = useControl('siren_epci')
     const current_epci = useDataset('data_territoire')?.data?.find(r => r.siren == siren_epci) // Info sur l'EPCI sélectionné
 

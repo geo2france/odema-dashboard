@@ -5,6 +5,7 @@ import { List } from 'antd';
 import { FaHome } from "react-icons/fa";
 import Odema from "/img/logo_odema.png";
 import { ReactNode } from "react";
+import { PageProps } from "@geo2france/api-dashboard";
 
 const { Text, Link, Title } = Typography;
 
@@ -56,7 +57,7 @@ const ListRelated:React.FC = () => {
   )
 }
 
-export const HomePage:React.FC = () => {
+export const HomePage:React.FC<PageProps> = () => {
     return (
       <Row gutter={[16, 16]} style={{ margin: 16 }}>
         <Col span={24}>

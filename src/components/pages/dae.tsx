@@ -1,7 +1,7 @@
 import { Typography } from "antd"
 import { Dashboard, Dataset, Section, Palette, Producer, Statistics, StatisticsCollection, Transform, Control, useControl, Filter, Join, Select, Intro, ChartComparison } from "@geo2france/api-dashboard/dsl";
 import { from } from "arquero";
-import { SimpleRecord } from "@geo2france/api-dashboard";
+import { PageProps, SimpleRecord } from "@geo2france/api-dashboard";
 import { Link } from "react-router-dom";
 import { Icon } from '@iconify/react';
 import { ChartFluxInterreg } from "../chart_flux_interreg/ChartFluxInterreg";
@@ -28,7 +28,7 @@ const libels = {
     'C2' : 'Enfouissement'
 }
 //const annee = 2022
-export const DaePage: React.FC = () => {
+export const DaePage: React.FC<PageProps> = () => {
 
     const annee = useControl("annee")
     const { token } = useToken()

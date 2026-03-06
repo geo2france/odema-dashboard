@@ -1,6 +1,6 @@
 import './index.css';
 
-import { WfsProvider, DatafairProvider, DashboardApp } from "@geo2france/api-dashboard";
+import { WfsProvider, DatafairProvider, DashboardApp, PagesGroup } from "@geo2france/api-dashboard";
 import { Partner, RouteConfig } from "@geo2france/api-dashboard";
 
 import { EnfouissementPage } from "./components/pages/enfouissement";
@@ -122,12 +122,21 @@ const App: React.FC = () => {
     <DashboardApp
       title="Odema"
       subtitle="Observatoire déchets-matières des Hauts-de-France"
-      routes={route_config}
+      //routes={route_config}
       logo={Odema_logo}
       theme={myTheme}
       brands={partenaires}
       footerSlider={false}
-     />
+     >
+      <HomePage title="Home" hidden={true}/>
+      <PagesGroup title='DMA' icon={<HomeOutlined />}>
+        <PageDma title="Région"/>
+        <DmaPageEPCI title="EPCI"/> 
+      </PagesGroup>
+      <EnfouissementPage title="ISDND" icon={<CloseSquareOutlined />}/>
+      <RepPage title="REP" hidden={true}/>
+      <DaePage title="DAE" icon="material-symbols:factory-outline" />
+     </ DashboardApp>
   )
 };
 

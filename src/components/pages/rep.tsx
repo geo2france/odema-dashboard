@@ -2,13 +2,13 @@ import { Producer, Transform } from "@geo2france/api-dashboard/dsl";
 import { ChartPie } from "@geo2france/api-dashboard/dsl";
 import { Dashboard, Dataset, Debug, Filter, Control } from "@geo2france/api-dashboard/dsl";
 import { chartBusinessProps } from "../../utils";
-import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard";
+import { NextPrevSelect, PageProps, SimpleRecord } from "@geo2france/api-dashboard";
 import { useControl } from "@geo2france/api-dashboard/dsl";
 import { Palette } from "@geo2france/api-dashboard/dsl";
 
 //TODO splitter cette page pour chaque filière (rep_mnu.tsx, rep_vhu.tsx...). Ici mettre un Tab pour chaque filière.
 
-export const RepPage: React.FC = () => {
+export const RepPage: React.FC<PageProps> = () => {
 
     return(
         <Dashboard>
