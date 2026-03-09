@@ -1,4 +1,4 @@
-import { NextPrevSelect, SimpleRecord } from "@geo2france/api-dashboard"
+import { NextPrevSelect, PageProps, SimpleRecord } from "@geo2france/api-dashboard"
 import { Control, Dashboard, Dataset, Palette, Producer, Section, Transform, useControl } from "@geo2france/api-dashboard/dsl"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { chartBusinessProps } from "../../utils"
@@ -35,7 +35,7 @@ export const DMA_colors_labels = {
                     chartBusinessProps('Valorisation organique').color ?? 'white',
             }
 
-export const PageDma: React.FC = () => {
+export const PageDma: React.FC<PageProps> = () => {
     const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
     return (

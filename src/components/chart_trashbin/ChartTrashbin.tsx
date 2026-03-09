@@ -3,9 +3,10 @@ import { BarSeriesOption, EChartsOption } from "echarts"
 import { chartBusinessProps } from "../../utils"
 import { useRef } from "react"
 import EChartsReact from "echarts-for-react"
+import { datasetInput } from "@geo2france/api-dashboard"
 
 interface ChartTrashbinProps {
-    dataset:string
+    dataset:datasetInput
 }
 export const ChartTrashbin:React.FC<ChartTrashbinProps> = ({dataset:dataset_id}) => {
 

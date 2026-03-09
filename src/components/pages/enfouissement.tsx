@@ -2,7 +2,7 @@ import { CSSProperties, useState } from "react";
 import { Row, Col, Drawer, Select, Flex, Typography } from "antd"
 import alasql from "alasql";
 import * as aq from 'arquero';
-import { Control, DashboardElement, NextPrevSelect, SimpleRecord, useApi, useSearchParamsState } from "@geo2france/api-dashboard";
+import { Control, DashboardElement, NextPrevSelect, PageProps, SimpleRecord, useApi, useSearchParamsState } from "@geo2france/api-dashboard";
 
 import { ChartEvolutionISDND } from "../chart_isdnd_installation";
 import { ChartRaceBarISDND } from "../chart_isdnd_racebar";
@@ -19,7 +19,7 @@ import Tag from "antd/es/tag";
 import { StatisticIsdnd } from "../statistic_isdnd/StatiticIsdnd";
 
 
-export const EnfouissementPage: React.FC = () => {
+export const EnfouissementPage: React.FC<PageProps> = () => {
     const default_year:number = 2024 ;
 
     const chartStyle:CSSProperties = {height:'350px'}
@@ -69,11 +69,6 @@ export const EnfouissementPage: React.FC = () => {
     const {data:data_capacite, isFetching:isFetchingCapacite} = useApi({ // Historique des arrếtés
         resource:"odema:capacite_isdnd",
         dataProvider:geo2franceProvider,
-        /* filters:[{
-            field:"aiot",
-            operator:"eq",
-            value:aiot
-        }],*/
         pagination:{
             mode:"off"
         }
