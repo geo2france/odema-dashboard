@@ -1,7 +1,8 @@
-import { SimpleRecord } from "@geo2france/api-dashboard";
+import { PageProps, SimpleRecord } from "@geo2france/api-dashboard";
 import { Control, Dashboard, Dataset, Filter, Intro, Producer, Select, Statistics, StatisticsCollection, Transform, useControl } from "@geo2france/api-dashboard/dsl"
 import { Table, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
+import { FicheIndicateur } from "../indicateur/FicheIndicateur";
 
 
 interface RowData {
@@ -111,7 +112,7 @@ const columns: ColumnsType<RowData> = [
   },
 ];
 
-export const PageSRADDET:React.FC = ({}) => {
+export const PageSRADDET:React.FC<PageProps> = ({}) => {
     return (
         <Dashboard debug>
             <Intro title="Pour travail, indicateurs réglementaire">
@@ -220,6 +221,31 @@ export const PageSRADDET:React.FC = ({}) => {
                 valueFormatter={(p) => (p.value*100).toLocaleString(undefined, {maximumFractionDigits:1})}/>
             </StatisticsCollection>
 
+
+            <FicheIndicateur 
+              nom="Mon indicateur fictif"
+              year={2023}
+              unit="kg / hab"
+              color="#ed8658"
+              GoalDirection="at_most"
+              dataset={[
+                { date_mesure: "2010-01-01T00:00:00", valeur: 600 },
+                { date_mesure: "2011-01-01T00:00:00", valeur: 610 },
+                { date_mesure: "2012-01-01T00:00:00", valeur: 615 },
+                { date_mesure: "2013-01-01T00:00:00", valeur: 587 },
+                { date_mesure: "2014-01-01T00:00:00", valeur: 550 },
+                { date_mesure: "2015-01-01T00:00:00", valeur: 560 },
+                { date_mesure: "2016-01-01T00:00:00", valeur: 500 },
+                { date_mesure: "2017-01-01T00:00:00", valeur: 200 },
+                { date_mesure: "2018-01-01T00:00:00", valeur: 542 },
+                { date_mesure: "2019-01-01T00:00:00", valeur: 425 },
+                { date_mesure: "2020-01-01T00:00:00", valeur: 400 },
+                { date_mesure: "2021-01-01T00:00:00", valeur: 410 },
+                { date_mesure: "2022-01-01T00:00:00", valeur: 390 },
+                { date_mesure: "2023-01-01T00:00:00", valeur: 380 }
+              ]}
+
+            />
 
         </Dashboard>
     )

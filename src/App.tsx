@@ -143,6 +143,7 @@ const App: React.FC = () => {
       <EnfouissementPage title="ISDND" icon={<CloseSquareOutlined />}/>
       <RepPage title="REP" hidden={true}/>
       <DaePage title="DAE" icon="material-symbols:factory-outline" />
+      <PageSRADDET title="SRADDET" hidden/>
      </ DashboardApp>
   )
 };
