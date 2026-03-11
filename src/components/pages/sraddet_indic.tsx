@@ -228,7 +228,11 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
                 year={2023}
                 unit="kg / hab"
                 color="#ed8658"
-                GoalDirection="at_most"
+                help="Indicateur de test"
+                goalDataset={[
+                  {date_mesure: "2010-01-01T00:00:00", valeur: 600 },
+                  {date_mesure: "2025-01-01T00:00:00", valeur: 400 }, 
+                  {date_mesure: "2030-01-01T00:00:00", valeur: 300 } ]}
                 dataset={[
                   { date_mesure: "2010-01-01T00:00:00", valeur: 600 },
                   { date_mesure: "2011-01-01T00:00:00", valeur: 610 },
@@ -243,7 +247,31 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
                   { date_mesure: "2020-01-01T00:00:00", valeur: 400 },
                   { date_mesure: "2021-01-01T00:00:00", valeur: 410 },
                   { date_mesure: "2022-01-01T00:00:00", valeur: 390 },
-                  { date_mesure: "2023-01-01T00:00:00", valeur: 600 }
+                  { date_mesure: "2023-01-01T00:00:00", valeur: 200 }
+                ]}
+              />
+
+                <FicheIndicateur 
+                nom="Mon indicateur fictif"
+                year={2023}
+                unit="kg / hab"
+                color="#f0ca33"
+                help="Indicateur de test"
+                dataset={[
+                  { date_mesure: "2010-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2011-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2012-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2013-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2014-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2015-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2016-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2017-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2018-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2019-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2020-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2021-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2022-01-01T00:00:00", valeur: Math.random()*600 },
+                  { date_mesure: "2023-01-01T00:00:00", valeur: Math.random()*600 }
                 ]}
               />
             </StatisticsCollection>

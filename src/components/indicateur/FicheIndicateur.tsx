@@ -15,6 +15,7 @@ type GoalDirection = "at_least" | "at_most"
 interface FicheIndicateurProps {
     nom: string 
     dataset: string | SimpleRecord[]
+    goalDataset?: string | SimpleRecord[]
     year?: string | number
     unit?: string
     color? : string
@@ -27,11 +28,12 @@ interface FicheIndicateurProps {
 /** Composant permettant d'afficher de manière synthétique un indicateur et ses objectifs lié
  * Valeur de l'indicateur, année, évolution vs trajectoire, complétion de l'objectif
  */
-export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit, color:color_input, dataset:dataset_id, help, GoalDirection="at_least"}) => {
+export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit, color:color_input, dataset:dataset_id, goalDataset, help, GoalDirection}) => {
     const { token } = useToken()
     const [showGoalChart, setShowGoalChart] = useState(false);
 
-    const goal_direction = GoalDirection // TODO undef = détecter automatiquement à partir des données d'objectifs
+    const goal_dataset = useDataset(goalDataset)
+
     const DATE_KEY = 'date_mesure'
     const VALUE_KEY = 'valeur'
     const color = color_input ?? "#000"
@@ -42,6 +44,10 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
 
     const dataset = useDataset(dataset_id)
 
+    // Detect goal direction from goal dataset (first vs last)
+    const goal_direction:GoalDirection = GoalDirection ?? 
+                           Number(goal_dataset?.data?.at(0)?.valeur) < Number(goal_dataset?.data?.at(-1)?.valeur) ? 'at_least' : 'at_most'
+
     const current_data = dataset?.data?.filter( row => new Date(row[DATE_KEY]).getFullYear() === ANNEE ) 
 
     const current_value = Number(aggregator({data:current_data, dataKey:VALUE_KEY, aggregate:'sum'}).value)
@@ -49,12 +55,7 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
     const min_value = Number(aggregator({data:dataset?.data, dataKey:VALUE_KEY, aggregate:'min'}).value)
 
 
-    const objectif_data = [
-        {date_mesure: "2010-01-01T00:00:00", valeur: 600 },
-        {date_mesure: "2025-01-01T00:00:00", valeur: 400 }, 
-        {date_mesure: "2030-01-01T00:00:00", valeur: 300 } ]
-
-    const last_goal = objectif_data.sort( (a,b) => new Date(a[DATE_KEY]).getTime() - new Date(b[DATE_KEY]).getTime())?.at(-1)
+    const last_goal = goal_dataset?.data?.sort( (a,b) => new Date(a[DATE_KEY]).getTime() - new Date(b[DATE_KEY]).getTime())?.at(-1)
 
     const goal_value = Number(last_goal?.[VALUE_KEY])
     const goal_year = last_goal?.[DATE_KEY] ? new Date(last_goal?.[DATE_KEY]).getFullYear() : undefined // Ou NaN
@@ -90,7 +91,7 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                 type: 'line',
                 color:'grey',
                 lineStyle:{type:"dashed",width:1},
-                data: objectif_data?.map( row => [row[DATE_KEY], row[VALUE_KEY]]),
+                data: goal_dataset?.data?.map( row => [row[DATE_KEY], row[VALUE_KEY]]),
                 symbol: 'none'
             },
             {
@@ -157,7 +158,8 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                                 </span>
                             </Flex>
                                 <span style={{width:"100%"}}><Progress 
-                                    type="line" 
+                                    type="line"
+                                    steps={6}
                                     percent={ Math.round(percent * 100) }
                                     strokeColor={ color }
                                     showInfo={ false } 
