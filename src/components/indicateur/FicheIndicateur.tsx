@@ -27,12 +27,25 @@ interface FicheIndicateurProps {
 
     /** Texte à afficher dans le tooltip d'aide */
     help?: string
+
+    /** Afficher le graphique (true) */
+    showChart?: boolean
 }
 
 /** Composant permettant d'afficher de manière synthétique un indicateur et son objectif (optionnel)
  * Valeur de l'indicateur, année, évolution vs trajectoire, complétion de l'objectif
  */
-export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit, color:color_input, dataset:dataset_id, goalDataset, help, GoalDirection, digits}) => {
+export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({
+nom, 
+year, 
+unit, 
+color:color_input, 
+dataset:dataset_id,
+goalDataset, 
+help, 
+GoalDirection, 
+showChart=true,
+digits}) => {
     const { token } = useToken()
     const [showGoalChart, setShowGoalChart] = useState(false);
 
@@ -142,7 +155,7 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                 },
             }}
             >
-                <Flex justify="space-between"  >
+                <Flex justify="space-between" >
                         <Flex vertical align="center" justify="space-evenly" 
                               style={{width:"100%", textAlign:"center", paddingTop:4, paddingBottom:4}}>
                             <Flex justify="center" align="center" style={{width:"100%"}} gap={4}>
@@ -162,7 +175,7 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                                     <Text>{unit}</Text>
                                 </span>
                             </Flex>
-                                {last_goal && <div>
+                                {last_goal && <div style={{width:"100%"}}>
                                 <Divider size="small" titlePlacement="start"> 
                                     <Text type="secondary">Objectif</Text> 
                                 </Divider>
@@ -179,7 +192,7 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                                                   token.colorWarning,token.colorWarning,
                                                   token.colorSuccess,token.colorSuccess]}
                                     showInfo={ false } 
-                                    style={ {width:"60%"} }/>
+                                    />
                                 { percent >=1 && 
                                     <Icon icon="lets-icons:check-fill" 
                                           color={token.colorSuccess}
@@ -190,7 +203,7 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                                        </div> }
                             </Flex>
 
-                    <div
+                   { showChart && <div
                         style={{
                             width:"80%", 
                             aspectRatio: "3 / 2",
@@ -203,7 +216,7 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                             width:"100%", 
                             height:"100%"
                             }} option={option} />
-                    </div>
+                    </div> }
                 </Flex>
             </Card>
         </div>
