@@ -12,30 +12,49 @@ const { useToken } = theme
 type GoalDirection = "at_least" | "at_most"
 
 interface FicheIndicateurProps {
-    nom: string 
+    /** Nom de l'indicateur */
+    title: string 
+
+    /** Valeurs de l'indicateur */
     dataset: string | SimpleRecord[]
+
+    /** Objectifs de valeurs */
     goalDataset?: string | SimpleRecord[]
+
+    /** Année à afficher (dernière année si null) */
     year?: string | number
+
+    /** Unité de l'indicateur */
     unit?: string
 
     /** Nombre décimales affichés */
     digits?: number
 
+    /** Couleur de la carte */
     color? : string
+
+    /** Direction des objectifs à atteindre (automatique si non indiqué) 
+     * Indique si l'objectif est un minimum `'at_least'` ou un maxium `'at_most'`*/
     GoalDirection?: GoalDirection
 
-    /** Texte à afficher dans le tooltip d'aide */
+    /** Texte à afficher dans la tooltip d'aide */
     help?: string
 
-    /** Afficher le graphique (true) */
+    /** Afficher le graphique (defaut : `true`) */
     showChart?: boolean
+
+    /** Nom de la colonne contenant la date (défaut : `date_mesure`) */
+    dateKey?: string
+
+    /** Nom de la colonne contenant la valeur numérique (défaut : `valeur`) */
+    valueKey?: string
 }
 
 /** Composant permettant d'afficher de manière synthétique un indicateur et son objectif (optionnel)
  * Valeur de l'indicateur, année, évolution vs trajectoire, complétion de l'objectif
  */
 export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({
-nom, 
+title, 
 year, 
 unit, 
 color:color_input, 
@@ -44,11 +63,14 @@ goalDataset,
 help, 
 GoalDirection, 
 showChart=true,
-digits}) => {
+digits,
+dateKey = 'date_mesure',
+valueKey = 'valeur'
+}) => {
     const { token } = useToken()
 
-    const DATE_KEY = 'date_mesure'
-    const VALUE_KEY = 'valeur'
+    const DATE_KEY = dateKey
+    const VALUE_KEY = valueKey
     const color = color_input ?? "#000"
     const ANNEE = Number(year) // TODO si undef, trouver la dernière année du dataset
 
@@ -134,7 +156,7 @@ digits}) => {
     }
     return (
         <Card 
-            title={nom}
+            title={title}
             extra={tooltip}
             style={{
                 borderLeft: `4px solid ${color}`,

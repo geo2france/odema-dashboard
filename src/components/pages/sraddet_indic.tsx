@@ -224,7 +224,7 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
             <StatisticsCollection title="Non réglementaire" columns={2}>
 
               <FicheIndicateur 
-                nom="Mon indicateur fictif"
+                title="Mon indicateur fictif"
                 year={2023}
                 unit="kg / hab"
                 color="#ed8658"
@@ -253,7 +253,7 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
               />
 
                 <FicheIndicateur 
-                nom="Mon indicateur fictif"
+                title="Mon indicateur fictif"
                 year={2023}
                 digits={0}
                 unit="kg / hab"
