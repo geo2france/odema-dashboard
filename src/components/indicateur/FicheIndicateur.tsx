@@ -66,7 +66,6 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
     const option:EChartsOption = { // Minigraph
         xAxis:{
             show: false,
-            //boundaryGap:false,
             type:"time",
             max: showGoalChart === false ? String(ANNEE) : undefined
         },
@@ -125,8 +124,7 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                 extra={tooltip}
                 style={{
                     borderLeft: `4px solid ${color}`,
-                    height:"100%",
-                    width:"50%"
+                    height:"100%"
                 }}
                 styles={{
                 body: {
@@ -140,39 +138,37 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                 },
             }}
             >
-                <Flex justify="space-between" align="center">
-                    <div style={{ textAlign: "center", width:"100%"}}>
-                        <Flex vertical align="center" justify="space-between">
+                <Flex justify="space-between"  >
+                        <Flex vertical align="center" justify="space-evenly" 
+                              style={{width:"100%", textAlign:"center", paddingTop:4, paddingBottom:4}}>
                             <Flex align="center" gap={4}>
                                 <Icon icon="mdi:calendar" color={token.colorTextSecondary} />
                                 <Text >{ ANNEE }</Text>
                             </Flex>
-                            <Flex align="center" gap={8}>
+                            <Flex align="center" justify="center" style={{width:"100%"}}>
                                 <Avatar
                                     size={32}
                                     icon={<Icon icon="iconoir:test-tube-solid"/>}
-                                    style={{ backgroundColor: color, verticalAlign:'middle' }}
+                                    style={{ backgroundColor: color, verticalAlign:'middle', margin:8 }}
                                 />
                                 <span>
-                                    <Text strong style={{fontSize:"180%", paddingRight:4}}>{ current_value }</Text> 
+                                    <Text strong style={{fontSize:"180%", paddingRight:4}}>{ current_value.toLocaleString() }</Text> 
                                     <Text>{unit}</Text>
                                 </span>
                             </Flex>
-                            {/* TODO  utiliser un autre composant pour pouvoir personnaliser le showInfo */}
-                            <span style={{width:"100%"}}><Progress 
-                                type="line" 
-                                percent={ Math.round(percent * 100) }
-                                strokeColor={ color }
-                                showInfo={ false } 
-                                style={ {width:"60%"} }/>
-                            { percent >=1 && <Icon icon="lets-icons:check-fill" style={{ verticalAlign: "middle" }} /> }
-                            </span>
-                            <span>
-                                <Icon icon="octicon:goal-16" fontSize={16} color={token.colorTextSecondary} /> 
-                                <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text></span>
+                                <span style={{width:"100%"}}><Progress 
+                                    type="line" 
+                                    percent={ Math.round(percent * 100) }
+                                    strokeColor={ color }
+                                    showInfo={ false } 
+                                    style={ {width:"60%"} }/>
+                                { percent >=1 && <Icon icon="lets-icons:check-fill" style={{ verticalAlign: "middle" }} /> }
+                                </span>
+                                <span>
+                                    <Icon icon="octicon:goal-16" fontSize={16} color={token.colorTextSecondary} /> 
+                                    <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text></span>
 
                             </Flex>
-                    </div>
 
                     <div
                         style={{
