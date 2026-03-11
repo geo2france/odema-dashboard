@@ -47,14 +47,13 @@ GoalDirection,
 showChart=true,
 digits}) => {
     const { token } = useToken()
-    const [showGoalChart, setShowGoalChart] = useState(false);
 
     const goal_dataset = useDataset(goalDataset)
 
     const DATE_KEY = 'date_mesure'
     const VALUE_KEY = 'valeur'
     const color = color_input ?? "#000"
-    const ANNEE = year // TODO si undef, trouver la dernière année du dataset
+    const ANNEE = Number(year) // TODO si undef, trouver la dernière année du dataset
 
     const tooltip =  help && <Tooltip title={help}><QuestionCircleOutlined /></Tooltip>
 
@@ -85,7 +84,7 @@ digits}) => {
         xAxis:{
             show: false,
             type:"time",
-            max: showGoalChart === false ? String(ANNEE) : undefined
+            max: String( Math.max(ANNEE ?? -Infinity,goal_year ?? -Infinity )) 
         },
         yAxis:{
             show: false,
@@ -134,96 +133,92 @@ digits}) => {
         ]
     }
     return (
-        <div>
-            <Icon icon="octicon:goal-16" fontSize={20} /> Objectif <Switch defaultChecked onChange={setShowGoalChart} value={showGoalChart}/>
-            <Card 
-                title={nom}
-                extra={tooltip}
-                style={{
-                    borderLeft: `4px solid ${color}`,
-                    height:"100%"
-                }}
-                styles={{
-                body: {
-                    padding: 0,
-                },
-                header: {
-                    padding: "5px",
-                    paddingLeft: "15px",
-                    fontSize: 14,
-                    minHeight: 35,
-                },
+        <Card 
+            title={nom}
+            extra={tooltip}
+            style={{
+                borderLeft: `4px solid ${color}`,
             }}
-            >
-                <Flex justify="space-between" >
-                        <Flex vertical align="center" justify="space-evenly" 
-                              style={{width:"100%", textAlign:"center", paddingTop:4, paddingBottom:4}}>
-                            <Flex justify="center" align="center" style={{width:"100%"}} gap={4}>
-                                <Icon icon="mdi:calendar" color={token.colorTextSecondary} />
-                                <Text >{ ANNEE }</Text>
-                            </Flex>
-                            <Flex align="center" justify="center" style={{width:"100%"}}>
-                                <Avatar
-                                    size={32}
-                                    icon={<Icon icon="iconoir:test-tube-solid"/>}
-                                    style={{ backgroundColor: color, verticalAlign:'middle', margin:'0 8px'  }}
-                                />
+            styles={{
+            body: {
+                padding: 0,
+            },
+            header: {
+                padding: "5px",
+                paddingLeft: "15px",
+                fontSize: 14,
+                minHeight: 35,
+            },
+        }}
+        >
+            <Flex justify="space-between">
+                    <Flex vertical align="center" justify="space-evenly" 
+                            style={{width:"100%", textAlign:"center", paddingTop:4, paddingBottom:4}}>
+                        <Flex justify="center" align="center" style={{width:"100%"}} gap={4}>
+                            <Icon icon="mdi:calendar" color={token.colorTextSecondary} />
+                            <Text >{ ANNEE }</Text>
+                        </Flex>
+                        <Flex align="center" justify="center" style={{width:"100%"}}>
+                            <Avatar
+                                size={32}
+                                icon={<Icon icon="iconoir:test-tube-solid"/>}
+                                style={{ backgroundColor: color, verticalAlign:'middle', margin:'0 8px'  }}
+                            />
+                            <span>
+                                <Text strong style={{fontSize:"180%", paddingRight:4}}>
+                                    { current_value.toLocaleString(undefined, {maximumFractionDigits:digits}) }
+                                </Text> 
+                                <Text>{unit}</Text>
+                            </span>
+                        </Flex>
+                            {last_goal && 
+                            <div style={{width:"100%"}}>
+
+                                <Divider size="small" titlePlacement="start"> 
+                                    <Text type="secondary">Objectif</Text> 
+                                </Divider>
+
                                 <span>
-                                    <Text strong style={{fontSize:"180%", paddingRight:4}}>
-                                        { current_value.toLocaleString(undefined, {maximumFractionDigits:digits}) }
-                                    </Text> 
-                                    <Text>{unit}</Text>
+                                    <Icon icon="octicon:goal-16" fontSize={16} color={token.colorTextSecondary} /> 
+                                    <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text>
                                 </span>
-                            </Flex>
-                                {last_goal && 
-                                <div style={{width:"100%"}}>
-                                    
-                                    <Divider size="small" titlePlacement="start"> 
-                                        <Text type="secondary">Objectif</Text> 
-                                    </Divider>
 
-                                    <span>
-                                        <Icon icon="octicon:goal-16" fontSize={16} color={token.colorTextSecondary} /> 
-                                        <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text>
-                                    </span>
+                                <Flex style={{width:"100%"}} justify="center">
+                                    <Progress 
+                                    type="line"
+                                    steps={6}
+                                    percent={ Math.round(percent * 100) }
+                                    strokeColor={[token.colorError, token.colorError, 
+                                                token.colorWarning,token.colorWarning,
+                                                token.colorSuccess,token.colorSuccess]}
+                                    showInfo={ false } 
+                                    />
+                                    { percent >=1 && 
+                                    <Icon icon="lets-icons:check-fill" 
+                                        color={token.colorSuccess}
+                                        width={28}
+                                        style={{ verticalAlign: "middle" }} /> }
+                                </Flex>
 
-                                    <Flex style={{width:"100%"}} justify="center">
-                                        <Progress 
-                                        type="line"
-                                        steps={6}
-                                        percent={ Math.round(percent * 100) }
-                                        strokeColor={[token.colorError, token.colorError, 
-                                                    token.colorWarning,token.colorWarning,
-                                                    token.colorSuccess,token.colorSuccess]}
-                                        showInfo={ false } 
-                                        />
-                                        { percent >=1 && 
-                                        <Icon icon="lets-icons:check-fill" 
-                                            color={token.colorSuccess}
-                                            width={28}
-                                            style={{ verticalAlign: "middle" }} /> }
-                                    </Flex>
+                            </div> }
+                        </Flex>
 
-                                </div> }
-                            </Flex>
-
-                   { showChart && 
-                   <div
-                        style={{
-                            width:"80%", 
-                            aspectRatio: "3 / 2",
-                            height:undefined,
-                            borderRadius: 2, 
-                            overflow: 'hidden'
-                            }}
-                        >
-                        <ChartEcharts style={{
-                            width:"100%", 
-                            height:"100%"
-                            }} option={option} />
-                    </div> }
-                </Flex>
-            </Card>
-        </div>
+                { showChart && 
+                <div
+                    style={{
+                        width:"80%", 
+                        aspectRatio: "3 / 2",
+                        height:undefined,
+                        borderRadius: 2, 
+                        overflow: 'hidden'
+                        }}
+                    >
+                    <ChartEcharts style={{
+                        width:"100%", 
+                        height:"100%"
+                        }} option={option} />
+                </div> }
+            </Flex>
+        </Card>
     )
 }

@@ -259,7 +259,7 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
                 unit="kg / hab"
                 color="#f0ca33"
                 help="Indicateur de test"
-                showChart={false}
+                showChart={true}
                 dataset={[
                   { date_mesure: "2010-01-01T00:00:00", valeur: Math.random()*600 },
                   { date_mesure: "2011-01-01T00:00:00", valeur: Math.random()*600 },
