@@ -1,7 +1,7 @@
 import { aggregator, SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartEcharts, useDataset } from "@geo2france/api-dashboard/dsl"
 import { Icon } from "@iconify/react"
-import { Avatar, Card, Flex, Progress, Switch, Tooltip, Typography, theme} from "antd"
+import { Avatar, Card, Divider, Flex, Progress, Switch, Tooltip, Typography, theme} from "antd"
 import { EChartsOption } from "echarts"
 import { useState } from "react"
 import chroma from "chroma-js";
@@ -150,26 +150,39 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                                 <Avatar
                                     size={32}
                                     icon={<Icon icon="iconoir:test-tube-solid"/>}
-                                    style={{ backgroundColor: color, verticalAlign:'middle', margin:8 }}
+                                    style={{ backgroundColor: color, verticalAlign:'middle', margin:'0 8px'  }}
                                 />
                                 <span>
                                     <Text strong style={{fontSize:"180%", paddingRight:4}}>{ current_value.toLocaleString() }</Text> 
                                     <Text>{unit}</Text>
                                 </span>
                             </Flex>
-                                <span style={{width:"100%"}}><Progress 
+                                {last_goal && <div>
+                                <Divider size="small" titlePlacement="start"> 
+                                    <Text type="secondary">Objectif</Text> 
+                                </Divider>
+                                <span>
+                                    <Icon icon="octicon:goal-16" fontSize={16} color={token.colorTextSecondary} /> 
+                                    <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text>
+                                </span>
+                                <Flex style={{width:"100%"}} justify="center">
+                                    <Progress 
                                     type="line"
                                     steps={6}
                                     percent={ Math.round(percent * 100) }
-                                    strokeColor={ color }
+                                    strokeColor={[token.colorError, token.colorError, 
+                                                  token.colorWarning,token.colorWarning,
+                                                  token.colorSuccess,token.colorSuccess]}
                                     showInfo={ false } 
                                     style={ {width:"60%"} }/>
-                                { percent >=1 && <Icon icon="lets-icons:check-fill" style={{ verticalAlign: "middle" }} /> }
-                                </span>
-                                <span>
-                                    <Icon icon="octicon:goal-16" fontSize={16} color={token.colorTextSecondary} /> 
-                                    <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text></span>
+                                { percent >=1 && 
+                                    <Icon icon="lets-icons:check-fill" 
+                                          color={token.colorSuccess}
+                                          width={28}
+                                          style={{ verticalAlign: "middle" }} /> }
+                                </Flex>
 
+                                       </div> }
                             </Flex>
 
                     <div
