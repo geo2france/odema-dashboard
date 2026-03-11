@@ -18,6 +18,10 @@ interface FicheIndicateurProps {
     goalDataset?: string | SimpleRecord[]
     year?: string | number
     unit?: string
+
+    /** Nombre décimales affichés */
+    digits?: number
+
     color? : string
     GoalDirection?: GoalDirection
 
@@ -28,7 +32,7 @@ interface FicheIndicateurProps {
 /** Composant permettant d'afficher de manière synthétique un indicateur et son objectif (optionnel)
  * Valeur de l'indicateur, année, évolution vs trajectoire, complétion de l'objectif
  */
-export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit, color:color_input, dataset:dataset_id, goalDataset, help, GoalDirection}) => {
+export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit, color:color_input, dataset:dataset_id, goalDataset, help, GoalDirection, digits}) => {
     const { token } = useToken()
     const [showGoalChart, setShowGoalChart] = useState(false);
 
@@ -152,7 +156,9 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                                     style={{ backgroundColor: color, verticalAlign:'middle', margin:'0 8px'  }}
                                 />
                                 <span>
-                                    <Text strong style={{fontSize:"180%", paddingRight:4}}>{ current_value.toLocaleString() }</Text> 
+                                    <Text strong style={{fontSize:"180%", paddingRight:4}}>
+                                        { current_value.toLocaleString(undefined, {maximumFractionDigits:digits}) }
+                                    </Text> 
                                     <Text>{unit}</Text>
                                 </span>
                             </Flex>

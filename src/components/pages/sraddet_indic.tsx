@@ -254,6 +254,7 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
                 <FicheIndicateur 
                 nom="Mon indicateur fictif"
                 year={2023}
+                digits={0}
                 unit="kg / hab"
                 color="#f0ca33"
                 help="Indicateur de test"
