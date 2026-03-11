@@ -48,12 +48,14 @@ showChart=true,
 digits}) => {
     const { token } = useToken()
 
-    const goal_dataset = useDataset(goalDataset)
-
     const DATE_KEY = 'date_mesure'
     const VALUE_KEY = 'valeur'
     const color = color_input ?? "#000"
     const ANNEE = Number(year) // TODO si undef, trouver la dernière année du dataset
+
+    const goal_dataset = useDataset(goalDataset)
+    //Time sorting
+    const goal_data = goal_dataset?.data?.sort( (a,b) => new Date(a[DATE_KEY]).getTime() - new Date(b[DATE_KEY]).getTime() )
 
     const tooltip =  help && <Tooltip title={help}><QuestionCircleOutlined /></Tooltip>
 
@@ -62,7 +64,7 @@ digits}) => {
 
     // Detect goal direction from goal dataset (first vs last)
     const goal_direction:GoalDirection = GoalDirection ?? 
-                           Number(goal_dataset?.data?.at(0)?.valeur) < Number(goal_dataset?.data?.at(-1)?.valeur) ? 'at_least' : 'at_most'
+                           Number(goal_data?.at(0)?.valeur) < Number(goal_data?.at(-1)?.valeur) ? 'at_least' : 'at_most'
 
     const current_data = dataset?.data?.filter( row => new Date(row[DATE_KEY]).getFullYear() === ANNEE ) 
 
@@ -70,11 +72,10 @@ digits}) => {
     const max_value = Number(aggregator({data:dataset?.data, dataKey:VALUE_KEY, aggregate:'max'}).value) // Attention, faussé si présence Axe (indicateur)
     const min_value = Number(aggregator({data:dataset?.data, dataKey:VALUE_KEY, aggregate:'min'}).value)
 
-
-    const last_goal = goal_dataset?.data?.sort( (a,b) => new Date(a[DATE_KEY]).getTime() - new Date(b[DATE_KEY]).getTime())?.at(-1)
+    const last_goal = goal_data?.at(-1)
 
     const goal_value = Number(last_goal?.[VALUE_KEY])
-    const goal_year = last_goal?.[DATE_KEY] ? new Date(last_goal?.[DATE_KEY]).getFullYear() : undefined // Ou NaN
+    const goal_year = last_goal?.[DATE_KEY] ? new Date(last_goal?.[DATE_KEY]).getFullYear() : undefined // Ou NaN ?
 
     const percent = goal_direction === "at_least"
         ? current_value / goal_value
@@ -107,7 +108,7 @@ digits}) => {
                 type: 'line',
                 color:'grey',
                 lineStyle:{type:"dashed",width:1},
-                data: goal_dataset?.data?.map( row => [row[DATE_KEY], row[VALUE_KEY]]),
+                data: goal_data?.map( row => [row[DATE_KEY], row[VALUE_KEY]]),
                 symbol: 'none'
             },
             {
