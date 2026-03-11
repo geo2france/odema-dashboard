@@ -21,11 +21,11 @@ interface FicheIndicateurProps {
     color? : string
     GoalDirection?: GoalDirection
 
-       /** Texte à afficher dans le tooltip d'aide */
+    /** Texte à afficher dans le tooltip d'aide */
     help?: string
 }
 
-/** Composant permettant d'afficher de manière synthétique un indicateur et ses objectifs lié
+/** Composant permettant d'afficher de manière synthétique un indicateur et son objectif (optionnel)
  * Valeur de l'indicateur, année, évolution vs trajectoire, complétion de l'objectif
  */
 export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit, color:color_input, dataset:dataset_id, goalDataset, help, GoalDirection}) => {
@@ -114,7 +114,6 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                 },
                 symbol:"none"
             },
-
         ]
     }
     return (
@@ -142,7 +141,7 @@ export const FicheIndicateur:React.FC<FicheIndicateurProps> = ({nom, year, unit,
                 <Flex justify="space-between"  >
                         <Flex vertical align="center" justify="space-evenly" 
                               style={{width:"100%", textAlign:"center", paddingTop:4, paddingBottom:4}}>
-                            <Flex align="center" gap={4}>
+                            <Flex justify="center" align="center" style={{width:"100%"}} gap={4}>
                                 <Icon icon="mdi:calendar" color={token.colorTextSecondary} />
                                 <Text >{ ANNEE }</Text>
                             </Flex>
