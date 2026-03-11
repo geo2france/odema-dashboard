@@ -191,9 +191,7 @@ digits}) => {
                             type="line"
                             steps={6}
                             percent={ Math.round(percent * 100) }
-                            strokeColor={[token.colorError, token.colorError, 
-                                        token.colorWarning,token.colorWarning,
-                                        token.colorSuccess,token.colorSuccess]}
+                            strokeColor={[token.colorError, token.colorWarning, token.colorSuccess].flatMap(c => [c, c])}
                             showInfo={ false } 
                             />
                             { percent >=1 && 
