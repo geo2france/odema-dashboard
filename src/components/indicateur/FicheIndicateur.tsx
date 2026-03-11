@@ -1,9 +1,8 @@
 import { aggregator, SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartEcharts, useDataset } from "@geo2france/api-dashboard/dsl"
 import { Icon } from "@iconify/react"
-import { Avatar, Card, Divider, Flex, Progress, Switch, Tooltip, Typography, theme} from "antd"
+import { Avatar, Card, Divider, Flex, Progress, Tooltip, Typography, theme} from "antd"
 import { EChartsOption } from "echarts"
-import { useState } from "react"
 import chroma from "chroma-js";
 import { QuestionCircleOutlined } from "@ant-design/icons"
 
