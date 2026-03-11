@@ -175,35 +175,40 @@ digits}) => {
                                     <Text>{unit}</Text>
                                 </span>
                             </Flex>
-                                {last_goal && <div style={{width:"100%"}}>
-                                <Divider size="small" titlePlacement="start"> 
-                                    <Text type="secondary">Objectif</Text> 
-                                </Divider>
-                                <span>
-                                    <Icon icon="octicon:goal-16" fontSize={16} color={token.colorTextSecondary} /> 
-                                    <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text>
-                                </span>
-                                <Flex style={{width:"100%"}} justify="center">
-                                    <Progress 
-                                    type="line"
-                                    steps={6}
-                                    percent={ Math.round(percent * 100) }
-                                    strokeColor={[token.colorError, token.colorError, 
-                                                  token.colorWarning,token.colorWarning,
-                                                  token.colorSuccess,token.colorSuccess]}
-                                    showInfo={ false } 
-                                    />
-                                { percent >=1 && 
-                                    <Icon icon="lets-icons:check-fill" 
-                                          color={token.colorSuccess}
-                                          width={28}
-                                          style={{ verticalAlign: "middle" }} /> }
-                                </Flex>
+                                {last_goal && 
+                                <div style={{width:"100%"}}>
+                                    
+                                    <Divider size="small" titlePlacement="start"> 
+                                        <Text type="secondary">Objectif</Text> 
+                                    </Divider>
 
-                                       </div> }
+                                    <span>
+                                        <Icon icon="octicon:goal-16" fontSize={16} color={token.colorTextSecondary} /> 
+                                        <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text>
+                                    </span>
+
+                                    <Flex style={{width:"100%"}} justify="center">
+                                        <Progress 
+                                        type="line"
+                                        steps={6}
+                                        percent={ Math.round(percent * 100) }
+                                        strokeColor={[token.colorError, token.colorError, 
+                                                    token.colorWarning,token.colorWarning,
+                                                    token.colorSuccess,token.colorSuccess]}
+                                        showInfo={ false } 
+                                        />
+                                        { percent >=1 && 
+                                        <Icon icon="lets-icons:check-fill" 
+                                            color={token.colorSuccess}
+                                            width={28}
+                                            style={{ verticalAlign: "middle" }} /> }
+                                    </Flex>
+
+                                </div> }
                             </Flex>
 
-                   { showChart && <div
+                   { showChart && 
+                   <div
                         style={{
                             width:"80%", 
                             aspectRatio: "3 / 2",
