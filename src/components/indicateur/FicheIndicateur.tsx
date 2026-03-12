@@ -103,13 +103,14 @@ valueKey = 'valeur'
 
     const last_goal = goal_data?.at(-1)
 
+    const start_value = Number(goal_data?.at(0)?.[VALUE_KEY])
     const goal_value = Number(last_goal?.[VALUE_KEY])
     const goal_year = last_goal?.[DATE_KEY] ? new Date(String(last_goal?.[DATE_KEY])).getFullYear() : undefined // Ou NaN ?
 
-    const percent = goal_direction === "at_least"
-        ? current_value / goal_value
-        : goal_value / current_value
-
+    // Calcule de la progression vers l'objectif
+    const percent = goal_direction === "at_least" ?
+        (current_value - start_value) / (goal_value - start_value)
+        :(start_value - current_value) / (start_value - goal_value)
 
     const [axisMin, axisMax] = [ Math.min(min_value , goal_value), Math.max(max_value , goal_value) ]
     const axisOffset = (axisMax - axisMin) * 0.05;
