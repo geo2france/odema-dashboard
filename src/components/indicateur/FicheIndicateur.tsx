@@ -5,6 +5,7 @@ import { Avatar, Card, Divider, Flex, Progress, Tooltip, Typography, theme} from
 import { EChartsOption } from "echarts"
 import chroma from "chroma-js";
 import { QuestionCircleOutlined } from "@ant-design/icons"
+import { ReactElement } from "react"
 
 const { Text } = Typography
 const { useToken } = theme
@@ -33,6 +34,9 @@ interface FicheIndicateurProps {
     /** Couleur de la carte */
     color? : string
 
+    /** Icone  */
+    icon?: string
+
     /** Direction des objectifs à atteindre (automatique si non indiqué) 
      * Indique si l'objectif est un minimum `'at_least'` ou un maxium `'at_most'`*/
     GoalDirection?: GoalDirection
@@ -58,6 +62,7 @@ title,
 year, 
 unit, 
 color:color_input, 
+icon,
 dataset:dataset_id,
 goalDataset, 
 help, 
@@ -189,11 +194,11 @@ valueKey = 'valeur'
                     </Flex>
 
                     <Flex align="center" justify="center" style={{width:"100%"}}>
-                        <Avatar
+                        { icon &&<Avatar
                             size={32}
-                            icon={<Icon icon="iconoir:test-tube-solid"/>}
+                            icon={<Icon icon={icon}/>}
                             style={{ backgroundColor: color, verticalAlign:'middle', margin:'0 8px'  }}
-                        />
+                        /> }
                         <span>
                             <Text strong style={{fontSize:"180%", paddingRight:4}}>
                                 { current_value.toLocaleString(undefined, {maximumFractionDigits:digits}) }
