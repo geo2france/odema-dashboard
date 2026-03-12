@@ -135,6 +135,7 @@ valueKey = 'valeur'
             {
                 name:"Indicateur",
                 type: 'line',
+                connectNulls: true,
                 data: dataset?.data?.map( row => [String(row[DATE_KEY]), row[VALUE_KEY]]),
                 lineStyle:{opacity:0},
                 areaStyle:{
