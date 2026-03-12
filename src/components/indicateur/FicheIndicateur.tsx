@@ -222,11 +222,10 @@ valueKey = 'valeur'
                             strokeColor={[token.colorError, token.colorWarning, token.colorSuccess].flatMap(c => [c, c])}
                             showInfo={ false } 
                             />
-                            { percent >=1 && 
                             <Icon icon="lets-icons:check-fill" 
-                                color={token.colorSuccess}
+                                color={ percent >= 0.99 ? token.colorSuccess : token.colorBgContainerDisabled}
                                 width={28}
-                                style={{ verticalAlign: "middle" }} /> }
+                                style={{ verticalAlign: "middle" }} />
                         </Flex>
 
                     </div> }
