@@ -76,7 +76,6 @@ valueKey = 'valeur'
     const DATE_KEY = dateKey
     const VALUE_KEY = valueKey
     const color = color_input ?? "#000"
-    const ANNEE = Number(year) // TODO si undef, trouver la dernière année du dataset
 
     const goal_dataset = useDataset(goalDataset)
     //Time sorting
@@ -92,7 +91,11 @@ valueKey = 'valeur'
     // Detect goal direction from goal dataset (first vs last)
     const goal_direction:GoalDirection = GoalDirection ?? 
                            Number(goal_data?.at(0)?.[VALUE_KEY]) < Number(goal_data?.at(-1)?.[VALUE_KEY]) ? 'at_least' : 'at_most'
-    const current_data = data?.filter( row => new Date(String(row[DATE_KEY])).getFullYear() === ANNEE ) 
+
+    // Last date if not set
+    const ANNEE = year ? Number(year) : aggregator({data:data, dataKey:DATE_KEY, aggregate:'max'}).value
+
+    const current_data = data?.filter( row => new Date(String(row[DATE_KEY])).getFullYear() === ANNEE )
 
     const current_value = Number(aggregator({data:current_data, dataKey:VALUE_KEY, aggregate:'sum'}).value)
     const max_value = Number(aggregator({data:data, dataKey:VALUE_KEY, aggregate:'max'}).value) // Attention, faussé si présence Axe (indicateur)
