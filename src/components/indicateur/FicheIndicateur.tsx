@@ -82,25 +82,30 @@ valueKey = 'valeur'
 
 
     const dataset = useDataset(dataset_id)
+    const data = dataset?.data
+                ?.sort((a,b) => new Date(String(a[DATE_KEY])).getTime() - new Date(String(b[DATE_KEY])).getTime() ) //Dans l'ordre chrono
+                ?.filter( row => row[VALUE_KEY] != null) // Filter null et undef
 
     // Detect goal direction from goal dataset (first vs last)
     const goal_direction:GoalDirection = GoalDirection ?? 
                            Number(goal_data?.at(0)?.valeur) < Number(goal_data?.at(-1)?.valeur) ? 'at_least' : 'at_most'
-
-    const current_data = dataset?.data?.filter( row => new Date(String(row[DATE_KEY])).getFullYear() === ANNEE ) 
+    console.log(goal_data?.at(0)?.valeur, Number(goal_data?.at(-1)?.valeur))
+    const current_data = data?.filter( row => new Date(String(row[DATE_KEY])).getFullYear() === ANNEE ) 
 
     const current_value = Number(aggregator({data:current_data, dataKey:VALUE_KEY, aggregate:'sum'}).value)
-    const max_value = Number(aggregator({data:dataset?.data, dataKey:VALUE_KEY, aggregate:'max'}).value) // Attention, faussé si présence Axe (indicateur)
-    const min_value = Number(aggregator({data:dataset?.data, dataKey:VALUE_KEY, aggregate:'min'}).value)
+    const max_value = Number(aggregator({data:data, dataKey:VALUE_KEY, aggregate:'max'}).value) // Attention, faussé si présence Axe (indicateur)
+    const min_value = Number(aggregator({data:data, dataKey:VALUE_KEY, aggregate:'min'}).value)
 
     const last_goal = goal_data?.at(-1)
 
     const goal_value = Number(last_goal?.[VALUE_KEY])
-    const goal_year = last_goal?.[DATE_KEY] ? new Date(last_goal?.[DATE_KEY]).getFullYear() : undefined // Ou NaN ?
+    const goal_year = last_goal?.[DATE_KEY] ? new Date(String(last_goal?.[DATE_KEY])).getFullYear() : undefined // Ou NaN ?
 
-    const percent = goal_direction === "at_least"
+    const percent = goal_direction === "at_least" // devnote Mauvaise dection de la directin ?
         ? current_value / goal_value
         : goal_value / current_value;
+
+    console.log(title, goal_direction)
 
     const option:EChartsOption = { // Minigraph
         xAxis:{
@@ -136,7 +141,7 @@ valueKey = 'valeur'
                 name:"Indicateur",
                 type: 'line',
                 connectNulls: true,
-                data: dataset?.data?.map( row => [String(row[DATE_KEY]), row[VALUE_KEY]]),
+                data: data?.map( row => [String(row[DATE_KEY]), row[VALUE_KEY]]),
                 lineStyle:{opacity:0},
                 areaStyle:{
                     color:{
