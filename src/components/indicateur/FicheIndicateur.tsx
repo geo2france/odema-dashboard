@@ -76,7 +76,7 @@ valueKey = 'valeur'
 
     const goal_dataset = useDataset(goalDataset)
     //Time sorting
-    const goal_data = goal_dataset?.data?.sort( (a,b) => new Date(a[DATE_KEY]).getTime() - new Date(b[DATE_KEY]).getTime() )
+    const goal_data = goal_dataset?.data?.sort( (a,b) => new Date(String(a[DATE_KEY])).getTime() - new Date(String(b[DATE_KEY])).getTime() )
 
     const tooltip =  help && <Tooltip title={help}><QuestionCircleOutlined /></Tooltip>
 
@@ -87,7 +87,7 @@ valueKey = 'valeur'
     const goal_direction:GoalDirection = GoalDirection ?? 
                            Number(goal_data?.at(0)?.valeur) < Number(goal_data?.at(-1)?.valeur) ? 'at_least' : 'at_most'
 
-    const current_data = dataset?.data?.filter( row => new Date(row[DATE_KEY]).getFullYear() === ANNEE ) 
+    const current_data = dataset?.data?.filter( row => new Date(String(row[DATE_KEY])).getFullYear() === ANNEE ) 
 
     const current_value = Number(aggregator({data:current_data, dataKey:VALUE_KEY, aggregate:'sum'}).value)
     const max_value = Number(aggregator({data:dataset?.data, dataKey:VALUE_KEY, aggregate:'max'}).value) // Attention, faussé si présence Axe (indicateur)
@@ -129,13 +129,13 @@ valueKey = 'valeur'
                 type: 'line',
                 color:'grey',
                 lineStyle:{type:"dashed",width:1},
-                data: goal_data?.map( row => [row[DATE_KEY], row[VALUE_KEY]]),
+                data: goal_data?.map( row => [String(row[DATE_KEY]), row[VALUE_KEY]]),
                 symbol: 'none'
             },
             {
                 name:"Indicateur",
                 type: 'line',
-                data: dataset?.data?.map( row => [row[DATE_KEY], row[VALUE_KEY]]),
+                data: dataset?.data?.map( row => [String(row[DATE_KEY]), row[VALUE_KEY]]),
                 lineStyle:{opacity:0},
                 areaStyle:{
                     color:{
