@@ -5,7 +5,6 @@ import { Avatar, Card, Divider, Flex, Progress, Tooltip, Typography, theme} from
 import { EChartsOption } from "echarts"
 import chroma from "chroma-js";
 import { QuestionCircleOutlined } from "@ant-design/icons"
-import { ReactElement } from "react"
 
 const { Text } = Typography
 const { useToken } = theme
@@ -85,7 +84,6 @@ valueKey = 'valeur'
 
     const tooltip =  help && <Tooltip title={help}><QuestionCircleOutlined /></Tooltip>
 
-
     const dataset = useDataset(dataset_id)
     const data = dataset?.data
                 ?.sort((a,b) => new Date(String(a[DATE_KEY])).getTime() - new Date(String(b[DATE_KEY])).getTime() ) //Dans l'ordre chrono
@@ -93,8 +91,7 @@ valueKey = 'valeur'
 
     // Detect goal direction from goal dataset (first vs last)
     const goal_direction:GoalDirection = GoalDirection ?? 
-                           Number(goal_data?.at(0)?.valeur) < Number(goal_data?.at(-1)?.valeur) ? 'at_least' : 'at_most'
-    console.log(goal_data?.at(0)?.valeur, Number(goal_data?.at(-1)?.valeur))
+                           Number(goal_data?.at(0)?.[VALUE_KEY]) < Number(goal_data?.at(-1)?.[VALUE_KEY]) ? 'at_least' : 'at_most'
     const current_data = data?.filter( row => new Date(String(row[DATE_KEY])).getFullYear() === ANNEE ) 
 
     const current_value = Number(aggregator({data:current_data, dataKey:VALUE_KEY, aggregate:'sum'}).value)
@@ -109,8 +106,6 @@ valueKey = 'valeur'
     const percent = goal_direction === "at_least" // devnote Mauvaise dection de la directin ?
         ? current_value / goal_value
         : goal_value / current_value;
-
-    console.log(title, goal_direction)
 
     const option:EChartsOption = { // Minigraph
         xAxis:{
