@@ -110,6 +110,10 @@ valueKey = 'valeur'
         ? current_value / goal_value
         : goal_value / current_value
 
+
+    const [axisMin, axisMax] = [ Math.min(min_value , goal_value), Math.max(max_value , goal_value) ]
+    const axisOffset = (axisMax - axisMin) * 0.05;
+
     const option:EChartsOption = { // Minigraph
         xAxis:{
             show: false,
@@ -119,8 +123,8 @@ valueKey = 'valeur'
         yAxis:{
             show: false,
             type:"value",
-            min: Math.min(min_value - Math.abs(min_value)*0.05, goal_value-Math.abs(goal_value)*0.05),
-            max: Math.max(max_value + Math.abs(max_value)*0.05, goal_value+Math.abs(goal_value)*0.05)
+            min: axisMin - axisOffset,
+            max: axisMax + axisOffset
         },
         grid: {
             left: 0,
