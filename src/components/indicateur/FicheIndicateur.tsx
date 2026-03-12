@@ -90,7 +90,7 @@ valueKey = 'valeur'
 
     // Detect goal direction from goal dataset (first vs last)
     const goal_direction:GoalDirection = GoalDirection ?? 
-                           Number(goal_data?.at(0)?.[VALUE_KEY]) < Number(goal_data?.at(-1)?.[VALUE_KEY]) ? 'at_least' : 'at_most'
+                           Math.abs(Number(goal_data?.at(0)?.[VALUE_KEY])) < Math.abs(Number(goal_data?.at(-1)?.[VALUE_KEY])) ? 'at_least' : 'at_most'
 
     // Last date if not set
     const ANNEE = year ? Number(year) : aggregator({data:data, dataKey:DATE_KEY, aggregate:'max'}).value
@@ -106,9 +106,9 @@ valueKey = 'valeur'
     const goal_value = Number(last_goal?.[VALUE_KEY])
     const goal_year = last_goal?.[DATE_KEY] ? new Date(String(last_goal?.[DATE_KEY])).getFullYear() : undefined // Ou NaN ?
 
-    const percent = goal_direction === "at_least" // devnote Mauvaise dection de la directin ?
+    const percent = goal_direction === "at_least"
         ? current_value / goal_value
-        : goal_value / current_value;
+        : goal_value / current_value
 
     const option:EChartsOption = { // Minigraph
         xAxis:{
@@ -119,8 +119,8 @@ valueKey = 'valeur'
         yAxis:{
             show: false,
             type:"value",
-            min: min_value - min_value*0.1,
-            max: max_value + max_value*0.1
+            min: Math.min(min_value - Math.abs(min_value)*0.05, goal_value-Math.abs(goal_value)*0.05),
+            max: Math.max(max_value + Math.abs(max_value)*0.05, goal_value+Math.abs(goal_value)*0.05)
         },
         grid: {
             left: 0,
@@ -147,6 +147,7 @@ valueKey = 'valeur'
                 data: data?.map( row => [String(row[DATE_KEY]), row[VALUE_KEY]]),
                 lineStyle:{opacity:0},
                 areaStyle:{
+                    origin:'start',
                     color:{
                         x: 0,
                         y: 0,
