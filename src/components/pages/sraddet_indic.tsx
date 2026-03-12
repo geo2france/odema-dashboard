@@ -1,5 +1,5 @@
 import { PageProps, SimpleRecord } from "@geo2france/api-dashboard";
-import { Control, Dashboard, Dataset, Filter, Intro, Producer, Select, Statistics, StatisticsCollection, Transform, useControl } from "@geo2france/api-dashboard/dsl"
+import { Dashboard, Dataset, Filter, Intro, Producer, Statistics, StatisticsCollection, Transform } from "@geo2france/api-dashboard/dsl"
 import { Table, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { FicheIndicateur } from "../indicateur/FicheIndicateur";
@@ -159,6 +159,16 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
                 <Transform>SELECT * FROM ? ORDER BY annee</Transform>
             </Dataset>
 
+            <Dataset
+                id="destination_dma_region" 
+                type="wfs"
+                url="https://www.geo2france.fr/geoserver/odema/ows"
+                resource="odema:destination_dma_region"    
+            >
+               <Transform>SELECT annee, sum(kg_par_habitant) as ratio_hab_dma FROM ? GROUP BY annee</Transform>
+
+            </Dataset>
+
             <StatisticsCollection title="DMA">
                 <Statistics dataset="indicateur_sraddet" dataKey="dma_pr_2011" unit="%" 
                 icon="streamline-flex:bag-solid" color="grey" aggregate="lastNotNull"
@@ -221,61 +231,75 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
                 valueFormatter={(p) => (p.value*100).toLocaleString(undefined, {maximumFractionDigits:1})}/>
             </StatisticsCollection>
 
-            <StatisticsCollection title="Non réglementaire" columns={2}>
+            <StatisticsCollection title="Déchets ménagers et assimilés" columns={2}>
 
               <FicheIndicateur 
-                title="Mon indicateur fictif"
-                year={2023}
-                unit="kg / hab"
-                color="#ed8658"
-                help="Indicateur de test"
-                showChart={true}
-                goalDataset={[
-                  {date_mesure: "2010-01-01T00:00:00", valeur: 600 },
-                  {date_mesure: "2025-01-01T00:00:00", valeur: 400 }, 
-                  {date_mesure: "2030-01-01T00:00:00", valeur: 300 } ]}
-                dataset={[
-                  { date_mesure: "2010-01-01T00:00:00", valeur: 600 },
-                  { date_mesure: "2011-01-01T00:00:00", valeur: 610 },
-                  { date_mesure: "2012-01-01T00:00:00", valeur: 615 },
-                  { date_mesure: "2013-01-01T00:00:00", valeur: 587 },
-                  { date_mesure: "2014-01-01T00:00:00", valeur: 550 },
-                  { date_mesure: "2015-01-01T00:00:00", valeur: 560 },
-                  { date_mesure: "2016-01-01T00:00:00", valeur: 500 },
-                  { date_mesure: "2017-01-01T00:00:00", valeur: 200 },
-                  { date_mesure: "2018-01-01T00:00:00", valeur: 542 },
-                  { date_mesure: "2019-01-01T00:00:00", valeur: 425 },
-                  { date_mesure: "2020-01-01T00:00:00", valeur: 400 },
-                  { date_mesure: "2021-01-01T00:00:00", valeur: 410 },
-                  { date_mesure: "2022-01-01T00:00:00", valeur: 390 },
-                  { date_mesure: "2023-01-01T00:00:00", valeur: 200 }
-                ]}
+                title="Production de DMA"
+                digits={1}
+                unit="%"
+                color="grey"
+                icon="streamline-flex:bag-solid"
+                help="Evolution de la production de DMA par rapport à 2011"
+                dateKey="annee"
+                valueKey="dma_pr_2011"
+                dataset="indicateur_sraddet"
+                goalDataset={[{annee:2011,dma_pr_2011:0},{annee:2030,dma_pr_2011:-15}]}
               />
 
-                <FicheIndicateur 
-                title="Mon indicateur fictif"
-                year={2023}
+              <FicheIndicateur 
+                title="Production de DMA (2)"
                 digits={0}
                 unit="kg / hab"
+                color="grey"
+                icon="streamline-flex:bag-solid"
+                help="Evolution de la production de DMA par rapport à 2011"
+                dateKey="annee"
+                valueKey="ratio_hab_dma"
+                dataset="destination_dma_region"
+                goalDataset={[{annee:2011,ratio_hab_dma:620},{annee:2030,ratio_hab_dma:527}]}
+              />
+
+              <FicheIndicateur 
+                title="Valorisation de DMA"
+                digits={0}
+                unit="%"
                 color="#f0ca33"
-                help="Indicateur de test"
-                showChart={true}
-                dataset={[
-                  { date_mesure: "2010-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2011-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2012-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2013-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2014-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2015-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2016-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2017-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2018-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2019-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2020-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2021-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2022-01-01T00:00:00", valeur: Math.random()*600 },
-                  { date_mesure: "2023-01-01T00:00:00", valeur: Math.random()*600 }
-                ]}
+                icon="fa6-solid:recycle"
+                help="Part de DMA valorisée (matière ou organique)."
+                dateKey="annee"
+                valueKey="part_valo"
+                dataset="indicateur_sraddet"
+                goalDataset={[{annee:2009,part_valo:43},{annee:2030,part_valo:60}]}
+              />
+
+              <FicheIndicateur 
+                title="Stockage de DMA"
+                digits={0}
+                unit="%"
+                color="#d04e49"
+                icon="material-symbols:front-loader"
+                help="Part de DMA valorisée (matière ou organique)."
+                dateKey="annee"
+                valueKey="dma_part_stockage"
+                dataset="indicateur_sraddet"
+                goalDataset={[{annee:2009,dma_part_stockage:28.01},{annee:2030,dma_part_stockage:10}]}
+              />
+
+
+            </StatisticsCollection>
+
+            <StatisticsCollection title="Enfouissement" columns={2}>
+              <FicheIndicateur 
+                title="Réduction des quantités enfouies p/r à 2010"
+                help="Réduction de l'enfouissement de 50%"
+                digits={0}
+                unit="%"
+                color="#d04e49"
+                icon="material-symbols:front-loader"
+                dateKey="annee"
+                valueKey="tonnage_isdnd_pr_tonnage_2010"
+                dataset="indicateur_sraddet"
+                goalDataset={[{annee:2010,tonnage_isdnd_pr_tonnage_2010:100},{annee:2025,tonnage_isdnd_pr_tonnage_2010:50}]}
               />
             </StatisticsCollection>
 
