@@ -210,7 +210,7 @@ valueKey = 'valeur'
                         </Divider>
 
                         <span>
-                            <Icon icon="octicon:goal-16" fontSize={16} color={token.colorTextSecondary} /> 
+                            <Icon icon="octicon:goal-16" fontSize={14} color={token.colorTextSecondary} /> 
                             <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text>
                         </span>
 
