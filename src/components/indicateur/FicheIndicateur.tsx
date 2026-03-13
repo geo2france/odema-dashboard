@@ -188,7 +188,7 @@ valueKey = 'valeur'
         },
     }}
     >
-        <Card.Grid style={{width:"100%", padding:10}} hoverable={false}>
+        <Card.Grid style={{width:"100%", boxShadow:'none', padding:10}} hoverable={false}>
             <Flex align="center" justify="space-between" style={{width:"100%"}}>
                 <Flex vertical style={{width:showChart ?"50%":"100%", height:"100%"}} align="center" justify="space-evenly">
                     <Flex justify="center" align="center" style={{width:"100%"}} gap={4}>
@@ -229,7 +229,7 @@ valueKey = 'valeur'
         </Card.Grid>
            
         {last_goal && 
-        <Card.Grid style={{width:"100%", padding:10}} hoverable={false}>
+        <Card.Grid style={{width:"100%", boxShadow:'none', borderTop:"var(--ant-line-width) var(--ant-line-type) var(--ant-color-border-secondary)", padding:10}} hoverable={false}>
             <Flex style={{width:"100%"}} align="center" justify="space-around">
 
                 <span>
