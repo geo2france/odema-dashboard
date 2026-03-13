@@ -1,7 +1,7 @@
 import { aggregator, SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartEcharts, useDataset } from "@geo2france/api-dashboard/dsl"
 import { Icon } from "@iconify/react"
-import { Avatar, Card, Divider, Flex, Progress, Tooltip, Typography, theme} from "antd"
+import { Avatar, Card, Flex, Progress, Tooltip, Typography, theme} from "antd"
 import { EChartsOption } from "echarts"
 import chroma from "chroma-js";
 import { QuestionCircleOutlined } from "@ant-design/icons"
@@ -27,7 +27,8 @@ interface FicheIndicateurProps {
     /** Unité de l'indicateur */
     unit?: string
 
-    /** Nombre décimales affichés */
+    /** Nombre maximale de décimales à afficher 
+     * Défaut = automatique, une décimale pour les valeurs < 100 */
     digits?: number
 
     /** Couleur de la carte */
@@ -205,7 +206,7 @@ valueKey = 'valeur'
                         /> }
                         <span>
                             <Text strong style={{fontSize:"180%", paddingRight:4}}>
-                                { current_value.toLocaleString(undefined, {maximumFractionDigits:digits}) }
+                                { current_value.toLocaleString(undefined, {maximumFractionDigits:digits ?? (Math.abs(current_value) > 99 ? 0 : 1)}) }
                             </Text> 
                             <Text>{unit}</Text>
                         </span>
@@ -261,7 +262,7 @@ const GoalProgressBar:React.FC<GoalProgressBarProps> = ({percent}) => {
         <Icon
           icon="lets-icons:check-fill"
           color={
-            percent >= 0.99
+            percent >= 0.96
               ? token.colorSuccess
               : token.colorBgContainerDisabled
           }
