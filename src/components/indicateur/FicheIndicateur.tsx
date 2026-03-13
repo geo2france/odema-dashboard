@@ -170,34 +170,32 @@ valueKey = 'valeur'
         ]
     }
     return (
-        <Card 
-            title={title}
-            extra={tooltip}
-            style={{
-                borderLeft: `4px solid ${color}`,
-            }}
-            styles={{
-            body: {
-                padding: 0,
-            },
-            header: {
-                padding: "5px",
-                paddingLeft: "15px",
-                fontSize: 14,
-                minHeight: 35,
-            },
+    <Card 
+        title={title}
+        extra={tooltip}
+        style={{
+            borderLeft: `4px solid ${color}`,
         }}
-        >
-            <Flex justify="space-between">
-                <Flex vertical align="center" justify="space-evenly" 
-                        style={{width:"100%", textAlign:"center", paddingTop:4, paddingBottom:4}}>
-
+        styles={{
+        body: {
+            padding: 0,
+        },
+        header: {
+            padding: "5px",
+            paddingLeft: "15px",
+            fontSize: 14,
+            minHeight: 35,
+        },
+    }}
+    >
+        <Card.Grid style={{width:"100%", padding:10}} hoverable={false}>
+            <Flex align="center" justify="space-between" style={{width:"100%"}}>
+                <Flex vertical style={{width:showChart ?"50%":"100%", height:"100%"}} align="center" justify="space-evenly">
                     <Flex justify="center" align="center" style={{width:"100%"}} gap={4}>
                         <Icon icon="mdi:calendar" color={token.colorTextSecondary} />
                         <Text >{ ANNEE }</Text>
                     </Flex>
-
-                    <Flex align="center" justify="center" style={{width:"100%"}}>
+                    <div>
                         { icon &&<Avatar
                             size={32}
                             icon={<Icon icon={icon}/>}
@@ -209,45 +207,17 @@ valueKey = 'valeur'
                             </Text> 
                             <Text>{unit}</Text>
                         </span>
-                    </Flex>
-                    
-                    {last_goal && 
-                    <div style={{width:"100%"}}>
-
-                        <Divider size="small" titlePlacement="start"> 
-                            <Text type="secondary">Objectif</Text> 
-                        </Divider>
-
-                        <span>
-                            <Icon icon="octicon:goal-16" fontSize={14} color={token.colorTextSecondary} /> 
-                            <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text>
-                        </span>
-
-                        <Flex style={{width:"100%"}} justify="center">
-                            <Progress 
-                            type="line"
-                            steps={6}
-                            percent={ Math.round(percent * 100) }
-                            strokeColor={[token.colorError, token.colorWarning, token.colorSuccess].flatMap(c => [c, c])}
-                            showInfo={ false } 
-                            />
-                            <Icon icon="lets-icons:check-fill" 
-                                color={ percent >= 0.99 ? token.colorSuccess : token.colorBgContainerDisabled}
-                                width={28}
-                                style={{ verticalAlign: "middle" }} />
-                        </Flex>
-
-                    </div> }
+                    </div>
                 </Flex>
-
                 { showChart && 
                 <div
                     style={{
-                        width:"80%", 
-                        aspectRatio: "3 / 2",
-                        height:undefined,
+                        width:"50%", 
+                        //aspectRatio: "3 / 2",
+                        height:"100%",
                         borderRadius: 2, 
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        margin:-10
                         }}
                     >
                     <ChartEcharts style={{
@@ -256,6 +226,56 @@ valueKey = 'valeur'
                         }} option={option} />
                 </div> }
             </Flex>
-        </Card>
+        </Card.Grid>
+           
+        {last_goal && 
+        <Card.Grid style={{width:"100%", padding:10}} hoverable={false}>
+            <Flex style={{width:"100%"}} align="center" justify="space-around">
+
+                <span>
+                    <Icon icon="octicon:goal-16" fontSize={14} color={token.colorTextSecondary} /> 
+                    <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text>
+                </span>
+                <GoalProgressBar percent={percent} />
+
+
+            </Flex> 
+        </Card.Grid> }
+
+
+            
+    </Card>
     )
 }
+
+interface GoalProgressBarProps {
+    percent: number
+}
+const GoalProgressBar:React.FC<GoalProgressBarProps> = ({percent}) => {
+    const { token } = useToken()
+
+    return (
+      <Flex  justify="center" align="center">
+        <Progress
+          type="line"
+          steps={6}
+          percent={Math.round(percent * 100)}
+          strokeColor={[
+            token.colorError,
+            token.colorWarning,
+            token.colorSuccess,
+          ].flatMap((c) => [c, c])}
+          showInfo={false}
+        />
+        <Icon
+          icon="lets-icons:check-fill"
+          color={
+            percent >= 0.99
+              ? token.colorSuccess
+              : token.colorBgContainerDisabled
+          }
+          width={28}
+          style={{ verticalAlign: "middle" }}
+        />
+      </Flex>
+    );}
