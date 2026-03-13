@@ -175,27 +175,29 @@ valueKey = 'valeur'
         extra={tooltip}
         style={{
             borderLeft: `4px solid ${color}`,
+            //height:'100%',
         }}
         styles={{
-        body: {
-            padding: 0,
-        },
-        header: {
-            padding: "5px",
-            paddingLeft: "15px",
-            fontSize: 14,
-            minHeight: 35,
-        },
-    }}
+            body: {
+                padding: 0,
+                //height:"80%"
+            },
+            header: {
+                padding: "5px",
+                paddingLeft: "15px",
+                fontSize: 14,
+                minHeight: 35,
+            },
+        }}
     >
-        <Card.Grid style={{width:"100%", boxShadow:'none', padding:10}} hoverable={false}>
+        <Flex vertical justify="space-between" style={{width:"100%", height:"100%", padding:4}}>
             <Flex align="center" justify="space-between" style={{width:"100%"}}>
-                <Flex vertical style={{width:showChart ?"50%":"100%", height:"100%"}} align="center" justify="space-evenly">
+                <Flex vertical style={{width:showChart ? "50%":"100%", height:"100%"}} align="center" justify="space-evenly">
                     <Flex justify="center" align="center" style={{width:"100%"}} gap={4}>
                         <Icon icon="mdi:calendar" color={token.colorTextSecondary} />
                         <Text >{ ANNEE }</Text>
                     </Flex>
-                    <div>
+                    <Flex align="center" justify="center" style={{marginBottom:8, width:"100%"}}>
                         { icon &&<Avatar
                             size={32}
                             icon={<Icon icon={icon}/>}
@@ -207,42 +209,31 @@ valueKey = 'valeur'
                             </Text> 
                             <Text>{unit}</Text>
                         </span>
-                    </div>
+                    </Flex>
                 </Flex>
                 { showChart && 
                 <div
                     style={{
-                        width:"50%", 
-                        //aspectRatio: "3 / 2",
-                        height:"100%",
-                        borderRadius: 2, 
-                        overflow: 'hidden',
-                        margin:-10
-                        }}
+                        width:"50%", height:"100%",
+                        marginTop:-4, marginRight:-4 }}
                     >
-                    <ChartEcharts style={{
-                        width:"100%", 
-                        height:"100%"
-                        }} option={option} />
+                    <ChartEcharts style={{ width:"100%", height:"100%" }} option={option} />
                 </div> }
             </Flex>
-        </Card.Grid>
            
-        {last_goal && 
-        <Card.Grid style={{width:"100%", boxShadow:'none', borderTop:"var(--ant-line-width) var(--ant-line-type) var(--ant-color-border-secondary)", padding:10}} hoverable={false}>
-            <Flex style={{width:"100%"}} align="center" justify="space-around">
+            {last_goal && // Objectif
+            <Flex style={{width:"100%", 
+             borderTop:"var(--ant-line-width) var(--ant-line-type) var(--ant-color-border-secondary)", paddingTop:4}} 
+             align="center" justify="space-around">
 
-                <span>
-                    <Icon icon="octicon:goal-16" fontSize={14} color={token.colorTextSecondary} /> 
+                <Flex align="center" gap={4}>
+                    <Icon icon="octicon:goal-16" fontSize={18} color={token.colorTextSecondary} /> 
                     <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text>
-                </span>
+                </Flex>
                 <GoalProgressBar percent={percent} />
 
-
-            </Flex> 
-        </Card.Grid> }
-
-
+            </Flex> }
+        </Flex>
             
     </Card>
     )
