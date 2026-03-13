@@ -156,7 +156,7 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
                 resource=" 	odema:population_tarification_ti_region "
             >
                 <Filter field="annee" operator="lte">2024</Filter>
-                <Transform>SELECT * FROM ? ORDER BY annee</Transform>
+                <Transform>SELECT *, part_pop_ti*100 as part_pop_ti_100 FROM ? ORDER BY annee</Transform>
             </Dataset>
 
             <Dataset
@@ -234,7 +234,7 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
             <StatisticsCollection title="Déchets ménagers et assimilés" columns={2}>
 
               <FicheIndicateur 
-                title="Production de DMA"
+                title="Production de DMA par rapport à 2011"
                 digits={1}
                 unit="%"
                 color="grey"
@@ -260,8 +260,7 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
               />
 
               <FicheIndicateur 
-                title="Valorisation de DMA"
-                digits={0}
+                title="Part de DMA valorisés"
                 unit="%"
                 color="#f0ca33"
                 icon="fa6-solid:recycle"
@@ -273,18 +272,29 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
               />
 
               <FicheIndicateur 
-                title="Stockage de DMA"
-                digits={0}
+                title="Part DMA envoyés stockage"
                 unit="%"
                 color="#d04e49"
                 icon="material-symbols:front-loader"
-                help="Part de DMA valorisée (matière ou organique)."
+                help="Part de DMA enfouie"
                 dateKey="annee"
                 valueKey="dma_part_stockage"
                 dataset="indicateur_sraddet"
                 goalDataset={[{annee:2009,dma_part_stockage:28.01},{annee:2030,dma_part_stockage:10}]}
               />
 
+              <FicheIndicateur
+                title="Part de la population en TI"
+                help="Population couverte par une tarification incitative sur les OMR"
+                unit="%"
+                dataset="pop_ti"
+                dateKey="annee"
+                valueKey="part_pop_ti_100"
+                icon="tabler:report-money"
+                color="#bd4cbdff"
+              >
+
+              </FicheIndicateur>
 
             </StatisticsCollection>
 
