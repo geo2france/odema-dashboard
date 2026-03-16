@@ -113,7 +113,11 @@ valueKey = 'valeur'
         (current_value - start_value) / (goal_value - start_value)
         :(start_value - current_value) / (start_value - goal_value)
 
-    const [axisMin, axisMax] = [ Math.min(min_value , goal_value), Math.max(max_value , goal_value) ]
+    // Règle spéciale pour les indicateurs en % et sans objectif quanti (a valider en atelier)
+    const [axisMin, axisMax] = 
+        !goal_value && unit=='%' ? [0,100] 
+        : [ Math.min(min_value , goal_value), Math.max(max_value , goal_value) ]
+
     const axisOffset = (axisMax - axisMin) * 0.05;
 
     const option:EChartsOption = { // Minigraph
