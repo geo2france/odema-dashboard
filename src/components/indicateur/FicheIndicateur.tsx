@@ -86,8 +86,6 @@ valueKey = 'valeur'
 
     const goal_data_mapped = goal_data?.map( e => [e?.[DATE_KEY], e?.[VALUE_KEY]])
     const goal_data_interpolated = goal_data_mapped && interpolate(goal_data_mapped as DataPoint[])
-    console.log(goal_data_interpolated)
-
 
     const tooltip =  help && <Tooltip title={help}><QuestionCircleOutlined /></Tooltip>
 
@@ -229,7 +227,7 @@ valueKey = 'valeur'
                 </Flex>
               <TrajectoryDeviationCursor currentValue={current_value} balanceValue={trajectory_value}
                startValue={start_value} 
-                orientation="vertical" style={{marginRight:10}} />
+                orientation="vertical" style={{marginRight:10}} unit={unit}/>
 
                { showChart && 
                 <div
@@ -305,6 +303,8 @@ interface TrajectoryDeviationCursorProps {
 
     orientation?: 'vertical'|'horizontal'
 
+    unit?:string
+
     style?:CSSProperties
 }
 
@@ -312,7 +312,7 @@ interface TrajectoryDeviationCursorProps {
  * C'est à dire qu'il montre le retard (ou avance) de l'EPCI par rapport à la trajectoire linéaire permettant d'atteindre l'objectif
  */
 const TrajectoryDeviationCursor:React.FC<TrajectoryDeviationCursorProps> = ({currentValue, balanceValue=50, startValue=0, 
-    orientation='horizontal', style}:TrajectoryDeviationCursorProps) => {
+    orientation='horizontal', unit, style}:TrajectoryDeviationCursorProps) => {
     const cursorColor = "#1f1f1f"
     const width = 12
     const height = 100
@@ -365,7 +365,7 @@ const TrajectoryDeviationCursor:React.FC<TrajectoryDeviationCursorProps> = ({cur
                     />
                 </Tooltip>
                
-                <Tooltip title={(percent).toLocaleString(undefined, {maximumFractionDigits:0} )}>
+                <Tooltip title={`${(currentValue - balanceValue).toLocaleString(undefined, {maximumFractionDigits:1, signDisplay:"always"} )} ${unit}`}>
                 {/* Curseur */}
                     <div
                     style={{
