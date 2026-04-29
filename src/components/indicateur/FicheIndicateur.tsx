@@ -5,6 +5,8 @@ import { Avatar, Card, Flex, Progress, Tooltip, Typography, theme} from "antd"
 import { EChartsOption } from "echarts"
 import chroma from "chroma-js";
 import { QuestionCircleOutlined } from "@ant-design/icons"
+import { interpolate } from "../../utils"
+import { CSSProperties } from "react"
 
 const { Text } = Typography
 const { useToken } = theme
@@ -82,6 +84,11 @@ valueKey = 'valeur'
     //Time sorting
     const goal_data = goal_dataset?.data?.sort( (a,b) => new Date(String(a[DATE_KEY])).getTime() - new Date(String(b[DATE_KEY])).getTime() )
 
+    const goal_data_mapped = goal_data?.map( e => [e?.[DATE_KEY], e?.[VALUE_KEY]])
+    const goal_data_interpolated = goal_data_mapped && interpolate(goal_data_mapped)
+    console.log(goal_data_interpolated)
+
+
     const tooltip =  help && <Tooltip title={help}><QuestionCircleOutlined /></Tooltip>
 
     const dataset = useDataset(dataset_id)
@@ -112,6 +119,15 @@ valueKey = 'valeur'
     const percent = goal_direction === "at_least" ?
         (current_value - start_value) / (goal_value - start_value)
         :(start_value - current_value) / (start_value - goal_value)
+
+    // Valeur idéal pour l'année N (trajectoire)
+    const trajectory_value = goal_data_interpolated?.find(e => e[0] == ANNEE)?.[1] || NaN
+
+    const percent_t = goal_direction === "at_least" ?
+        (current_value - start_value) / (trajectory_value - start_value)
+        :(start_value - current_value) / (start_value - trajectory_value)
+
+    //console.log(current_value, ANNEE, goal_data_interpolated?.find(e => e[0] == ANNEE)?.[1])
 
     // Règle spéciale pour les indicateurs en % et sans objectif quanti (a valider en atelier)
     const [axisMin, axisMax] = 
@@ -216,7 +232,11 @@ valueKey = 'valeur'
                         </span>
                     </Flex>
                 </Flex>
-                { showChart && 
+              <TrajectoryDeviationCursor currentValue={current_value} balanceValue={trajectory_value}
+               startValue={start_value} 
+                orientation="vertical" style={{marginRight:10}} />
+
+               { showChart && 
                 <div
                     style={{
                         width:"50%", height:"100%",
@@ -224,6 +244,7 @@ valueKey = 'valeur'
                     >
                     <ChartEcharts style={{ width:"100%", height:"100%" }} option={option} />
                 </div> }
+
             </Flex>
            
             {last_goal && // Objectif
@@ -239,7 +260,6 @@ valueKey = 'valeur'
 
             </Flex> }
         </Flex>
-            
     </Card>
     )
 }
@@ -275,3 +295,131 @@ const GoalProgressBar:React.FC<GoalProgressBarProps> = ({percent}) => {
         />
       </Flex>
     );}
+
+
+
+interface TrajectoryDeviationCursorProps {
+    /** Valeur d'équilibre (= trajectoire). Defaut = 50 */
+    balanceValue?: number
+
+    /** Valeur de l'indicateur */
+    currentValue: number
+
+    /** Valeur de référence (defaut = 0) */
+    startValue?: number
+
+    orientation?: 'vertical'|'horizontal'
+
+    style?:CSSProperties
+}
+
+/** Ce composant permet de visualiser l'écart à la TRAJECTOIRE (!= objectif).
+ * C'est à dire qu'il montre le retard (ou avance) de l'EPCI par rapport à la trajectoire linéaire permettant d'atteindre l'objectif
+ */
+const TrajectoryDeviationCursor:React.FC<TrajectoryDeviationCursorProps> = ({currentValue, balanceValue=50, startValue=0, 
+    orientation='horizontal', style}:TrajectoryDeviationCursorProps) => {
+    const cursorColor = "#1f1f1f"
+    const width = 12
+    const height = 100
+    const vertical = orientation == 'vertical'
+
+    const progression_reelle = (currentValue - startValue) 
+    const progression_theorique = (balanceValue - startValue) 
+
+    const percent = ((progression_reelle - progression_theorique ) / progression_theorique   )*100 // Ecart 
+
+     return (
+    <Flex orientation={orientation} justify="center" align="center" style={style} >
+        <Icon icon="mdi:rabbit" color="grey" />
+
+        <div
+        style={{
+            width: vertical ? width : height,
+            height : vertical ? height : width,
+            display: "flex",
+            justifyContent: "center",
+        }}
+        >
+            <div
+                style={{
+                position: "relative",
+                width: vertical ? width : '100%',
+                height: vertical ? '100%' : width,
+                borderRadius: 2,
+                background: `linear-gradient(
+                    ${vertical ? 'to top' : 'to right'},
+                #d87b76 0%,
+                #fdecbe 45%,
+                #68967c 50%,
+                #68967c 100%
+                        )`
+                }}
+            >
+                {/* Ligne centrale (trajectoire) */}
+                <Tooltip title={`Trajectoire : ${balanceValue.toLocaleString(undefined,{maximumFractionDigits:1})}`}>
+                    <div
+                    style={{
+                        position: "absolute",
+                        bottom: "50%" ,
+                        right: vertical ? 0 : "50%",
+                        width: width,
+                        height: 2  ,
+                        background: "#27ff27",
+                        transform: `translateY(50%) ${vertical ? '' : 'translateX(50%) rotate(90deg)'}`
+                    }}
+                    />
+                </Tooltip>
+               
+                <Tooltip title={(percent).toLocaleString(undefined, {maximumFractionDigits:0} )}>
+                {/* Curseur */}
+                    <div
+                    style={{
+                        position: "absolute",
+                        right: vertical ? "-50%" : `${ Math.max(Math.min(50 + percent, 100),0) }%` ,
+                        bottom: vertical ? `${ Math.max(Math.min(50 + percent, 100),0) }%` : '50%', // Clamp value 0-100
+                        transform: `translateY(50%)${vertical ? '' : 'translateX(50%) rotate(90deg)'}`,
+                        display: "flex",
+                        alignItems: "center",
+                        transition: "bottom 0.3s ease"
+                    }}
+                    >
+                        {/* flèche gauche */}
+                        <div
+                            style={{
+                            width: 0,
+                            height: 0,
+                            borderTop: "4px solid transparent",
+                            borderBottom: "4px solid transparent",
+                            borderLeft: `6px solid ${cursorColor}`,
+                            }}
+                        />
+                        {/* barre centrale */}
+                        <div
+                            style={{
+                            width: width,
+                            height: 2 ,
+                            background: cursorColor,
+                            }}
+                        />
+                        {/* flèche droite */}
+                        <div
+                            style={{
+                            width: 0,
+                            height: 0,
+                            borderTop: "4px solid transparent",
+                            borderBottom: "4px solid transparent",
+                            borderRight: `6px solid ${cursorColor}`
+                            }}
+                        />
+                    </div>
+                </Tooltip>
+
+            </div>
+
+
+        </div>
+
+    <Icon icon="mdi:turtle" color="grey" />
+  </Flex>
+  );
+}
