@@ -5,7 +5,7 @@ import { Avatar, Card, Flex, Progress, Tooltip, Typography, theme} from "antd"
 import { EChartsOption } from "echarts"
 import chroma from "chroma-js";
 import { QuestionCircleOutlined } from "@ant-design/icons"
-import { interpolate } from "../../utils"
+import { DataPoint, interpolate } from "../../utils"
 import { CSSProperties } from "react"
 
 const { Text } = Typography
@@ -85,7 +85,7 @@ valueKey = 'valeur'
     const goal_data = goal_dataset?.data?.sort( (a,b) => new Date(String(a[DATE_KEY])).getTime() - new Date(String(b[DATE_KEY])).getTime() )
 
     const goal_data_mapped = goal_data?.map( e => [e?.[DATE_KEY], e?.[VALUE_KEY]])
-    const goal_data_interpolated = goal_data_mapped && interpolate(goal_data_mapped)
+    const goal_data_interpolated = goal_data_mapped && interpolate(goal_data_mapped as DataPoint[])
     console.log(goal_data_interpolated)
 
 
@@ -123,11 +123,6 @@ valueKey = 'valeur'
     // Valeur idéal pour l'année N (trajectoire)
     const trajectory_value = goal_data_interpolated?.find(e => e[0] == ANNEE)?.[1] || NaN
 
-    const percent_t = goal_direction === "at_least" ?
-        (current_value - start_value) / (trajectory_value - start_value)
-        :(start_value - current_value) / (start_value - trajectory_value)
-
-    //console.log(current_value, ANNEE, goal_data_interpolated?.find(e => e[0] == ANNEE)?.[1])
 
     // Règle spéciale pour les indicateurs en % et sans objectif quanti (a valider en atelier)
     const [axisMin, axisMax] = 
