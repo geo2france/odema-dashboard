@@ -6,7 +6,8 @@ import { EChartsOption } from "echarts"
 import chroma from "chroma-js";
 import { QuestionCircleOutlined } from "@ant-design/icons"
 import { DataPoint, interpolate } from "../../utils"
-import { CSSProperties } from "react"
+import { CSSProperties, ReactNode } from "react"
+import { start } from "repl"
 
 const { Text } = Typography
 const { useToken } = theme
@@ -69,7 +70,7 @@ dataset:dataset_id,
 goalDataset, 
 help, 
 GoalDirection, 
-showChart=true,
+showChart=false,
 digits,
 dateKey = 'date_mesure',
 valueKey = 'valeur'
@@ -205,12 +206,18 @@ valueKey = 'valeur'
         }}
     >
         <Flex vertical justify="space-between" style={{width:"100%", height:"100%", padding:4}}>
-            <Flex align="center" justify="space-between" style={{width:"100%"}}>
+            <Flex align="center" justify="space-between" style={{width:"100%", height:"100%"}}>
+                
                 <Flex vertical style={{width:showChart ? "50%":"100%", height:"100%"}} align="center" justify="space-evenly">
-                    <Flex justify="center" align="center" style={{width:"100%"}} gap={4}>
-                        <Icon icon="mdi:calendar" color={token.colorTextSecondary} />
-                        <Text >{ ANNEE }</Text>
+
+                    <Flex align="center" gap={4} style={{height:"100%"}}>
+                        <Icon icon="octicon:goal-16" fontSize={18} color={token.colorText} /> 
+                        <Text style={{fontSize:"120%"}}> Objectif : <strong>{goal_value} {unit}</strong> en {goal_year}</Text>
                     </Flex>
+                    {/* DEVNOTE : pour la barre de progression, une "grosse barre" avec les valeurs a l'intérieur : 
+                    https://miro.medium.com/v2/resize:fit:640/format:webp/0*WK9StP5f-JJ9nS4B. 
+                    "bullet chart" */}
+
                     <Flex align="center" justify="center" style={{marginBottom:8, width:"100%"}}>
                         { icon &&<Avatar
                             size={32}
@@ -222,6 +229,8 @@ valueKey = 'valeur'
                                 { current_value.toLocaleString(undefined, {maximumFractionDigits:digits ?? (Math.abs(current_value) > 99 ? 0 : 1)}) }
                             </Text> 
                             <Text>{unit}</Text>
+                            <Text type="secondary" style={{fontSize:"80%"}}> ({ ANNEE }) </Text>
+
                         </span>
                     </Flex>
                 </Flex>
@@ -245,13 +254,12 @@ valueKey = 'valeur'
              borderTop:"var(--ant-line-width) var(--ant-line-type) var(--ant-color-border-secondary)", paddingTop:4}} 
              align="center" justify="space-around">
 
-                <Flex align="center" gap={4}>
-                    <Icon icon="octicon:goal-16" fontSize={18} color={token.colorTextSecondary} /> 
-                    <Text type="secondary" italic> <strong>{goal_value} {unit}</strong> en {goal_year}</Text>
-                </Flex>
-                <GoalProgressBar percent={percent} />
+                <GoalProgressBar percent={percent} goalValue={goal_value} unit={unit} goalYear={goal_year} currentValue={current_value} />
+
 
             </Flex> }
+                            <GoalBulletChart />
+
         </Flex>
     </Card>
     )
@@ -259,25 +267,33 @@ valueKey = 'valeur'
 
 interface GoalProgressBarProps {
     percent: number
+    goalValue?: number
+    goalYear?: number
+    currentValue: number
+    unit?: string
 }
-const GoalProgressBar:React.FC<GoalProgressBarProps> = ({percent}) => {
+const GoalProgressBar:React.FC<GoalProgressBarProps> = ({percent, goalValue, goalYear, unit, currentValue}) => {
     const { token } = useToken()
 
     return (
       <Flex  justify="center" align="center">
         <Progress
           type="line"
-          steps={6}
+          style={{width:80}}
+          //steps={6}
           percent={Math.round(percent * 100)}
-          strokeColor={[
+          /*strokeColor={[
             token.colorError,
             token.colorWarning,
             token.colorSuccess,
-          ].flatMap((c) => [c, c])}
+          ].flatMap((c) => [c, c])}*/
           showInfo={false}
+          percentPosition={{ align: 'center', type: "outer" }}
+          format={ _p => currentValue.toLocaleString(undefined, {maximumFractionDigits:0}) + unit }
         />
+        <Text type="secondary" italic> <strong>{goalValue} {unit}</strong></Text>
         <Icon
-          icon="lets-icons:check-fill"
+          icon="octicon:goal-16"
           color={
             percent >= 0.96
               ? token.colorSuccess
@@ -417,4 +433,135 @@ const TrajectoryDeviationCursor:React.FC<TrajectoryDeviationCursorProps> = ({cur
     <Icon icon="mdi:turtle" color="grey" />
   </Flex>
   );
+}
+
+
+/** Bullet chart pour montrer la valeur actuelle de l'indicateur par rapport à l'objecitf.
+ * A l'avenir, pourra supporter plusieurs échéances.
+ * TODO : marquer la valeur avec label, afficher année + valeur target
+ * Attention : traier les indicateurs "à l'envers" (DMA 620 -> 550 kg/hab) : l'origine doit être la valeur de 2011
+ * voir aussi : https://www.patternfly.org/charts/bullet-chart/
+ */
+const GoalBulletChart: React.FC = ({}) => {
+
+    /*const startValue = 620
+    const goalValue = 527
+    const currentValue = 605
+    const balanceValue = 561*/
+
+    const startValue = 10
+    const goalValue = 70
+    const currentValue = 50
+    const balanceValue = 60
+    
+    const reverse = goalValue < startValue
+
+
+    const startPct = 0
+    const goalPct = 100
+    const currentPct = 100* (startValue - currentValue) / (startValue - goalValue) 
+    const balancePct = 100* (startValue - balanceValue) / (startValue - goalValue) 
+
+    const options: EChartsOption = {
+      grid: {
+        height:80,
+        bottom:0,
+        backgroundColor: '#564'
+      },
+      xAxis: {
+        type: "value",
+        min: 0,
+        max: 120,
+        splitLine: { show: false },
+        axisTick: { show: true },
+        axisLine: { show: true },
+        axisLabel: { show: true, formatter : p => `${-1*p}` }, // Ajuster ici pour afficher les valeurs métier
+
+      },
+      yAxis: {
+        type: "category",
+        data: ["Indicateur"],
+        axisTick: { show: false },
+        axisLine: { show: false },
+        axisLabel: { show: false },
+      },
+      tooltip: {
+        show: true,
+      },
+      series: [
+        {
+          type: "bar",
+          name: "retard",
+          stack: "balance",
+          data: [balancePct - 10 ],
+          barWidth: 40,
+          itemStyle: { color: "#ffe4e4" }, //TODO : couleur plus bright si elle contient la valeur
+          silent: true,
+        },
+        {
+          type: "bar",
+          name: "normal",
+          stack: "balance",
+          data: [20],
+          barWidth: 40,
+          itemStyle: { color: "#fffde4" },
+          silent: true,
+        },
+        {
+          type: "bar",
+          name: "avance",
+          stack: "balance",
+          data: [120], // overflow
+          barWidth: 40,
+          itemStyle: { color: "#e9ffe4" },
+          silent: true,
+        },
+
+        {
+          type: "scatter",
+          symbol: "rect",
+          itemStyle: {
+            color: p => p.dataIndex == 0 ? '#141414' : '#ffffff00'
+           },
+          silent: true,
+          symbolSize: [30, 2],
+          symbolOffset: [0, 5],
+          symbolRotate: 90,
+          z: 20,
+          data: [100],
+          label: {
+            show: true,
+            position: "top",
+            formatter: p => p.dataIndex == 1 ? "2030" : p.dataIndex == 1 ? "2023": p.dataIndex == 0 ? "2011" : '',
+          },
+          tooltip: {
+            valueFormatter: (val) => val + "%",
+          },
+        },
+        // 📊 Valeur réelle
+        {
+          type: "bar",
+          stack: "value",
+          data: [currentPct],
+          barWidth: 20,
+          tooltip: {
+            formatter: (_p) => `${currentValue} kg/hab`,
+          },
+          label: {
+            show: true,
+            formatter: (_p) => `${currentValue} kg/hab`,
+          },
+          barGap: "-75%",
+          itemStyle: {
+            color: "#2b2b2b",
+          },
+          z: 10, // au-dessus
+        },
+      ],
+    };
+
+
+    return (
+        <ChartEcharts option={options} style={{height:80}}/>
+    )
 }

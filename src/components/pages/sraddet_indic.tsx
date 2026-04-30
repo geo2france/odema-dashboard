@@ -234,7 +234,7 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
             <StatisticsCollection title="Déchets ménagers et assimilés" columns={2}>
 
               <FicheIndicateur 
-                title="Production de DMA par rapport à 2011"
+                title="Réduire la production de DMA"
                 digits={1}
                 unit="%"
                 color="grey"
@@ -247,7 +247,7 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
               />
 
               <FicheIndicateur 
-                title="Production de DMA (2)"
+                title="Réduire la production de DMA (2)"
                 digits={0}
                 unit="kg / hab"
                 color="grey"
@@ -272,7 +272,7 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
               />
 
               <FicheIndicateur 
-                title="Part DMA envoyés stockage"
+                title="10% de DMA envoyés stockage"
                 unit="%"
                 color="#d04e49"
                 icon="material-symbols:front-loader"
