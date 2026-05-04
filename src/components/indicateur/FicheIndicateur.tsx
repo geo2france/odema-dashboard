@@ -258,7 +258,7 @@ valueKey = 'valeur'
 
 
             </Flex> }
-                            <GoalBulletChart goalValue={goal_value} value={current_value} startValue={start_value} balanceValue={trajectory_value}/>
+                            <GoalBulletChart goalValue={goal_value} value={current_value} startValue={start_value} balanceValue={trajectory_value} unit={unit}/>
 
         </Flex>
     </Card>
@@ -445,6 +445,8 @@ interface GoalBulletChartProps {
     value: number
 
     balanceValue: number
+
+    unit?: string
 }
 
 /** Bullet chart pour montrer la valeur actuelle de l'indicateur par rapport à l'objecitf.
@@ -453,7 +455,7 @@ interface GoalBulletChartProps {
  * Attention : traier les indicateurs "à l'envers" (DMA 620 -> 550 kg/hab) : l'origine doit être la valeur de 2011
  * voir aussi : https://www.patternfly.org/charts/bullet-chart/
  */
-const GoalBulletChart: React.FC<GoalBulletChartProps> = ({startValue, goalValue, value:currentValue,balanceValue }:GoalBulletChartProps) => {
+const GoalBulletChart: React.FC<GoalBulletChartProps> = ({startValue, goalValue, value:currentValue,balanceValue, unit }:GoalBulletChartProps) => {
 
     /*const startValue = 620
     const goalValue = 527
@@ -483,7 +485,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = ({startValue, goalValue,
       },
       xAxis: {
         type: "value",
-        name: "kg / hab",
+        name: unit,
         nameLocation: "center",
         min: -10, // à dynamiser
         max: 120,
@@ -568,7 +570,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = ({startValue, goalValue,
           },
           label: {
             show: true,
-            formatter: (_p) => `${currentValue} kg/hab`,
+            formatter: (_p) => `${currentValue.toLocaleString(undefined, {maximumFractionDigits:1})} ${unit ?? ''}`,
           },
           barGap: "-75%",
           itemStyle: {
