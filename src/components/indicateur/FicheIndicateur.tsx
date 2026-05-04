@@ -258,7 +258,7 @@ valueKey = 'valeur'
 
 
             </Flex> }
-                            <GoalBulletChart />
+                            <GoalBulletChart goalValue={goal_value} value={current_value} startValue={start_value} balanceValue={trajectory_value}/>
 
         </Flex>
     </Card>
@@ -435,20 +435,32 @@ const TrajectoryDeviationCursor:React.FC<TrajectoryDeviationCursorProps> = ({cur
   );
 }
 
+
+
+interface GoalBulletChartProps {
+    startValue:number
+
+    goalValue:number
+
+    value: number
+
+    balanceValue: number
+}
+
 /** Bullet chart pour montrer la valeur actuelle de l'indicateur par rapport à l'objecitf.
  * A l'avenir, pourra supporter plusieurs échéances.
  * TODO : marquer la valeur avec label, afficher année + valeur target
  * Attention : traier les indicateurs "à l'envers" (DMA 620 -> 550 kg/hab) : l'origine doit être la valeur de 2011
  * voir aussi : https://www.patternfly.org/charts/bullet-chart/
  */
-const GoalBulletChart: React.FC = ({}) => {
+const GoalBulletChart: React.FC<GoalBulletChartProps> = ({startValue, goalValue, value:currentValue,balanceValue }:GoalBulletChartProps) => {
 
-    const startValue = 620
+    /*const startValue = 620
     const goalValue = 527
     const currentValue = 605
     const balanceValue = 561
 
-    /*const startValue = 10
+    const startValue = 10
     const goalValue = 70
     const currentValue = 50
     const balanceValue = 60*/
