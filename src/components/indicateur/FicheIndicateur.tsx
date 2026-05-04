@@ -464,8 +464,8 @@ const GoalBulletChart: React.FC = ({}) => {
 
     const options: EChartsOption = {
       grid: {
-        height:80,
-        bottom:0,
+        height:60,
+        bottom:70,
         backgroundColor: '#564'
       },
       xAxis: {
@@ -487,6 +487,9 @@ const GoalBulletChart: React.FC = ({}) => {
       },
       tooltip: {
         show: true,
+      },
+      legend: {
+        show: true
       },
       series: [
         {
@@ -521,7 +524,7 @@ const GoalBulletChart: React.FC = ({}) => {
           type: "scatter",
           symbol: "rect",
           itemStyle: {
-            color: p => p.dataIndex == 0 ? '#141414' : '#ffffff00'
+            color: p => p.dataIndex == 0 ? '#494cff' : '#ffffff00'
            },
           silent: true,
           symbolSize: [30, 2],
@@ -532,7 +535,7 @@ const GoalBulletChart: React.FC = ({}) => {
           label: {
             show: true,
             position: "top",
-            formatter: p => p.dataIndex == 1 ? "2030" : p.dataIndex == 1 ? "2023": p.dataIndex == 0 ? "2011" : '',
+            formatter: p => p.dataIndex == 0 ? "2030" : p.dataIndex == 1 ? "2023": p.dataIndex == 0 ? "2011" : '',
           },
           tooltip: {
             valueFormatter: (val) => val + "%",
@@ -562,6 +565,6 @@ const GoalBulletChart: React.FC = ({}) => {
 
 
     return (
-        <ChartEcharts option={options} style={{height:80}}/>
+        <ChartEcharts option={options} style={{height:150}}/>
     )
 }
