@@ -53,7 +53,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
         {showNormalizeButton && 
               <Segmented
                 value={normalizeState}
-                style={{position:'absolute', right:16, top:32+16, zIndex:1}}
+                style={{position:'absolute', right:16, top:8, zIndex:1}}
                 options={[
                     { value: true, icon: <Icon icon="gravity-ui:chart-area-stacked-normalized" /> },
                     { value: false, label: <Icon icon="gravity-ui:chart-area-stacked" /> },
