@@ -69,7 +69,9 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
             name="siren_epci" label="Territoire"
             showSearch
             dataset="data_territoire"
-            valueField="siren" labelField="name" />
+            valueField="siren" labelField="name_select" 
+            style={{minWidth: 300}}
+            />
 
       </Control>
 
@@ -82,7 +84,12 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
             properties:["annee", "name", "name_short", "siren", "population", "nb_communes", "population_collecte", "population_traitement", "population_dechetterie"]
           }}  
       >
-        <Filter field="annee">{useControl("annee")}</Filter>   
+        <Filter field="annee">{useControl("annee")}</Filter> 
+        <Transform>{ (data:SimpleRecord[]) => 
+            data.map( row => ({name_select: abbreviateEPCIname(`${row.name} - ${row.name_short}`) ,...row}) ) 
+            .sort( (a,b) => a.name_select > b.name_select ? 1 : -1)
+            }
+            </Transform>
      </Dataset>
 
       <Dataset
@@ -231,3 +238,23 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
     </Dashboard>
     );
 }
+
+
+/**
+ * Transforme (abrège) certains noms d’EPCI en remplaçant des libellés longs
+ * par leur forme courte (ex: "communauté de communes" → "CC").
+ *
+ * Les règles de transformation sont définies directement dans la fonction
+ * et peuvent être enrichies facilement.
+ *
+ * @remarks Cette fonction a été générée avec l’aide d’une IA.
+ */
+const abbreviateEPCIname = (input: string): string =>
+  Object.entries({
+    "communauté de communes": "CC",
+    "communauté d'agglomération": "CA",
+    "communauté urbaine": "CU",
+  }).reduce((result, [key, value]) => {
+    const regex = new RegExp(`\\b${key}\\b`, "gi");
+    return result.replace(regex, value);
+  }, input);
