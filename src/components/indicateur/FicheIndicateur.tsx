@@ -435,7 +435,6 @@ const TrajectoryDeviationCursor:React.FC<TrajectoryDeviationCursorProps> = ({cur
   );
 }
 
-
 /** Bullet chart pour montrer la valeur actuelle de l'indicateur par rapport à l'objecitf.
  * A l'avenir, pourra supporter plusieurs échéances.
  * TODO : marquer la valeur avec label, afficher année + valeur target
@@ -444,15 +443,15 @@ const TrajectoryDeviationCursor:React.FC<TrajectoryDeviationCursorProps> = ({cur
  */
 const GoalBulletChart: React.FC = ({}) => {
 
-    /*const startValue = 620
+    const startValue = 620
     const goalValue = 527
     const currentValue = 605
-    const balanceValue = 561*/
+    const balanceValue = 561
 
-    const startValue = 10
+    /*const startValue = 10
     const goalValue = 70
     const currentValue = 50
-    const balanceValue = 60
+    const balanceValue = 60*/
     
     const reverse = goalValue < startValue
 
@@ -462,6 +461,8 @@ const GoalBulletChart: React.FC = ({}) => {
     const currentPct = 100* (startValue - currentValue) / (startValue - goalValue) 
     const balancePct = 100* (startValue - balanceValue) / (startValue - goalValue) 
 
+    const coef = (goalValue - startValue) / 100
+
     const options: EChartsOption = {
       grid: {
         height:60,
@@ -470,26 +471,29 @@ const GoalBulletChart: React.FC = ({}) => {
       },
       xAxis: {
         type: "value",
-        min: 0,
+        name: "kg / hab",
+        nameLocation: "center",
+        min: -10, // à dynamiser
         max: 120,
+        splitNumber: 4,
         splitLine: { show: false },
         axisTick: { show: true },
         axisLine: { show: true },
-        axisLabel: { show: true, formatter : p => `${-1*p}` }, // Ajuster ici pour afficher les valeurs métier
-
+        axisLabel: { show: true, 
+            formatter : p => `${(startValue + coef*p).toLocaleString(undefined, {maximumFractionDigits:0})}` }, // Ajuster ici pour afficher les valeurs métier
       },
       yAxis: {
         type: "category",
         data: ["Indicateur"],
         axisTick: { show: false },
-        axisLine: { show: false },
+        axisLine: { show: true },
         axisLabel: { show: false },
       },
       tooltip: {
         show: true,
       },
       legend: {
-        show: true
+        show: false
       },
       series: [
         {
@@ -498,7 +502,7 @@ const GoalBulletChart: React.FC = ({}) => {
           stack: "balance",
           data: [balancePct - 10 ],
           barWidth: 40,
-          itemStyle: { color: "#ffe4e4" }, //TODO : couleur plus bright si elle contient la valeur
+          itemStyle: { color: "#ffadad" }, //TODO : couleur plus bright si elle contient la valeur
           silent: true,
         },
         {
@@ -507,7 +511,7 @@ const GoalBulletChart: React.FC = ({}) => {
           stack: "balance",
           data: [20],
           barWidth: 40,
-          itemStyle: { color: "#fffde4" },
+          itemStyle: { color: "#fff9a8" },
           silent: true,
         },
         {
@@ -516,7 +520,7 @@ const GoalBulletChart: React.FC = ({}) => {
           stack: "balance",
           data: [120], // overflow
           barWidth: 40,
-          itemStyle: { color: "#e9ffe4" },
+          itemStyle: { color: "#bbffac" },
           silent: true,
         },
 
