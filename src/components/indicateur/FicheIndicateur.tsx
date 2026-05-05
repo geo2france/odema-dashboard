@@ -260,7 +260,7 @@ valueKey = 'valeur'
             </Flex> }
                 <GoalBulletChart 
                     goalValue={goal_value} value={current_value} startValue={start_value} balanceValue={trajectory_value} 
-                    unit={unit}
+                    unit={unit} goalDate={goal_year}
                     
                     />
 
@@ -446,9 +446,11 @@ interface GoalBulletChartProps {
 
     goalValue:number
 
+    goalDate?: number | string
+
     value: number
 
-    balanceValue: number
+    balanceValue: number //TODO a calculer automatiquement ?
 
     unit?: string
 
@@ -473,7 +475,8 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
          unit,
          aheadColor='#a7c957',
          behindColor='#bc4749',
-         onTrackColor='#e9c772'
+         onTrackColor='#e9c772',
+         goalDate,
     }:GoalBulletChartProps) => {
 
     const onTrackTolerance = 5
@@ -555,7 +558,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
             color: p => p.dataIndex == 0 ? '#494cff' : '#ffffff00'
            },
           silent: true,
-          symbolSize: [30, 2],
+          symbolSize: [45, 2],
           symbolOffset: [0, 5],
           symbolRotate: 90,
           z: 20,
@@ -563,7 +566,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
           label: {
             show: true,
             position: "top",
-            formatter: p => p.dataIndex == 0 ? "2030" : p.dataIndex == 1 ? "2023": p.dataIndex == 0 ? "2011" : '',
+            formatter: goalDate?.toString() || '',
           },
           tooltip: {
             valueFormatter: (val) => val + "%",
