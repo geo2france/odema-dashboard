@@ -258,7 +258,11 @@ valueKey = 'valeur'
 
 
             </Flex> }
-                            <GoalBulletChart goalValue={goal_value} value={current_value} startValue={start_value} balanceValue={trajectory_value} unit={unit}/>
+                <GoalBulletChart 
+                    goalValue={goal_value} value={current_value} startValue={start_value} balanceValue={trajectory_value} 
+                    unit={unit}
+                    
+                    />
 
         </Flex>
     </Card>
@@ -447,6 +451,12 @@ interface GoalBulletChartProps {
     balanceValue: number
 
     unit?: string
+
+    behindColor?: string
+
+    aheadColor?: string
+
+    onTrackColor?: string
 }
 
 /** Bullet chart pour montrer la valeur actuelle de l'indicateur par rapport à l'objecitf.
@@ -455,25 +465,25 @@ interface GoalBulletChartProps {
  * Attention : traier les indicateurs "à l'envers" (DMA 620 -> 550 kg/hab) : l'origine doit être la valeur de 2011
  * voir aussi : https://www.patternfly.org/charts/bullet-chart/
  */
-const GoalBulletChart: React.FC<GoalBulletChartProps> = ({startValue, goalValue, value:currentValue,balanceValue, unit }:GoalBulletChartProps) => {
+const GoalBulletChart: React.FC<GoalBulletChartProps> = (
+    {startValue,
+         goalValue, 
+         value:currentValue,
+         balanceValue, 
+         unit,
+         aheadColor='#a7c957',
+         behindColor='#bc4749',
+         onTrackColor='#e9c772'
+    }:GoalBulletChartProps) => {
 
-    /*const startValue = 620
-    const goalValue = 527
-    const currentValue = 605
-    const balanceValue = 561
+    const onTrackTolerance = 5
 
-    const startValue = 10
-    const goalValue = 70
-    const currentValue = 50
-    const balanceValue = 60*/
-    
-    const reverse = goalValue < startValue
-
-
-    const startPct = 0
-    const goalPct = 100
     const currentPct = 100* (startValue - currentValue) / (startValue - goalValue) 
     const balancePct = 100* (startValue - balanceValue) / (startValue - goalValue) 
+
+    const progressState = currentPct < balancePct - onTrackTolerance ? 'behind' :
+                           currentPct > (balancePct + onTrackTolerance) ? 'ahead' :
+                           'onTrack'
 
     const coef = (goalValue - startValue) / 100
 
@@ -487,9 +497,9 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = ({startValue, goalValue,
         type: "value",
         name: unit,
         nameLocation: "center",
-        min: -10, // à dynamiser
-        max: 120,
-        splitNumber: 4,
+        min: 0, // à dynamiser
+        max: 100,
+        splitNumber: 3,
         splitLine: { show: false },
         axisTick: { show: true },
         axisLine: { show: true },
@@ -514,18 +524,18 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = ({startValue, goalValue,
           type: "bar",
           name: "retard",
           stack: "balance",
-          data: [balancePct - 10 ],
+          data: [balancePct - onTrackTolerance ],
           barWidth: 40,
-          itemStyle: { color: "#ffadad" }, //TODO : couleur plus bright si elle contient la valeur
+          itemStyle: { color:  progressState == 'behind' ?  behindColor : chroma(behindColor).alpha(0.5).hex() }, //TODO : couleur plus bright si elle contient la valeur
           silent: true,
         },
         {
           type: "bar",
           name: "normal",
           stack: "balance",
-          data: [20],
+          data: [onTrackTolerance*2],
           barWidth: 40,
-          itemStyle: { color: "#fff9a8" },
+          itemStyle: { color: progressState == 'onTrack' ? onTrackColor : chroma(onTrackColor).alpha(0.5).hex() },
           silent: true,
         },
         {
@@ -534,7 +544,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = ({startValue, goalValue,
           stack: "balance",
           data: [120], // overflow
           barWidth: 40,
-          itemStyle: { color: "#bbffac" },
+          itemStyle: { color: progressState == 'ahead' ? aheadColor : chroma(aheadColor).alpha(0.5).hex()  },
           silent: true,
         },
 
