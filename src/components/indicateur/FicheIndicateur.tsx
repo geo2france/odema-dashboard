@@ -472,6 +472,9 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
          goalDate,
     }:GoalBulletChartProps) => {
 
+    if ([goalValue, currentValue, balanceValue, startValue].includes(NaN)) {
+        return null
+    }
 
     const currentPct = 100* (startValue - currentValue) / (startValue - goalValue) 
     const balancePct = 100* (startValue - balanceValue) / (startValue - goalValue) 
