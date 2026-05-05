@@ -250,8 +250,7 @@ valueKey = 'valeur'
            
                 <GoalBulletChart 
                     goalValue={goal_value} value={current_value} startValue={start_value} balanceValue={trajectory_value} 
-                    unit={unit} goalDate={goal_year}
-                    
+                    unit={unit} goalDate={goal_year} onTrackTolerance={0}
                     />
 
         </Flex>
@@ -449,6 +448,9 @@ interface GoalBulletChartProps {
     aheadColor?: string
 
     onTrackColor?: string
+
+    /** Plage de la zone onTrack (par défaut : ± 5%) */
+    onTrackTolerance?: number
 }
 
 /** Bullet chart pour montrer la valeur actuelle de l'indicateur par rapport à l'objecitf.
@@ -466,10 +468,10 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
          aheadColor='#a7c957',
          behindColor='#bc4749',
          onTrackColor='#e9c772',
+         onTrackTolerance=5,
          goalDate,
     }:GoalBulletChartProps) => {
 
-    const onTrackTolerance = 5
 
     const currentPct = 100* (startValue - currentValue) / (startValue - goalValue) 
     const balancePct = 100* (startValue - balanceValue) / (startValue - goalValue) 
