@@ -234,9 +234,9 @@ valueKey = 'valeur'
                         </span>
                     </Flex>
                 </Flex>
-              <TrajectoryDeviationCursor currentValue={current_value} balanceValue={trajectory_value}
+              {/*<TrajectoryDeviationCursor currentValue={current_value} balanceValue={trajectory_value}
                startValue={start_value} 
-                orientation="vertical" style={{marginRight:10}} unit={unit}/>
+                orientation="vertical" style={{marginRight:10}} unit={unit}/> */}
 
                { showChart && 
                 <div
@@ -249,15 +249,6 @@ valueKey = 'valeur'
 
             </Flex>
            
-            {last_goal && // Objectif
-            <Flex style={{width:"100%", 
-             borderTop:"var(--ant-line-width) var(--ant-line-type) var(--ant-color-border-secondary)", paddingTop:4}} 
-             align="center" justify="space-around">
-
-                <GoalProgressBar percent={percent} goalValue={goal_value} unit={unit} goalYear={goal_year} currentValue={current_value} />
-
-
-            </Flex> }
                 <GoalBulletChart 
                     goalValue={goal_value} value={current_value} startValue={start_value} balanceValue={trajectory_value} 
                     unit={unit} goalDate={goal_year}
