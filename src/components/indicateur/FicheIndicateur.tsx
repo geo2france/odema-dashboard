@@ -6,8 +6,7 @@ import { EChartsOption } from "echarts"
 import chroma from "chroma-js";
 import { QuestionCircleOutlined } from "@ant-design/icons"
 import { DataPoint, interpolate } from "../../utils"
-import { CSSProperties, ReactNode } from "react"
-import { start } from "repl"
+import { CSSProperties } from "react"
 
 const { Text } = Typography
 const { useToken } = theme
@@ -520,7 +519,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
           stack: "balance",
           data: [balancePct - onTrackTolerance ],
           barWidth: 40,
-          itemStyle: { color:  progressState == 'behind' ?  behindColor : chroma(behindColor).alpha(0.5).hex() }, //TODO : couleur plus bright si elle contient la valeur
+          itemStyle: { color:  progressState == 'behind' ?  behindColor : chroma(behindColor).desaturate(2).alpha(0.5).hex() }, //TODO : couleur plus bright si elle contient la valeur
           silent: true,
         },
         {
@@ -529,7 +528,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
           stack: "balance",
           data: [onTrackTolerance*2],
           barWidth: 40,
-          itemStyle: { color: progressState == 'onTrack' ? onTrackColor : chroma(onTrackColor).alpha(0.5).hex() },
+          itemStyle: { color: progressState == 'onTrack' ? onTrackColor : chroma(onTrackColor).desaturate(2).alpha(0.5).hex() },
           silent: true,
         },
         {
@@ -538,7 +537,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
           stack: "balance",
           data: [120], // overflow
           barWidth: 40,
-          itemStyle: { color: progressState == 'ahead' ? aheadColor : chroma(aheadColor).alpha(0.5).hex()  },
+          itemStyle: { color: progressState == 'ahead' ? aheadColor : chroma(aheadColor).desaturate(2).alpha(0.5).hex()  },
           silent: true,
         },
 
@@ -570,7 +569,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
           data: [currentPct],
           barWidth: 20,
           tooltip: {
-            formatter: (_p) => `${currentValue} kg/hab`,
+            formatter: (_p) => `${currentValue.toLocaleString(undefined, {maximumFractionDigits:1})} ${unit ?? ''}`,
           },
           label: {
             show: true,
