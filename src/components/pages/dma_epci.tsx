@@ -4,7 +4,6 @@ import { FaPeopleGroup, FaHouseFlag } from "react-icons/fa6";
 import { PageProps, SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { ChartCoutEpci } from "../chart_cout_epci/ChartCoutEpci";
-import { CompetenceBadge, CompetencesExercees } from "../competence_badge/CompetenceBadge";
 import { Control, Dashboard, Dataset, Filter, useControl, Select, useDataset, StatisticsCollection, Statistics, Transform, Producer, Palette, Section} from "@geo2france/api-dashboard/dsl";
 import { DMA_colors_labels } from "./dma";
 import { ChartRPQS } from "../chart_rpqs/rpqs";
@@ -15,12 +14,6 @@ const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 export const DmaPageEPCI: React.FC<PageProps> = () => {
     const siren_epci = useControl('siren_epci')
     const current_epci = useDataset('data_territoire')?.data?.find(r => r.siren == siren_epci) // Info sur l'EPCI sélectionné
-
-    const competences:CompetencesExercees={
-      'collecte':current_epci?.population_collecte / current_epci?.population,
-      'traitement':current_epci?.population_traitement / current_epci?.population,
-      'dechetterie':current_epci?.population_dechetterie / current_epci?.population,
-    } //Exercice total (1), partiel ( 0 < X < 1) ou sans compétence (0)
 
     const territoire_descritpion_item : DescriptionsProps['items'] = [
         {
@@ -44,9 +37,19 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
             children:<> {current_epci?.nb_communes.toLocaleString()} &nbsp;<FaHouseFlag /></>
         },
         {
-          key:'competences',
-          label:'Compétences',
-          children:<CompetenceBadge competences={competences} />
+            key:'epci_collecte',
+            label:'Collecte',
+            children: current_epci?.epci_collecte
+        },
+        {
+            key:'epci_traitement',
+            label:'Traitement',
+            children: current_epci?.epci_traitement
+        },
+        {
+            key:'epci_dechetterie',
+            label:'Dechetteries',
+            children: current_epci?.epci_dechetterie
         }
     ]
 
@@ -81,7 +84,9 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
           url="https://www.geo2france.fr/geoserver/odema/ows"
           resource="odema:territoire_epci"
           meta={{
-            properties:["annee", "name", "name_short", "siren", "population", "nb_communes", "population_collecte", "population_traitement", "population_dechetterie"]
+            properties:["annee", "name", "name_short", "siren", "population", "nb_communes", 
+                "population_collecte", "population_traitement", "population_dechetterie",
+                "epci_traitement", "epci_collecte", "epci_dechetterie"]
           }}  
       >
         <Filter field="annee">{useControl("annee")}</Filter> 
