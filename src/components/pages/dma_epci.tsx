@@ -42,21 +42,6 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
             key:'nb_communes',
             label:'Communes',
             children:<> {current_epci?.nb_communes.toLocaleString()} &nbsp;<FaHouseFlag /></>
-        },
-        {
-            key:'epci_collecte',
-            label:'Collecte',
-            children: current_epci?.epci_collecte
-        },
-        {
-            key:'epci_traitement',
-            label:'Traitement',
-            children: current_epci?.epci_traitement
-        },
-        {
-            key:'epci_dechetterie',
-            label:'Dechetteries',
-            children: current_epci?.epci_dechetterie
         }
     ]
 
