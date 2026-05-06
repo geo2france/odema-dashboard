@@ -15,6 +15,13 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
     const siren_epci = useControl('siren_epci')
     const current_epci = useDataset('data_territoire')?.data?.find(r => r.siren == siren_epci) // Info sur l'EPCI sélectionné
 
+    //EPCI exerçant les compétence (lui-même ou syndicat)
+    const siren_delegation = [
+        ...extractSirens( current_epci?.epci_collecte ),
+        ...extractSirens( current_epci?.epci_traitement), 
+        ...extractSirens( current_epci?.epci_dechetterie )]
+
+
     const territoire_descritpion_item : DescriptionsProps['items'] = [
         {
             key:'name',
@@ -53,7 +60,7 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
         }
     ]
 
-    return (<Dashboard>
+    return (<Dashboard debug>
       <Palette labels={ DMA_colors_labels } />
       
       <Control>
@@ -190,7 +197,8 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
           url="https://www.geo2france.fr/geoserver/odema/ows"
           resource="odema:rpqs"
       >
-        <Filter field="code_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="annee_exercice">{useControl("annee")}</Filter>
+        <Transform>{ (data:SimpleRecord[]) => data.filter(row => siren_delegation.includes(row.code_epci) ) }</Transform>
      </Dataset>
 
     <Section title="Panorama">
@@ -263,3 +271,23 @@ const abbreviateEPCIname = (input: string): string =>
     const regex = new RegExp(`\\b${key}\\b`, "gi");
     return result.replace(regex, value);
   }, input);
+
+
+  /**
+ * Extrait tous les numéros SIREN (9 chiffres) présents entre crochets `[...]`
+ * dans une chaîne de caractères.
+ *
+ * Exemple :
+ * "Nom organisme [123456789] ; Autre [987654321]"
+ * => ["123456789", "987654321"]
+ *
+ * Si aucun SIREN n'est trouvé, retourne un tableau vide.
+ *
+ * @param input - Chaîne contenant potentiellement des SIREN entre crochets
+ * @returns Liste des SIREN extraits (tableau vide si aucun trouvé)
+ *
+ * @remarks
+ * Fonction générée par IA.
+ */
+const extractSirens = (input: string): string[] =>
+  Array.from(input?.matchAll(/\[(\d{9})\]/g) ?? [], m => m[1]);
