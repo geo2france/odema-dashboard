@@ -45,7 +45,7 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
         }
     ]
 
-    return (<Dashboard debug>
+    return (<Dashboard>
       <Palette labels={ DMA_colors_labels } />
       
       <Control>

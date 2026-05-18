@@ -18,6 +18,7 @@ import Geo2France from "/img/geo2france.svg?url";
 import { RepPage } from './components/pages/rep';
 import { DaePage } from './components/pages/dae';
 import { PageDma } from './components/pages/dma';
+import { DmaPageEPCIHome } from './components/pages/dma_epci_home';
 
 const myTheme = {
   token: {
@@ -84,7 +85,7 @@ const App: React.FC = () => {
       <HomePage title="Home" hidden={true}/>
       <PagesGroup title='DMA' icon={<HomeOutlined />}>
         <PageDma title="Région"/>
-        <DmaPageEPCI title="EPCI"/> 
+        <DmaPageEPCIHome title="EPCI"/> 
       </PagesGroup>
       <EnfouissementPage title="ISDND" icon={<CloseSquareOutlined />}/>
       <RepPage title="REP" hidden={true}/>
