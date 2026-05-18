@@ -27,7 +27,7 @@ export const ChartRPQS:React.FC<ChartRPQSProps> = ({dataset:dataset_id, year}) =
                       style={{ width: "20%", paddingTop: 5, textAlign: "center" }}
                     >
                       {d.url ? (
-                        <Flex orientation="vertical" align="center" justify="space_evenely">
+                        <Flex vertical align="center" justify="space_evenely">
                         <a href={d.url}>
                           <FilePdfOutlined style={{ fontSize: 25 }} />{" "}
                         </a>

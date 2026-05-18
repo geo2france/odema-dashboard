@@ -23,7 +23,7 @@ export const DmaPageEPCIHome: React.FC<PageProps> = () => {
           valueField="code_epci"
           name="epci"
           label="Territoire"
-          onSelect={(e) => navigate(`/dma/epci?siren_epci=${e}`)}
+          onSelect={(e) => navigate(`/dma/epcifiche?siren_epci=${e}`)}
           style={{ minWidth: 300 }}
           showSearch
           placeholder="Choisir un territoire"
@@ -84,7 +84,7 @@ export const DmaPageEPCIHome: React.FC<PageProps> = () => {
         popupFormatter={(row) => (
           <div>
             {row.nom_epci} <br />
-            <Link to={{ pathname: "/dma/epci", search: `?siren_epci=${row.code_epci}` }}>
+            <Link to={{ pathname: "/dma/epcifiche", search: `?siren_epci=${row.code_epci}` }}>
               Voir la fiche
             </Link>
           </div>

@@ -86,6 +86,7 @@ const App: React.FC = () => {
       <PagesGroup title='DMA' icon={<HomeOutlined />}>
         <PageDma title="Région"/>
         <DmaPageEPCIHome title="EPCI"/> 
+        <DmaPageEPCI title="EPCI_fiche" hidden/> 
       </PagesGroup>
       <EnfouissementPage title="ISDND" icon={<CloseSquareOutlined />}/>
       <RepPage title="REP" hidden={true}/>
