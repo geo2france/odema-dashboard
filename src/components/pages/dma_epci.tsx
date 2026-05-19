@@ -93,25 +93,25 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
           id="data_traitement" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
-          resource="odema:destination_dma_epci_harmonise"
+          resource="odema:destination_dma_epci_harmonise_V2"
       >
-        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
      </Dataset>
 
     <Dataset
           id="indicateur_territoire" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
-          resource="odema:destination_dma_epci_harmonise"
+          resource="odema:destination_dma_epci_harmonise_V2"
       >
-        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
         <Filter field="annee">{useControl("annee")}</Filter>
         <Transform>SELECT 
                     [annee],
                     SUM([tonnage]) as tonnage,
                     MAX([population]) as population,
                     1000 * SUM([tonnage]) / MAX([population]) as ratio_dma,
-                    100*SUM(CASE WHEN traitement_destination ilike 'Valorisation%' THEN tonnage END) / SUM([tonnage]) as part_valo
+                    100*SUM(CASE WHEN [lib_traitement_agregat_collecte] ilike 'Valorisation%' THEN [tonnage] END) / SUM([tonnage]) as part_valo
                   FROM ? 
                   GROUP BY [annee]
                   ORDER BY [annee]
@@ -122,14 +122,14 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
           id="current_trash_composition" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
-          resource="odema:destination_dma_epci_harmonise"
+          resource="odema:destination_dma_epci_harmonise_V2"
       >
-        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
         <Filter field="annee">{useControl("annee")}</Filter>
         <Transform>
-            SELECT type_dechet, sum(ratio_hab_pap) as ratio
+            SELECT [lib_dechet_agregat_dma] as type_dechet, sum(ratio_hab_pap) as ratio
             FROM ?
-            GROUP BY type_dechet
+            GROUP BY [lib_dechet_agregat_dma]
         </Transform> 
      </Dataset>
 
@@ -158,13 +158,13 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
         id="destination_dma_sankey" 
         type="wfs"
         url="https://www.geo2france.fr/geoserver/odema/ows"
-        resource="odema:destination_dma_epci_harmonise"    
+        resource="odema:destination_dma_epci_harmonise_V2"    
     >
-        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
-        <Transform>{`SELECT type_dechet, traitement_destination, sum(tonnage) as tonnage
+        <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
+        <Transform>{`SELECT lib_dechet_agregat_dma AS type_dechet, lib_traitement_agregat_collecte AS traitement_destination, sum(tonnage) as tonnage
             FROM ?
             WHERE [annee]= ${useControl("annee")}
-            GROUP BY [type_dechet], [traitement_destination]`}</Transform>
+            GROUP BY [lib_dechet_agregat_dma], [lib_traitement_agregat_collecte]`}</Transform>
         {/* A simplifier */} 
         <Transform>
             {data => data.map((i: SimpleRecord) => ({
@@ -218,13 +218,13 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
     </Section>
     <Section title="Traitement">
       <ChartEvolutionDechet  dataset="data_traitement" title="Type de déchets collectés"
-                         yearKey="annee" categoryKey="type_dechet" ratioKey="ratio_hab"
+                         yearKey="annee" categoryKey="lib_dechet_agregat_dma" ratioKey="ratio_hab"
                          tonnageKey="tonnage"
                          year={Number(useControl('annee'))}
                         />
 
       <ChartEvolutionDechet  dataset="data_traitement" title="Filières de destination"
-                         yearKey="annee" categoryKey="traitement_destination" ratioKey="ratio_hab"
+                         yearKey="annee" categoryKey="lib_traitement_agregat_collecte" ratioKey="ratio_hab"
                          tonnageKey="tonnage"
                          year={Number(useControl('annee'))}
                         />
