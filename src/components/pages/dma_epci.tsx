@@ -8,6 +8,7 @@ import { Control, Dashboard, Dataset, Filter, useControl, Select, useDataset, St
 import { DMA_colors_labels } from "./dma";
 import { ChartRPQS } from "../chart_rpqs/rpqs";
 import { ChartTrashbin } from "../chart_trashbin/ChartTrashbin";
+import { ChartGisementDechet } from "../chart_gisement_dechet/ChartGisementDechet";
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
@@ -45,7 +46,7 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
         }
     ]
 
-    return (<Dashboard>
+    return (<Dashboard debug>
       <Palette labels={ DMA_colors_labels } />
       
       <Control>
@@ -96,6 +97,12 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
           resource="odema:destination_dma_epci_harmonise_V2"
       >
         <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
+        <Transform>{ (data:SimpleRecord[]) => data.map((row) => ({
+            ...row,
+            lib_dechet_1:row.lib_dechet.split(' > ')[0],
+            lib_dechet_2:row.lib_dechet.split(' > ')[1],
+            lib_dechet_3:row.lib_dechet.split(' > ')[2]
+        }))}</Transform>
      </Dataset>
 
     <Dataset
@@ -161,16 +168,22 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
         resource="odema:destination_dma_epci_harmonise_V2"    
     >
         <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
-        <Transform>{`SELECT lib_dechet_agregat_dma AS type_dechet, lib_traitement_agregat_collecte AS traitement_destination, sum(tonnage) as tonnage
+        <Transform>{`SELECT lib_dechet AS type_dechet, lib_traitement_agregat_collecte AS traitement_destination, sum(tonnage) as tonnage
             FROM ?
             WHERE [annee]= ${useControl("annee")}
-            GROUP BY [lib_dechet_agregat_dma], [lib_traitement_agregat_collecte]`}</Transform>
+            GROUP BY [lib_dechet], [lib_traitement_agregat_collecte]`}</Transform>
         {/* A simplifier */} 
         <Transform>
             {data => data.map((i: SimpleRecord) => ({
                           value: Math.max(i.tonnage, 1),
-                          source: i.type_dechet,
+                          source: i.type_dechet.split(' > ')[0],
                           target: i.traitement_destination === 'Stockage pour inertes' ? 'Stockage' : i.traitement_destination,}))}
+        </Transform>
+        <Transform>
+            SELECT 
+                [source], [target], SUM([value]) as [value]
+            FROM ? 
+            GROUP BY [source], [target]
         </Transform>
         <Producer url="https://sinoe.org">Ademe (Sinoe)</Producer>
         <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
@@ -212,13 +225,14 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
             title={`Types et destination des déchets en ${useControl("annee")}`} 
             dataset="destination_dma_sankey" />
 
-        <ChartTrashbin dataset="current_trash_composition" />
+        {/*<ChartTrashbin dataset="current_trash_composition" /> */}
+        <ChartGisementDechet title="Gisement collecté" dataset="data_traitement" />
         <ChartRPQS dataset="rpqs" year={Number(useControl('annee'))} />
 
     </Section>
     <Section title="Traitement">
       <ChartEvolutionDechet  dataset="data_traitement" title="Type de déchets collectés"
-                         yearKey="annee" categoryKey="lib_dechet_agregat_dma" ratioKey="ratio_hab"
+                         yearKey="annee" categoryKey="lib_dechet_1" ratioKey="ratio_hab"
                          tonnageKey="tonnage"
                          year={Number(useControl('annee'))}
                         />

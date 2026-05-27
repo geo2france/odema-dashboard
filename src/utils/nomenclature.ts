@@ -26,7 +26,7 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
             return chartBusinessProps("Incinération avec récupération d'énergie")
         case "Valorisation matière":
         case "Valorisation - Recyclage":
-            return {color:'#FEFA54', sort:3, label:item}
+            return {color:'#FFD140', sort:3, label:item}
         case "tonnage_valo_mat":
         case "tonnage_valo_mat_dg":
             return chartBusinessProps("Valorisation matière")
@@ -36,25 +36,28 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
         case "tonnage_valo_org_dg":
             return chartBusinessProps("Valorisation organique")
         case "Déblais et gravats":
+        case "Gravats":
             return {color:'rgba(178, 34, 34, 1)', sort:6, label:item}
         case "Biodéchets":
         case "Déchets verts et biodéchets":
         case "Déchets de produits alimentaires":
-            return {color:'#7A4443', sort:4, label:item}
+            return {color:'#6c8033', sort:4, label:item}
         case "tonnage_bio":
             return chartBusinessProps("Biodéchets")
         case "Verre":
             return {color:'#008F29', sort:3, label:item}
         case "Ordures ménagères résiduelles":
         case "Collecte OMR":
+        case "OMR":
             return {color:'#919191', sort:1, label:item}
         case "tonnage_omr":
             return chartBusinessProps("Ordures ménagères résiduelles")
         case "Emballages et papier":
         case "Emballages, journaux-magazines":
         case "Matériaux recyclables":
+        case "Recyclables":
         case "Collecte séparées":
-            return {color:'#FEFA54',sort:2, label:item}
+            return {color:'#FFD140',sort:2, label:item}
         case "tonnage_ejm":
             return chartBusinessProps("Emballages, journaux-magazines")
         case "tonnage_verre":
@@ -62,6 +65,7 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
         case "Encombrants":
         case "Déchèterie":
         case "Déchets dangereux":
+        case "Dangereux":
         case "Déchets dangereux (y.c. DEEE)":
         case "Collectes séparées hors gravats":
             return {color:'#FF8001',sort:5, label:item} 
