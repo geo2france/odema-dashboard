@@ -3,6 +3,7 @@ import { toForest } from "./utils"
 import { EChartsOption } from "echarts"
 import { chartBusinessProps } from "../../utils"
 import { useMemo } from "react"
+import { TopLevelFormatterParams } from "echarts/types/dist/shared"
 
 interface ChartGisementDechetProps {
     dataset?:string
@@ -20,7 +21,7 @@ export const ChartGisementDechet:React.FC<ChartGisementDechetProps> = ({dataset:
         l1: row.lib_dechet_1,
         l2: row.lib_dechet_2,
         l3: row.lib_dechet_3,
-        value: row.tonnage,
+        value: [row.tonnage, row.ratio_hab],
         ...row
     })) )
     .map( (r) => // Ajout d'une couleur métier pour les catégories 1 (ORM, recyclable, etc..)
@@ -63,9 +64,14 @@ export const ChartGisementDechet:React.FC<ChartGisementDechetProps> = ({dataset:
 
     const option:EChartsOption = {
         legend: {show: true},
-        tooltip: {
-            show:true,
-            //valueFormatter: (e,f) => {return `${e}` }
+        tooltip:{
+            formatter: (e:TopLevelFormatterParams) => {
+                if (Array.isArray(e)) return '';
+                const values = (e.data as { value: number[] }).value;
+                return `${e.name} :<br/> 
+                            <b>${values[0].toLocaleString(undefined, {maximumFractionDigits:0})} t </b> <br/> 
+                            <i>${values[1].toLocaleString(undefined, {maximumFractionDigits:1})} kg/hab</i>`;
+                },
         },
         xAxis: {show:false} ,yAxis: {show:false},
         series:[
