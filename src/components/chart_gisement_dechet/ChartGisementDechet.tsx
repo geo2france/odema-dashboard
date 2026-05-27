@@ -2,14 +2,19 @@ import { ChartEcharts, useBlockConfig, useControl, useDataset } from "@geo2franc
 import { toForest } from "./utils"
 import { EChartsOption } from "echarts"
 import { chartBusinessProps } from "../../utils"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { TopLevelFormatterParams } from "echarts/types/dist/shared"
+import { Segmented } from "antd"
 
 interface ChartGisementDechetProps {
     dataset?:string
     title?:string
 }
 export const ChartGisementDechet:React.FC<ChartGisementDechetProps> = ({dataset:dataset_id, title}) => {
+
+    const [source, setSource] = useState<'dechetterie' | 'collecte' | 'both'>('both')
+
+
     const dataset = useDataset(dataset_id)
     const annee = useControl('annee')  
 
@@ -21,7 +26,9 @@ export const ChartGisementDechet:React.FC<ChartGisementDechetProps> = ({dataset:
         l1: row.lib_dechet_1,
         l2: row.lib_dechet_2,
         l3: row.lib_dechet_3,
-        value: [row.tonnage, row.ratio_hab],
+        value: source == 'dechetterie' ? [row.tonnage_dechetterie, row.ratio_hab_dechetterie] : 
+               source == 'collecte' ? [row.tonnage_pap, row.ratio_hab_pap] :
+               [row.tonnage, row.ratio_hab],
         ...row
     })) )
     .map( (r) => // Ajout d'une couleur métier pour les catégories 1 (ORM, recyclable, etc..)
@@ -76,8 +83,8 @@ export const ChartGisementDechet:React.FC<ChartGisementDechetProps> = ({dataset:
         xAxis: {show:false} ,yAxis: {show:false},
         series:[
             {
-                top: 16,
-                bottom: 16,
+                top: 16*3,
+                bottom: 8,
                 left: 16,
                 right: 16,
                 type:"treemap",
@@ -91,8 +98,20 @@ export const ChartGisementDechet:React.FC<ChartGisementDechetProps> = ({dataset:
         ]
     }
 
-    return <ChartEcharts option={option} />
+    return <div>
+              <Segmented
+                value={source}
+                style={{position:'absolute', right:16, top:8, zIndex:1}}
+                options={[
+                    { value: 'collecte', label: 'Collecte' },
+                    { value: 'dechetterie', label: 'Décheterie' },
+                    { value: 'both', label: 'Tout' },
+                ]}
+                onChange={setSource} 
+                />
+              <ChartEcharts option={option} />
 
+        </div>
 }
 
 
