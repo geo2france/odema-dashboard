@@ -7,7 +7,6 @@ import { ChartCoutEpci } from "../chart_cout_epci/ChartCoutEpci";
 import { Control, Dashboard, Dataset, Filter, useControl, Select, useDataset, StatisticsCollection, Statistics, Transform, Producer, Palette, Section} from "@geo2france/api-dashboard/dsl";
 import { DMA_colors_labels } from "./dma";
 import { ChartRPQS } from "../chart_rpqs/rpqs";
-import { ChartTrashbin } from "../chart_trashbin/ChartTrashbin";
 import { ChartGisementDechet } from "../chart_gisement_dechet/ChartGisementDechet";
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
