@@ -1,8 +1,8 @@
 import { ChartEcharts, useBlockConfig, useControl, useDataset } from "@geo2france/api-dashboard/dsl"
 import { toForest } from "./utils"
 import { EChartsOption } from "echarts"
-import EChartsReact from "echarts-for-react"
 import { chartBusinessProps } from "../../utils"
+import { useMemo } from "react"
 
 interface ChartGisementDechetProps {
     dataset?:string
@@ -10,9 +10,12 @@ interface ChartGisementDechetProps {
 }
 export const ChartGisementDechet:React.FC<ChartGisementDechetProps> = ({dataset:dataset_id, title}) => {
     const dataset = useDataset(dataset_id)
+    const annee = useControl('annee')  
 
-    const data = dataset?.data?.filter( (r) => r.annee == useControl('annee'))
-
+    const data = useMemo(
+        () => dataset?.data?.filter((r) => r.annee == annee),
+        [dataset, annee]  
+    )
     const dataChart = data && toForest( data?.map( (row) => ({ 
         l1: row.lib_dechet_1,
         l2: row.lib_dechet_2,
@@ -26,6 +29,9 @@ export const ChartGisementDechet:React.FC<ChartGisementDechetProps> = ({dataset:
             color:chartBusinessProps(r.name).color
     }})
     )
+
+    console.log(data, dataChart)
+
 
     useBlockConfig({
         title: title,
@@ -57,7 +63,10 @@ export const ChartGisementDechet:React.FC<ChartGisementDechetProps> = ({dataset:
 
     const option:EChartsOption = {
         legend: {show: true},
-        tooltip: {show:true},
+        tooltip: {
+            show:true,
+            //valueFormatter: (e,f) => {return `${e}` }
+        },
         xAxis: {show:false} ,yAxis: {show:false},
         series:[
             {
