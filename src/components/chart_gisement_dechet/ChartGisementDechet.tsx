@@ -104,7 +104,7 @@ export const ChartGisementDechet:React.FC<ChartGisementDechetProps> = ({dataset:
                 style={{position:'absolute', right:16, top:8, zIndex:1}}
                 options={[
                     { value: 'collecte', label: 'Collecte' },
-                    { value: 'dechetterie', label: 'Décheterie' },
+                    { value: 'dechetterie', label: 'Dechetterie' },
                     { value: 'both', label: 'Tout' },
                 ]}
                 onChange={setSource} 
