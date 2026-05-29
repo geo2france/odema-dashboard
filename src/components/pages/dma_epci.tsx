@@ -4,11 +4,10 @@ import { FaPeopleGroup, FaHouseFlag } from "react-icons/fa6";
 import { PageProps, SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartEvolutionDechet } from "../chart_evolution_dechet"
 import { ChartCoutEpci } from "../chart_cout_epci/ChartCoutEpci";
-import { CompetenceBadge, CompetencesExercees } from "../competence_badge/CompetenceBadge";
 import { Control, Dashboard, Dataset, Filter, useControl, Select, useDataset, StatisticsCollection, Statistics, Transform, Producer, Palette, Section} from "@geo2france/api-dashboard/dsl";
 import { DMA_colors_labels } from "./dma";
 import { ChartRPQS } from "../chart_rpqs/rpqs";
-import { ChartTrashbin } from "../chart_trashbin/ChartTrashbin";
+import { ChartGisementDechet } from "../chart_gisement_dechet/ChartGisementDechet";
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
@@ -16,11 +15,12 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
     const siren_epci = useControl('siren_epci')
     const current_epci = useDataset('data_territoire')?.data?.find(r => r.siren == siren_epci) // Info sur l'EPCI sélectionné
 
-    const competences:CompetencesExercees={
-      'collecte':current_epci?.population_collecte / current_epci?.population,
-      'traitement':current_epci?.population_traitement / current_epci?.population,
-      'dechetterie':current_epci?.population_dechetterie / current_epci?.population,
-    } //Exercice total (1), partiel ( 0 < X < 1) ou sans compétence (0)
+    //EPCI exerçant les compétence (lui-même ou syndicat)
+    const siren_delegation = [
+        ...extractSirens( current_epci?.epci_collecte ),
+        ...extractSirens( current_epci?.epci_traitement), 
+        ...extractSirens( current_epci?.epci_dechetterie )]
+
 
     const territoire_descritpion_item : DescriptionsProps['items'] = [
         {
@@ -42,15 +42,10 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
             key:'nb_communes',
             label:'Communes',
             children:<> {current_epci?.nb_communes.toLocaleString()} &nbsp;<FaHouseFlag /></>
-        },
-        {
-          key:'competences',
-          label:'Compétences',
-          children:<CompetenceBadge competences={competences} />
         }
     ]
 
-    return (<Dashboard>
+    return (<Dashboard debug>
       <Palette labels={ DMA_colors_labels } />
       
       <Control>
@@ -69,7 +64,9 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
             name="siren_epci" label="Territoire"
             showSearch
             dataset="data_territoire"
-            valueField="siren" labelField="name" />
+            valueField="siren" labelField="name_select" 
+            style={{minWidth: 300}}
+            />
 
       </Control>
 
@@ -79,35 +76,48 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
           url="https://www.geo2france.fr/geoserver/odema/ows"
           resource="odema:territoire_epci"
           meta={{
-            properties:["annee", "name", "name_short", "siren", "population", "nb_communes", "population_collecte", "population_traitement", "population_dechetterie"]
+            properties:["annee", "name", "name_short", "siren", "population", "nb_communes", 
+                "population_collecte", "population_traitement", "population_dechetterie",
+                "epci_traitement", "epci_collecte", "epci_dechetterie"]
           }}  
       >
-        <Filter field="annee">{useControl("annee")}</Filter>   
+        <Filter field="annee">{useControl("annee")}</Filter> 
+        <Transform>{ (data:SimpleRecord[]) => 
+            data.map( row => ({name_select: abbreviateEPCIname(`${row.name} - ${row.name_short}`) ,...row}) ) 
+            .sort( (a,b) => a.name_select > b.name_select ? 1 : -1)
+            }
+            </Transform>
      </Dataset>
 
       <Dataset
           id="data_traitement" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
-          resource="odema:destination_dma_epci_harmonise"
+          resource="odema:destination_dma_epci_harmonise_V2"
       >
-        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
+        <Transform>{ (data:SimpleRecord[]) => data.map((row) => ({
+            ...row,
+            lib_dechet_1:row.lib_dechet.split(' > ')[0],
+            lib_dechet_2:row.lib_dechet.split(' > ')[1],
+            lib_dechet_3:row.lib_dechet.split(' > ')[2]
+        }))}</Transform>
      </Dataset>
 
     <Dataset
           id="indicateur_territoire" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
-          resource="odema:destination_dma_epci_harmonise"
+          resource="odema:destination_dma_epci_harmonise_V2"
       >
-        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
         <Filter field="annee">{useControl("annee")}</Filter>
         <Transform>SELECT 
                     [annee],
                     SUM([tonnage]) as tonnage,
                     MAX([population]) as population,
                     1000 * SUM([tonnage]) / MAX([population]) as ratio_dma,
-                    100*SUM(CASE WHEN traitement_destination ilike 'Valorisation%' THEN tonnage END) / SUM([tonnage]) as part_valo
+                    100*SUM(CASE WHEN [lib_traitement_agregat_collecte] ilike 'Valorisation%' THEN [tonnage] END) / SUM([tonnage]) as part_valo
                   FROM ? 
                   GROUP BY [annee]
                   ORDER BY [annee]
@@ -118,14 +128,14 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
           id="current_trash_composition" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
-          resource="odema:destination_dma_epci_harmonise"
+          resource="odema:destination_dma_epci_harmonise_V2"
       >
-        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
         <Filter field="annee">{useControl("annee")}</Filter>
         <Transform>
-            SELECT type_dechet, sum(ratio_hab_pap) as ratio
+            SELECT [lib_dechet_agregat_dma] as type_dechet, sum(ratio_hab_pap) as ratio
             FROM ?
-            GROUP BY type_dechet
+            GROUP BY [lib_dechet_agregat_dma]
         </Transform> 
      </Dataset>
 
@@ -154,19 +164,25 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
         id="destination_dma_sankey" 
         type="wfs"
         url="https://www.geo2france.fr/geoserver/odema/ows"
-        resource="odema:destination_dma_epci_harmonise"    
+        resource="odema:destination_dma_epci_harmonise_V2"    
     >
-        <Filter field="siren_epci">{useControl("siren_epci")}</Filter>
-        <Transform>{`SELECT type_dechet, traitement_destination, sum(tonnage) as tonnage
+        <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
+        <Transform>{`SELECT lib_dechet AS type_dechet, lib_traitement_agregat_collecte AS traitement_destination, sum(tonnage) as tonnage
             FROM ?
             WHERE [annee]= ${useControl("annee")}
-            GROUP BY [type_dechet], [traitement_destination]`}</Transform>
+            GROUP BY [lib_dechet], [lib_traitement_agregat_collecte]`}</Transform>
         {/* A simplifier */} 
         <Transform>
             {data => data.map((i: SimpleRecord) => ({
                           value: Math.max(i.tonnage, 1),
-                          source: i.type_dechet,
+                          source: i.type_dechet.split(' > ')[0],
                           target: i.traitement_destination === 'Stockage pour inertes' ? 'Stockage' : i.traitement_destination,}))}
+        </Transform>
+        <Transform>
+            SELECT 
+                [source], [target], SUM([value]) as [value]
+            FROM ? 
+            GROUP BY [source], [target]
         </Transform>
         <Producer url="https://sinoe.org">Ademe (Sinoe)</Producer>
         <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
@@ -178,7 +194,8 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
           url="https://www.geo2france.fr/geoserver/odema/ows"
           resource="odema:rpqs"
       >
-        <Filter field="code_epci">{useControl("siren_epci")}</Filter>
+        <Filter field="annee_exercice">{useControl("annee")}</Filter>
+        <Transform>{ (data:SimpleRecord[]) => data.filter(row => siren_delegation.includes(row.code_epci) ) }</Transform>
      </Dataset>
 
     <Section title="Panorama">
@@ -207,19 +224,20 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
             title={`Types et destination des déchets en ${useControl("annee")}`} 
             dataset="destination_dma_sankey" />
 
-        <ChartTrashbin dataset="current_trash_composition" />
+        {/*<ChartTrashbin dataset="current_trash_composition" /> */}
+        <ChartGisementDechet title="Gisement collecté" dataset="data_traitement" />
         <ChartRPQS dataset="rpqs" year={Number(useControl('annee'))} />
 
     </Section>
     <Section title="Traitement">
       <ChartEvolutionDechet  dataset="data_traitement" title="Type de déchets collectés"
-                         yearKey="annee" categoryKey="type_dechet" ratioKey="ratio_hab"
+                         yearKey="annee" categoryKey="lib_dechet_1" ratioKey="ratio_hab"
                          tonnageKey="tonnage"
                          year={Number(useControl('annee'))}
                         />
 
       <ChartEvolutionDechet  dataset="data_traitement" title="Filières de destination"
-                         yearKey="annee" categoryKey="traitement_destination" ratioKey="ratio_hab"
+                         yearKey="annee" categoryKey="lib_traitement_agregat_collecte" ratioKey="ratio_hab"
                          tonnageKey="tonnage"
                          year={Number(useControl('annee'))}
                         />
@@ -231,3 +249,43 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
     </Dashboard>
     );
 }
+
+
+/**
+ * Transforme (abrège) certains noms d’EPCI en remplaçant des libellés longs
+ * par leur forme courte (ex: "communauté de communes" → "CC").
+ *
+ * Les règles de transformation sont définies directement dans la fonction
+ * et peuvent être enrichies facilement.
+ *
+ * @remarks Cette fonction a été générée avec l’aide d’une IA.
+ */
+const abbreviateEPCIname = (input: string): string =>
+  Object.entries({
+    "communauté de communes": "CC",
+    "communauté d'agglomération": "CA",
+    "communauté urbaine": "CU",
+  }).reduce((result, [key, value]) => {
+    const regex = new RegExp(`\\b${key}\\b`, "gi");
+    return result.replace(regex, value);
+  }, input);
+
+
+  /**
+ * Extrait tous les numéros SIREN (9 chiffres) présents entre crochets `[...]`
+ * dans une chaîne de caractères.
+ *
+ * Exemple :
+ * "Nom organisme [123456789] ; Autre [987654321]"
+ * => ["123456789", "987654321"]
+ *
+ * Si aucun SIREN n'est trouvé, retourne un tableau vide.
+ *
+ * @param input - Chaîne contenant potentiellement des SIREN entre crochets
+ * @returns Liste des SIREN extraits (tableau vide si aucun trouvé)
+ *
+ * @remarks
+ * Fonction générée par IA.
+ */
+const extractSirens = (input: string): string[] =>
+  Array.from(input?.matchAll(/\[(\d{9})\]/g) ?? [], m => m[1]);

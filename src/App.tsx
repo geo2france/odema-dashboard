@@ -1,7 +1,7 @@
 import './index.css';
 
 import { WfsProvider, DatafairProvider, DashboardApp, PagesGroup } from "@geo2france/api-dashboard";
-import { Partner, RouteConfig } from "@geo2france/api-dashboard";
+import { Partner } from "@geo2france/api-dashboard";
 
 import { EnfouissementPage } from "./components/pages/enfouissement";
 import { DmaPageEPCI } from "./components/pages/dma_epci";
@@ -15,11 +15,10 @@ import Region from "/img/Logo Région HDF.png";
 import Cerc from "/img/Logo_CERC_Hauts-de-Fce_sans-sign.svg?url";
 import Cerdd from "/img/Logo_cerdd.svg?url";
 import Geo2France from "/img/geo2france.svg?url";
-import { DdPage } from './components/pages/dd';
 import { RepPage } from './components/pages/rep';
 import { DaePage } from './components/pages/dae';
-import { Icon } from '@iconify/react';
 import { PageDma } from './components/pages/dma';
+import { DmaPageEPCIHome } from './components/pages/dma_epci_home';
 import { PageSRADDET } from './components/pages/sraddet_indic';
 
 const myTheme = {
@@ -72,64 +71,12 @@ const partenaires:Partner[] = [
   { logo: Geo2France, name: "Géo2France", url: "https://www.geo2france.fr/" },
 ];
 
-
-/*** Renseigner ici les différentes pages du projets **/
-const route_config:RouteConfig[] = [
-  {
-    path: "",
-    element: <HomePage />,
-    hidden: true,
-  },
-  {
-    path: "dma",
-    label: "DMA",
-    icon: <HomeOutlined />,
-    element: <PageDma />,
-    children: [
-      { path: "region", label: "Hauts-de-France", element: <PageDma /> },
-      { path: "epci", label: "EPCI", element: <DmaPageEPCI /> },
-    ],
-  },
-  {
-    path:"sraddet",
-    label:"SRADDET",
-    hidden:true,
-    element: <PageSRADDET />
-  },
-  {
-    path: "isdnd",
-    label: "ISDND",
-    element: <EnfouissementPage />,
-    icon: <CloseSquareOutlined />,
-  },
-  {
-    path: "dd",
-    label: "Dechets Dangeureux",
-    element: <DdPage />,
-    hidden: true,
-  },
-    {
-    path: "rep",
-    label: "REP",
-    element: <RepPage />,
-    hidden: true,
-  },
-    {
-    path: "dae",
-    label: "DAE",
-    icon: <Icon icon="material-symbols:factory-outline" />,
-    element: <DaePage />,
-    hidden: false,
-  }
-];
-
 const App: React.FC = () => {
 
   return(
     <DashboardApp
       title="Odema"
       subtitle="Observatoire déchets-matières des Hauts-de-France"
-      //routes={route_config}
       logo={Odema_logo}
       theme={myTheme}
       brands={partenaires}
@@ -138,7 +85,8 @@ const App: React.FC = () => {
       <HomePage title="Home" hidden={true}/>
       <PagesGroup title='DMA' icon={<HomeOutlined />}>
         <PageDma title="Région"/>
-        <DmaPageEPCI title="EPCI"/> 
+        <DmaPageEPCIHome title="EPCI"/> 
+        <DmaPageEPCI title="EPCI_fiche" hidden/> 
       </PagesGroup>
       <EnfouissementPage title="ISDND" icon={<CloseSquareOutlined />}/>
       <RepPage title="REP" hidden={true}/>

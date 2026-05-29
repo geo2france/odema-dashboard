@@ -11,11 +11,16 @@ import { ChartDmaStockage } from "../chart_dma_stockage/ChartDmaStockage"
 
 export const DMA_colors_labels = {
                 'Ordures ménagères résiduelles':chartBusinessProps('Ordures ménagères résiduelles').color ?? 'white' ,
+                'OMR':chartBusinessProps('OMR').color ?? 'white' ,
                 'Encombrants':chartBusinessProps('Encombrants').color ?? 'white',
                 'Matériaux recyclables':chartBusinessProps('Matériaux recyclables').color ?? 'white',
+                'Recyclables':chartBusinessProps('Recyclables').color ?? 'white',
                 'Déblais et gravats':chartBusinessProps('Déblais et gravats').color ?? 'white',
+                'Gravats':chartBusinessProps('Gravats').color ?? 'white',
                 'Déchets verts et biodéchets':chartBusinessProps("Déchets verts et biodéchets").color ?? 'white',
+                'Biodéchets':chartBusinessProps("Biodéchets").color ?? 'white',
                 'Déchets dangereux (y.c. DEEE)':chartBusinessProps("Déchets dangereux (y.c. DEEE)").color ?? 'white',
+                'Dangereux':chartBusinessProps("Dangereux").color ?? 'white',
                 'Autres':chartBusinessProps('Autres').color ?? 'white',
                 'Non précisé':chartBusinessProps('Autres').color ?? 'white',
                 'Déchèterie':chartBusinessProps('Déchèterie').color ?? 'white',
@@ -39,7 +44,7 @@ export const PageDma: React.FC<PageProps> = () => {
     const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
     return (
-        <Dashboard debug>
+        <Dashboard>
             <Palette  labels={ DMA_colors_labels } />
             <Dataset
                 id="destination_dma_region_sankey" 
