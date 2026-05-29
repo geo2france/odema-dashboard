@@ -250,7 +250,7 @@ valueKey = 'valeur'
            
                 <GoalBulletChart 
                     goalValue={goal_value} value={current_value} startValue={start_value} balanceValue={trajectory_value} 
-                    unit={unit} goalDate={goal_year} onTrackTolerance={0}
+                    unit={unit} goalDate={goal_year} onTrackTolerance={5}
                     />
 
         </Flex>
@@ -333,7 +333,7 @@ const TrajectoryDeviationCursor:React.FC<TrajectoryDeviationCursorProps> = ({cur
     const percent = ((progression_reelle - progression_theorique ) / progression_theorique   )*100 // Ecart 
 
      return (
-    <Flex orientation={orientation} justify="center" align="center" style={style} >
+    <Flex vertical={orientation == 'vertical'} justify="center" align="center" style={style} >
         <Icon icon="mdi:rabbit" color="grey" />
 
         <div
@@ -496,7 +496,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
         name: unit,
         nameLocation: "center",
         min: 0, // à dynamiser
-        max: 100,
+        max: 110,
         splitNumber: 3,
         splitLine: { show: false },
         axisTick: { show: true },
@@ -524,7 +524,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
           stack: "balance",
           data: [balancePct - onTrackTolerance ],
           barWidth: 40,
-          itemStyle: { color:  progressState == 'behind' ?  behindColor : chroma(behindColor).desaturate(2).alpha(0.5).hex() }, //TODO : couleur plus bright si elle contient la valeur
+          itemStyle: { color:  progressState == 'behind' ?  behindColor : chroma(behindColor).alpha(0.7).hex() }, //TODO : couleur plus bright si elle contient la valeur
           silent: true,
         },
         {
@@ -533,7 +533,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
           stack: "balance",
           data: [onTrackTolerance*2],
           barWidth: 40,
-          itemStyle: { color: progressState == 'onTrack' ? onTrackColor : chroma(onTrackColor).desaturate(2).alpha(0.5).hex() },
+          itemStyle: { color: progressState == 'onTrack' ? onTrackColor : chroma(onTrackColor).alpha(0.7).hex() },
           silent: true,
         },
         {
@@ -542,7 +542,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
           stack: "balance",
           data: [120], // overflow
           barWidth: 40,
-          itemStyle: { color: progressState == 'ahead' ? aheadColor : chroma(aheadColor).desaturate(2).alpha(0.5).hex()  },
+          itemStyle: { color: progressState == 'ahead' ? aheadColor : chroma(aheadColor).alpha(0.7).hex()  },
           silent: true,
         },
 
@@ -550,10 +550,10 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
           type: "scatter",
           symbol: "rect",
           itemStyle: {
-            color: p => p.dataIndex == 0 ? '#494cff' : '#ffffff00'
+            color: p => p.dataIndex == 0 ? '#3335b6' : '#ffffff00'
            },
           silent: true,
-          symbolSize: [45, 2],
+          symbolSize: [30, 4],
           symbolOffset: [0, 5],
           symbolRotate: 90,
           z: 20,
