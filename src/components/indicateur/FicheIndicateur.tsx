@@ -562,6 +562,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
             show: true,
             position: "top",
             formatter: goalDate?.toString() || '',
+            color: "inherit"
           },
           tooltip: {
             valueFormatter: (val) => val + "%",
@@ -583,7 +584,10 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
           barGap: "-75%",
           itemStyle: {
             color: "#2b2b2b",
-          },
+            shadowColor: "rgba(0,0,0,0.35)",
+            shadowBlur: 6,
+            shadowOffsetY: 2
+            },
           z: 10, // au-dessus
         },
       ],
