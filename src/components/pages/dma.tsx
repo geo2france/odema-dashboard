@@ -26,18 +26,26 @@ export const DMA_colors_labels = {
                 'Déchèterie':chartBusinessProps('Déchèterie').color ?? 'white',
                 'Collecte séparée':chartBusinessProps('Matériaux recyclables').color ?? 'white',
                 'Collecte OMR':chartBusinessProps('Ordures ménagères résiduelles').color ?? 'white',
-                  'Incinération sans récupération d\'énergie':
+                'Incinération sans récupération d\'énergie':
                     chartBusinessProps('Incinération sans récupération d\'énergie').color ?? 'white',
+                'Incinération sans valorisation':
+                    chartBusinessProps('Incinération sans valorisation').color ?? 'white',
                 'Incinération avec récupération d\'énergie':
                     chartBusinessProps('Incinération avec récupération d\'énergie').color ?? 'white',
+                'Valorisation énergétique':
+                    chartBusinessProps('Valorisation énergétique').color ?? 'white',
                 'Stockage':
                     chartBusinessProps('Stockage').color ?? 'white',
                 'Stockage pour inertes':
                     chartBusinessProps('Stockage pour inertes').color ?? 'white',
                 'Valorisation matière':
                     chartBusinessProps('Valorisation matière').color ?? 'white',
+                'Valorisation matière inorganique':
+                    chartBusinessProps('Valorisation matière inorganique').color ?? 'white',
                 'Valorisation organique':
                     chartBusinessProps('Valorisation organique').color ?? 'white',
+                'Valorisation matière organique':
+                    chartBusinessProps('Valorisation matière organique').color ?? 'white',
             }
 
 export const PageDma: React.FC<PageProps> = () => {
