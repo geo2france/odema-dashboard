@@ -93,14 +93,17 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
           id="data_traitement" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
-          resource="odema:destination_dma_epci_harmonise_V2"
+          resource="odema:destination_dma_epci_harmonise"
       >
         <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
         <Transform>{ (data:SimpleRecord[]) => data.map((row) => ({
             ...row,
             lib_dechet_1:row.lib_dechet.split(' > ')[0],
             lib_dechet_2:row.lib_dechet.split(' > ')[1],
-            lib_dechet_3:row.lib_dechet.split(' > ')[2]
+            lib_dechet_3:row.lib_dechet.split(' > ')[2],
+            lib_traitement_1:row.lib_traitement.split(' > ')[0],
+            lib_traitement_2:row.lib_traitement.split(' > ')[0],
+            lib_traitement_3:row.lib_traitement.split(' > ')[0],
         }))}</Transform>
      </Dataset>
 
@@ -108,7 +111,7 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
           id="indicateur_territoire" 
           type="wfs"
           url="https://www.geo2france.fr/geoserver/odema/ows"
-          resource="odema:destination_dma_epci_harmonise_V2"
+          resource="odema:destination_dma_epci_harmonise"
       >
         <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
         <Filter field="annee">{useControl("annee")}</Filter>
@@ -117,27 +120,15 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
                     SUM([tonnage]) as tonnage,
                     MAX([population]) as population,
                     1000 * SUM([tonnage]) / MAX([population]) as ratio_dma,
-                    100*SUM(CASE WHEN [lib_traitement_agregat_collecte] ilike 'Valorisation%' THEN [tonnage] END) / SUM([tonnage]) as part_valo
+                    100*SUM(CASE WHEN [lib_traitement] ilike 'Valorisation%' 
+                        AND [lib_traitement] not ilike 'Incin_ration%'
+                         AND [lib_traitement] not ilike '%valorisation _nerg_tique%' 
+                        THEN [tonnage] END) / SUM([tonnage]) as part_valo
                   FROM ? 
                   GROUP BY [annee]
                   ORDER BY [annee]
         </Transform>
     </Dataset>
-
-    <Dataset
-          id="current_trash_composition" 
-          type="wfs"
-          url="https://www.geo2france.fr/geoserver/odema/ows"
-          resource="odema:destination_dma_epci_harmonise_V2"
-      >
-        <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
-        <Filter field="annee">{useControl("annee")}</Filter>
-        <Transform>
-            SELECT [lib_dechet_agregat_dma] as type_dechet, sum(ratio_hab_pap) as ratio
-            FROM ?
-            GROUP BY [lib_dechet_agregat_dma]
-        </Transform> 
-     </Dataset>
 
     <Dataset
           id="tarification_ti" 
@@ -164,19 +155,19 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
         id="destination_dma_sankey" 
         type="wfs"
         url="https://www.geo2france.fr/geoserver/odema/ows"
-        resource="odema:destination_dma_epci_harmonise_V2"    
+        resource="odema:destination_dma_epci_harmonise"    
     >
         <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
-        <Transform>{`SELECT lib_dechet AS type_dechet, lib_traitement_agregat_collecte AS traitement_destination, sum(tonnage) as tonnage
+        <Transform>{`SELECT lib_dechet AS type_dechet, lib_traitement AS traitement_destination, sum(tonnage) as tonnage
             FROM ?
             WHERE [annee]= ${useControl("annee")}
-            GROUP BY [lib_dechet], [lib_traitement_agregat_collecte]`}</Transform>
+            GROUP BY [lib_dechet], [lib_traitement]`}</Transform>
         {/* A simplifier */} 
         <Transform>
             {data => data.map((i: SimpleRecord) => ({
                           value: Math.max(i.tonnage, 1),
                           source: i.type_dechet.split(' > ')[0],
-                          target: i.traitement_destination === 'Stockage pour inertes' ? 'Stockage' : i.traitement_destination,}))}
+                          target: i.traitement_destination?.split(' > ')[0]}))}
         </Transform>
         <Transform>
             SELECT 
@@ -207,9 +198,9 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
         </Card>
 
         <StatisticsCollection title="Indicateurs">
-        <Statistics title="Taux de valorisation" unit="%" dataset="indicateur_territoire" dataKey="part_valo" icon="fa7-solid:recycle" 
+        <Statistics title="Taux de valorisation matière" unit="%" dataset="indicateur_territoire" dataKey="part_valo" icon="fa7-solid:recycle" 
         valueFormatter={(p) => p.value.toLocaleString(undefined, {maximumFractionDigits:1})} color={"#f7e11cff"}
-        annotation=""/>
+        annotation="" help="Valorisation matières (y.c. organique)"/>
         
         <Statistics title="Production de DMA" unit="kg/hab" dataset="indicateur_territoire" dataKey="ratio_dma" icon="famicons:trash" 
         valueFormatter={(p) => p.value.toLocaleString(undefined, {maximumFractionDigits:0})}
@@ -224,7 +215,6 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
             title={`Types et destination des déchets en ${useControl("annee")}`} 
             dataset="destination_dma_sankey" />
 
-        {/*<ChartTrashbin dataset="current_trash_composition" /> */}
         <ChartGisementDechet title="Gisement collecté" dataset="data_traitement" />
         <ChartRPQS dataset="rpqs" year={Number(useControl('annee'))} />
 
@@ -237,7 +227,7 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
                         />
 
       <ChartEvolutionDechet  dataset="data_traitement" title="Filières de destination"
-                         yearKey="annee" categoryKey="lib_traitement_agregat_collecte" ratioKey="ratio_hab"
+                         yearKey="annee" categoryKey="lib_traitement_1" ratioKey="ratio_hab"
                          tonnageKey="tonnage"
                          year={Number(useControl('annee'))}
                         />
