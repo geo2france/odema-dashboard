@@ -205,7 +205,7 @@ valueKey = 'valeur'
             },
         }}
     >
-        <Switch value={showChart} onChange={setShowChart} />
+        <Switch value={showChart} onChange={setShowChart} size="small" style={{opacity:0.2}} />
 
         <Flex vertical justify="space-between" style={{width:"100%", height:"100%", padding:4}}>
             <Flex align="center" justify="space-between" style={{width:"100%", height:"100%"}}>
