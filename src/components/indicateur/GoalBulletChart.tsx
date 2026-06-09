@@ -91,6 +91,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
       },
       series: [
         {
+          animation: false,
           type: "bar",
           name: "retard",
           stack: "balance",
@@ -101,6 +102,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
         },
         {
           type: "bar",
+          animation: false,
           name: "normal",
           stack: "balance",
           data: [onTrackTolerance*2],
@@ -110,6 +112,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
         },
         {
           type: "bar",
+          animation: false,
           name: "avance",
           stack: "balance",
           data: [120], // overflow
