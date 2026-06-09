@@ -1,12 +1,12 @@
 import { aggregator, SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartEcharts, useDataset } from "@geo2france/api-dashboard/dsl"
 import { Icon } from "@iconify/react"
-import { Avatar, Card, Flex, Progress, Switch, Tooltip, Typography, theme} from "antd"
+import { Avatar, Card, Flex, Switch, Tooltip, Typography, theme} from "antd"
 import { EChartsOption } from "echarts"
 import chroma from "chroma-js";
 import { QuestionCircleOutlined } from "@ant-design/icons"
 import { DataPoint, interpolate } from "../../utils"
-import { CSSProperties, useState } from "react"
+import { useState } from "react"
 
 const { Text } = Typography
 const { useToken } = theme
@@ -67,8 +67,7 @@ color:color_input,
 icon,
 dataset:dataset_id,
 goalDataset, 
-help, 
-GoalDirection, 
+help,  
 showChart:input_showChart=false,
 digits,
 dateKey = 'date_mesure',
@@ -96,8 +95,8 @@ valueKey = 'valeur'
                 ?.filter( row => row[VALUE_KEY] != null) // Filter null et undef
 
     // Detect goal direction from goal dataset (first vs last)
-    const goal_direction:GoalDirection = GoalDirection ?? 
-                           Math.abs(Number(goal_data?.at(0)?.[VALUE_KEY])) < Math.abs(Number(goal_data?.at(-1)?.[VALUE_KEY])) ? 'at_least' : 'at_most'
+    /*const goal_direction:GoalDirection = GoalDirection ?? 
+                           Math.abs(Number(goal_data?.at(0)?.[VALUE_KEY])) < Math.abs(Number(goal_data?.at(-1)?.[VALUE_KEY])) ? 'at_least' : 'at_most'*/
 
     // Last date if not set
     const ANNEE = year ? Number(year) : aggregator({data:data, dataKey:DATE_KEY, aggregate:'max'}).value
@@ -115,9 +114,9 @@ valueKey = 'valeur'
     const goal_year = last_goal?.[DATE_KEY] ? new Date(String(last_goal?.[DATE_KEY])).getFullYear() : undefined // Ou NaN ?
 
     // Calcule de la progression vers l'objectif
-    const percent = goal_direction === "at_least" ?
+    /*const percent = goal_direction === "at_least" ?
         (current_value - start_value) / (goal_value - start_value)
-        :(start_value - current_value) / (start_value - goal_value)
+        :(start_value - current_value) / (start_value - goal_value)*/
 
     // Valeur idéal pour l'année N (trajectoire)
     const trajectory_value = goal_data_interpolated?.find(e => e[0] == ANNEE)?.[1] || NaN

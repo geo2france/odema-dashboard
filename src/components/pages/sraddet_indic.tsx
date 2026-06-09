@@ -112,7 +112,7 @@ const columns: ColumnsType<RowData> = [
   },
 ];
 
-export const PageSRADDET:React.FC<PageProps> = ({}) => {
+export const PageSRADDET:React.FC<PageProps> = () => {
     return (
         <Dashboard debug>
             <Intro title="Pour travail, indicateurs réglementaire">
@@ -292,9 +292,8 @@ export const PageSRADDET:React.FC<PageProps> = ({}) => {
                 valueKey="part_pop_ti_100"
                 icon="tabler:report-money"
                 color="#bd4cbdff"
-              >
+              />
 
-              </FicheIndicateur>
 
             </StatisticsCollection>
 
