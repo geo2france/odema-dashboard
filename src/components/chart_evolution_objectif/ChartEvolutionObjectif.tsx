@@ -9,20 +9,20 @@ import { useBlockConfig, useDataset } from "@geo2france/api-dashboard/dsl";
 interface DataProps {
     annee:number
     ratio:number
-    [key: string]: any
+    [key: string]: unknown
 }
 
 interface DataObjectifsProps {
     annee:number
     ratio:number
-    [key: string]: any
+    [key: string]: unknown
 }
 
 export interface ChartEvolutionTypeDechetProps {
     dataset: string;
     title?:string;
     dataObjectifs?:DataObjectifsProps[];
-    onFocus?:any;
+    onFocus?:unknown;
     focus_item?:string;
     style? : CSSProperties;
     year? : number;
@@ -38,7 +38,7 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
     const dataset = useDataset(dataset_id);
     const data = dataset?.data as DataProps | undefined;
 
-    const data_chart = data && useMemo(() => alasql(`
+    const data_chart =  useMemo(() => data && alasql(`
         SELECT 
             [annee], 
             SUM([ratio]) as ratio,
@@ -73,8 +73,10 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
         tooltip:{
             show:true,
             trigger: 'axis',
+            // eslint-disable-next-line
             formatter: (p:any) => 
                 `${p[0].axisValue}<br>` + 
+            // eslint-disable-next-line
                     p.map((item:any) => 
                         `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${item.color};margin-right:5px"></span>` +
                         `${item.seriesName} <b style="margin-left:16px">${item.value[1]} kg/hab</b>`
