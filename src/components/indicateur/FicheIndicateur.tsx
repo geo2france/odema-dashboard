@@ -85,13 +85,6 @@ valueKey = 'valeur'
 
 
     const goal_dataset = useDataset(goalDataset)
-    // Calcul de la valeur idéale (trajectoire à l'année n)
-
-    const goal_data = goal_dataset?.data?.sort( (a,b) => new Date(String(a[DATE_KEY])).getTime() - new Date(String(b[DATE_KEY])).getTime() )
-    const goal_data_mapped = goal_data?.map( e => [e?.[DATE_KEY], e?.[VALUE_KEY]])
-    const goal_data_interpolated = goal_data_mapped && interpolate(goal_data_mapped as DataPoint[])
-    const trajectory_value = goal_data_interpolated?.find(e => e[0] == ANNEE)?.[1] || NaN
-
 
     const dataset = useDataset(dataset_id)
     const data = dataset?.data
@@ -101,6 +94,13 @@ valueKey = 'valeur'
    
     // Last date if not set
     const ANNEE = year ? Number(year) : aggregator({data:data, dataKey:DATE_KEY, aggregate:'max'}).value
+
+    // Calcul de la valeur idéale (trajectoire à l'année n)
+    const goal_data = goal_dataset?.data?.sort( (a,b) => new Date(String(a[DATE_KEY])).getTime() - new Date(String(b[DATE_KEY])).getTime() )
+    const goal_data_mapped = goal_data?.map( e => [e?.[DATE_KEY], e?.[VALUE_KEY]])
+    const goal_data_interpolated = goal_data_mapped && interpolate(goal_data_mapped as DataPoint[])
+    const trajectory_value = goal_data_interpolated?.find(e => e[0] == ANNEE)?.[1] || NaN
+
 
     const current_data = data?.filter( row => new Date(String(row[DATE_KEY])).getFullYear() === ANNEE )
     const current_value = Number(aggregator({data:current_data, dataKey:VALUE_KEY, aggregate:'sum'}).value)
