@@ -7,6 +7,7 @@ import chroma from "chroma-js";
 import { QuestionCircleOutlined } from "@ant-design/icons"
 import { DataPoint, interpolate } from "../../utils"
 import { useState } from "react"
+import GoalBulletChart from "./GoalBulletChart"
 
 const { Text } = Typography
 const { useToken } = theme
@@ -80,49 +81,42 @@ valueKey = 'valeur'
     const VALUE_KEY = valueKey
     const color = color_input ?? "#000"
 
-    const goal_dataset = useDataset(goalDataset)
-    //Time sorting
-    const goal_data = goal_dataset?.data?.sort( (a,b) => new Date(String(a[DATE_KEY])).getTime() - new Date(String(b[DATE_KEY])).getTime() )
+    const tooltip =  help && <Tooltip title={help}><QuestionCircleOutlined /></Tooltip>
 
+
+    const goal_dataset = useDataset(goalDataset)
+    // Calcul de la valeur idéale (trajectoire à l'année n)
+
+    const goal_data = goal_dataset?.data?.sort( (a,b) => new Date(String(a[DATE_KEY])).getTime() - new Date(String(b[DATE_KEY])).getTime() )
     const goal_data_mapped = goal_data?.map( e => [e?.[DATE_KEY], e?.[VALUE_KEY]])
     const goal_data_interpolated = goal_data_mapped && interpolate(goal_data_mapped as DataPoint[])
+    const trajectory_value = goal_data_interpolated?.find(e => e[0] == ANNEE)?.[1] || NaN
 
-    const tooltip =  help && <Tooltip title={help}><QuestionCircleOutlined /></Tooltip>
 
     const dataset = useDataset(dataset_id)
     const data = dataset?.data
                 ?.sort((a,b) => new Date(String(a[DATE_KEY])).getTime() - new Date(String(b[DATE_KEY])).getTime() ) //Dans l'ordre chrono
                 ?.filter( row => row[VALUE_KEY] != null) // Filter null et undef
 
-    // Detect goal direction from goal dataset (first vs last)
-    /*const goal_direction:GoalDirection = GoalDirection ?? 
-                           Math.abs(Number(goal_data?.at(0)?.[VALUE_KEY])) < Math.abs(Number(goal_data?.at(-1)?.[VALUE_KEY])) ? 'at_least' : 'at_most'*/
-
+   
     // Last date if not set
     const ANNEE = year ? Number(year) : aggregator({data:data, dataKey:DATE_KEY, aggregate:'max'}).value
 
     const current_data = data?.filter( row => new Date(String(row[DATE_KEY])).getFullYear() === ANNEE )
-
     const current_value = Number(aggregator({data:current_data, dataKey:VALUE_KEY, aggregate:'sum'}).value)
     const max_value = Number(aggregator({data:data, dataKey:VALUE_KEY, aggregate:'max'}).value) // Attention, faussé si présence Axe (indicateur)
     const min_value = Number(aggregator({data:data, dataKey:VALUE_KEY, aggregate:'min'}).value)
 
     const last_goal = goal_data?.at(-1)
-
     const start_value = Number(goal_data?.at(0)?.[VALUE_KEY])
     const goal_value = Number(last_goal?.[VALUE_KEY])
     const goal_year = last_goal?.[DATE_KEY] ? new Date(String(last_goal?.[DATE_KEY])).getFullYear() : undefined // Ou NaN ?
 
-    // Calcule de la progression vers l'objectif
-    /*const percent = goal_direction === "at_least" ?
-        (current_value - start_value) / (goal_value - start_value)
-        :(start_value - current_value) / (start_value - goal_value)*/
-
     // Valeur idéal pour l'année N (trajectoire)
-    const trajectory_value = goal_data_interpolated?.find(e => e[0] == ANNEE)?.[1] || NaN
 
 
-    // Règle spéciale pour les indicateurs en % et sans objectif quanti (a valider en atelier)
+
+    // Règle spéciale pour les indicateurs en % et sans objectif quanti
     const [axisMin, axisMax] = 
         !goal_value && unit=='%' ? [0,100] 
         : [ Math.min(min_value , goal_value), Math.max(max_value , goal_value) ]
@@ -204,7 +198,7 @@ valueKey = 'valeur'
             },
         }}
     >
-        <Switch value={showChart} onChange={setShowChart} size="small" style={{opacity:0.2}} />
+        <Switch value={showChart} onChange={setShowChart} size="small" style={{opacity:0.2}} /> {/* pour dev */}
 
         <Flex vertical justify="space-between" style={{width:"100%", height:"100%", padding:4}}>
             <Flex align="center" justify="space-between" style={{width:"100%", height:"100%"}}>
@@ -242,8 +236,10 @@ valueKey = 'valeur'
                 :
 
                 <GoalBulletChart 
-                    goalValue={goal_value} value={current_value} startValue={start_value} balanceValue={trajectory_value} 
-                    unit={unit} goalDate={goal_year} onTrackTolerance={0}
+                    value={current_value} 
+                    goalValue={goal_value} goalDate={goal_year}
+                    startValue={start_value} balanceValue={trajectory_value} 
+                    unit={unit} onTrackTolerance={0}
                     aheadColor={token.colorPrimary} behindColor="#e4e4e4"
                     />
 
@@ -255,173 +251,4 @@ valueKey = 'valeur'
 }
 
 
-
-interface GoalBulletChartProps {
-    startValue:number
-
-    goalValue:number
-
-    goalDate?: number | string
-
-    value: number
-
-    balanceValue: number //TODO a calculer automatiquement ?
-
-    unit?: string
-
-    behindColor?: string
-
-    aheadColor?: string
-
-    onTrackColor?: string
-
-    /** Plage de la zone onTrack (par défaut : ± 5%) */
-    onTrackTolerance?: number
-}
-
-/** Bullet chart pour montrer la valeur actuelle de l'indicateur par rapport à l'objecitf.
- * A l'avenir, pourra supporter plusieurs échéances.
- * TODO : marquer la valeur avec label, afficher année + valeur target
- * Attention : traier les indicateurs "à l'envers" (DMA 620 -> 550 kg/hab) : l'origine doit être la valeur de 2011
- * voir aussi : https://www.patternfly.org/charts/bullet-chart/
- */
-const GoalBulletChart: React.FC<GoalBulletChartProps> = (
-    {startValue,
-         goalValue, 
-         value:currentValue,
-         balanceValue, 
-         unit,
-         aheadColor='#48b133',
-         behindColor='#fd6b6b',
-         onTrackColor='#e9c772',
-         onTrackTolerance=5,
-         goalDate,
-    }:GoalBulletChartProps) => {
-
-    if ([goalValue, currentValue, balanceValue, startValue].includes(NaN)) {
-        return null
-    }
-
-    const currentPct = 100* (startValue - currentValue) / (startValue - goalValue) 
-    const balancePct = 100* (startValue - balanceValue) / (startValue - goalValue) 
-
-    const progressState = currentPct < balancePct - onTrackTolerance ? 'behind' :
-                           currentPct > (balancePct + onTrackTolerance) ? 'ahead' :
-                           'onTrack'
-
-    const coef = (goalValue - startValue) / 100
-
-    const options: EChartsOption = {
-      grid: {
-        height:60,
-        bottom:70,
-        backgroundColor: '#564'
-      },
-      xAxis: {
-        type: "value",
-        name: unit,
-        nameLocation: "center",
-        min: 0, // à dynamiser
-        max: 110,
-        splitNumber: 3,
-        splitLine: { show: false },
-        axisTick: { show: true },
-        axisLine: { show: true },
-        axisLabel: { show: true, 
-            formatter : p => `${(startValue + coef*p).toLocaleString(undefined, {maximumFractionDigits:0})}` }, // Ajuster ici pour afficher les valeurs métier
-      },
-      yAxis: {
-        type: "category",
-        data: ["Indicateur"],
-        axisTick: { show: false },
-        axisLine: { show: true },
-        axisLabel: { show: false },
-      },
-      tooltip: {
-        show: true,
-      },
-      legend: {
-        show: false
-      },
-      series: [
-        {
-          type: "bar",
-          name: "retard",
-          stack: "balance",
-          data: [balancePct - onTrackTolerance ],
-          barWidth: 40,
-          itemStyle: { color:  progressState == 'behind' ?  behindColor : chroma(behindColor).alpha(0.7).hex() }, //TODO : couleur plus bright si elle contient la valeur
-          silent: true,
-        },
-        {
-          type: "bar",
-          name: "normal",
-          stack: "balance",
-          data: [onTrackTolerance*2],
-          barWidth: 40,
-          itemStyle: { color: progressState == 'onTrack' ? onTrackColor : chroma(onTrackColor).alpha(0.7).hex() },
-          silent: true,
-        },
-        {
-          type: "bar",
-          name: "avance",
-          stack: "balance",
-          data: [120], // overflow
-          barWidth: 40,
-          itemStyle: { color: progressState == 'ahead' ? aheadColor : chroma(aheadColor).alpha(0.7).hex()  },
-          silent: true,
-        },
-
-        {
-          type: "scatter",
-          symbol: "rect",
-          itemStyle: {
-            color: p => p.dataIndex == 0 ? '#3335b6' : '#ffffff00'
-           },
-          silent: true,
-          symbolSize: [30, 4],
-          symbolOffset: [0, 5],
-          symbolRotate: 90,
-          z: 20,
-          data: [100],
-          label: {
-            show: true,
-            position: "top",
-            formatter: goalDate?.toString() || '',
-            color: "inherit"
-          },
-          tooltip: {
-            valueFormatter: (val) => val + "%",
-          },
-        },
-        // 📊 Valeur réelle
-        {
-          type: "bar",
-          stack: "value",
-          data: [currentPct],
-          barWidth: 20,
-          tooltip: {
-            formatter: () => `${currentValue.toLocaleString(undefined, {maximumFractionDigits:1})} ${unit ?? ''}`,
-          },
-          label: {
-            show: true,
-            formatter: () => `${currentValue.toLocaleString(undefined, {maximumFractionDigits:1})} ${unit ?? ''}`,
-          },
-          barGap: "-75%",
-          itemStyle: {
-            color: "#2b2b2b",
-            shadowColor: "rgba(0,0,0,0.35)",
-            shadowBlur: 6,
-            shadowOffsetY: 2
-            },
-          z: 10, // au-dessus
-        },
-      ],
-    };
-
-
-    return (
-        <ChartEcharts option={options} style={{height:150}}/>
-    )
-}
 
