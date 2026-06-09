@@ -1,9 +1,8 @@
-import { aggregator, SimpleRecord } from "@geo2france/api-dashboard"
+import { aggregator, datasetInput, SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartEcharts, useDataset } from "@geo2france/api-dashboard/dsl"
 import { Icon } from "@iconify/react"
-import { Avatar, Card, Flex, Switch, Tooltip, Typography, theme} from "antd"
+import { Avatar, Card, Flex, Segmented, Tooltip, Typography, theme} from "antd"
 import { EChartsOption } from "echarts"
-import chroma from "chroma-js";
 import { QuestionCircleOutlined } from "@ant-design/icons"
 import { DataPoint, interpolate } from "../../utils"
 import { useState } from "react"
@@ -123,60 +122,7 @@ valueKey = 'valeur'
 
     const axisOffset = (axisMax - axisMin) * 0.05;
 
-    const option:EChartsOption = { // Minigraph
-        xAxis:{
-            show: false,
-            type:"time",
-            max: String( Math.max(ANNEE ?? -Infinity,goal_year ?? -Infinity )) 
-        },
-        yAxis:{
-            show: false,
-            type:"value",
-            min: axisMin - axisOffset,
-            max: axisMax + axisOffset
-        },
-        grid: {
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-            containLabel: false,
-            show:true,
-            backgroundColor:'#fafafa'
-            },
-        series:[
-           {
-                name:"Objectif",
-                type: 'line',
-                color:'grey',
-                lineStyle:{type:"dashed",width:1},
-                data: goal_data?.map( row => [String(row[DATE_KEY]), row[VALUE_KEY]]),
-                symbol: 'none'
-            },
-            {
-                name:"Indicateur",
-                type: 'line',
-                connectNulls: true,
-                data: data?.map( row => [String(row[DATE_KEY]), row[VALUE_KEY]]),
-                lineStyle:{opacity:0},
-                areaStyle:{
-                    origin:'start',
-                    color:{
-                        x: 0,
-                        y: 0,
-                        x2: 0,
-                        y2: 1,
-                        type:"linear",
-                        colorStops:[
-                            {offset:0, color:color}, 
-                            {offset:1, color:chroma(color).brighten(1).hex()}
-                        ]
-                    }
-                },
-                symbol:"none"
-            },
-        ]
-    }
+  
     return (
     <Card 
         title={title}
@@ -198,7 +144,6 @@ valueKey = 'valeur'
             },
         }}
     >
-        <Switch value={showChart} onChange={setShowChart} size="small" style={{opacity:0.2}} /> {/* pour dev */}
 
         <Flex vertical justify="space-between" style={{width:"100%", height:"100%", padding:4}}>
             <Flex align="center" justify="space-between" style={{width:"100%", height:"100%"}}>
@@ -230,9 +175,14 @@ valueKey = 'valeur'
             </Flex>
 
                { showChart ? 
-
-                    <ChartEcharts style={{ width:"100%", height:"100%" }} option={option} />
-                
+                <>
+                    <IndicateurChart 
+                        dataset={dataset_id} 
+                        goalDataset={goalDataset} 
+                        valueKey={valueKey} 
+                        dateKey={dateKey}
+                        color={color} unit={unit}></IndicateurChart>
+                </>
                 :
 
                 <GoalBulletChart 
@@ -246,9 +196,80 @@ valueKey = 'valeur'
             }
 
         </Flex>
+        <Segmented value={showChart} onChange={setShowChart}
+            options={[
+                {value: false, icon:<Icon icon="carbon:progress-bar"/>},
+                {value: true, icon:<Icon icon="mdi:chart-line"/>}
+            ]}
+        />
     </Card>
     )
 }
 
 
 
+interface IndicateurChartProps {
+  dataset: datasetInput;
+  goalDataset?: datasetInput;
+  dateKey?: string;
+  valueKey?: string;
+  color?: string;
+  unit?: string;
+}
+
+const  IndicateurChart:React.FC<IndicateurChartProps> = ({
+    dataset:dataset_id, 
+    goalDataset, 
+    dateKey = 'date_mesure',
+    valueKey = 'valeur', 
+    color, 
+    unit}) => {
+
+    const dataset = useDataset(dataset_id)
+    const data = dataset?.data
+
+    const goalData = useDataset(goalDataset)?.data
+
+    const option:EChartsOption = { 
+        xAxis:{
+            type:"time",
+            //max: String( Math.max(ANNEE ?? -Infinity,goal_year ?? -Infinity )) 
+        },
+        yAxis:{
+            type:"value",
+            //min: (value) => Math.max(Math.round(value.min - Math.abs(value.min*0.2)), value.min),
+            name:`${unit}`,
+
+        },
+        tooltip:{
+            show:true,
+            valueFormatter: (v) => `${v?.toLocaleString(undefined, {maximumFractionDigits:1})} ${unit}`
+        },
+        grid: {
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+            containLabel: false,
+            show:true,
+            backgroundColor:'#fafafa'
+            },
+        series:[
+            {
+                name:"Objectif",
+                type: 'line',
+                color:'#91cc75',
+                lineStyle:{type:"dashed",width:2},
+                data: goalData?.map( row => [String(row[dateKey]), row[valueKey]]),
+            },
+            {
+                name:"Indicateur",
+                type: 'line',
+                color: color,
+                connectNulls: true,
+                data: data?.map( row => [String(row[dateKey]), row[valueKey]]),
+            },
+        ]
+    }
+    return <ChartEcharts option={option} style={{height: 150}} />
+}
