@@ -103,8 +103,6 @@ valueKey = 'valeur'
 
     const current_data = data?.filter( row => new Date(String(row[DATE_KEY])).getFullYear() === ANNEE )
     const current_value = Number(aggregator({data:current_data, dataKey:VALUE_KEY, aggregate:'sum'}).value)
-    const max_value = Number(aggregator({data:data, dataKey:VALUE_KEY, aggregate:'max'}).value) // Attention, faussé si présence Axe (indicateur)
-    const min_value = Number(aggregator({data:data, dataKey:VALUE_KEY, aggregate:'min'}).value)
 
     const last_goal = goal_data?.at(-1)
     const start_value = Number(goal_data?.at(0)?.[VALUE_KEY])
@@ -112,16 +110,6 @@ valueKey = 'valeur'
     const goal_year = last_goal?.[DATE_KEY] ? new Date(String(last_goal?.[DATE_KEY])).getFullYear() : undefined // Ou NaN ?
 
     // Valeur idéal pour l'année N (trajectoire)
-
-
-
-    // Règle spéciale pour les indicateurs en % et sans objectif quanti
-    const [axisMin, axisMax] = 
-        !goal_value && unit=='%' ? [0,100] 
-        : [ Math.min(min_value , goal_value), Math.max(max_value , goal_value) ]
-
-    const axisOffset = (axisMax - axisMin) * 0.05;
-
   
     return (
     <Card 
