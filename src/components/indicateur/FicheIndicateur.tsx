@@ -244,7 +244,8 @@ valueKey = 'valeur'
 
                 <GoalBulletChart 
                     goalValue={goal_value} value={current_value} startValue={start_value} balanceValue={trajectory_value} 
-                    unit={unit} goalDate={goal_year} onTrackTolerance={5}
+                    unit={unit} goalDate={goal_year} onTrackTolerance={0}
+                    aheadColor={token.colorPrimary} behindColor="#e4e4e4"
                     />
 
             }
@@ -291,8 +292,8 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
          value:currentValue,
          balanceValue, 
          unit,
-         aheadColor='#a7c957',
-         behindColor='#bc4749',
+         aheadColor='#48b133',
+         behindColor='#fd6b6b',
          onTrackColor='#e9c772',
          onTrackTolerance=5,
          goalDate,
@@ -401,11 +402,11 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
           data: [currentPct],
           barWidth: 20,
           tooltip: {
-            formatter: (_p) => `${currentValue.toLocaleString(undefined, {maximumFractionDigits:1})} ${unit ?? ''}`,
+            formatter: () => `${currentValue.toLocaleString(undefined, {maximumFractionDigits:1})} ${unit ?? ''}`,
           },
           label: {
             show: true,
-            formatter: (_p) => `${currentValue.toLocaleString(undefined, {maximumFractionDigits:1})} ${unit ?? ''}`,
+            formatter: () => `${currentValue.toLocaleString(undefined, {maximumFractionDigits:1})} ${unit ?? ''}`,
           },
           barGap: "-75%",
           itemStyle: {
@@ -424,3 +425,4 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
         <ChartEcharts option={options} style={{height:150}}/>
     )
 }
+
