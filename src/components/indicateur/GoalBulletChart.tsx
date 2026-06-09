@@ -124,7 +124,6 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
           itemStyle: {
             color: p => p.dataIndex == 0 ? '#3335b6' : '#ffffff00'
            },
-          silent: true,
           symbolSize: [30, 4],
           symbolOffset: [0, 5],
           symbolRotate: 90,
@@ -137,7 +136,7 @@ const GoalBulletChart: React.FC<GoalBulletChartProps> = (
             color: "inherit"
           },
           tooltip: {
-            valueFormatter: (val) => val + "%",
+            formatter: `Objectif ${goalDate} : <b>${goalValue} ${unit}</b>`,
           },
         },
         // 📊 Valeur réelle
