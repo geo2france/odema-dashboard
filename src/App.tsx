@@ -90,7 +90,7 @@ const App: React.FC = () => {
       </PagesGroup>
       <EnfouissementPage title="ISDND" icon={<CloseSquareOutlined />}/>
       <RepPage title="REP" hidden={true}/>
-      <DaePage title="DAE" icon="material-symbols:factory-outline" />
+      <DaePage title="DAE" icon="material-symbols:factory-outline" hidden />
      </ DashboardApp>
   )
 };
