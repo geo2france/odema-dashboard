@@ -3,6 +3,7 @@ import { Dashboard, Dataset, Filter, Intro, Producer, Statistics, StatisticsColl
 import { Table, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { FicheIndicateur } from "../indicateur/FicheIndicateur";
+import { ChartIndicateurAllEpci } from "../chart_indicateur_all_epci/ChartIndicateurAllEpci";
 
 
 interface RowData {
@@ -169,6 +170,16 @@ export const PageSRADDET:React.FC<PageProps> = () => {
 
             </Dataset>
 
+            <Dataset
+              id="ind_epci_ratio_dma_pr_2017"
+              type="file"
+              url="data/"
+              resource="epci_ind_ratio_dma_pr_2017.json"
+          >
+              <Transform>{ (data:SimpleRecord[]) => data.filter(row => row.annee == 2023 ).sort( (a,b) => a.ratio_dma_pr_2017 - b.ratio_dma_pr_2017 ) }</Transform>
+
+          </Dataset>
+
             <StatisticsCollection title="DMA">
                 <Statistics dataset="indicateur_sraddet" dataKey="dma_pr_2011" unit="%" 
                 icon="streamline-flex:bag-solid" color="grey" aggregate="lastNotNull"
@@ -311,6 +322,8 @@ export const PageSRADDET:React.FC<PageProps> = () => {
                 goalDataset={[{annee:2010,tonnage_isdnd_pr_tonnage_2010:100},{annee:2025,tonnage_isdnd_pr_tonnage_2010:50}]}
               />
             </StatisticsCollection>
+
+            <ChartIndicateurAllEpci dataset="ind_epci_ratio_dma_pr_2017" />
 
         </Dashboard>
     )

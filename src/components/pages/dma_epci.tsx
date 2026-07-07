@@ -8,13 +8,14 @@ import { Control, Dashboard, Dataset, Filter, useControl, Select, useDataset, St
 import { DMA_colors_labels } from "./dma";
 import { ChartRPQS } from "../chart_rpqs/rpqs";
 import { ChartGisementDechet } from "../chart_gisement_dechet/ChartGisementDechet";
+import { FicheIndicateur } from "../indicateur/FicheIndicateur";
 
 const [maxYear, minYear, defaultYear] = [2023,2009,2023]
 
 export const DmaPageEPCI: React.FC<PageProps> = () => {
     const siren_epci = useControl('siren_epci')
     const current_epci = useDataset('data_territoire')?.data?.find(r => r.siren == siren_epci) // Info sur l'EPCI sélectionné
-
+    const annee = useControl("annee")
     //EPCI exerçant les compétence (lui-même ou syndicat)
     const siren_delegation = [
         ...extractSirens( current_epci?.epci_collecte ),
@@ -189,6 +190,18 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
         <Transform>{ (data:SimpleRecord[]) => data.filter(row => siren_delegation.includes(row.code_epci) ) }</Transform>
      </Dataset>
 
+     <Dataset
+        id="ind_ratio_dma_pr_2017"
+        type="file"
+        url="data/"
+        resource="epci_ind_ratio_dma_pr_2017.json"
+     >
+        <Transform>{ (data:SimpleRecord[]) => data.filter(row => row.geocode_epci == siren_epci 
+            && row.annee <= (annee || 9999)
+            ) }</Transform>
+
+     </Dataset>
+
     <Section title="Panorama">
         <Card styles={{header:{padding: 5,paddingLeft: 15, fontSize: 14, minHeight: 35}, body:{height:"100%", padding:0} }} title="Territoire">
         <Descriptions
@@ -234,6 +247,14 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
     </Section>
     <Section title="Coûts">
       <ChartCoutEpci dataset="couts_epci"/>
+    </Section>
+
+    <Section title="Indicateur">
+        <FicheIndicateur title="Réduire la production de DMA" dataset="ind_ratio_dma_pr_2017" valueKey="ratio_dma_pr_2017"
+        dateKey="annee" //year={useControl("annee")}
+        unit="kg/hab"
+        goalDataset={[{annee:2017,ratio_dma_pr_2017:0},{annee:2030,ratio_dma_pr_2017:-15}]}
+        />
     </Section>
 
     </Dashboard>
