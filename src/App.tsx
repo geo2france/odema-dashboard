@@ -39,6 +39,23 @@ const myTheme = {
   }
 }
 
+const visualIdentity = {
+    name: 'Odema',
+    light: {
+      colorPrimary: '#DEAD8F',
+      colorLink: '#DEAD8F',
+    },
+    typography: {
+      fontFamily: '"Roboto",sans-serif',
+    },
+    borderRadius: 6,
+    logo: {
+      src: '/img/logo_odema.png',
+      //srcDark: '/logo-dark.svg',
+      alt: 'Odema',
+      height: 32,
+    },
+  }
 
 /** Data provider **/
 export const geo2franceProvider = WfsProvider("https://www.geo2france.fr/geoserver/ows")
@@ -78,9 +95,10 @@ const App: React.FC = () => {
       title="Odema"
       subtitle="Observatoire déchets-matières des Hauts-de-France"
       logo={Odema_logo}
-      theme={myTheme}
+      visualIdentity={visualIdentity}
       brands={partenaires}
       footerSlider={false}
+      themeMode='light'
      >
       <HomePage title="Home" hidden={true}/>
       <PagesGroup title='DMA' icon={<HomeOutlined />}>
