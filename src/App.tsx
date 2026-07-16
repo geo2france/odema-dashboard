@@ -20,25 +20,6 @@ import { DaePage } from './components/pages/dae';
 import { PageDma } from './components/pages/dma';
 import { DmaPageEPCIHome } from './components/pages/dma_epci_home';
 
-const myTheme = {
-  token: {
-    colorPrimary: "#DEAD8F",
-    linkHoverDecoration:'underline',
-    colorLink:'#FF6A48',
-    colorLinkHover:'#9D7156',
-    borderRadius:4,
-   fontFamily:'Inter'
-    },
-  components:{
-    Timeline:{
-      itemPaddingBottom:40
-    },
-    Form:{
-      labelColor:'rgba(0,0,0,0.7)'
-    }
-  }
-}
-
 const visualIdentity = {
     name: 'Odema',
     light: {
