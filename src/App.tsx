@@ -31,7 +31,7 @@ const visualIdentity = {
     },
     borderRadius: 6,
     logo: {
-      src: '/img/logo_odema.png',
+      src: 'img/logo_odema.png',
       //srcDark: '/logo-dark.svg',
       alt: 'Odema',
       height: 32,
@@ -79,7 +79,7 @@ const App: React.FC = () => {
       visualIdentity={visualIdentity}
       brands={partenaires}
       footerSlider={false}
-      themeMode='light'
+      themeMode='auto'
      >
       <HomePage title="Home" hidden={true}/>
       <PagesGroup title='DMA' icon={<HomeOutlined />}>
