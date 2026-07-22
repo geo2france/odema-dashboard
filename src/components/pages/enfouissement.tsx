@@ -107,7 +107,7 @@ export const EnfouissementPage: React.FC<PageProps> = () => {
                     </Col>
                     <Col xl={24/3} md={24/3} xs={24}> 
                        <StatisticIsdnd color="#ddb090" title={`Enfouissement`} icon={<MdFrontLoader />}
-                        value={current_key_figures?.tonnage} unit="t"
+                        value={(current_key_figures?.tonnage as number)?.toLocaleString(undefined, {maximumFractionDigits:0})} unit="t"
                         evolution={Math.round( 100 * (current_key_figures?.tonnage - key_figures?.find((e) => e.annee==Number(2010))?.tonnage )
                                     / key_figures?.find((e) => e.annee==Number(2010))?.tonnage ) }  
                         evolutionUnit="%" evolutionSuffix="depuis 2010" invertColor 

@@ -10,7 +10,7 @@ import { ChartRPQS } from "../chart_rpqs/rpqs";
 import { ChartGisementDechet } from "../chart_gisement_dechet/ChartGisementDechet";
 import { FicheIndicateur } from "../indicateur/FicheIndicateur";
 
-const [maxYear, minYear, defaultYear] = [2023,2009,2023]
+const [maxYear, minYear, defaultYear] = [2024,2017,2024]
 
 export const DmaPageEPCI: React.FC<PageProps> = () => {
     const siren_epci = useControl('siren_epci')
@@ -57,7 +57,7 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
                 defaultValue={String(defaultYear)}
                 options={
                   Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
-                  .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
+                  .filter((year) => year >= 2024 || year % 2 !== 0) //Seulement les années impaires avant 2024
                   .reverse()
                   .map((i) => ({ label: String(i), value: String(i) }))}
               />

@@ -49,7 +49,7 @@ export const DMA_colors_labels = {
             }
 
 export const PageDma: React.FC<PageProps> = () => {
-    const [maxYear, minYear, defaultYear] = [2023,2009,2023]
+    const [maxYear, minYear, defaultYear] = [2024,2009,2024]
 
     return (
         <Dashboard>
@@ -128,7 +128,7 @@ export const PageDma: React.FC<PageProps> = () => {
                 defaultValue={String(defaultYear)}
                 options={
                   Array.from( { length: maxYear - minYear + 1 }, (_, i) => minYear + i ) //Séquence de minYear à maxYear
-                  .filter((num) => num % 2 !== 0) //Seulement les années impaires. A partir de 2025, il est prévu que les enquêtes deviennent annuelles
+                  .filter((year) => year >= 2024 || year % 2 !== 0)  //Seulement les années impaires avant 2024
                   .reverse()
                   .map((i) => ({ label: String(i), value: String(i) }))}
               />

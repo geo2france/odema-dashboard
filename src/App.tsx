@@ -21,25 +21,23 @@ import { PageDma } from './components/pages/dma';
 import { DmaPageEPCIHome } from './components/pages/dma_epci_home';
 import { PageSRADDET } from './components/pages/sraddet_indic';
 
-const myTheme = {
-  token: {
-    colorPrimary: "#DEAD8F",
-    linkHoverDecoration:'underline',
-    colorLink:'#FF6A48',
-    colorLinkHover:'#9D7156',
-    borderRadius:4,
-   fontFamily:'Inter'
+const visualIdentity = {
+    name: 'Odema',
+    light: {
+      colorPrimary: '#DEAD8F',
+      colorLink: '#DEAD8F',
     },
-  components:{
-    Timeline:{
-      itemPaddingBottom:40
+    typography: {
+      fontFamily: '"Roboto",sans-serif',
     },
-    Form:{
-      labelColor:'rgba(0,0,0,0.7)'
-    }
+    borderRadius: 6,
+    logo: {
+      src: 'img/logo_odema.png',
+      //srcDark: '/logo-dark.svg',
+      alt: 'Odema',
+      height: 32,
+    },
   }
-}
-
 
 /** Data provider **/
 export const geo2franceProvider = WfsProvider("https://www.geo2france.fr/geoserver/ows")
@@ -78,9 +76,10 @@ const App: React.FC = () => {
       title="Odema"
       subtitle="Observatoire déchets-matières des Hauts-de-France"
       logo={Odema_logo}
-      theme={myTheme}
+      visualIdentity={visualIdentity}
       brands={partenaires}
       footerSlider={false}
+      themeMode='auto'
      >
       <HomePage title="Home" hidden={true}/>
       <PagesGroup title='DMA' icon={<HomeOutlined />}>
@@ -90,8 +89,8 @@ const App: React.FC = () => {
       </PagesGroup>
       <EnfouissementPage title="ISDND" icon={<CloseSquareOutlined />}/>
       <RepPage title="REP" hidden={true}/>
-      <DaePage title="DAE" icon="material-symbols:factory-outline" />
       <PageSRADDET title="SRADDET" hidden/>
+      <DaePage title="DAE" icon="material-symbols:factory-outline" hidden />
      </ DashboardApp>
   )
 };
