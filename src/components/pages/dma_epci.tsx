@@ -45,7 +45,7 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
         }
     ]
 
-    return (<Dashboard debug>
+    return (<Dashboard>
       <Palette labels={ DMA_colors_labels } />
       
       <Control>
@@ -137,6 +137,7 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
           resource="odema:population_tarification_ti_epci"
       >
         <Filter field="epci_siren">{useControl("siren_epci")}</Filter>
+        <Filter field="annee">{useControl("annee")}</Filter>
         <Transform>SELECT * FROM ? order by annee</Transform>
      </Dataset>
 
