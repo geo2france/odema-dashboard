@@ -20,6 +20,7 @@ import { DaePage } from './components/pages/dae';
 import { PageDma } from './components/pages/dma';
 import { DmaPageEPCIHome } from './components/pages/dma_epci_home';
 import { PageSRADDET } from './components/pages/sraddet_indic';
+import { PageJourneeCollec } from './components/pages/journee_collectivitees';
 
 const visualIdentity = {
     name: 'Odema',
@@ -91,6 +92,7 @@ const App: React.FC = () => {
       <RepPage title="REP" hidden={true}/>
       <PageSRADDET title="SRADDET" hidden/>
       <DaePage title="DAE" icon="material-symbols:factory-outline" hidden />
+      <PageJourneeCollec title='jcoll' hidden />
      </ DashboardApp>
   )
 };

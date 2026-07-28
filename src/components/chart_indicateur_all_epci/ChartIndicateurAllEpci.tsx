@@ -1,7 +1,12 @@
+import { datasetInput } from "@geo2france/api-dashboard"
 import { ChartEcharts, useDataset } from "@geo2france/api-dashboard/dsl"
 import { EChartsOption } from "echarts"
 
-export const ChartIndicateurAllEpci:React.FC = ({dataset:input_dataset}) => {
+interface ChartIndicateurAllEpciProps {
+    dataset: datasetInput
+}
+
+export const ChartIndicateurAllEpci:React.FC<ChartIndicateurAllEpciProps> = ({dataset:input_dataset}) => {
 
     const dataset = useDataset(input_dataset)
 
