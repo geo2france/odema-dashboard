@@ -80,7 +80,7 @@ const App: React.FC = () => {
       visualIdentity={visualIdentity}
       brands={partenaires}
       footerSlider={false}
-      themeMode='auto'
+      themeMode='light'
      >
       <HomePage title="Home" hidden={true}/>
       <PagesGroup title='DMA' icon={<HomeOutlined />}>
