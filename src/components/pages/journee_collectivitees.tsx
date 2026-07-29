@@ -1,4 +1,4 @@
-import { PageProps, SimpleRecord } from "@geo2france/api-dashboard"
+import { BaseChartProps, PageProps, SimpleRecord } from "@geo2france/api-dashboard"
 import { ChartComparison, ChartEcharts, Control, Dashboard, Dataset, Filter, Join, Palette, Select, Transform, useBlockConfig, useControl, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
 import { EChartsOption, MarkAreaComponentOption, SeriesOption } from "echarts"
 
@@ -22,8 +22,8 @@ const indicateurs = [
     {
         name:"Réduction de la production par habitant",
         layername:'odema:rri_indic_epci_ratiodma_pr_2017',
-        goalValue: 75,
-        balanceValue:80,
+        goalValue: 85,
+        balanceValue:90,
         decrease:true
     },
     {
@@ -36,27 +36,34 @@ const indicateurs = [
 
 ]
 
-interface RacebarEpciProps {
+interface RacebarEpciProps extends BaseChartProps {
     goalValue: number 
     balanceValue: number
+    categoryKey?: string
 }
-const RacebarEpci:React.FC<RacebarEpciProps> = ({goalValue, balanceValue}) => {
+const RacebarEpci:React.FC<RacebarEpciProps> = ({goalValue, balanceValue, categoryKey}) => {
 
     const dataset = useDataset('indic')
     const data = dataset?.data
 
     const decrease = goalValue < balanceValue
 
-    useBlockConfig({
-        title:"Part de DMA orienté vers de la valorisation matière"
-    })
+    const categories = categoryKey ? [...new Set(data?.slice(1).map(d => d[categoryKey]))] : ['indicateur'] ;
+    const colors = usePalette({nColors: categories.length})
+
+    const pieces = categories.map((category, i) => ({
+    value: category,
+    label: category,
+    color: colors && colors[i % colors.length],
+    }));
+
 
     const series: SeriesOption[] = [
       {
         type: "bar",
         name: "Indicateur",
         data: data
-          ?.map((row) => [row.valeur, row.libelle_epci])
+          ?.map((row) => [row.valeur, row.libelle_epci, categoryKey && row[categoryKey]])
           .sort((a, b) => a[0] - b[0]),
         markArea: {
             silent: true,
@@ -69,7 +76,7 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({goalValue, balanceValue}) => {
                         },
                     },
                     {
-                        xAxis:  decrease ? 'min':'max',
+                        xAxis:  decrease ? 0:'max',
                     },
                 ],
                 [
@@ -102,12 +109,23 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({goalValue, balanceValue}) => {
       grid:{
         top:16
       },
+      legend:{show:false},
       series: series,
+      visualMap:{
+        name: categoryKey,
+        showLabel: true,
+        left:"right",
+        top:0,
+        type: "piecewise",
+        dimension: 2,
+        pieces: pieces
+      },
+
     };
     return <ChartEcharts option={option} style={{height: 1000}} />
 }
 
-interface SingleAxisProps {
+interface SingleAxisProps extends BaseChartProps{
     goalValue: number 
     balanceValue: number
     categoryKey?: string
@@ -258,11 +276,12 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
             <Control>
                 <Select name="indicateur" options={indicateurs.map( i => i.layername)}/>
                 <Select name="annee" arrows options={['2023','2024']} defaultValue={'2024'}/>
-                <Select name="variable" options={['competence_collecte','competence_traitement','typologie_ademe']} />
+                <Select name="variable" options={['competence_collecte','competence_traitement','typologie_ademe','tarification']} />
             </Control>
             
-            <ChartComparison
+            <ChartComparison 
                 title={`Objectif : ${current_indic?.name}`}
+                size={0.75}
                 chartType="donut"
                 dataset="indic"
                 nameKey="objectif"
@@ -283,8 +302,8 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
                 },}}
             />
 
-            <SingleAxis goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
-            <RacebarEpci goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} />
+            <SingleAxis size={1.25} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
+            <RacebarEpci size={2} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
         </Dashboard>
     )
 }
