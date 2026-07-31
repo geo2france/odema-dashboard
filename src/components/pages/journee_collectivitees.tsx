@@ -1,6 +1,8 @@
 import { BaseChartProps, PageProps, SimpleRecord } from "@geo2france/api-dashboard"
-import { ChartComparison, ChartEcharts, Control, Dashboard, Dataset, Filter, Join, Palette, Select, Transform, useBlockConfig, useControl, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
+import { ChartComparison, ChartEcharts, Control, Dashboard, Dataset, Filter, Join, Palette, Select, Transform, useControl, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
 import { EChartsOption, MarkAreaComponentOption, SeriesOption } from "echarts"
+import { rri_get_cols, rri_agg } from "../indicateur/rri";
+import { useMemo } from "react";
 
 function between(value: number, a: number, b: number): boolean {
   return value >= Math.min(a, b) && value <= Math.max(a, b);
@@ -51,54 +53,50 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({goalValue, balanceValue, catego
     const categories = categoryKey ? [...new Set(data?.slice(1).map(d => d[categoryKey]))] : ['indicateur'] ;
     const colors = usePalette({nColors: categories.length})
 
-    const pieces = categories.map((category, i) => ({
-    value: category,
-    label: category,
-    color: colors && colors[i % colors.length],
-    }));
+    // Aggréation tout axe confondu : permet de classer les territoires par valeur d'indicateur
+    const data_agg = useMemo(
+        () => data && rri_agg({ data })?.toSorted((a,b) => (a.valeur ?? 0)- (b.valeur ?? 0))/*.slice(1)*/,
+        [data]);
 
+    // Aggrégation selon l'axe choisi
+    const data_agg_axe = useMemo(
+        () => data && categoryKey && rri_agg({ data:data, axis:[categoryKey] })?.toSorted((a,b) => a.valeur - b.valeur)/*.slice(1)*/,
+        [data, categoryKey]) || [];
+    
+    console.log(data)
+    // Libel des territoires par ordre de valeur agrégés tous axes (indicateurs complet)
+    const lib_territories = [...new Set(data_agg?.map(d => d['libelle_epci']))]
 
-    const series: SeriesOption[] = [
-      {
-        type: "bar",
-        name: "Indicateur",
-        data: data
-          ?.map((row) => [row.valeur, row.libelle_epci, categoryKey && row[categoryKey]])
-          .sort((a, b) => a[0] - b[0]),
-        markArea: {
-            silent: true,
-            data: [
-                [
-                    {
-                        xAxis: goalValue,
-                        itemStyle: {
-                            color: "rgba(145, 204, 117, 0.36)", // vert clair
-                        },
+    const series:SeriesOption[] = categories.map((category) => ( {
+                type:"bar",
+                name: category?.toString(),
+                data: data_agg_axe?.
+                    filter( r => categoryKey ? r[categoryKey] == category : true)
+                    .map((row) => [row.valeur, row.libelle_epci]).sort( (a,b) => b[0] - a[0] ),
+                stack: "total"
+               /* markLine:{
+                    symbol: "none",
+                    silent: false,
+                    label: {
+                        formatter: balanceValue?.toString(),
+                        position: "insideEndTop"
                     },
-                    {
-                        xAxis:  decrease ? 0:'max',
+                    lineStyle: {
+                        color: "#9e9e9e",
+                        type: "dashed",
+                        width: 1
                     },
-                ],
-                [
-                    {
-                        xAxis: balanceValue,
-                        itemStyle: {
-                            color: "rgba(0, 132, 255, 0.15)", // jaune clair
-                        },
-                    },
-                    {
-                        xAxis: goalValue,
-                    },
-                ],
-            ],
-        },
-      },
-    ];
+                    data: [ { xAxis: balanceValue } ]
+                },*/
+
+            }))
+
 
     const option: EChartsOption = {
       tooltip: {show:true},
       xAxis: { type: "value",  },
       yAxis: { type: "category" , 
+            data: lib_territories,
             axisLabel: { 
                 fontSize: 10 ,
                 height: 12,
@@ -111,18 +109,8 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({goalValue, balanceValue, catego
       },
       legend:{show:false},
       series: series,
-      visualMap:{
-        name: categoryKey,
-        showLabel: true,
-        left:"right",
-        top:0,
-        type: "piecewise",
-        dimension: 2,
-        pieces: pieces
-      },
-
     };
-    return <ChartEcharts option={option} style={{height: 1000}} />
+    return <ChartEcharts option={option} style={{height: 1000}}  replaceMerge= {['xAxis', 'series']} />
 }
 
 interface SingleAxisProps extends BaseChartProps{
@@ -135,15 +123,21 @@ const SingleAxis:React.FC<SingleAxisProps> = ({goalValue, balanceValue, category
     const dataset = useDataset('indic')
     const data = dataset?.data
     const decrease = goalValue < balanceValue
-    const categories = categoryKey ? [...new Set(data?.slice(1).map(d => d[categoryKey]))] : ['indicateur'] ;
+
+    const categoryIsDimension = categoryKey && data && rri_get_cols(data).attributeCols.includes(categoryKey)
+    //console.log('cols', data&& getColumns(data))
+    const categories = 
+        categoryIsDimension ? 
+        [...new Set(data?.slice(1).map(d => d[categoryKey]))] : ['indicateur'] ;
 
     const colors = usePalette({nColors:categories.length}) 
 
+    //Si la categoryKey retourne des valeurs différentes pour un même geocode, on ne la représente pas sur ce graphique.
     const series:SeriesOption[] = categories.map((category) => ( {
                 type:"scatter",
                 name: category?.toString(),
                 data: data?.
-                    filter( r => categoryKey ? r[categoryKey] == category : true)
+                    filter( r => categoryIsDimension ? r[categoryKey] == category : true)
                     .map((row) => [row.valeur, 1,  row.population, row.libelle_epci]).sort( (a,b) => b[2] - a[2] ),
                 symbolSize: (val) => Math.max(2,Math.sqrt(val[2]) / 20),
                /* markLine:{
@@ -223,6 +217,11 @@ const SingleAxis:React.FC<SingleAxisProps> = ({goalValue, balanceValue, category
     return <ChartEcharts option={option}  replaceMerge= {['xAxis', 'series']} />
 }
 
+
+
+
+
+
 export const PageJourneeCollec:React.FC<PageProps> = () => {
     const layername = useControl("indicateur")
     const annee = useControl('annee')
@@ -230,9 +229,13 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
 
     const current_indic = indicateurs.find( i => i.layername == layername)
 
+    //const dataset=useDataset('indic')
+
     const goalValue = current_indic?.goalValue || NaN ;
     const balanceValue = current_indic?.balanceValue || NaN ;
     const decrease = goalValue < balanceValue ;
+
+    //console.log( 'dataset', RriAgg({data:dataset?.data, axis:['type_valo_matiere']}) )
 
     return (
         <Dashboard columns={2} debug>
@@ -276,10 +279,10 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
             <Control>
                 <Select name="indicateur" options={indicateurs.map( i => i.layername)}/>
                 <Select name="annee" arrows options={['2023','2024']} defaultValue={'2024'}/>
-                <Select name="variable" options={['competence_collecte','competence_traitement','typologie_ademe','tarification']} />
+                <Select name="variable" options={['competence_collecte','competence_traitement','typologie_ademe','tarification', 'type_valo_matiere']} />
             </Control>
             
-            <ChartComparison 
+          {/*  <ChartComparison 
                 title={`Objectif : ${current_indic?.name}`}
                 size={0.75}
                 chartType="donut"
@@ -300,7 +303,7 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
                     }
                     ]
                 },}}
-            />
+            /> */}
 
             <SingleAxis size={1.25} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
             <RacebarEpci size={2} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
