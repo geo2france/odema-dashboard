@@ -1,7 +1,8 @@
 import { ChartEcharts, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
 import { EChartsOption, MarkAreaComponentOption, SeriesOption } from "echarts"
-import { rri_get_cols } from "./rri"
+import { rri_agg, rri_get_cols } from "./rri"
 import { BaseChartProps } from "@geo2france/api-dashboard"
+import { useMemo } from "react"
 
 interface SingleAxisProps extends BaseChartProps{
     goalValue: number 
@@ -29,6 +30,11 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
 
     const categoryIsDimension = categoryKey && rri_cols?.attributeCols.includes(categoryKey)
 
+    const chart_data = useMemo(
+        () => data && categoryKey && !categoryIsDimension ? rri_agg({data, axis:rri_cols?.attributeCols}) : data,
+        [data, categoryKey, categoryIsDimension]
+    )
+
     //console.log('cols', data&& getColumns(data))
 
     // Detecter ici si la categoryKey est dans le JDD, si ce n'est pas le cas, retourner proprement en composant vide
@@ -40,10 +46,11 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
     const colors = usePalette({nColors:categories.length}) 
 
     //Si la categoryKey retourne des valeurs différentes pour un même geocode, on ne la représente pas sur ce graphique.
-    const series:SeriesOption[] = categories.map((category) => ( {
+    const series:SeriesOption[] = categories.map((category, index) => ( {
                 type:"scatter",
                 name: category?.toString(),
-                data: data?.
+                color:colors?.[index],
+                data: chart_data?. //⚠️⚠️⚠️ On ne prend pas la valeur aggrégée rajoute un rriAgg ici ! ⚠️
                     filter( r => categoryIsDimension ? r[categoryKey] == category : true)
                     .map((row) => [row.valeur, 1,  row.population, row.libelle_epci]).sort( (a,b) => b[2] - a[2] ),
                 symbolSize: (val) => Math.max(2,Math.sqrt(val[2]) / 20),
@@ -101,9 +108,9 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
         yAxis:{
             type: "category"
         },
-        color:colors,
         xAxis:{
             type: "value",
+            max:(value) => Math.round(Math.max(value.max, goalValue + goalValue*0.05)),
             //interval: 10
         },
         tooltip: {

@@ -1,6 +1,6 @@
 import { BaseChartProps } from "@geo2france/api-dashboard"
-import { ChartEcharts, useDataset } from "@geo2france/api-dashboard/dsl"
-import { EChartsOption, SeriesOption } from "echarts"
+import { ChartEcharts, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
+import { EChartsOption, MarkAreaComponentOption, SeriesOption } from "echarts"
 import { useMemo } from "react"
 import { rri_agg } from "./rri"
 
@@ -14,13 +14,13 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
     const dataset = useDataset(dataset_in)
     const data = dataset?.data
 
-    //const decrease = goalValue < balanceValue
+    const decrease = goalValue < balanceValue
 
     const categryKeyIsInCols = categoryKey && data && (data?.length || 0) > 0 && Object.hasOwn(data[0], categoryKey);
 
     const categories = categoryKey && categryKeyIsInCols ? [...new Set(data?.map(d => d[categoryKey]))] : ['indicateur'] ;
 
-    //const colors = usePalette({nColors: categories.length})
+    const colors = usePalette({nColors: categories.length})
 
     // Aggréation tout axe confondu : permet de classer les territoires par valeur d'indicateur
     const data_agg = useMemo(
@@ -35,9 +35,10 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
     // Libel des territoires par ordre de valeur agrégés tous axes (indicateurs complet)
     const lib_territories = [...new Set(data_agg?.map(d => d['libelle_epci']))]
 
-    const series:SeriesOption[] = categories.map((category) => ( {
+    const series:SeriesOption[] = categories.map((category, index) => ( {
                 type:"bar",
                 name: category?.toString(),
+                color:colors?.[index],
                 data: data_agg_axe?.
                     filter( r => categoryKey && categryKeyIsInCols ? r[categoryKey] == category : true)
                     .map((row) => [row.valeur, row.libelle_epci]).sort( (a,b) => b[0] - a[0] ),
@@ -59,6 +60,33 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
 
             }))
 
+    const  markArea:MarkAreaComponentOption = {
+        silent: true,
+        data: [
+            [
+                {
+                    xAxis: goalValue,
+                    itemStyle: {
+                        color: "rgba(145, 204, 117, 0.36)",
+                    },
+                },
+                {
+                    xAxis: decrease ? 0:100,
+                },
+            ],
+            [
+                {
+                    xAxis: balanceValue,
+                    itemStyle: {
+                        color: "rgba(0, 132, 255, 0.15)", 
+                    },
+                },
+                {
+                    xAxis: goalValue,
+                },
+            ],
+        ],
+    }
 
     const option: EChartsOption = {
       tooltip: {show:true},
@@ -75,8 +103,21 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
       grid:{
         top:16
       },
-      legend:{show:false},
-      series: series,
+        legend:{
+            show: true,
+            data: categories.map(String),
+            type:'scroll',
+        },
+      series: [
+        ...series,
+            { // Fake serie with background
+            name: 'background-fake-serie',
+            silent: true,
+            stack: 'total',
+            markArea: markArea ,
+            type:'bar',
+            }
+      ],
     };
     return <ChartEcharts option={option} style={{height: 1000}}  replaceMerge= {['xAxis', 'series']} />
 }
