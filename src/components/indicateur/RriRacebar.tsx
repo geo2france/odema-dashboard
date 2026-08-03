@@ -20,8 +20,6 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
 
     const categories = categoryKey && categryKeyIsInCols ? [...new Set(data?.map(d => d[categoryKey]))] : ['indicateur'] ;
 
-    console.log('cat', categories)
-
     //const colors = usePalette({nColors: categories.length})
 
     // Aggréation tout axe confondu : permet de classer les territoires par valeur d'indicateur
@@ -34,8 +32,6 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
         () => data && categryKeyIsInCols ? rri_agg({ data:data, axis:[categoryKey] })?.toSorted((a,b) => a.valeur - b.valeur) : data_agg,
         [data, data_agg, categoryKey, categryKeyIsInCols]) || [] ;
     
-    console.log('data_agg', data_agg )
-    console.log('data_agg_axe', data_agg_axe )
     // Libel des territoires par ordre de valeur agrégés tous axes (indicateurs complet)
     const lib_territories = [...new Set(data_agg?.map(d => d['libelle_epci']))]
 

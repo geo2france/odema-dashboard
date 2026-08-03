@@ -66,6 +66,7 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
                 resource="odema:epci_latest"
                 url="https://www.geo2france.fr/geoserver/odema/ows"
                 type="wfs"
+                meta={{properties:['nom', 'siren','population','population_collecte','population_traitement', 'typologie_ademe','tarification']}}
             >
                 <Transform>{(data:SimpleRecord[]) => data.map( row =>
                         ( {...row,   
