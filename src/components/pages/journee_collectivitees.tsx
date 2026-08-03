@@ -2,6 +2,7 @@ import { PageProps, SimpleRecord } from "@geo2france/api-dashboard"
 import { Control, Dashboard, Dataset, Filter, Intro, Join, Palette, Select, Transform, useControl } from "@geo2france/api-dashboard/dsl"
 import RacebarEpci from "../indicateur/RriRacebar";
 import SingleAxis from "../indicateur/RriSingleAxisScatter";
+import TargetPie from "../indicateur/RriTargetPie";
 
 function between(value: number, a: number, b: number): boolean {
   return value >= Math.min(a, b) && value <= Math.max(a, b);
@@ -131,6 +132,7 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
              ℹ️ Les axes sont sont pas disponibles pour tous les indicateurs.</div>
             </Intro>
             <SingleAxis dataset='indic' size={1.25} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
+            <TargetPie size={0.75} dataset='indic' goalValue={current_indic?.goalValue} balanceValue={current_indic?.balanceValue}/>
             <RacebarEpci dataset='indic' size={2} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
         </Dashboard>
     )
