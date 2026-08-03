@@ -1,5 +1,5 @@
 import { BaseChartProps } from "@geo2france/api-dashboard"
-import { ChartEcharts, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
+import { ChartEcharts, useDataset } from "@geo2france/api-dashboard/dsl"
 import { EChartsOption, SeriesOption } from "echarts"
 import { useMemo } from "react"
 import { rri_agg } from "./rri"
@@ -14,22 +14,28 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
     const dataset = useDataset(dataset_in)
     const data = dataset?.data
 
-    const decrease = goalValue < balanceValue
+    //const decrease = goalValue < balanceValue
 
-    const categories = categoryKey ? [...new Set(data?.slice(1).map(d => d[categoryKey]))] : ['indicateur'] ;
-    const colors = usePalette({nColors: categories.length})
+    const categryKeyIsInCols = categoryKey && data && (data?.length || 0) > 0 && Object.hasOwn(data[0], categoryKey);
+
+    const categories = categoryKey && categryKeyIsInCols ? [...new Set(data?.map(d => d[categoryKey]))] : ['indicateur'] ;
+
+    console.log('cat', categories)
+
+    //const colors = usePalette({nColors: categories.length})
 
     // Aggréation tout axe confondu : permet de classer les territoires par valeur d'indicateur
     const data_agg = useMemo(
-        () => data && rri_agg({ data })?.toSorted((a,b) => (a.valeur ?? 0)- (b.valeur ?? 0))/*.slice(1)*/,
+        () => data && rri_agg({ data })?.toSorted((a,b) => (a.valeur ?? 0)- (b.valeur ?? 0)),
         [data]);
 
     // Aggrégation selon l'axe choisi
     const data_agg_axe = useMemo(
-        () => data && categoryKey && rri_agg({ data:data, axis:[categoryKey] })?.toSorted((a,b) => a.valeur - b.valeur)/*.slice(1)*/,
-        [data, categoryKey]) || [];
+        () => data && categryKeyIsInCols ? rri_agg({ data:data, axis:[categoryKey] })?.toSorted((a,b) => a.valeur - b.valeur) : data_agg,
+        [data, data_agg, categoryKey, categryKeyIsInCols]) || [] ;
     
-    console.log(data)
+    console.log('data_agg', data_agg )
+    console.log('data_agg_axe', data_agg_axe )
     // Libel des territoires par ordre de valeur agrégés tous axes (indicateurs complet)
     const lib_territories = [...new Set(data_agg?.map(d => d['libelle_epci']))]
 
@@ -37,7 +43,7 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
                 type:"bar",
                 name: category?.toString(),
                 data: data_agg_axe?.
-                    filter( r => categoryKey ? r[categoryKey] == category : true)
+                    filter( r => categoryKey && categryKeyIsInCols ? r[categoryKey] == category : true)
                     .map((row) => [row.valeur, row.libelle_epci]).sort( (a,b) => b[0] - a[0] ),
                 stack: "total"
                /* markLine:{

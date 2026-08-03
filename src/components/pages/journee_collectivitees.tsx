@@ -1,5 +1,5 @@
 import { PageProps, SimpleRecord } from "@geo2france/api-dashboard"
-import { Control, Dashboard, Dataset, Filter, Join, Palette, Select, Transform, useControl } from "@geo2france/api-dashboard/dsl"
+import { Control, Dashboard, Dataset, Filter, Intro, Join, Palette, Select, Transform, useControl } from "@geo2france/api-dashboard/dsl"
 import RacebarEpci from "../indicateur/RriRacebar";
 import SingleAxis from "../indicateur/RriSingleAxisScatter";
 
@@ -125,7 +125,10 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
                     ]
                 },}}
             /> */}
-
+            <Intro>
+             <div>Choisir un indicateur, une année et une variable (dimension) d'analyse.
+             ℹ️ Les axes sont sont pas disponibles pour tous les indicateurs.</div>
+            </Intro>
             <SingleAxis dataset='indic' size={1.25} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
             <RacebarEpci dataset='indic' size={2} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
         </Dashboard>

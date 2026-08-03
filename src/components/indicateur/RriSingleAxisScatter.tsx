@@ -14,10 +14,27 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
     const data = dataset?.data
     const decrease = goalValue < balanceValue
 
-    const categoryIsDimension = categoryKey && data && rri_get_cols(data).attributeCols.includes(categoryKey)
+    const rri_cols = data && rri_get_cols(data);
+
+    const categryKeyIsInCols = categoryKey && 
+        ( rri_cols?.attributeCols.includes(categoryKey) 
+            || rri_cols?.dimensionCols.includes(categoryKey) 
+            || rri_cols?.axisCols.includes(categoryKey) 
+        )
+
+    if(data && categryKeyIsInCols !== true)
+    {
+        console.warn(`${categoryKey} not in dataset`)
+    }
+
+    const categoryIsDimension = categoryKey && rri_cols?.attributeCols.includes(categoryKey)
+
     //console.log('cols', data&& getColumns(data))
+
+    // Detecter ici si la categoryKey est dans le JDD, si ce n'est pas le cas, retourner proprement en composant vide
+
     const categories = 
-        categoryIsDimension ? 
+        categoryIsDimension && categryKeyIsInCols ? 
         [...new Set(data?.slice(1).map(d => d[categoryKey]))] : ['indicateur'] ;
 
     const colors = usePalette({nColors:categories.length}) 
@@ -92,8 +109,7 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
         tooltip: {
             show:true,
             trigger:"item",
-            //@ts-ignore
-            formatter: (val) => `${val.data[3]} - ${val.data[0]} %`
+            formatter: (val) => !Array.isArray(val) && Array.isArray(val.data) ? `${val.data[3]} - ${val.data[0]} %` :''
         },
         series: [ 
         ...series,

@@ -16,6 +16,9 @@ interface Columns {
 
   /** Attribut territorial, une seule valeur par territorie */
   attributeCols: string[]; 
+
+  /** Axe (toutes les colonnes sauf les groupCols et ValueCols = dimensionCols + attributeCols */
+  axisCols: string[]
 }
 
 
@@ -48,7 +51,7 @@ const matchColumnCategory = (column: string): ColumnCategory | undefined => {
 
 
 // Dev note : prévoir une méthode plus efficace pour avoir la catégorie d'une seule colonne ?
-export const rri_get_cols = (data: SimpleRecord[]) => {
+export const rri_get_cols = (data: SimpleRecord[]):Columns => {
   const columns = Object.keys(data[0])
 
   const groupCols = columns.filter(column => matchColumnCategory(column) === "group")
