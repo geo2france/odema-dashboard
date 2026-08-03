@@ -1,8 +1,7 @@
-import { BaseChartProps, PageProps, SimpleRecord } from "@geo2france/api-dashboard"
-import { ChartComparison, ChartEcharts, Control, Dashboard, Dataset, Filter, Join, Palette, Select, Transform, useControl, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
-import { EChartsOption, MarkAreaComponentOption, SeriesOption } from "echarts"
-import { rri_get_cols, rri_agg } from "../indicateur/rri";
-import { useMemo } from "react";
+import { PageProps, SimpleRecord } from "@geo2france/api-dashboard"
+import { Control, Dashboard, Dataset, Filter, Join, Palette, Select, Transform, useControl } from "@geo2france/api-dashboard/dsl"
+import RacebarEpci from "../indicateur/RriRacebar";
+import SingleAxis from "../indicateur/RriSingleAxisScatter";
 
 function between(value: number, a: number, b: number): boolean {
   return value >= Math.min(a, b) && value <= Math.max(a, b);
@@ -38,184 +37,6 @@ const indicateurs = [
 
 ]
 
-interface RacebarEpciProps extends BaseChartProps {
-    goalValue: number 
-    balanceValue: number
-    categoryKey?: string
-}
-const RacebarEpci:React.FC<RacebarEpciProps> = ({goalValue, balanceValue, categoryKey}) => {
-
-    const dataset = useDataset('indic')
-    const data = dataset?.data
-
-    const decrease = goalValue < balanceValue
-
-    const categories = categoryKey ? [...new Set(data?.slice(1).map(d => d[categoryKey]))] : ['indicateur'] ;
-    const colors = usePalette({nColors: categories.length})
-
-    // Aggréation tout axe confondu : permet de classer les territoires par valeur d'indicateur
-    const data_agg = useMemo(
-        () => data && rri_agg({ data })?.toSorted((a,b) => (a.valeur ?? 0)- (b.valeur ?? 0))/*.slice(1)*/,
-        [data]);
-
-    // Aggrégation selon l'axe choisi
-    const data_agg_axe = useMemo(
-        () => data && categoryKey && rri_agg({ data:data, axis:[categoryKey] })?.toSorted((a,b) => a.valeur - b.valeur)/*.slice(1)*/,
-        [data, categoryKey]) || [];
-    
-    console.log(data)
-    // Libel des territoires par ordre de valeur agrégés tous axes (indicateurs complet)
-    const lib_territories = [...new Set(data_agg?.map(d => d['libelle_epci']))]
-
-    const series:SeriesOption[] = categories.map((category) => ( {
-                type:"bar",
-                name: category?.toString(),
-                data: data_agg_axe?.
-                    filter( r => categoryKey ? r[categoryKey] == category : true)
-                    .map((row) => [row.valeur, row.libelle_epci]).sort( (a,b) => b[0] - a[0] ),
-                stack: "total"
-               /* markLine:{
-                    symbol: "none",
-                    silent: false,
-                    label: {
-                        formatter: balanceValue?.toString(),
-                        position: "insideEndTop"
-                    },
-                    lineStyle: {
-                        color: "#9e9e9e",
-                        type: "dashed",
-                        width: 1
-                    },
-                    data: [ { xAxis: balanceValue } ]
-                },*/
-
-            }))
-
-
-    const option: EChartsOption = {
-      tooltip: {show:true},
-      xAxis: { type: "value",  },
-      yAxis: { type: "category" , 
-            data: lib_territories,
-            axisLabel: { 
-                fontSize: 10 ,
-                height: 12,
-                color: (value )=> data?.find( r => r.libelle_epci == value)?.valeur > 50 ? 'green' : 'undefined',
-                interval: 0,
-                formatter : (label) => label?.replace('Communauté', 'C')?.replace(' de communes','C')?.replace(" d'agglomération", 'A')
-            } },
-      grid:{
-        top:16
-      },
-      legend:{show:false},
-      series: series,
-    };
-    return <ChartEcharts option={option} style={{height: 1000}}  replaceMerge= {['xAxis', 'series']} />
-}
-
-interface SingleAxisProps extends BaseChartProps{
-    goalValue: number 
-    balanceValue: number
-    categoryKey?: string
-}
-const SingleAxis:React.FC<SingleAxisProps> = ({goalValue, balanceValue, categoryKey}) => {
-
-    const dataset = useDataset('indic')
-    const data = dataset?.data
-    const decrease = goalValue < balanceValue
-
-    const categoryIsDimension = categoryKey && data && rri_get_cols(data).attributeCols.includes(categoryKey)
-    //console.log('cols', data&& getColumns(data))
-    const categories = 
-        categoryIsDimension ? 
-        [...new Set(data?.slice(1).map(d => d[categoryKey]))] : ['indicateur'] ;
-
-    const colors = usePalette({nColors:categories.length}) 
-
-    //Si la categoryKey retourne des valeurs différentes pour un même geocode, on ne la représente pas sur ce graphique.
-    const series:SeriesOption[] = categories.map((category) => ( {
-                type:"scatter",
-                name: category?.toString(),
-                data: data?.
-                    filter( r => categoryIsDimension ? r[categoryKey] == category : true)
-                    .map((row) => [row.valeur, 1,  row.population, row.libelle_epci]).sort( (a,b) => b[2] - a[2] ),
-                symbolSize: (val) => Math.max(2,Math.sqrt(val[2]) / 20),
-               /* markLine:{
-                    symbol: "none",
-                    silent: false,
-                    label: {
-                        formatter: balanceValue?.toString(),
-                        position: "insideEndTop"
-                    },
-                    lineStyle: {
-                        color: "#9e9e9e",
-                        type: "dashed",
-                        width: 1
-                    },
-                    data: [ { xAxis: balanceValue } ]
-                },*/
-
-            }))
-
-    const  markArea:MarkAreaComponentOption = {
-            silent: true,
-            data: [
-                [
-                    {
-                        xAxis: goalValue,
-                        itemStyle: {
-                            color: "rgba(145, 204, 117, 0.36)",
-                        },
-                    },
-                    {
-                        xAxis: decrease ? 0:100,
-                    },
-                ],
-                [
-                    {
-                        xAxis: balanceValue,
-                        itemStyle: {
-                            color: "rgba(0, 132, 255, 0.15)", 
-                        },
-                    },
-                    {
-                        xAxis: goalValue,
-                    },
-                ],
-            ],
-        }
-
-    const option:EChartsOption = {
-        legend:{
-            show: true,
-            data: categories.map(String),
-            type:'scroll',
-        },
-        yAxis:{
-            type: "category"
-        },
-        color:colors,
-        xAxis:{
-            type: "value",
-            //interval: 10
-        },
-        tooltip: {
-            show:true,
-            trigger:"item",
-            //@ts-ignore
-            formatter: (val) => `${val.data[3]} - ${val.data[0]} %`
-        },
-        series: [ 
-        ...series,
-        { // Fake serie with background
-            name: 'background-fake-serie',
-            markArea: markArea ,
-            type:'scatter',
-        }
-            ]
-    }
-    return <ChartEcharts option={option}  replaceMerge= {['xAxis', 'series']} />
-}
 
 
 
@@ -305,8 +126,8 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
                 },}}
             /> */}
 
-            <SingleAxis size={1.25} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
-            <RacebarEpci size={2} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
+            <SingleAxis dataset='indic' size={1.25} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
+            <RacebarEpci dataset='indic' size={2} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
         </Dashboard>
     )
 }
