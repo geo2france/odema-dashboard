@@ -1,7 +1,7 @@
 import { ChartEcharts, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
 import { EChartsOption, MarkAreaComponentOption, SeriesOption } from "echarts"
 import { rri_agg, rri_get_cols } from "./rri"
-import { BaseChartProps } from "@geo2france/api-dashboard"
+import { aggregator, BaseChartProps } from "@geo2france/api-dashboard"
 import { useMemo } from "react"
 
 interface SingleAxisProps extends BaseChartProps{
@@ -31,12 +31,18 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
 
     const categoryIsDimension = categoryKey && rri_cols?.attributeCols.includes(categoryKey)
 
+    const data_full_agg = useMemo(
+        () => data && rri_agg({data:data}),
+        [data]
+    );
+
+    const mediane = aggregator({data: data_full_agg, dataKey:"valeur", aggregate:"median"}).value
+
     const chart_data = useMemo(
-        () => data && categoryKey && !categoryIsDimension ? rri_agg({data, axis:rri_cols?.attributeCols}) : data,
-        [data, categoryKey, categoryIsDimension]
+        () => data && categoryKey ?  rri_agg({data, axis:rri_cols?.attributeCols}) : [],
+        [data, data_full_agg, categoryKey, categoryIsDimension]
     )
 
-    //console.log('cols', data&& getColumns(data))
 
     // Detecter ici si la categoryKey est dans le JDD, si ce n'est pas le cas, retourner proprement en composant vide
 
@@ -51,24 +57,11 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
                 type:"scatter",
                 name: category?.toString(),
                 color:colors?.[index],
-                data: chart_data?. //⚠️⚠️⚠️ On ne prend pas la valeur aggrégée rajoute un rriAgg ici ! ⚠️
-                    filter( r => categoryIsDimension ? r[categoryKey] == category : true)
+                data: chart_data
+                    ?.filter( r => categoryIsDimension ? r[categoryKey] == category : true)
                     .map((row) => [row.valeur, 1,  row.population, row.libelle_epci]).sort( (a,b) => b[2] - a[2] ),
                 symbolSize: (val) => Math.max(2,Math.sqrt(val[2]) / 20),
-               /* markLine:{
-                    symbol: "none",
-                    silent: false,
-                    label: {
-                        formatter: balanceValue?.toString(),
-                        position: "insideEndTop"
-                    },
-                    lineStyle: {
-                        color: "#9e9e9e",
-                        type: "dashed",
-                        width: 1
-                    },
-                    data: [ { xAxis: balanceValue } ]
-                },*/
+
 
             }))
 
@@ -127,6 +120,21 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
             name: 'background-fake-serie',
             markArea: markArea ,
             type:'scatter',
+            markLine:{
+                    symbol: "none",
+                    silent: true,
+                    label: {
+                        formatter: `Md. : ${mediane?.toString()} ${unit}`,
+                        position: "end",
+                        //rotate: 90
+                    },
+                    lineStyle: {
+                        color: mediane ? "#9e9e9e" : 'transparent',
+                        type: "dashed",
+                        width: 1
+                    },
+                    data: [ { xAxis: mediane || 0 }  ]
+                },
         }
             ]
     }
