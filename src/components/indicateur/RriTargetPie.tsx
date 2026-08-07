@@ -14,8 +14,9 @@ interface TargetPieProps extends BaseChartProps{
     goalValue?: number 
     balanceValue?: number
     categoryKey?: string
+    unit?:string
 }
-const TargetPie:React.FC<TargetPieProps> = ({dataset:dataset_in, goalValue, balanceValue}) => {
+const TargetPie:React.FC<TargetPieProps> = ({dataset:dataset_in, goalValue, balanceValue, unit}) => {
     const dataset = useDataset(dataset_in)
     const decrease = goalValue && balanceValue && goalValue < balanceValue
     const agg_data = dataset?.data && rri_agg({data: dataset?.data})
@@ -35,7 +36,7 @@ const TargetPie:React.FC<TargetPieProps> = ({dataset:dataset_in, goalValue, bala
     return ( <div>
             <Text style={{padding:8}}>Objectif atteint par {n_reached} territoires sur {chart_data?.length}</Text>
             <ChartComparison 
-                title={`Objectif : ${goalValue} `}
+                title={`Objectif : ${goalValue} ${unit}`}
                 chartType="donut"
                 dataset={chart_data}
                 nameKey="objectif"

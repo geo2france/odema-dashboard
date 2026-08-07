@@ -8,8 +8,9 @@ interface SingleAxisProps extends BaseChartProps{
     goalValue: number 
     balanceValue: number
     categoryKey?: string
+    unit?: string
 }
-const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey}) => {
+const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, unit}) => {
 
     const dataset = useDataset(dataset_in)
     const data = dataset?.data
@@ -111,6 +112,7 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
         },
         xAxis:{
             type: "value",
+            name: unit,
             max:(value) => Math.round(Math.max(value.max, goalValue + goalValue*0.05)),
             //interval: 10
         },

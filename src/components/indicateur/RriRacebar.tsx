@@ -9,8 +9,9 @@ interface RacebarEpciProps extends BaseChartProps {
     balanceValue: number
     categoryKey?: string
     onHoverCallback?: any
+    unit?: string
 }
-const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, onHoverCallback}) => {
+const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, onHoverCallback, unit}) => {
 
     const dataset = useDataset(dataset_in)
     const data = dataset?.data
@@ -92,7 +93,7 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
     const option: EChartsOption = {
       tooltip: {show:true, trigger:'axis'},
       animation: false,
-      xAxis: { type: "value",  },
+      xAxis: { type: "value",  name: unit },
       yAxis: { type: "category" , 
             data: lib_territories,
             axisLabel: { 

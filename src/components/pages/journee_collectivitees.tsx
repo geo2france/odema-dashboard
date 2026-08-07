@@ -4,6 +4,7 @@ import RacebarEpci from "../indicateur/RriRacebar";
 import SingleAxis from "../indicateur/RriSingleAxisScatter";
 import TargetPie from "../indicateur/RriTargetPie";
 import { useState } from "react";
+import { theme } from "antd";
 
 function between(value: number, a: number, b: number): boolean {
   return value >= Math.min(a, b) && value <= Math.max(a, b);
@@ -13,18 +14,21 @@ const indicateurs = [
     {
         name:"Part de DMA orienté vers recyclage et réutilisation (L541-1 4°bis)",
         layername:"odema:rri_indic_epci_dma_recyclage_reutilisation",
+        unit:'%',
         goalValue: 65,
         balanceValue:54 //2024
         },
     {
         name:"Part de déchets DNNI orienté vers valorisation matière (L541-1 4°)",
         layername:"odema:rri_indic_epci_dma_dndni_valo",
+        unit:'%',
         goalValue: 65,
         balanceValue:64.999 //2024
     },
     {
         name:"Réduction de la production par habitant",
         layername:'odema:rri_indic_epci_ratiodma_pr_2017',
+        unit:'%',
         goalValue: 85,
         balanceValue:90,
         decrease:true
@@ -32,6 +36,7 @@ const indicateurs = [
     {
         name:"Réduction de la part de DMA enfouie",
         layername:'odema:rri_indic_epci_dma_part_enfouie',
+        unit:'%',
         goalValue: 10,
         balanceValue:16.6,
         decrease:true
@@ -46,6 +51,9 @@ const indicateurs = [
 
 
 export const PageJourneeCollec:React.FC<PageProps> = () => {
+    const { token } = theme.useToken();
+
+
     const layername = useControl("indicateur")
     const annee = useControl('annee')
     const variable =  useControl('variable')
@@ -133,16 +141,29 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
              <div>Choisir un indicateur, une année et une variable (dimension) d'analyse.
              ℹ️ Les axes sont sont pas disponibles pour tous les indicateurs.</div>
             </Intro>
-            <SingleAxis dataset='indic' size={1.25} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
-            <TargetPie size={0.75} dataset='indic' goalValue={current_indic?.goalValue} balanceValue={current_indic?.balanceValue}/>
+            <SingleAxis 
+                dataset='indic' 
+                size={1.25} 
+                goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} 
+                categoryKey={variable} 
+                unit={current_indic?.unit} />
+            <TargetPie 
+                size={0.75} 
+                dataset='indic'
+                goalValue={current_indic?.goalValue} balanceValue={current_indic?.balanceValue}
+                unit={current_indic?.unit}
+            />
             <RacebarEpci dataset='indic' 
                 size={1} 
                 goalValue={current_indic?.goalValue || NaN} 
                 balanceValue={current_indic?.balanceValue || NaN} 
                 categoryKey={variable}
+                unit={current_indic?.unit}
                 onHoverCallback={setHighlightValue} />
             <MapIndicator dataset='indic' dataLevel="epci" 
-                    highlight={highlightValue ? {property: 'geocode_epci', value:highlightValue} : undefined}
+                    color={token.green}
+                    unit={current_indic?.unit}
+                    highlightFeature={highlightValue ? {property: 'geocode_epci', value:highlightValue} : undefined}
                     />
         </Dashboard>
     )
