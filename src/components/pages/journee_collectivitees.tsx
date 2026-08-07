@@ -146,7 +146,9 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
                 size={1.25} 
                 goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} 
                 categoryKey={variable} 
-                unit={current_indic?.unit} />
+                unit={current_indic?.unit}
+                onHoverCallback={setHighlightValue}
+                />
             <TargetPie 
                 size={0.75} 
                 dataset='indic'

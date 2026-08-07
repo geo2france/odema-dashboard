@@ -8,7 +8,7 @@ interface RacebarEpciProps extends BaseChartProps {
     goalValue: number 
     balanceValue: number
     categoryKey?: string
-    onHoverCallback?: any
+    onHoverCallback?: (value: string | undefined) => void;
     unit?: string
 }
 const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, onHoverCallback, unit}) => {
@@ -131,7 +131,7 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
     }
 
     const onOut = () => {
-        onHoverCallback?.(null);
+        onHoverCallback?.(undefined);
     };
 
 

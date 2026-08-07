@@ -9,8 +9,9 @@ interface SingleAxisProps extends BaseChartProps{
     balanceValue: number
     categoryKey?: string
     unit?: string
+    onHoverCallback?: (value: string | undefined) => void;
 }
-const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, unit}) => {
+const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, unit, onHoverCallback}) => {
 
     const dataset = useDataset(dataset_in)
     const data = dataset?.data
@@ -59,7 +60,7 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
                 color:colors?.[index],
                 data: chart_data
                     ?.filter( r => categoryIsDimension ? r[categoryKey] == category : true)
-                    .map((row) => [row.valeur, 1,  row.population, row.libelle_epci]).sort( (a,b) => b[2] - a[2] ),
+                    .map((row) => [row.valeur, 1,  row.population, row.libelle_epci, row.geocode_epci]).sort( (a,b) => b[2] - a[2] ),
                 symbolSize: (val) => Math.max(2,Math.sqrt(val[2]) / 20),
 
 
@@ -138,7 +139,19 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
         }
             ]
     }
-    return <ChartEcharts option={option}  replaceMerge= {['xAxis', 'series']} /> 
+    const onHover = (e:any) => {
+        console.log(e)
+        if(e.componentType == "series"){
+            onHoverCallback?.(e.data[4]) //Retourne le geocode
+        }
+    }
+
+    const onOut = () => {
+        onHoverCallback?.(undefined);
+    };
+
+
+    return <ChartEcharts option={option}  replaceMerge= {['xAxis', 'series']} onEvents={{mouseover:onHover, mouseOut:onOut}}/> 
     // Devnote : si possible, trouver un moyen d'éviter replaceMerge car ca déclenche les animations a chaque rendu.
     // ReplaceMerge est nécessaire quand des séries générée dynamiquement disparaissent lors d'un changement de dataset, elle sont conservés à tords dans le rendu
     // Trouver un moyen de garder la série, et mettre data=null ( https://github.com/apache/echarts/issues/6202#issuecomment-315054637 )
