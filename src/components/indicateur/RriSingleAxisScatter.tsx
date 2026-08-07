@@ -124,7 +124,7 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
                     symbol: "none",
                     silent: true,
                     label: {
-                        formatter: `Md. : ${mediane?.toString()} ${unit}`,
+                        formatter: `Md. : ${mediane?.toLocaleString()} ${unit}`,
                         position: "end",
                         //rotate: 90
                     },
