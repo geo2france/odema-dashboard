@@ -100,6 +100,7 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
         }
 
     const option:EChartsOption = {
+        animation: false,
         legend:{
             show: true,
             data: categories.map(String),
@@ -127,7 +128,10 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
         }
             ]
     }
-    return <ChartEcharts option={option}  replaceMerge= {['xAxis', 'series']} />
+    return <ChartEcharts option={option}  replaceMerge= {['xAxis', 'series']} /> 
+    // Devnote : si possible, trouver un moyen d'éviter replaceMerge car ca déclenche les animations a chaque rendu.
+    // ReplaceMerge est nécessaire quand des séries générée dynamiquement disparaissent lors d'un changement de dataset, elle sont conservés à tords dans le rendu
+    // Trouver un moyen de garder la série, et mettre data=null ( https://github.com/apache/echarts/issues/6202#issuecomment-315054637 )
 }
 
 export default SingleAxis;

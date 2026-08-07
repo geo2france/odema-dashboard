@@ -8,8 +8,9 @@ interface RacebarEpciProps extends BaseChartProps {
     goalValue: number 
     balanceValue: number
     categoryKey?: string
+    onHoverCallback?: any
 }
-const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey}) => {
+const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, onHoverCallback}) => {
 
     const dataset = useDataset(dataset_in)
     const data = dataset?.data
@@ -41,7 +42,7 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
                 color:colors?.[index],
                 data: data_agg_axe?.
                     filter( r => categoryKey && categryKeyIsInCols ? r[categoryKey] == category : true)
-                    .map((row) => [row.valeur, row.libelle_epci]).sort( (a,b) => b[0] - a[0] ),
+                    .map((row) => [row.valeur, row.libelle_epci, row.geocode_epci]).sort( (a,b) => b[0] - a[0] ),
                 stack: "total"
                /* markLine:{
                     symbol: "none",
@@ -89,7 +90,8 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
     }
 
     const option: EChartsOption = {
-      tooltip: {show:true},
+      tooltip: {show:true, trigger:'axis'},
+      animation: false,
       xAxis: { type: "value",  },
       yAxis: { type: "category" , 
             data: lib_territories,
@@ -119,7 +121,20 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
             }
       ],
     };
-    return <ChartEcharts option={option} style={{height: 1000}}  replaceMerge= {['xAxis', 'series']} />
+
+
+    const onHover = (e:any) => {
+        if(e.componentType == "series"){
+            onHoverCallback?.(e.data[2]) //Retourne le geocode
+        }
+    }
+
+    const onOut = () => {
+        onHoverCallback?.(null);
+    };
+
+
+    return <ChartEcharts option={option} style={{height: 1000}} replaceMerge= {['xAxis', 'series']} onEvents={{mouseover:onHover, mouseOut:onOut}} />
 }
 
 export default RacebarEpci

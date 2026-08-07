@@ -1,8 +1,9 @@
 import { PageProps, SimpleRecord } from "@geo2france/api-dashboard"
-import { Control, Dashboard, Dataset, Filter, Intro, Join, Palette, Select, Transform, useControl } from "@geo2france/api-dashboard/dsl"
+import { Control, Dashboard, Dataset, Filter, Intro, Join, MapIndicator, Palette, Select, Transform, useControl } from "@geo2france/api-dashboard/dsl"
 import RacebarEpci from "../indicateur/RriRacebar";
 import SingleAxis from "../indicateur/RriSingleAxisScatter";
 import TargetPie from "../indicateur/RriTargetPie";
+import { useState } from "react";
 
 function between(value: number, a: number, b: number): boolean {
   return value >= Math.min(a, b) && value <= Math.max(a, b);
@@ -50,7 +51,8 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
     const variable =  useControl('variable')
 
     const current_indic = indicateurs.find( i => i.layername == layername)
-
+    
+    const [highlightValue, setHighlightValue] = useState<string | undefined>();
     //const dataset=useDataset('indic')
 
     const goalValue = current_indic?.goalValue || NaN ;
@@ -133,7 +135,15 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
             </Intro>
             <SingleAxis dataset='indic' size={1.25} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
             <TargetPie size={0.75} dataset='indic' goalValue={current_indic?.goalValue} balanceValue={current_indic?.balanceValue}/>
-            <RacebarEpci dataset='indic' size={2} goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} categoryKey={variable} />
+            <RacebarEpci dataset='indic' 
+                size={1} 
+                goalValue={current_indic?.goalValue || NaN} 
+                balanceValue={current_indic?.balanceValue || NaN} 
+                categoryKey={variable}
+                onHoverCallback={setHighlightValue} />
+            <MapIndicator dataset='indic' dataLevel="epci" 
+                    highlight={highlightValue ? {property: 'geocode_epci', value:highlightValue} : undefined}
+                    />
         </Dashboard>
     )
 }
