@@ -1,4 +1,4 @@
-import { PageProps, SimpleRecord } from "@geo2france/api-dashboard"
+import { PageProps, SimpleRecord, useHighlight, useSetHighlight } from "@geo2france/api-dashboard"
 import { Control, Dashboard, Dataset, Filter, Intro, Join, MapIndicator, Palette, Select, Transform, useControl } from "@geo2france/api-dashboard/dsl"
 import RacebarEpci from "../indicateur/RriRacebar";
 import SingleAxis from "../indicateur/RriSingleAxisScatter";
@@ -60,14 +60,9 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
 
     const current_indic = indicateurs.find( i => i.layername == layername)
     
-    const [highlightValue, setHighlightValue] = useState<string | undefined>();
-    //const dataset=useDataset('indic')
-
     const goalValue = current_indic?.goalValue || NaN ;
     const balanceValue = current_indic?.balanceValue || NaN ;
     const decrease = goalValue < balanceValue ;
-
-    //console.log( 'dataset', RriAgg({data:dataset?.data, axis:['type_valo_matiere']}) )
 
     return (
         <Dashboard columns={2} debug>
@@ -147,9 +142,8 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
                 goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} 
                 categoryKey={variable} 
                 unit={current_indic?.unit}
-                onHoverCallback={setHighlightValue}
                 />
-            <TargetPie 
+          <TargetPie 
                 size={0.75} 
                 dataset='indic'
                 goalValue={current_indic?.goalValue} balanceValue={current_indic?.balanceValue}
@@ -161,11 +155,12 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
                 balanceValue={current_indic?.balanceValue || NaN} 
                 categoryKey={variable}
                 unit={current_indic?.unit}
-                onHoverCallback={setHighlightValue} />
+                />
+
             <MapIndicator dataset='indic' dataLevel="epci" 
                     color={token.green}
                     unit={current_indic?.unit}
-                    highlightFeature={highlightValue ? {property: 'geocode_epci', value:highlightValue} : undefined}
+                    highlightProperty={'geocode_epci'}
                     />
         </Dashboard>
     )

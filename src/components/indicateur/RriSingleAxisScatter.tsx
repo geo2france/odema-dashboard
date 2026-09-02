@@ -1,21 +1,29 @@
 import { ChartEcharts, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
 import { EChartsOption, MarkAreaComponentOption, SeriesOption } from "echarts"
 import { rri_agg, rri_get_cols } from "./rri"
-import { aggregator, BaseChartProps } from "@geo2france/api-dashboard"
-import { useMemo } from "react"
+import { aggregator, BaseChartProps, useApplyEchartsHighlight, useSetHighlight } from "@geo2france/api-dashboard"
+import { useMemo, useRef } from "react"
+import EChartsReact from "echarts-for-react"
 
 interface SingleAxisProps extends BaseChartProps{
     goalValue: number 
     balanceValue: number
     categoryKey?: string
     unit?: string
-    onHoverCallback?: (value: string | undefined) => void;
+
 }
-const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, unit, onHoverCallback}) => {
+const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, unit}) => {
+
+    const chartRef = useRef<EChartsReact>(null);
+
 
     const dataset = useDataset(dataset_in)
     const data = dataset?.data
     const decrease = goalValue < balanceValue
+
+    const setHighlight = useSetHighlight()
+    useApplyEchartsHighlight({chartRef:chartRef})
+
 
     const rri_cols = data && rri_get_cols(data);
 
@@ -54,20 +62,34 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
     const colors = usePalette({nColors:categories.length}) 
 
     //Si la categoryKey retourne des valeurs différentes pour un même geocode, on ne la représente pas sur ce graphique.
+
+
+    //Devnote : empêcher les séries annexes (objectif, mark) de disparaitre
     const series:SeriesOption[] = categories.map((category, index) => ( {
                 type:"scatter",
                 name: category?.toString(),
+                emphasis: {
+                    focus:"self",
+                },
+                id: category?.toString(),
                 color:colors?.[index],
                 data: chart_data
                     ?.filter( r => categoryIsDimension ? r[categoryKey] == category : true)
                     .map((row) => [row.valeur, 1,  row.population, row.libelle_epci, row.geocode_epci]).sort( (a,b) => b[2] - a[2] ),
                 symbolSize: (val) => Math.max(2,Math.sqrt(val[2]) / 20),
-
-
+                encode:{
+                    itemName: 4,
+                    itemId: 4,
+                }
             }))
 
     const  markArea:MarkAreaComponentOption = {
             silent: true,
+            blur: {
+                itemStyle:{
+                    opacity:1
+                }
+            },
             data: [
                 [
                     {
@@ -95,7 +117,7 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
         }
 
     const option:EChartsOption = {
-        animation: false,
+        animation: true,
         legend:{
             show: true,
             data: categories.map(String),
@@ -122,36 +144,54 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
             markArea: markArea ,
             type:'scatter',
             markLine:{
-                    symbol: "none",
-                    silent: true,
-                    label: {
-                        formatter: `Md. : ${mediane?.toLocaleString()} ${unit}`,
-                        position: "end",
-                        //rotate: 90
-                    },
-                    lineStyle: {
-                        color: mediane ? "#9e9e9e" : 'transparent',
-                        type: "dashed",
-                        width: 1
-                    },
+                blur: {
+                    lineStyle:{ opacity:1 },
+                    label:{opacity : 1}
+                },
+                symbol: "none",
+                silent: true,
+                label: {
+                    formatter: `Md. : ${mediane?.toLocaleString()} ${unit}`,
+                    position: "end",
+                    //rotate: 90
+                },
+
+                lineStyle: {
+                    color: mediane ? "#9e9e9e" : 'transparent',
+                    type: "dashed",
+                    width: 1
+                },
                     data: [ { xAxis: mediane || 0 }  ]
                 },
         }
             ]
     }
-    const onHover = (e:any) => {
-        console.log(e)
-        if(e.componentType == "series"){
-            onHoverCallback?.(e.data[4]) //Retourne le geocode
-        }
-    }
 
-    const onOut = () => {
-        onHoverCallback?.(undefined);
+    const hoverTimeout = useRef<ReturnType<typeof setTimeout>>();
+
+    const onHover = (e: any) => {
+        if (e.componentType !== 'series') return;
+
+        clearTimeout(hoverTimeout.current);
+
+        hoverTimeout.current = setTimeout(() => { //Temporiser pour éviter les clignotement lors du déplacement de la sourie
+            setHighlight({
+            property: 'geocode_epci',
+            value: e.name,
+            });
+        }, 150);
     };
 
+    const onOut = () => {
+        clearTimeout(hoverTimeout.current);
 
-    return <ChartEcharts option={option}  replaceMerge= {['xAxis', 'series']} onEvents={{mouseover:onHover, mouseOut:onOut}}/> 
+        setHighlight({
+            property: 'geocode_epci',
+            value: null,
+        });
+    };
+
+    return <ChartEcharts ref={chartRef} option={option}  replaceMerge= {['xAxis', 'series']} onEvents={{mouseover:onHover, mouseOut:onOut}}/> 
     // Devnote : si possible, trouver un moyen d'éviter replaceMerge car ca déclenche les animations a chaque rendu.
     // ReplaceMerge est nécessaire quand des séries générée dynamiquement disparaissent lors d'un changement de dataset, elle sont conservés à tords dans le rendu
     // Trouver un moyen de garder la série, et mettre data=null ( https://github.com/apache/echarts/issues/6202#issuecomment-315054637 )

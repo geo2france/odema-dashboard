@@ -1,22 +1,29 @@
-import { BaseChartProps } from "@geo2france/api-dashboard"
+import { BaseChartProps, useApplyEchartsHighlight, useHighlight, useSetHighlight } from "@geo2france/api-dashboard"
 import { ChartEcharts, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
 import { EChartsOption, MarkAreaComponentOption, SeriesOption } from "echarts"
-import { useMemo } from "react"
+import { useMemo, useRef } from "react"
 import { rri_agg } from "./rri"
+import EChartsReact from "echarts-for-react"
 
 interface RacebarEpciProps extends BaseChartProps {
     goalValue: number 
     balanceValue: number
     categoryKey?: string
-    onHoverCallback?: (value: string | undefined) => void;
     unit?: string
 }
-const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, onHoverCallback, unit}) => {
+const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, unit}) => {
+
+    const chartRef = useRef<EChartsReact>(null);
+
 
     const dataset = useDataset(dataset_in)
     const data = dataset?.data
 
     const decrease = goalValue < balanceValue
+
+    const setHighlight = useSetHighlight()
+    useApplyEchartsHighlight({chartRef:chartRef})
+
 
     const categryKeyIsInCols = categoryKey && data && (data?.length || 0) > 0 && Object.hasOwn(data[0], categoryKey);
 
@@ -37,14 +44,21 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
     // Libel des territoires par ordre de valeur agrégés tous axes (indicateurs complet)
     const lib_territories = [...new Set(data_agg?.map(d => d['libelle_epci']))]
 
+
+
     const series:SeriesOption[] = categories.map((category, index) => ( {
                 type:"bar",
                 name: category?.toString(),
+                id: category?.toString(),
                 color:colors?.[index],
                 data: data_agg_axe?.
                     filter( r => categoryKey && categryKeyIsInCols ? r[categoryKey] == category : true)
                     .map((row) => [row.valeur, row.libelle_epci, row.geocode_epci]).sort( (a,b) => b[0] - a[0] ),
-                stack: "total"
+                encode: {
+                    itemName:2,
+                    itemId:2
+                },
+                stack: "total",
                /* markLine:{
                     symbol: "none",
                     silent: false,
@@ -64,6 +78,11 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
 
     const  markArea:MarkAreaComponentOption = {
         silent: true,
+        blur: {
+            itemStyle:{
+                opacity:1
+            }
+        },
         data: [
             [
                 {
@@ -92,7 +111,10 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
 
     const option: EChartsOption = {
       tooltip: {show:true, trigger:'axis'},
-      animation: false,
+      animation: true,
+      emphasis: {
+        focus:"self",
+      },
       xAxis: { type: "value",  name: unit },
       yAxis: { type: "category" , 
             data: lib_territories,
@@ -123,19 +145,32 @@ const RacebarEpci:React.FC<RacebarEpciProps> = ({dataset:dataset_in, goalValue, 
       ],
     };
 
+    const hoverTimeout = useRef<ReturnType<typeof setTimeout>>();
 
-    const onHover = (e:any) => {
-        if(e.componentType == "series"){
-            onHoverCallback?.(e.data[2]) //Retourne le geocode
-        }
-    }
+    const onHover = (e: any) => {
+        if (e.componentType !== 'series') return;
+
+        clearTimeout(hoverTimeout.current);
+
+        hoverTimeout.current = setTimeout(() => {
+            setHighlight({
+            property: 'geocode_epci',
+            value: e.name,
+            });
+        }, 150);
+    };
 
     const onOut = () => {
-        onHoverCallback?.(undefined);
+        clearTimeout(hoverTimeout.current);
+
+        setHighlight({
+            property: 'geocode_epci',
+            value: null,
+        });
     };
 
 
-    return <ChartEcharts option={option} style={{height: 1000}} replaceMerge= {['xAxis', 'series']} onEvents={{mouseover:onHover, mouseOut:onOut}} />
+    return <ChartEcharts ref={chartRef} option={option} style={{height: 1000}} replaceMerge= {['xAxis', 'series']} onEvents={{mouseover:onHover, mouseOut:onOut}} />
 }
 
 export default RacebarEpci
