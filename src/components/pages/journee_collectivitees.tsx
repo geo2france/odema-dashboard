@@ -1,9 +1,8 @@
-import { PageProps, SimpleRecord, useHighlight, useSetHighlight } from "@geo2france/api-dashboard"
+import { PageProps, SimpleRecord } from "@geo2france/api-dashboard"
 import { Control, Dashboard, Dataset, Filter, Intro, Join, MapIndicator, Palette, Select, Transform, useControl } from "@geo2france/api-dashboard/dsl"
 import RacebarEpci from "../indicateur/RriRacebar";
 import SingleAxis from "../indicateur/RriSingleAxisScatter";
 import TargetPie from "../indicateur/RriTargetPie";
-import { useState } from "react";
 import { theme } from "antd";
 
 function between(value: number, a: number, b: number): boolean {

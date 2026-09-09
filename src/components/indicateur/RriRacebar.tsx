@@ -1,4 +1,4 @@
-import { BaseChartProps, useApplyEchartsHighlight, useHighlight, useSetHighlight } from "@geo2france/api-dashboard"
+import { BaseChartProps, useApplyEchartsHighlight, useSetHighlight } from "@geo2france/api-dashboard"
 import { ChartEcharts, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
 import { EChartsOption, MarkAreaComponentOption, SeriesOption } from "echarts"
 import { useMemo, useRef } from "react"
