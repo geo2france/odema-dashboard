@@ -167,7 +167,7 @@ export const DmaPageEPCI: React.FC<PageProps> = () => {
         <Transform>
             {data => data.map((i: SimpleRecord) => ({
                           value: Math.max(i.tonnage, 1),
-                          source: i.type_dechet.split(' > ')[0],
+                          source: i.type_dechet == 'Non précisé' ? 'Déch. non précisé' : i.type_dechet.split(' > ')[0], // Eviter bug avec "Non précisé" en source et target
                           target: i.traitement_destination?.split(' > ')[0]}))}
         </Transform>
         <Transform>

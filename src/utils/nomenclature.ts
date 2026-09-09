@@ -84,6 +84,7 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
         case "tonnage_np":
             return chartBusinessProps("Non précisé")
         case "Non précisé":
+        case "Déch. non précisé":
             return {color:'#5D5D5D', sort:5, label:item}
         case "Autres":
         case "AUTRES":
