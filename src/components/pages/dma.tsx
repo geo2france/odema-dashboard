@@ -163,7 +163,7 @@ export const PageDma: React.FC<PageProps> = () => {
                 <ChartEvolutionPopTi dataset="population_tarification_ti_region"
                 title="Tarification incitative sur la collecte des OMR" year={Number(useControl('annee'))}/>
                 
-                <MapTI dataset="tarification_om" title="Territoires en tarification incitative sur la collecte des OMR"/>
+                <MapTI dataset="tarification_om" title="Territoires en tarification incitative sur la collecte des OMR (2024)"/>
             </Section>
 
             <Section title="Valorisation">
