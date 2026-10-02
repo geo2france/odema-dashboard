@@ -1,5 +1,5 @@
 import { NextPrevSelect, PageProps, SimpleRecord } from "@geo2france/api-dashboard"
-import { ChartEvolution, Control, Dashboard, Dataset, Palette, Producer, Section, Transform, useControl } from "@geo2france/api-dashboard/dsl"
+import { Control, Dashboard, Dataset, Palette, Producer, Section, Transform, useControl } from "@geo2france/api-dashboard/dsl"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { chartBusinessProps } from "../../utils"
 import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif"
