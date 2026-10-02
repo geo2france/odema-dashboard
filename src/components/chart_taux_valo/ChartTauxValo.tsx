@@ -42,8 +42,8 @@ export const ChartTauxValo: React.FC<ChartTauxValoProps> = ({dataset:dataest_id,
     const dataChart = useMemo(()=>data && alasql(`
             SELECT 
                 [annee], 
-                SUM(CASE WHEN [libel_traitement]='Valorisation matière' THEN [tonnage] ELSE 0 END) as valo_matiere,
-                SUM(CASE WHEN [libel_traitement]='Valorisation organique' THEN [tonnage] ELSE 0 END) as valo_orga,
+                SUM(CASE WHEN [libel_traitement]='Valorisation matière inorganique' THEN [tonnage] ELSE 0 END) as valo_matiere,
+                SUM(CASE WHEN [libel_traitement]='Valorisation matière organique' THEN [tonnage] ELSE 0 END) as valo_orga,
                 SUM(CASE WHEN [libel_traitement]!='Valorisation matière' and [libel_traitement]!='Valorisation organique' THEN [tonnage] ELSE 0 END) as autre_traitement,
                 SUM([tonnage]) as tout_mode
             FROM ?
@@ -53,7 +53,7 @@ export const ChartTauxValo: React.FC<ChartTauxValoProps> = ({dataset:dataest_id,
     //useChartData({data:dataChart, dependencies:data})
     const serie_valo:BarSeriesOption = {
         type:'bar',
-        name:'Valorisation',
+        name:'Valorisation matière',
         barGap:0,
         itemStyle:{
             color:'rgba(189, 217, 71, 1)'
@@ -68,7 +68,7 @@ export const ChartTauxValo: React.FC<ChartTauxValoProps> = ({dataset:dataest_id,
     const serie_matiere:BarSeriesOption = {
         type:'bar',
         stack:'total',
-        name:'Valorisation matière',
+        name:'Valorisation matière inorganique',
         itemStyle:{
             color:'yellow'
         },
@@ -78,7 +78,7 @@ export const ChartTauxValo: React.FC<ChartTauxValoProps> = ({dataset:dataest_id,
     const serie_orga:BarSeriesOption = {
         type:'bar',
         stack:'total',
-        name:'Valorisation organique',
+        name:'Valorisation matière organique',
         barWidth:"10%",
         itemStyle:{
             color:'rgba(108, 128, 51, 1)',

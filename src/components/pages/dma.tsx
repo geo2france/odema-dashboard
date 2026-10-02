@@ -1,5 +1,5 @@
 import { NextPrevSelect, PageProps, SimpleRecord } from "@geo2france/api-dashboard"
-import { Control, Dashboard, Dataset, Palette, Producer, Section, Transform, useControl } from "@geo2france/api-dashboard/dsl"
+import { ChartEvolution, Control, Dashboard, Dataset, Palette, Producer, Section, Transform, useControl } from "@geo2france/api-dashboard/dsl"
 import { ChartSankeyDestinationDMA } from "../chart_sankey_destination"
 import { chartBusinessProps } from "../../utils"
 import { ChartEvolutionObjectifs } from "../chart_evolution_objectif/ChartEvolutionObjectif"
@@ -26,6 +26,7 @@ export const DMA_colors_labels = {
                 'Déchèterie':chartBusinessProps('Déchèterie').color ?? 'white',
                 'Collecte séparée':chartBusinessProps('Matériaux recyclables').color ?? 'white',
                 'Collecte OMR':chartBusinessProps('Ordures ménagères résiduelles').color ?? 'white',
+                'Porte-à-porte':chartBusinessProps('Porte-à-porte').color ?? 'white',
                 'Incinération sans récupération d\'énergie':
                     chartBusinessProps('Incinération sans récupération d\'énergie').color ?? 'white',
                 'Incinération sans valorisation':
@@ -67,7 +68,7 @@ export const PageDma: React.FC<PageProps> = () => {
                 {/* A simplifier */} <Transform>
                     {data => data.map((i: SimpleRecord) => ({
                                   value: Math.max(i.TONNAGE_DMA_sum, 1),
-                                  source: i.L_TYP_REG_DECHET,
+                                  source: i.L_TYP_REG_DECHET == 'Non précisé' ? 'Déch. non précisé' : i.L_TYP_REG_DECHET,
                                   target: i.L_TYP_REG_SERVICE === 'Stockage pour inertes' ? 'Stockage' : i.L_TYP_REG_SERVICE,}))}
                 </Transform>
                 <Producer url="https://sinoe.org">Ademe (Sinoe)</Producer>
@@ -83,12 +84,24 @@ export const PageDma: React.FC<PageProps> = () => {
                <Transform>{data => data.map((r:SimpleRecord) =>({
                     ...r,
                     SOURCE_TYP : r.source_collecte == 'DECHETERIE' ? 'Déchèterie' : 
-                                  r.source_collecte == 'COLLECTE' && r.libel_dechet == 'Ordures ménagères résiduelles' ? 'Collecte OMR':
-                                  'Collecte séparée'
+                                  r.source_collecte == 'COLLECTE'  ? 'Porte-à-porte': 'Non précisé'
                }))}</Transform>
 
                 <Producer url="https://sinoe.org">Ademe (Sinoe)</Producer>
                 <Producer url="https://odema-hautsdefrance.org/">Odema</Producer>
+            </Dataset>
+
+            <Dataset
+                id="rri_indic_region_ratiodma" 
+                type="wfs"
+                url="https://www.geo2france.fr/geoserver/odema/ows"
+                resource="odema:rri_indic_region_ratiodma"    
+            >
+            <Transform>
+                { (data:SimpleRecord[]) => 
+                    data.map( row => ({...row, annee : row.date_mesure?.slice(0,4)}))
+                        .sort((a,b) => a?.annee - b?.annee)}
+            </Transform>
             </Dataset>
 
             <Dataset
@@ -148,15 +161,16 @@ export const PageDma: React.FC<PageProps> = () => {
                 <ChartEvolutionDechet  dataset="destination_dma_region" title="Sources de collectes"
                  yearKey="annee" categoryKey="SOURCE_TYP" ratioKey="kg_par_habitant"
                  tonnageKey="tonnage"
-                 year={Number(useControl('annee'))}
+                 year={Number(useControl('annee'))} options={{xAxis:{min:'2017'}}}
                 />
+
 
             </Section>
 
             <Section title={"Prévention"}>
-                <ChartEvolutionObjectifs dataset="tonnage_dma" 
+                <ChartEvolutionObjectifs dataset="rri_indic_region_ratiodma" 
                 title="Production de DMA par habitant et objectif régional"
-                dataObjectifs={[{annee:2009, ratio:620}, {annee:2025, ratio:558}, {annee:2030, ratio:527}]}
+                dataObjectifs={[{annee:2009, ratio:632}, {annee:2025, ratio:569}, {annee:2030, ratio:537}]}
                 year={Number(useControl('annee')) || 2023}
                 />
 

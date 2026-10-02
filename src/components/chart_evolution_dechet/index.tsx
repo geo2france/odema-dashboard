@@ -20,10 +20,11 @@ export interface ChartEvolutionTypeDechetProps {
     showObjectives?:boolean;
     normalize?:boolean;
     showNormalizeButton?:boolean;
-    population?:number
+    population?:number;
+    options?:EChartsOption
   }
 
-export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({dataset:dataset_id, year, title, tonnageKey, categoryKey, ratioKey, yearKey, normalize=false, showNormalizeButton=true} )  => {
+export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({dataset:dataset_id, year, title, tonnageKey, categoryKey, ratioKey, yearKey, normalize=false, showNormalizeButton=true, options:user_opt={}} )  => {
     
     const [normalizeState, setNormalizeState] = useState(normalize)
 
@@ -68,7 +69,7 @@ export const ChartEvolutionDechet: React.FC<ChartEvolutionTypeDechetProps> = ({d
             secondaryValueKey={tonnageKey} 
             {...{categoryKey, yearKey}} 
             yearMark={ year } 
-            options={ options } 
+            options={ Object.assign(options, user_opt) } 
             normalize={normalizeState}
             seriesSort={ seriesSorter }
             type="area"/>

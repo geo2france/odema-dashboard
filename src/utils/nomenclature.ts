@@ -53,6 +53,7 @@ export const chartBusinessProps = (item:string) : {label:string, color?:string, 
         case "Ordures ménagères résiduelles":
         case "Collecte OMR":
         case "OMR":
+        case "Porte-à-porte":
             return {color:'#919191', sort:1, label:item}
         case "tonnage_omr":
             return chartBusinessProps("Ordures ménagères résiduelles")
