@@ -41,8 +41,7 @@ export const ChartEvolutionObjectifs: React.FC<ChartEvolutionTypeDechetProps> = 
     const data_chart =  useMemo(() => data && alasql(`
         SELECT 
             [annee], 
-            SUM([ratio]) as ratio,
-            SUM([tonnage]) as tonnage
+            SUM([valeur]) as ratio
         FROM ?
         GROUP BY [annee]
         `,[data]) , [data]

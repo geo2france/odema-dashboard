@@ -35,7 +35,7 @@ ${e.seriesName} <br>
 <b>${e.value[1].toLocaleString()} hab.</b> (${(Math.round(e.value[2]*1000)/10).toLocaleString()} %)`
 
 export const ChartEvolutionPopTi: React.FC<ChartEvolutionPopTiProps> = ({dataset:dataset_id, title, style, year} )  => {
-    const threshold_proj = 2023 ; // Année après laquelle démarre la projection
+    const threshold_proj = 2024 ; // Année après laquelle démarre la projection
 
     const dataset = useDataset(dataset_id)
     const data:DataProps[] | undefined = dataset?.data as DataProps[] | undefined;
