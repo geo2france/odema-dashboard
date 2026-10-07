@@ -1,4 +1,4 @@
-import { ChartEcharts, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
+import { ChartEcharts, useBlockConfig, useDataset, usePalette } from "@geo2france/api-dashboard/dsl"
 import { EChartsOption, MarkAreaComponentOption, SeriesOption } from "echarts"
 import { rri_agg, rri_get_cols } from "./rri"
 import { aggregator, BaseChartProps, useApplyEchartsHighlight, useSetHighlight } from "@geo2france/api-dashboard"
@@ -6,13 +6,19 @@ import { useMemo, useRef } from "react"
 import EChartsReact from "echarts-for-react"
 
 interface SingleAxisProps extends BaseChartProps{
+    title?: string
     goalValue: number 
     balanceValue: number
     categoryKey?: string
     unit?: string
 
 }
-const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, unit}) => {
+const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, balanceValue, categoryKey, unit, title}) => {
+
+    const AREA_COLORS = {
+        succes:"rgba(145, 204, 117, 0.36)", 
+        neutral:"rgba(17, 0, 255, 0.29)",
+        danger:"rgba(241, 175, 155, 0.36)"}
 
     const chartRef = useRef<EChartsReact>(null);
 
@@ -23,7 +29,7 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
 
     const setHighlight = useSetHighlight()
     useApplyEchartsHighlight({chartRef:chartRef})
-
+    useBlockConfig({title:title})
 
     const rri_cols = data && rri_get_cols(data);
 
@@ -95,22 +101,33 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
                     {
                         xAxis: goalValue,
                         itemStyle: {
-                            color: "rgba(145, 204, 117, 0.36)",
+                            color: AREA_COLORS.succes,
                         },
                     },
                     {
-                        xAxis: decrease ? 0:100,
+                        xAxis: decrease ? -9e10:9e10,
                     },
                 ],
                 [
                     {
                         xAxis: balanceValue,
                         itemStyle: {
-                            color: "rgba(0, 132, 255, 0.15)", 
+                            color: AREA_COLORS.neutral, 
                         },
                     },
                     {
                         xAxis: goalValue,
+                    },
+                ],
+                [
+                    {
+                        xAxis: balanceValue,
+                        itemStyle: {
+                            color: AREA_COLORS.danger,
+                        },
+                    },
+                    {
+                        xAxis: decrease ? 9e10:-9e10,
                     },
                 ],
             ],
@@ -118,17 +135,53 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
 
     const option:EChartsOption = {
         animation: true,
-        legend:{
-            show: true,
-            data: categories.map(String),
-            type:'scroll',
+        grid: {
+            height: 100,
         },
+        legend: [
+            {
+                data: categories.map(String),
+                bottom: 0,
+            },
+            {
+                selectedMode: false,
+                data: [
+                    {
+                        name: 'Objectif atteint',
+                        icon: 'rect',
+                        itemStyle: {
+                            color: AREA_COLORS.succes,
+                        },
+                    },
+                    {
+                        name: 'Sur la trajectoire',
+                        icon: 'rect',
+                        itemStyle: {
+                            color: AREA_COLORS.neutral,
+                        },
+                    },
+                    {
+                        name: 'Retard sur la trajectoire',
+                        icon: 'rect',
+                        itemStyle: {
+                            color: AREA_COLORS.danger,
+                        },
+                    },
+                ],
+                bottom: 30,
+            },
+        ],
         yAxis:{
-            type: "category"
+            type: "category",
+            show: false,
+            jitter:50, // Phénomène dancing point fait l'objet d'une PR : https://github.com/apache/echarts/pull/21765 
+
         },
         xAxis:{
             type: "value",
             name: unit,
+            axisTick: {show:true},
+            axisLine: {show: true},
             max:(value) => Math.round(Math.max(value.max, goalValue + goalValue*0.05)),
             //interval: 10
         },
@@ -163,7 +216,22 @@ const SingleAxis:React.FC<SingleAxisProps> = ({dataset:dataset_in, goalValue, ba
                 },
                     data: [ { xAxis: mediane || 0 }  ]
                 },
-        }
+        },
+         {
+                name: 'Objectif atteint',
+                type: 'scatter',
+                data: [],
+            },
+            {
+                name: 'Sur la trajectoire',
+                type: 'scatter',
+                data: [],
+            },
+            {
+                name: 'Retard sur la trajectoire',
+                type: 'scatter',
+                data: [],
+            },
             ]
     }
 

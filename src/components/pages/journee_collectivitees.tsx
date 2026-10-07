@@ -13,6 +13,7 @@ const indicateurs = [
     {
         name:"Part de DMA orienté vers recyclage et réutilisation (L541-1 4°bis)",
         layername:"odema:rri_indic_epci_dma_recyclage_reutilisation",
+        layername_region:"odema_rri_indic_region_dma_recyclage_reutilisation",
         unit:'%',
         goalValue: 65,
         balanceValue:54 //2024
@@ -25,16 +26,18 @@ const indicateurs = [
         balanceValue:64.999 //2024
     },
     {
-        name:"Réduction de la production par habitant",
+        name:"Production de DMA par habitant par rapport à 2017",
         layername:'odema:rri_indic_epci_ratiodma_pr_2017',
+        description: `La pruduction en 2030 doit être au minimum égale à 85% de la production de 2017 (réduction de 15%)`,
         unit:'%',
-        goalValue: 85,
+        goalValue: 85, //devnote : permettre une valeur absolue, ou une fonction ? (qui dépend des data)
         balanceValue:90,
         decrease:true
     },
     {
         name:"Réduction de la part de DMA enfouie",
         layername:'odema:rri_indic_epci_dma_part_enfouie',
+        description: 'La part de DMA enfouis doit être au plus de 10% du tonnage total.',
         unit:'%',
         goalValue: 10,
         balanceValue:16.6,
@@ -42,7 +45,6 @@ const indicateurs = [
     }
 
 ]
-
 
 
 
@@ -103,8 +105,24 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
                 <Join dataset="territoires" joinKey={['geocode_epci','siren']}/>
             </Dataset>
 
+            <Dataset
+                type="wfs"
+                id="indic_region"
+                url="https://www.geo2france.fr/geoserver/odema/ows"
+                resource={useControl('indicateur') || ''}
+                >
+                    <Filter field="date_mesure">{`${annee}-01-01`}</Filter>
+                    <Transform>SELECT 
+                                date_mesure,
+                                sum([numerateur]) as numerateur, 
+                                sum([denominateur]) as denominateur,
+                                sum([numerateur])/sum([denominateur]) as valeur ,
+                                count(*)
+                                FROM ? GROUP BY date_mesure</Transform>
+            </Dataset>
+
             <Control>
-                <Select name="indicateur" options={indicateurs.map( i => i.layername)}/>
+                <Select name="indicateur" options={indicateurs.map( i => ({value:i.layername, label:i.name}))}/>
                 <Select name="annee" arrows options={['2023','2024']} defaultValue={'2024'}/>
                 <Select name="variable" options={['competence_collecte','competence_traitement','typologie_ademe','tarification', 'type_valo_matiere']} />
             </Control>
@@ -135,7 +153,11 @@ export const PageJourneeCollec:React.FC<PageProps> = () => {
              <div>Choisir un indicateur, une année et une variable (dimension) d'analyse.
              ℹ️ Les axes sont sont pas disponibles pour tous les indicateurs.</div>
             </Intro>
+            <div>{current_indic?.name}<br/>
+                Description de l'indicateur : {current_indic?.description}
+            </div>
             <SingleAxis 
+                title="Valeurs de l'indicateur dans les territoires"
                 dataset='indic' 
                 size={1.25} 
                 goalValue={current_indic?.goalValue || NaN} balanceValue={current_indic?.balanceValue || NaN} 
