@@ -34,7 +34,7 @@ export const default_app_palette = [
     "#ea7ccc"
 ]
 
-type DataPoint = [number, number];
+export type DataPoint = [number, number];
 export const interpolate = (data:DataPoint[], _type='linear'):DataPoint[] => {
 
     const result: DataPoint[] = [];

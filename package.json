@@ -10,7 +10,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
-    "@geo2france/api-dashboard": "^1.23.1",
+    "@geo2france/api-dashboard": "^1.24.0",
     "@iconify/react": "^6.0.2",
     "@tanstack/react-query": "^5.51.14",
     "@types/geojson": "^7946.0.14",
@@ -18,6 +18,7 @@
     "antd": "^6.5.1",
     "arquero": "^8.0.2",
     "axios": "^1.7.4",
+    "chroma-js": "^3.2.0",
     "date-fns": "^3.6.0",
     "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.2",
@@ -35,6 +36,7 @@
     "vite-plugin-svgr": "^4.2.0"
   },
   "devDependencies": {
+    "@types/chroma-js": "^3.1.2",
     "@types/node": "^22.8.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -45,7 +47,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.3.5",
     "rollup-plugin-visualizer": "^5.12.0",
-    "typescript": "^4.9.5",
+    "typescript": "^7.0.2",
     "vite": "^5.4.11"
   },
   "scripts": {

@@ -19,6 +19,8 @@ import { RepPage } from './components/pages/rep';
 import { DaePage } from './components/pages/dae';
 import { PageDma } from './components/pages/dma';
 import { DmaPageEPCIHome } from './components/pages/dma_epci_home';
+import { PageSRADDET } from './components/pages/sraddet_indic';
+import { PageJourneeCollec } from './components/pages/journee_collectivitees';
 
 const visualIdentity = {
     name: 'Odema',
@@ -68,7 +70,6 @@ const partenaires:Partner[] = [
   { logo: Geo2France, name: "Géo2France", url: "https://www.geo2france.fr/" },
 ];
 
-
 const App: React.FC = () => {
 
   return(
@@ -89,7 +90,9 @@ const App: React.FC = () => {
       </PagesGroup>
       <EnfouissementPage title="ISDND" icon={<CloseSquareOutlined />}/>
       <RepPage title="REP" hidden={true}/>
+      <PageSRADDET title="SRADDET" hidden/>
       <DaePage title="DAE" icon="material-symbols:factory-outline" hidden />
+      <PageJourneeCollec title='jcoll' hidden />
      </ DashboardApp>
   )
 };
